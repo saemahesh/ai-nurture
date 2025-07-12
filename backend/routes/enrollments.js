@@ -330,6 +330,19 @@ router.post('/:sequenceId/enroll', (req, res) => {
       custom_fields: {}
     };
     
+    // Calculate next_message_due
+    if (sequence.messages && sequence.messages.length > 0) {
+      const firstMessage = sequence.messages[0];
+      const enrolledDate = new Date(newEnrollment.enrolled_at);
+      const nextMessageDate = new Date(enrolledDate);
+      nextMessageDate.setDate(enrolledDate.getDate() + (firstMessage.day - 1));
+      // Set to a default time, e.g., 9 AM, if not already set by scheduler
+      if (nextMessageDate.getHours() === 0 && nextMessageDate.getMinutes() === 0) {
+        nextMessageDate.setHours(9, 0, 0, 0);
+      }
+      newEnrollment.next_message_due = nextMessageDate.toISOString();
+    }
+
     console.log(`📋 [ENROLL_API] New enrollment:`, newEnrollment);
     
     enrollments.push(newEnrollment);
@@ -508,6 +521,19 @@ router.post('/:sequenceId/enroll/csv', upload.single('csvFile'), (req, res) => {
           total_messages: sequence.messages.length,
           custom_fields: {}
         };
+
+        // Calculate next_message_due
+        if (sequence.messages && sequence.messages.length > 0) {
+          const firstMessage = sequence.messages[0];
+          const enrolledDate = new Date(newEnrollment.enrolled_at);
+          const nextMessageDate = new Date(enrolledDate);
+          nextMessageDate.setDate(enrolledDate.getDate() + (firstMessage.day - 1));
+          // Set to a default time, e.g., 9 AM, if not already set by scheduler
+          if (nextMessageDate.getHours() === 0 && nextMessageDate.getMinutes() === 0) {
+            nextMessageDate.setHours(9, 0, 0, 0);
+          }
+          newEnrollment.next_message_due = nextMessageDate.toISOString();
+        }
         
         enrollments.push(newEnrollment);
         scheduleMessagesForEnrollment(newEnrollment, sequence);

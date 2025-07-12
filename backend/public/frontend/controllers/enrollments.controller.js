@@ -208,11 +208,21 @@ angular.module('autopostWaApp').controller('EnrollmentsController', ['$scope', '
 
     // Get next message day
     $scope.getNextMessageDay = function(enrollment) {
-        if (!$scope.sequence.messages || enrollment.current_day >= $scope.sequence.messages.length) {
+        if (enrollment.status === 'completed' || !$scope.sequence.messages || $scope.sequence.messages.length === 0) {
             return 'Completed';
         }
-        const nextMessage = $scope.sequence.messages[enrollment.current_day];
-        return 'Day ' + nextMessage.day;
+        if (enrollment.status !== 'active' || !enrollment.next_message_due) {
+            return '-';
+        }
+        // Ensure current_day is within bounds and sequence messages are available
+        if (enrollment.current_day >= 0 && enrollment.current_day < $scope.sequence.messages.length) {
+            const nextMessage = $scope.sequence.messages[enrollment.current_day];
+            if (nextMessage && nextMessage.day) {
+                return 'Day ' + nextMessage.day;
+            }
+        }
+        // Fallback if data is inconsistent
+        return 'Next';
     };
 
     // Format date

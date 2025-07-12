@@ -43,5 +43,20 @@
     "messages_sent": 0,
     "total_messages": 2,
     "custom_fields": {}
+  },
+  {
+    "id": "enroll_1752297736435",
+    "sequence_id": "seq_1752221360754",
+    "username": "mahesh",
+    "phone": "12324233253",
+    "name": "test",
+    "enrolled_at": "2025-07-12T05:22:16.435Z",
+    "current_day": 0,
+    "status": "active",
+    "last_message_sent": null,
+    "next_message_due": "2025-07-12T05:22:16.435Z",
+    "messages_sent": 0,
+    "total_messages": 2,
+    "custom_fields": {}
   }
 ]

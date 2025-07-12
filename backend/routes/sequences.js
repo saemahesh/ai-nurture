@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const moment = require('moment-timezone');
 const { requireAuth } = require('../middleware/auth');
 const router = express.Router();
 
@@ -149,8 +150,8 @@ router.post('/', requireAuth, (req, res) => {
       messages: messages,
       keywords: req.body.keywords ? req.body.keywords.split(',').map(k => k.trim().toLowerCase()).filter(k => k) : [],
       total_days: Math.max(...messages.map(m => m.day)),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      created_at: moment().toISOString(),
+      updated_at: moment().toISOString()
     };
     
     sequences.push(newSequence);
@@ -200,7 +201,7 @@ router.put('/:id', requireAuth, (req, res) => {
       sequences[sequenceIndex].keywords = req.body.keywords ? req.body.keywords.split(',').map(k => k.trim().toLowerCase()).filter(k => k) : [];
     }
     
-    sequences[sequenceIndex].updated_at = new Date().toISOString();
+    sequences[sequenceIndex].updated_at = moment().toISOString();
     
     writeSequences(sequences);
     
@@ -260,8 +261,8 @@ router.post('/:id/duplicate', requireAuth, (req, res) => {
       ...originalSequence,
       id: 'seq_' + Date.now(),
       name: originalSequence.name + ' (Copy)',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      created_at: moment().toISOString(),
+      updated_at: moment().toISOString()
     };
     
     sequences.push(duplicatedSequence);
@@ -288,7 +289,7 @@ router.patch('/:id/toggle', requireAuth, (req, res) => {
     
     const currentStatus = sequences[sequenceIndex].status;
     sequences[sequenceIndex].status = currentStatus === 'active' ? 'paused' : 'active';
-    sequences[sequenceIndex].updated_at = new Date().toISOString();
+    sequences[sequenceIndex].updated_at = moment().toISOString();
     
     writeSequences(sequences);
     

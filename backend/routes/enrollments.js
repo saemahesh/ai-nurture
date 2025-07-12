@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const csv = require('csv-parser');
+const moment = require('moment-timezone');
 const router = express.Router();
 
 // Import authentication middleware
@@ -220,7 +221,7 @@ function scheduleMessagesForEnrollmentOriginal(enrollment, sequence) {
       scheduled_for: scheduledDate.toISOString(),
       status: 'pending',
       attempts: 0,
-      created_at: new Date().toISOString()
+      created_at: moment().toISOString()
     };
 
     // LOG: Adding new message to queue for validation
@@ -320,7 +321,7 @@ router.post('/:sequenceId/enroll', (req, res) => {
       username: req.session.user.username,
       phone: normalizedPhone,
       name: name ? name.trim() : '',
-      enrolled_at: new Date().toISOString(),
+      enrolled_at: moment().toISOString(),
       current_day: 0,
       status: 'active',
       last_message_sent: null,
@@ -431,7 +432,7 @@ router.post('/:sequenceId/enroll/bulk', (req, res) => {
         sequence_id: req.params.sequenceId,
         phone: normalizedPhone,
         name: name,
-        enrolled_at: new Date().toISOString(),
+        enrolled_at: moment().toISOString(),
         current_day: 0,
         status: 'active',
         last_message_sent: null,
@@ -512,7 +513,7 @@ router.post('/:sequenceId/enroll/csv', upload.single('csvFile'), (req, res) => {
           username: req.session.user.username,
           phone: normalizedPhone,
           name: name,
-          enrolled_at: new Date().toISOString(),
+          enrolled_at: moment().toISOString(),
           current_day: 0,
           status: 'active',
           last_message_sent: null,
@@ -576,7 +577,7 @@ router.put('/:enrollmentId', (req, res) => {
     
     if (status && ['active', 'paused', 'completed', 'opted_out', 'stopped'].includes(status)) {
       enrollments[enrollmentIndex].status = status;
-      enrollments[enrollmentIndex].updated_at = new Date().toISOString();
+      enrollments[enrollmentIndex].updated_at = moment().toISOString();
       
       // If pausing, stopping, or opting out, update pending messages in queue
       if (['paused', 'opted_out', 'stopped'].includes(status)) {
@@ -641,7 +642,7 @@ router.post('/pause-sequence', (req, res) => {
         return {
           ...enrollment,
           status: 'paused',
-          pausedAt: new Date().toISOString()
+          pausedAt: moment().toISOString()
         };
       }
       return enrollment;
@@ -680,7 +681,7 @@ router.post('/stop-sequence', (req, res) => {
         return {
           ...enrollment,
           status: 'stopped',
-          stoppedAt: new Date().toISOString()
+          stoppedAt: moment().toISOString()
         };
       }
       return enrollment;
@@ -742,7 +743,7 @@ router.post('/resume-sequence', (req, res) => {
         return {
           ...enrollment,
           status: 'active',
-          resumedAt: new Date().toISOString()
+          resumedAt: moment().toISOString()
         };
       }
       return enrollment;

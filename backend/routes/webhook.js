@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const moment = require('moment-timezone');
 const router = express.Router();
 
 const usersFile = path.join(__dirname, '../data/users.json');
@@ -95,7 +96,7 @@ function scheduleMessagesForEnrollment(enrollment, sequence) {
             scheduled_for: scheduledDate.toISOString(),
             status: 'pending',
             attempts: 0,
-            created_at: new Date().toISOString()
+            created_at: moment().toISOString()
         };
         queue.push(queueMessage);
     });
@@ -162,7 +163,7 @@ router.post('/enroll', (req, res) => {
         username: user.username,
         phone: phone,
         name: pushName || '',
-        enrolled_at: new Date().toISOString(),
+        enrolled_at: moment().toISOString(),
         current_day: 0,
         status: 'active',
         last_message_sent: null,
@@ -230,8 +231,8 @@ router.post('/whatsapp', (req, res) => {
         if (normalizePhoneNumber(enrollment.phone) === normalizedPhone && 
             ['active', 'paused'].includes(enrollment.status)) {
           enrollments[index].status = 'opted_out';
-          enrollments[index].opted_out_at = new Date().toISOString();
-          enrollments[index].updated_at = new Date().toISOString();
+          enrollments[index].opted_out_at = moment().toISOString();
+          enrollments[index].updated_at = moment().toISOString();
           stoppedCount++;
         }
       });
@@ -290,8 +291,8 @@ router.post('/opt-out', (req, res) => {
       if (normalizePhoneNumber(enrollment.phone) === normalizedPhone && 
           ['active', 'paused'].includes(enrollment.status)) {
         enrollments[index].status = 'opted_out';
-        enrollments[index].opted_out_at = new Date().toISOString();
-        enrollments[index].updated_at = new Date().toISOString();
+        enrollments[index].opted_out_at = moment().toISOString();
+        enrollments[index].updated_at = moment().toISOString();
         stoppedCount++;
       }
     });

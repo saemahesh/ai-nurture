@@ -25,6 +25,10 @@
                 </div>
               </div>
               <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-1">Recipient WhatsApp Number <span class="text-red-500">*</span></label>
+                <input type="text" ng-model="status.to" class="block w-full border border-gray-300 rounded px-3 py-2" placeholder="e.g. 919999999999" required>
+              </div>
+              <div class="mb-4">
                 <label class="block text-gray-700 font-medium mb-1">Caption</label>
                 <textarea ng-model="status.caption" class="block w-full border border-gray-300 rounded px-3 py-2" maxlength="220" placeholder="Enter status caption (max 220 chars)"></textarea>
               </div>
@@ -79,7 +83,7 @@
           <div ng-repeat="s in scheduledStatuses" class="mb-4 p-3 border rounded flex items-center justify-between">
             <div>
               <div class="font-medium">{{s.caption}}</div>
-              <div class="text-xs text-gray-500">Time: {{s.timeDisplay}} | Repeat: {{s.repeat}} <span ng-if="s.repeat==='custom'">({{getSelectedDays(s.days)}})</span></div>
+              <div class="text-xs text-gray-500">To: {{s.to}} | Time: {{s.timeDisplay}} | Repeat: {{s.repeat}} <span ng-if="s.repeat==='custom'">({{getSelectedDays(s.days)}})</span></div>
             </div>
             <button class="text-red-600 hover:underline" ng-click="deleteStatus(s.id)">Delete</button>
           </div>

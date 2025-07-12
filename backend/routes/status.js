@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const cron = require('node-cron');
+const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 
@@ -24,6 +25,44 @@ function writeStatuses(statuses) {
   fs.writeFileSync(STATUS_FILE, JSON.stringify(statuses, null, 2));
 }
 
+async function postWhatsAppStatus(status) {
+  try {
+    const response = await axios.post('https://gate.whapi.cloud/status/send', {
+      to: status.to,
+      media: status.media,
+      caption: status.caption
+    }, {
+      headers: {
+        'Authorization': `Bearer ${process.env.WHAPI_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log('WhatsApp status posted successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error posting WhatsApp status:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+}
+
+// Cron job to post scheduled statuses
+cron.schedule('* * * * *', async () => {
+  const statuses = readStatuses();
+  const now = new Date();
+  const dueStatuses = statuses.filter(s => !s.posted && new Date(s.time) <= now);
+
+  for (const status of dueStatuses) {
+    try {
+      await postWhatsAppStatus(status);
+      status.posted = true;
+    } catch (error) {
+      console.error(`Failed to post status ${status.id}:`, error);
+    }
+  }
+
+  writeStatuses(statuses);
+});
+
 // List scheduled statuses
 router.get('/', (req, res) => {
   res.json(readStatuses());
@@ -31,8 +70,8 @@ router.get('/', (req, res) => {
 
 // Schedule a new status (mediaUrl from library)
 router.post('/', (req, res) => {
-  const { caption, textColor, bgColor, time, repeat, days, mediaUrl } = req.body;
-  if (!mediaUrl || !time) return res.status(400).json({ error: 'Media and time required' });
+  const { caption, textColor, bgColor, time, repeat, days, mediaUrl, to } = req.body;
+  if (!mediaUrl || !time || !to) return res.status(400).json({ error: 'Media, time and recipient number are required' });
   const status = {
     id: uuidv4(),
     media: mediaUrl,
@@ -41,6 +80,7 @@ router.post('/', (req, res) => {
     bgColor,
     time,
     repeat,
+    to,
     days: days || {},
     createdAt: new Date().toISOString()
   };
@@ -58,7 +98,5 @@ router.delete('/:id', (req, res) => {
   writeStatuses(statuses);
   res.json({ success: true, removed: before - statuses.length });
 });
-
-// TODO: Add cron logic to post status at scheduled time using WhatsApp API
 
 module.exports = router;

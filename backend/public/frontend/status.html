@@ -38,13 +38,20 @@
                   <input type="color" ng-model="status.bgColor" class="w-10 h-10 p-0 border-0">
                 </div>
               </div>
-              <div class="mb-4" ng-if="status.repeat === 'once'">
-                <label class="block text-gray-700 font-medium mb-1">Schedule Date & Time <span class="text-red-500">*</span></label>
-                <input type="datetime-local" ng-model="status.dateTime" class="block w-full border border-gray-300 rounded px-3 py-2" required>
-              </div>
-              <div class="mb-4" ng-if="status.repeat !== 'once'">
+              <div class="mb-4">
                 <label class="block text-gray-700 font-medium mb-1">Schedule Time <span class="text-red-500">*</span></label>
-                <input type="time" ng-model="status.time" class="block w-full border border-gray-300 rounded px-3 py-2" required>
+                <div class="flex items-center space-x-2">
+                  <select ng-model="status.hour" class="block w-full border border-gray-300 rounded px-3 py-2" required>
+                    <option ng-repeat="h in hours" value="{{h}}">{{h}}</option>
+                  </select>
+                  <select ng-model="status.minute" class="block w-full border border-gray-300 rounded px-3 py-2" required>
+                    <option ng-repeat="m in minutes" value="{{m}}">{{m}}</option>
+                  </select>
+                  <select ng-model="status.ampm" class="block w-full border border-gray-300 rounded px-3 py-2" required>
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                  </select>
+                </div>
               </div>
               <div class="mb-4">
                 <label class="block text-gray-700 font-medium mb-1">Repeat</label>

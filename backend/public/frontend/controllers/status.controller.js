@@ -3,11 +3,15 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
     caption: '',
     textColor: '#000000',
     bgColor: '#ffffff',
-    time: '',
+    hour: '12',
+    minute: '00',
+    ampm: 'AM',
     repeat: 'once',
     days: {}
   };
   $scope.days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  $scope.hours = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+  $scope.minutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
   $scope.scheduledStatuses = [];
   $scope.saving = false;
   $scope.saveSuccess = false;
@@ -51,25 +55,17 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
       data.days = $scope.status.days;
     }
 
-    var selectedTime;
-    if ($scope.status.repeat === 'once') {
-      if (!$scope.status.dateTime) {
-        $scope.saving = false;
-        $scope.saveError = 'Date and time are required for one-time status.';
-        return;
-      }
-      selectedTime = new Date($scope.status.dateTime);
-    } else { // daily or custom
-      if (!$scope.status.time) {
-        $scope.saving = false;
-        $scope.saveError = 'Time is required for recurring status.';
-        return;
-      }
-      var timeStr = String($scope.status.time);
-      var timeParts = timeStr.split(':');
-      selectedTime = new Date();
-      selectedTime.setHours(timeParts[0], timeParts[1], 0, 0);
+    var hour = parseInt($scope.status.hour, 10);
+    if ($scope.status.ampm === 'PM' && hour < 12) {
+      hour += 12;
     }
+    if ($scope.status.ampm === 'AM' && hour === 12) {
+      hour = 0;
+    }
+    var minute = parseInt($scope.status.minute, 10);
+
+    var selectedTime = new Date();
+    selectedTime.setHours(hour, minute, 0, 0);
 
     // Convert to user's local time, assuming input is local. Then convert to UTC.
     var localTime = new Date(selectedTime.getFullYear(), selectedTime.getMonth(), selectedTime.getDate(), selectedTime.getHours(), selectedTime.getMinutes(), selectedTime.getSeconds());
@@ -114,19 +110,23 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
 
   $scope.showCreateStatusModal = function() {
     $scope.createStatusModalVisible = true;
+    var now = new Date();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12;
+    hour = hour ? hour : 12; // the hour '0' should be '12'
     $scope.status = {
       caption: '',
       textColor: '#000000',
       bgColor: '#ffffff',
-      time: '',
+      hour: hour.toString().padStart(2, '0'),
+      minute: minute.toString().padStart(2, '0'),
+      ampm: ampm,
       repeat: 'once',
       days: {},
       mediaUrl: ''
     };
-    // Prefill time for recurring schedules
-    var now = new Date();
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    $scope.status.time = now.toISOString().slice(11,16);
 
     $scope.saveSuccess = false;
     $scope.saveError = '';

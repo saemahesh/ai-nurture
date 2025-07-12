@@ -5,8 +5,7 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
     bgColor: '#ffffff',
     time: '',
     repeat: 'once',
-    days: {},
-    to: ''
+    days: {}
   };
   $scope.days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   $scope.scheduledStatuses = [];
@@ -46,8 +45,7 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
       bgColor: $scope.status.bgColor,
       time: '', // will set below
       repeat: $scope.status.repeat,
-      mediaUrl: $scope.status.mediaUrl,
-      to: $scope.status.to
+      mediaUrl: $scope.status.mediaUrl
     };
     if ($scope.status.repeat === 'custom') {
       data.days = $scope.status.days;
@@ -122,8 +120,7 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
       time: '',
       repeat: 'once',
       days: {},
-      mediaUrl: '',
-      to: ''
+      mediaUrl: ''
     };
     // Prefill time for recurring schedules
     var now = new Date();

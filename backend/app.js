@@ -779,36 +779,4 @@ app.post('/debug/process-enrollments', async (req, res) => {
   }
 });
 
-// WhatsApp Status Scheduler Cron Logic
-const STATUS_FILE = path.join(__dirname, 'data/statuses.json');
-function readStatuses() {
-  if (!fs.existsSync(STATUS_FILE)) return [];
-  return JSON.parse(fs.readFileSync(STATUS_FILE));
-}
-function writeStatuses(statuses) {
-  fs.writeFileSync(STATUS_FILE, JSON.stringify(statuses, null, 2));
-}
-async function postWhatsAppStatus(status) {
-  // TODO: Replace with actual WhatsApp API integration
-  console.log('Posting WhatsApp Status:', status.caption, status.media);
-  // Example: await axios.post('https://whapi/api/status', { ... });
-}
-cron.schedule('* * * * *', async () => {
-  const statuses = readStatuses();
-  const now = new Date();
-  let updated = false;
-  for (const status of statuses) {
-    if (status.repeat === 'once' && status.time) {
-      const scheduled = new Date(status.time);
-      if (!status.posted && Math.abs(now - scheduled) < 60000) { // within 1 min
-        await postWhatsAppStatus(status);
-        status.posted = true;
-        updated = true;
-      }
-    }
-    // TODO: Add logic for daily/custom repeat
-  }
-  if (updated) writeStatuses(statuses);
-});
-
 module.exports = app;

@@ -28,7 +28,6 @@ function writeStatuses(statuses) {
 async function postWhatsAppStatus(status) {
   try {
     const response = await axios.post('https://gate.whapi.cloud/status/send', {
-      to: status.to,
       media: status.media,
       caption: status.caption
     }, {
@@ -70,8 +69,8 @@ router.get('/', (req, res) => {
 
 // Schedule a new status (mediaUrl from library)
 router.post('/', (req, res) => {
-  const { caption, textColor, bgColor, time, repeat, days, mediaUrl, to } = req.body;
-  if (!mediaUrl || !time || !to) return res.status(400).json({ error: 'Media, time and recipient number are required' });
+  const { caption, textColor, bgColor, time, repeat, days, mediaUrl } = req.body;
+  if (!mediaUrl || !time) return res.status(400).json({ error: 'Media and time required' });
   const status = {
     id: uuidv4(),
     media: mediaUrl,
@@ -80,7 +79,6 @@ router.post('/', (req, res) => {
     bgColor,
     time,
     repeat,
-    to,
     days: days || {},
     createdAt: new Date().toISOString()
   };

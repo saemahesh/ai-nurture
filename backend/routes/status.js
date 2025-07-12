@@ -27,13 +27,16 @@ function writeStatuses(statuses) {
 
 async function postWhatsAppStatus(status) {
   try {
-    const response = await axios.post('https://gate.whapi.cloud/status/send', {
+    const response = await axios.post('https://gate.whapi.cloud/stories', {
       media: status.media,
-      caption: status.caption
+      caption: status.caption,
+      background_color: status.bgColor,
+      caption_color: status.textColor
     }, {
       headers: {
         'Authorization': `Bearer ${process.env.WHAPI_TOKEN}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       }
     });
     console.log('WhatsApp status posted successfully:', response.data);

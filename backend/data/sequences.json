@@ -79,5 +79,26 @@
     "total_days": 2,
     "created_at": "2025-07-11T15:25:51.668Z",
     "updated_at": "2025-07-11T15:27:39.113Z"
+  },
+  {
+    "id": "seq_1752299917054",
+    "name": "day 2 seq",
+    "description": "",
+    "status": "active",
+    "username": "mahesh",
+    "messages": [
+      {
+        "day": 2,
+        "type": "text",
+        "message": "Hey, this is crm drip seq",
+        "time": "09:00"
+      }
+    ],
+    "keywords": [
+      "crm"
+    ],
+    "total_days": 2,
+    "created_at": "2025-07-12T05:58:37.054Z",
+    "updated_at": "2025-07-12T05:58:37.054Z"
   }
 ]

@@ -13,35 +13,5 @@
     "messages_sent": 1,
     "total_messages": 2,
     "custom_fields": {}
-  },
-  {
-    "id": "enroll_1752291379387",
-    "sequence_id": "seq_1752221360754",
-    "username": "mahesh",
-    "phone": "919398305627",
-    "name": "robomate",
-    "enrolled_at": "2025-07-12T03:36:19.375Z",
-    "current_day": 1,
-    "status": "active",
-    "last_message_sent": null,
-    "next_message_due": null,
-    "messages_sent": 0,
-    "total_messages": 2,
-    "custom_fields": {}
-  },
-  {
-    "id": "enroll_1752291725507",
-    "sequence_id": "seq_1752221360754",
-    "username": "mahesh",
-    "phone": "919573713873",
-    "name": "maheshji",
-    "enrolled_at": "2025-07-12T03:42:05.507Z",
-    "current_day": 0,
-    "status": "active",
-    "last_message_sent": null,
-    "next_message_due": null,
-    "messages_sent": 0,
-    "total_messages": 2,
-    "custom_fields": {}
   }
 ]

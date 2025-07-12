@@ -137,32 +137,6 @@
     }
   },
   {
-    "id": "seq_1752221360754-919573713873-0-1752291725522",
-    "campaignId": "seq_1752221360754",
-    "username": "mahesh",
-    "phone": "919573713873",
-    "leadData": {
-      "id": "lead-1752291725513",
-      "campaignId": "seq_1752221360754",
-      "username": "mahesh",
-      "phone": "919573713873",
-      "name": "maheshji",
-      "createdAt": "2025-07-12T03:42:05.513Z"
-    },
-    "messageIndex": 0,
-    "message": {
-      "id": "msg-0",
-      "type": "media",
-      "message": "Hey {name} , drip media first, congratzzzz\n\nIts time to {rock|party|explode}",
-      "mediaUrl": "https://cdn.prod.website-files.com/5d249063a5dbec3c6f57a8d4/6658a1f50a87b53a0e467f00_Ettv7FFQGtZu40rMOqSCDN8GgvnPkv0JtJ50q_FkifpoG1ubtWJiJ3qQDIrS3pfUAlvLgbz-Hk3Bz3TMcQmlE6AMpfL7lp9svVW1P-jYl_dm_RLmRtFxv7hV8k3aEqfqdS5qRvP9spywz3cBKTUewPQ.jpeg",
-      "day": 1
-    },
-    "scheduledAt": "2025-07-12T06:25:00.000Z",
-    "status": "pending",
-    "createdAt": "2025-07-12T03:42:05.522Z",
-    "attempts": 0
-  },
-  {
     "id": "seq_1752247551668-919573713873-1-1752247943545",
     "campaignId": "seq_1752247551668",
     "username": "sai",
@@ -186,84 +160,6 @@
     "scheduledAt": "2025-07-12T06:44:00.000Z",
     "status": "pending",
     "createdAt": "2025-07-11T15:32:23.545Z",
-    "attempts": 0
-  },
-  {
-    "id": "seq_1752221360754-919398305627-0-1752291379389",
-    "campaignId": "seq_1752221360754",
-    "username": "mahesh",
-    "phone": "919398305627",
-    "leadData": {
-      "id": "lead-1752291379386",
-      "campaignId": "seq_1752221360754",
-      "username": "mahesh",
-      "phone": "919398305627",
-      "name": "robomate",
-      "createdAt": "2025-07-12T03:36:19.386Z"
-    },
-    "messageIndex": 0,
-    "message": {
-      "id": "msg-0",
-      "type": "media",
-      "message": "Hey {name} , drip media first, congratzzzz\n\nIts time to {rock|party|explode}",
-      "mediaUrl": "https://cdn.prod.website-files.com/5d249063a5dbec3c6f57a8d4/6658a1f50a87b53a0e467f00_Ettv7FFQGtZu40rMOqSCDN8GgvnPkv0JtJ50q_FkifpoG1ubtWJiJ3qQDIrS3pfUAlvLgbz-Hk3Bz3TMcQmlE6AMpfL7lp9svVW1P-jYl_dm_RLmRtFxv7hV8k3aEqfqdS5qRvP9spywz3cBKTUewPQ.jpeg",
-      "day": 1
-    },
-    "scheduledAt": "2025-07-12T13:15:00.000Z",
-    "status": "pending",
-    "createdAt": "2025-07-12T03:36:19.389Z",
-    "attempts": 0
-  },
-  {
-    "id": "seq_1752221360754-919398305627-1-1752291379391",
-    "campaignId": "seq_1752221360754",
-    "username": "mahesh",
-    "phone": "919398305627",
-    "leadData": {
-      "id": "lead-1752291379386",
-      "campaignId": "seq_1752221360754",
-      "username": "mahesh",
-      "phone": "919398305627",
-      "name": "robomate",
-      "createdAt": "2025-07-12T03:36:19.386Z"
-    },
-    "messageIndex": 1,
-    "message": {
-      "id": "msg-1",
-      "type": "text",
-      "message": "Hey , day 2 drip msg",
-      "mediaUrl": null,
-      "day": 2
-    },
-    "scheduledAt": "2025-07-13T12:37:00.000Z",
-    "status": "pending",
-    "createdAt": "2025-07-12T03:36:19.391Z",
-    "attempts": 0
-  },
-  {
-    "id": "seq_1752221360754-919573713873-1-1752291725525",
-    "campaignId": "seq_1752221360754",
-    "username": "mahesh",
-    "phone": "919573713873",
-    "leadData": {
-      "id": "lead-1752291725513",
-      "campaignId": "seq_1752221360754",
-      "username": "mahesh",
-      "phone": "919573713873",
-      "name": "maheshji",
-      "createdAt": "2025-07-12T03:42:05.513Z"
-    },
-    "messageIndex": 1,
-    "message": {
-      "id": "msg-1",
-      "type": "text",
-      "message": "Hey , day 2 drip msg",
-      "mediaUrl": null,
-      "day": 2
-    },
-    "scheduledAt": "2025-07-13T14:09:00.000Z",
-    "status": "pending",
-    "createdAt": "2025-07-12T03:42:05.525Z",
     "attempts": 0
   }
 ]

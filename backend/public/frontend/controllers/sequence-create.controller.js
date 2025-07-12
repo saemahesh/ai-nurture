@@ -3,7 +3,8 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
         name: '',
         description: '',
         status: 'inactive',
-        messages: []
+        messages: [],
+        keywords: ''
     };
     
     $scope.isEditMode = false;
@@ -52,6 +53,11 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
                 $scope.sequence.messages.sort(function(a, b) {
                     return a.day - b.day;
                 });
+
+                // Convert keywords array to comma-separated string for editing
+                if (Array.isArray($scope.sequence.keywords)) {
+                    $scope.sequence.keywords = $scope.sequence.keywords.join(', ');
+                }
             })
             .catch(function(error) {
                 console.error('Error loading sequence:', error);

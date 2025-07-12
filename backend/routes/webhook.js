@@ -3,47 +3,197 @@ const fs = require('fs');
 const path = require('path');
 const router = express.Router();
 
+const usersFile = path.join(__dirname, '../data/users.json');
+const sequencesFile = path.join(__dirname, '../data/sequences.json');
 const enrollmentsFile = path.join(__dirname, '../data/enrollments.json');
 const messageQueueFile = path.join(__dirname, '../data/message_queue.json');
 
 // Helper functions
+function readUsers() {
+    try {
+        const data = fs.readFileSync(usersFile, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        return [];
+    }
+}
+
+function readSequences() {
+    try {
+        const data = fs.readFileSync(sequencesFile, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        return [];
+    }
+}
+
 function readEnrollments() {
-  try {
-    const data = fs.readFileSync(enrollmentsFile, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
+    try {
+        const data = fs.readFileSync(enrollmentsFile, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        return [];
+    }
 }
 
 function writeEnrollments(enrollments) {
-  fs.writeFileSync(enrollmentsFile, JSON.stringify(enrollments, null, 2));
+    fs.writeFileSync(enrollmentsFile, JSON.stringify(enrollments, null, 2));
 }
 
 function readMessageQueue() {
-  try {
-    const data = fs.readFileSync(messageQueueFile, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
+    try {
+        const data = fs.readFileSync(messageQueueFile, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        return [];
+    }
 }
 
 function writeMessageQueue(queue) {
-  fs.writeFileSync(messageQueueFile, JSON.stringify(queue, null, 2));
+    fs.writeFileSync(messageQueueFile, JSON.stringify(queue, null, 2));
 }
 
-// Helper function to normalize phone number
 function normalizePhoneNumber(phone) {
-  let cleaned = phone.replace(/\D/g, '');
-  if (cleaned.length === 10 && !cleaned.startsWith('91')) {
-    cleaned = '91' + cleaned;
-  }
-  return cleaned;
+    let cleaned = phone.replace(/\D/g, '');
+    if (cleaned.length === 10 && !cleaned.startsWith('91')) {
+        cleaned = '91' + cleaned;
+    }
+    return cleaned;
 }
+
+// Simplified version of scheduleMessagesForEnrollment from enrollments.js
+function scheduleMessagesForEnrollment(enrollment, sequence) {
+    const queue = readMessageQueue();
+    const enrolledDate = new Date(enrollment.enrolled_at);
+
+    sequence.messages.forEach(message => {
+        const scheduledDate = new Date(enrolledDate);
+        scheduledDate.setDate(scheduledDate.getDate() + (message.day - 1));
+
+        const randomHours = Math.floor(Math.random() * 16);
+        const randomMinutes = Math.floor(Math.random() * 60);
+        scheduledDate.setHours(6 + randomHours, randomMinutes, 0, 0);
+
+        let processedMessage = message.type === 'text' ? message.message : message.caption || '';
+        if (enrollment.name && enrollment.name.trim()) {
+            processedMessage = processedMessage.replace(/{name}/g, enrollment.name.trim());
+        } else {
+            processedMessage = processedMessage.replace(/Hi {name}/g, 'Hi there').replace(/{name}/g, 'there');
+        }
+
+        const queueMessage = {
+            id: 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+            enrollment_id: enrollment.id,
+            sequence_id: enrollment.sequence_id,
+            username: enrollment.username,
+            phone: enrollment.phone,
+            message: message.type === 'text' ? processedMessage : '',
+            caption: message.type === 'media' ? processedMessage : '',
+            media_url: message.mediaUrl || null,
+            type: message.type,
+            day: message.day,
+            scheduled_for: scheduledDate.toISOString(),
+            status: 'pending',
+            attempts: 0,
+            created_at: new Date().toISOString()
+        };
+        queue.push(queueMessage);
+    });
+
+    writeMessageQueue(queue);
+}
+
+// Webhook endpoint for auto-enrollment
+router.post('/enroll', (req, res) => {
+    const { instance_id, data } = req.body;
+
+    if (!instance_id || !data || !data.message || !data.message.body_message) {
+        return res.status(400).json({ error: 'Invalid webhook payload' });
+    }
+
+    const { content } = data.message.body_message;
+    const fromContact = data.message.from_contact;
+    const pushName = data.message.push_name;
+
+    if (!content || !fromContact) {
+        return res.status(400).json({ error: 'Missing message content or contact information' });
+    }
+
+    const keyword = content.trim().toLowerCase();
+    const phone = normalizePhoneNumber(fromContact);
+
+    // 1. Find the user by instance_id
+    const users = readUsers();
+    const user = users.find(u => u.instance_id === instance_id);
+
+    if (!user) {
+        return res.status(404).json({ error: 'User with the given instance_id not found' });
+    }
+
+    // 2. Find a sequence with the matching keyword for that user
+    const sequences = readSequences();
+    const targetSequence = sequences.find(s =>
+        s.username === user.username &&
+        s.status === 'active' &&
+        s.keywords &&
+        s.keywords.includes(keyword)
+    );
+
+    if (!targetSequence) {
+        return res.status(404).json({ error: `No active sequence found for keyword: ${keyword}` });
+    }
+
+    // 3. Check if the user is already enrolled
+    const enrollments = readEnrollments();
+    const existingEnrollment = enrollments.find(e =>
+        e.phone === phone &&
+        e.sequence_id === targetSequence.id &&
+        ['active', 'paused'].includes(e.status)
+    );
+
+    if (existingEnrollment) {
+        return res.status(200).json({ message: 'User already enrolled in this sequence' });
+    }
+
+    // 4. Enroll the user
+    const newEnrollment = {
+        id: 'enroll_' + Date.now(),
+        sequence_id: targetSequence.id,
+        username: user.username,
+        phone: phone,
+        name: pushName || '',
+        enrolled_at: new Date().toISOString(),
+        current_day: 0,
+        status: 'active',
+        last_message_sent: null,
+        next_message_due: null,
+        messages_sent: 0,
+        total_messages: targetSequence.messages.length,
+        custom_fields: {}
+    };
+
+    if (targetSequence.messages && targetSequence.messages.length > 0) {
+      const firstMessage = targetSequence.messages[0];
+      const enrolledDate = new Date(newEnrollment.enrolled_at);
+      const nextMessageDate = new Date(enrolledDate);
+      nextMessageDate.setDate(enrolledDate.getDate() + (firstMessage.day - 1));
+      if (nextMessageDate.getHours() === 0 && nextMessageDate.getMinutes() === 0) {
+        nextMessageDate.setHours(9, 0, 0, 0);
+      }
+      newEnrollment.next_message_due = nextMessageDate.toISOString();
+    }
+
+    enrollments.push(newEnrollment);
+    writeEnrollments(enrollments);
+
+    // 5. Schedule messages
+    scheduleMessagesForEnrollment(newEnrollment, targetSequence);
+
+    res.status(200).json({ success: true, message: 'Successfully enrolled in sequence: ' + targetSequence.name });
+});
 
 // Webhook to handle WhatsApp messages (for STOP functionality)
-router.post('/webhook', (req, res) => {
+router.post('/whatsapp', (req, res) => {
   try {
     const { phone, message, from } = req.body;
     

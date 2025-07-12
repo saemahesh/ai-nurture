@@ -144,9 +144,10 @@ router.post('/', requireAuth, (req, res) => {
       id: 'seq_' + Date.now(),
       name: name.trim(),
       description: description ? description.trim() : '',
-      status: 'active',
+      status: req.body.status || 'inactive', // Use status from request or default to inactive
       username: req.session.user.username,
       messages: messages,
+      keywords: req.body.keywords ? req.body.keywords.split(',').map(k => k.trim().toLowerCase()).filter(k => k) : [],
       total_days: Math.max(...messages.map(m => m.day)),
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
@@ -195,6 +196,9 @@ router.put('/:id', requireAuth, (req, res) => {
     if (name) sequences[sequenceIndex].name = name.trim();
     if (description !== undefined) sequences[sequenceIndex].description = description.trim();
     if (status) sequences[sequenceIndex].status = status;
+    if (req.body.keywords !== undefined) {
+      sequences[sequenceIndex].keywords = req.body.keywords ? req.body.keywords.split(',').map(k => k.trim().toLowerCase()).filter(k => k) : [];
+    }
     
     sequences[sequenceIndex].updated_at = new Date().toISOString();
     

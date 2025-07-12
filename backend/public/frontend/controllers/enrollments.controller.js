@@ -228,8 +228,16 @@ angular.module('autopostWaApp').controller('EnrollmentsController', ['$scope', '
     // Format date
     $scope.formatDate = function(dateString) {
         if (!dateString) return '';
-        // Assuming dateString is in UTC (ISO 8601 format)
-        return moment(dateString).tz('Asia/Kolkata').format('DD-MM-YYYY hh:mm A');
+        if (typeof moment === 'function' && typeof moment.tz === 'function') {
+            // Assuming dateString is in UTC (ISO 8601 format)
+            return moment(dateString).tz('Asia/Kolkata').format('DD-MM-YYYY hh:mm A');
+        } else {
+            // Fallback if moment is not available
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return 'Invalid Date';
+            // Simple fallback, does not convert to IST
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
     };
 
     // Enroll single lead

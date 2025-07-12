@@ -65,7 +65,8 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
         $scope.saveError = 'Time is required for recurring status.';
         return;
       }
-      var timeParts = $scope.status.time.split(':');
+      var timeStr = String($scope.status.time);
+      var timeParts = timeStr.split(':');
       selectedTime = new Date();
       selectedTime.setHours(timeParts[0], timeParts[1], 0, 0);
     }

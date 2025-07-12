@@ -8,6 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 
 const STATUS_FILE = path.join(__dirname, '../data/statuses.json');
+const USERS_FILE = path.join(__dirname, '../data/users.json');
 const UPLOADS_DIR = path.join(__dirname, '../public/uploads');
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
@@ -24,15 +25,19 @@ function readStatuses() {
 function writeStatuses(statuses) {
   fs.writeFileSync(STATUS_FILE, JSON.stringify(statuses, null, 2));
 }
+function readUsers() {
+  if (!fs.existsSync(USERS_FILE)) return [];
+  return JSON.parse(fs.readFileSync(USERS_FILE));
+}
 
-async function postWhatsAppStatus(status) {
+async function postWhatsAppStatus(status, token) {
   const options = {
     method: 'POST',
     url: 'https://gate.whapi.cloud/stories',
     headers: {
       accept: 'application/json',
       'content-type': 'application/json',
-      authorization: `Bearer ${process.env.WHAPI_TOKEN}`
+      authorization: `Bearer ${token}`
     },
     data: {
       background_color: status.bgColor,
@@ -55,15 +60,21 @@ async function postWhatsAppStatus(status) {
 // Cron job to post scheduled statuses
 cron.schedule('* * * * *', async () => {
   const statuses = readStatuses();
+  const users = readUsers();
   const now = new Date();
   const dueStatuses = statuses.filter(s => !s.posted && new Date(s.time) <= now);
 
   for (const status of dueStatuses) {
-    try {
-      await postWhatsAppStatus(status);
-      status.posted = true;
-    } catch (error) {
-      console.error(`Failed to post status ${status.id}:`, error);
+    const user = users.find(u => u.username === status.username);
+    if (user && user.settings && user.settings.whapi_token) {
+      try {
+        await postWhatsAppStatus(status, user.settings.whapi_token);
+        status.posted = true;
+      } catch (error) {
+        console.error(`Failed to post status ${status.id}:`, error);
+      }
+    } else {
+      console.error(`Could not find user or WHAPI token for status ${status.id}`);
     }
   }
 
@@ -88,7 +99,8 @@ router.post('/', (req, res) => {
     time,
     repeat,
     days: days || {},
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    username: req.session.user.username
   };
   const statuses = readStatuses();
   statuses.push(status);

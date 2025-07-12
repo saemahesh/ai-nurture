@@ -25,6 +25,7 @@ const webhookRouter = require('./routes/webhook');
 const campaignsRouter = require('./routes/campaigns');
 const campaignExecutionRouter = require('./routes/campaign-execution');
 const analyticsRouter = require('./routes/analytics');
+const statusRouter = require('./routes/status');
 
 // Initialize Campaign Executor for automatic message processing
 const CampaignExecutor = require('./campaign-executor');
@@ -155,6 +156,7 @@ app.use('/api/webhook', express.json(), webhookRouter);
 app.use('/api/campaigns', express.json(), campaignsRouter);
 app.use('/api/campaign-execution', express.json(), campaignExecutionRouter);
 app.use('/api/analytics', express.json(), analyticsRouter);
+app.use('/status', statusRouter);
 
 // Centralized WhatsApp group message sender
 async function sendWhatsAppGroupMessage({ group_id, type, message, media_url, instance_id, access_token }) {
@@ -567,6 +569,43 @@ cron.schedule('* * * * *', async () => {
   }
 });
 
+// === Daily Groups Sync Cron ===
+const GROUPS_FILE = path.join(__dirname, 'data/groups.json');
+const USERS_FILE = path.join(__dirname, 'data/users.json');
+
+async function syncAllUsersGroups() {
+  if (!fs.existsSync(USERS_FILE)) return;
+  const users = JSON.parse(fs.readFileSync(USERS_FILE));
+  let allGroups = [];
+  for (const user of users) {
+    if (!user.username || !user.settings || !user.settings.access_token || !user.settings.instance_id) continue;
+    try {
+      const apiUrl = `https://wa.robomate.in/api/get_groups?instance_id=${user.settings.instance_id}&access_token=${user.settings.access_token}`;
+      const apiRes = await axios.post(apiUrl);
+      if (apiRes.data && Array.isArray(apiRes.data.groups)) {
+        const userGroups = apiRes.data.groups.map(g => ({
+          id: Date.now().toString() + Math.random().toString(36).slice(2, 8),
+          name: g.name,
+          groupId: g.id,
+          username: user.username
+        }));
+        allGroups = allGroups.concat(userGroups);
+      }
+    } catch (err) {
+      console.error(`Failed to sync groups for user ${user.username}:`, err.message);
+    }
+  }
+  if (allGroups.length > 0) {
+    fs.writeFileSync(GROUPS_FILE, JSON.stringify(allGroups, null, 2));
+    console.log(`[CRON] Groups synced for all users at ${new Date().toISOString()}`);
+  }
+}
+
+// Run daily at 2:30 AM
+cron.schedule('30 2 * * *', () => {
+  syncAllUsersGroups();
+});
+
 // Debug endpoint to check WhatsApp instance status
 app.get('/debug/wa-status/:username', async (req, res) => {
   try {
@@ -738,6 +777,38 @@ app.post('/debug/process-enrollments', async (req, res) => {
     console.error('Error processing enrollments:', error);
     res.status(500).json({ error: 'Failed to process enrollments', details: error.message });
   }
+});
+
+// WhatsApp Status Scheduler Cron Logic
+const STATUS_FILE = path.join(__dirname, 'data/statuses.json');
+function readStatuses() {
+  if (!fs.existsSync(STATUS_FILE)) return [];
+  return JSON.parse(fs.readFileSync(STATUS_FILE));
+}
+function writeStatuses(statuses) {
+  fs.writeFileSync(STATUS_FILE, JSON.stringify(statuses, null, 2));
+}
+async function postWhatsAppStatus(status) {
+  // TODO: Replace with actual WhatsApp API integration
+  console.log('Posting WhatsApp Status:', status.caption, status.media);
+  // Example: await axios.post('https://whapi/api/status', { ... });
+}
+cron.schedule('* * * * *', async () => {
+  const statuses = readStatuses();
+  const now = new Date();
+  let updated = false;
+  for (const status of statuses) {
+    if (status.repeat === 'once' && status.time) {
+      const scheduled = new Date(status.time);
+      if (!status.posted && Math.abs(now - scheduled) < 60000) { // within 1 min
+        await postWhatsAppStatus(status);
+        status.posted = true;
+        updated = true;
+      }
+    }
+    // TODO: Add logic for daily/custom repeat
+  }
+  if (updated) writeStatuses(statuses);
 });
 
 module.exports = app;

@@ -36,13 +36,14 @@ router.get('/settings', authRequired, (req, res) => {
     wa_phone: user.settings?.wa_phone || '',
     notification_enabled: user.settings?.notification_enabled !== false,
     timezone: 'Asia/Kolkata',
-    test_mobile: user.settings?.test_mobile || ''
+    test_mobile: user.settings?.test_mobile || '',
+    whapi_token: user.settings?.whapi_token || ''
   });
 });
 
 // POST update current user's settings
 router.post('/settings', authRequired, (req, res) => {
-  const { access_token, instance_id, wa_phone, notification_enabled, test_mobile } = req.body;
+  const { access_token, instance_id, wa_phone, notification_enabled, test_mobile, whapi_token } = req.body;
   const users = readUsers();
   const user = users.find(u => u.username === req.session.user.username);
   if (!user) return res.status(404).json({ error: 'User not found' });
@@ -53,6 +54,7 @@ router.post('/settings', authRequired, (req, res) => {
   user.settings.notification_enabled = notification_enabled !== false;
   user.settings.timezone = 'Asia/Kolkata';
   user.settings.test_mobile = test_mobile || '';
+  user.settings.whapi_token = whapi_token || '';
   // Remove any legacy root-level fields
   delete user.access_token;
   delete user.instance_id;
@@ -60,6 +62,7 @@ router.post('/settings', authRequired, (req, res) => {
   delete user.notification_enabled;
   delete user.timezone;
   delete user.test_mobile;
+  delete user.whapi_token;
   writeUsers(users);
   res.json({ success: true });
 });

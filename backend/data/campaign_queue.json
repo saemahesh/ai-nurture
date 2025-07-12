@@ -208,10 +208,12 @@
       "mediaUrl": "https://img.etimg.com/thumb/width-1200,height-900,imgsize-1116304,resizemode-75,msid-121155185/tech/artificial-intelligence/behind-the-platform-the-tech-thinking-behind-spocto-x.jpg",
       "day": 2
     },
-    "scheduledAt": "2025-07-12T06:44:00.000Z",
-    "status": "pending",
+    "scheduledAt": "2025-07-12T08:43:01.938Z",
+    "status": "failed",
     "createdAt": "2025-07-11T15:32:23.545Z",
-    "attempts": 0
+    "attempts": 3,
+    "lastAttemptAt": "2025-07-12T08:43:31.663Z",
+    "apiError": "Instance ID Invalidated"
   },
   {
     "id": "seq_1752221360754-919573713873-0-1752299847565",
@@ -289,6 +291,32 @@
     "scheduledAt": "2025-07-13T13:16:00.000Z",
     "status": "pending",
     "createdAt": "2025-07-12T05:55:08.427Z",
+    "attempts": 0
+  },
+  {
+    "id": "seq_1752299917054-919398305627-0-1752301765960",
+    "campaignId": "seq_1752299917054",
+    "username": "mahesh",
+    "phone": "919398305627",
+    "leadData": {
+      "id": "lead-1752299616206",
+      "campaignId": "seq_1752221360754",
+      "username": "mahesh",
+      "phone": "919398305627",
+      "name": "robomate",
+      "createdAt": "2025-07-12T05:53:36.206Z"
+    },
+    "messageIndex": 0,
+    "message": {
+      "id": "msg-0",
+      "type": "text",
+      "message": "Hey, this is crm drip seq",
+      "mediaUrl": null,
+      "day": 2
+    },
+    "scheduledAt": "2025-07-13T14:11:00.000Z",
+    "status": "pending",
+    "createdAt": "2025-07-12T06:29:25.960Z",
     "attempts": 0
   }
 ]

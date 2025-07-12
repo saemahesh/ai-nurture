@@ -72,4 +72,18 @@ angular.module('autopostWaApp.groups').controller('GroupsController', function($
     $scope.createGroupModalVisible = false;
     $scope.groupError = '';
   };
+
+  $scope.syncGroups = function() {
+    $scope.groupError = '';
+    ApiService.syncGroups()
+      .then(function(response) {
+        loadGroups();
+        alert('Groups synced successfully!');
+      })
+      .catch(function(error) {
+        console.error('Error syncing groups:', error);
+        $scope.groupError = error.data?.error || 'Failed to sync groups';
+        alert('Failed to sync groups: ' + $scope.groupError);
+      });
+  };
 });

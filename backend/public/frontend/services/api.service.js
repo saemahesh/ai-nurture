@@ -12,6 +12,9 @@ angular.module('autopostWaApp.core').factory('ApiService', function($http) {
     deleteGroup: function(id) { 
       return $http.delete(API_BASE + '/groups/' + id, { withCredentials: true }); 
     },
+    syncGroups: function() {
+      return $http.post(API_BASE + '/groups/sync', {}, { withCredentials: true });
+    },
 
     // Schedules
     getSchedules: function() { 
@@ -105,6 +108,25 @@ angular.module('autopostWaApp.core').factory('ApiService', function($http) {
     },
     updateUserExpiration: function(username, expirationDate) {
       return $http.post(API_BASE + '/auth/users/' + encodeURIComponent(username) + '/expire', { expirationDate }, { withCredentials: true });
+    },
+
+    // User Settings
+    getUserSettings: function() {
+      return $http.get(API_BASE + '/users/settings', { withCredentials: true });
+    },
+    saveUserSettings: function(settings) {
+      return $http.post(API_BASE + '/users/settings', settings, { withCredentials: true });
+    },
+
+    // Status Scheduler
+    getStatuses: function() {
+      return $http.get(API_BASE + '/status', { withCredentials: true });
+    },
+    scheduleStatus: function(data) {
+      return $http.post(API_BASE + '/status', data, { withCredentials: true });
+    },
+    deleteStatus: function(id) {
+      return $http.delete(API_BASE + '/status/' + id, { withCredentials: true });
     }
   };
 });

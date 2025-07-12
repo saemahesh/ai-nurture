@@ -34,6 +34,11 @@
               <input type="text" ng-model="settings.test_mobile" class="form-control block w-full border border-gray-300 rounded px-3 py-2" required placeholder="Include country code, e.g. 91XXXXXXXXXX" ng-init="settings.test_mobile = settings.test_mobile || '91'">
               <div ng-show="settingsForm.$submitted && !settings.test_mobile" class="text-red-500 text-xs mt-1">Test Mobile Number is required.</div>
             </div>
+            <div class="mb-4">
+              <label class="form-label block text-gray-700 font-medium mb-1">WHAPI Token <span class="text-red-500">*</span></label>
+              <input type="text" ng-model="settings.whapi_token" class="form-control block w-full border border-gray-300 rounded px-3 py-2" required>
+              <div ng-show="settingsForm.$submitted && !settings.whapi_token" class="text-red-500 text-xs mt-1">WHAPI Token is required for group sync.</div>
+            </div>
             <div class="mb-4 flex items-center">
               <input type="checkbox" ng-model="settings.notification_enabled" id="notif" class="mr-2">
               <label for="notif" class="text-gray-700">Enable WhatsApp Reminders</label>

@@ -2,7 +2,7 @@
 <div class="w-64 bg-gray-800 text-white h-screen flex flex-col" ng-controller="SidebarController">
   <div class="px-4 py-6 flex items-center">
     <i class="fab fa-whatsapp text-2xl text-green-400 mr-3"></i>
-    <h1 class="text-xl font-semibold">AutoPost WhatsApp</h1>
+    <h1 class="text-xl font-semibold">WhatsPro</h1>
   </div>
 
   <nav class="flex-1 overflow-y-auto">
@@ -45,6 +45,10 @@
     <a href="#/users" class="block px-4 py-3 hover:bg-gray-700 transition" ng-class="{'bg-gray-700': isActive('/users')}" ng-if="user.role === 'admin'">
       <i class="fas fa-user-shield w-6 text-center mr-3 text-gray-400"></i>
       Users
+    </a>
+    <a href="#/status" class="block px-4 py-3 hover:bg-gray-700 transition" ng-class="{'bg-gray-700': isActive('/status')}">
+      <i class="fas fa-hourglass-half w-6 text-center mr-3 text-gray-400"></i>
+      Status
     </a>
   </nav>
 

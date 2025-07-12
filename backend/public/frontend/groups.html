@@ -8,10 +8,16 @@
     <header class="bg-white shadow-sm z-10 py-4 px-6">
       <div class="flex justify-between items-center">
         <h2 class="text-xl font-semibold text-gray-800">Manage Groups</h2>
-        <button ng-click="showCreateGroupModal()" class="ml-4 p-2 rounded-full bg-green-600 hover:bg-green-700 text-white shadow transition" title="Create Group">
-          <i class="fas fa-plus"></i>
-          <span class="ml-2 hidden sm:inline">Add Group</span>
-        </button>
+        <div class="flex items-center">
+          <button ng-click="showCreateGroupModal()" class="ml-4 p-2 rounded-full bg-green-600 hover:bg-green-700 text-white shadow transition" title="Create Group">
+            <i class="fas fa-plus"></i>
+            <span class="ml-2 hidden sm:inline">Add Group</span>
+          </button>
+          <button ng-click="syncGroups()" class="ml-2 p-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow transition" title="Sync Groups">
+            <i class="fas fa-sync"></i>
+            <span class="ml-2 hidden sm:inline">Sync Groups</span>
+          </button>
+        </div>
       </div>
     </header>
 

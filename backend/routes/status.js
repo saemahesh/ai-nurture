@@ -49,7 +49,7 @@ async function postWhatsAppStatus(status, token) {
 
   try {
     const response = await axios.request(options);
-    console.log('WhatsApp status posted successfully:', response.data);
+    console.log('WhatsApp status posted successfully:', response.data.sent);
     return response.data;
   } catch (error) {
     console.error('Error posting WhatsApp status:', error.response ? error.response.data : error.message);

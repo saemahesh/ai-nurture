@@ -12,7 +12,7 @@
         <!-- Create Status Modal -->
         <div ng-if="createStatusModalVisible" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div class="bg-white rounded-xl shadow-lg p-6 max-w-md w-full mx-4" ng-click="$event.stopPropagation()">
-            <form name="statusForm" ng-submit="scheduleStatus(); hideCreateStatusModal();" novalidate autocomplete="off">
+            <form name="statusForm" ng-submit="scheduleStatus()" novalidate autocomplete="off">
               <div class="mb-4">
                 <label class="block text-gray-700 font-medium mb-1">Select Media <span class="text-red-500">*</span></label>
                 <select ng-model="status.mediaUrl" class="block w-full border border-gray-300 rounded px-3 py-2" required>
@@ -79,7 +79,7 @@
           <div ng-repeat="s in scheduledStatuses" class="mb-4 p-3 border rounded flex items-center justify-between">
             <div>
               <div class="font-medium">{{s.caption}}</div>
-              <div class="text-xs text-gray-500">Time: {{s.timeDisplay || formatIST(s.time)}} | Repeat: {{s.repeat}} <span ng-if="s.repeat==='custom'">({{getSelectedDays(s.days)}})</span></div>
+              <div class="text-xs text-gray-500">Time: {{s.timeDisplay}} | Repeat: {{s.repeat}} <span ng-if="s.repeat==='custom'">({{getSelectedDays(s.days)}})</span></div>
             </div>
             <button class="text-red-600 hover:underline" ng-click="deleteStatus(s.id)">Delete</button>
           </div>

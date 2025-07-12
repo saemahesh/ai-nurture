@@ -17,7 +17,10 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
 
   function loadStatuses() {
     ApiService.getStatuses().then(function(res) {
-      $scope.scheduledStatuses = res.data;
+      $scope.scheduledStatuses = res.data.map(function(s) {
+        s.timeDisplay = $scope.formatIST(s.time, s.repeat !== 'once');
+        return s;
+      });
     });
   }
 
@@ -47,40 +50,57 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
     if ($scope.status.repeat === 'custom') {
       data.days = $scope.status.days;
     }
-    // Fix: If repeat is 'once', use dateTime for time
+
+    var selectedTime;
     if ($scope.status.repeat === 'once') {
-      if ($scope.status.dateTime) {
-        var date = new Date($scope.status.dateTime);
-        data.time = !isNaN(date.getTime()) ? date.toISOString() : '';
-      } else {
-        data.time = '';
+      if (!$scope.status.dateTime) {
+        $scope.saving = false;
+        $scope.saveError = 'Date and time are required for one-time status.';
+        return;
       }
-    } else if ($scope.status.time) {
-      var now = new Date();
-      var timeStr = String($scope.status.time);
-      if (timeStr.includes(':')) {
-        var parts = timeStr.split(':');
-        if (parts.length >= 2) {
-          var hours = parseInt(parts[0], 10);
-          var minutes = parseInt(parts[1], 10);
-          var date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
-          data.time = date.toISOString();
-        }
-      } else {
-        var parsed = new Date(timeStr);
-        if (!isNaN(parsed.getTime())) {
-          data.time = parsed.toISOString();
-        }
+      selectedTime = new Date($scope.status.dateTime);
+    } else { // daily or custom
+      if (!$scope.status.time) {
+        $scope.saving = false;
+        $scope.saveError = 'Time is required for recurring status.';
+        return;
       }
+      var timeParts = $scope.status.time.split(':');
+      selectedTime = new Date();
+      selectedTime.setHours(timeParts[0], timeParts[1], 0, 0);
     }
+
+    // Convert to user's local time, assuming input is local. Then convert to UTC.
+    var localTime = new Date(selectedTime.getFullYear(), selectedTime.getMonth(), selectedTime.getDate(), selectedTime.getHours(), selectedTime.getMinutes(), selectedTime.getSeconds());
+    data.time = localTime.toISOString();
+
+
     ApiService.scheduleStatus(data).then(function() {
       $scope.saving = false;
       $scope.saveSuccess = true;
       loadStatuses();
+      $scope.hideCreateStatusModal();
     }).catch(function(err) {
       $scope.saving = false;
       $scope.saveError = err.data?.error || 'Failed to schedule status';
     });
+  };
+
+  $scope.formatIST = function(dateString, isRecurring) {
+    if (!dateString) return 'Not set';
+    var date = new Date(dateString);
+    var options = {
+      timeZone: 'Asia/Kolkata',
+      hour12: true,
+      hour: 'numeric',
+      minute: 'numeric'
+    };
+    if (!isRecurring) {
+      options.year = 'numeric';
+      options.month = 'short';
+      options.day = 'numeric';
+    }
+    return date.toLocaleString('en-IN', options);
   };
 
   $scope.deleteStatus = function(id) {
@@ -102,6 +122,11 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
       days: {},
       mediaUrl: ''
     };
+    // Prefill time for recurring schedules
+    var now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    $scope.status.time = now.toISOString().slice(11,16);
+
     $scope.saveSuccess = false;
     $scope.saveError = '';
   };

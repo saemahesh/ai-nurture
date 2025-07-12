@@ -49,7 +49,7 @@ async function postWhatsAppStatus(status, token) {
 
   try {
     const response = await axios.request(options);
-    console.log('WhatsApp status posted successfully:', response.data.sent);
+    console.log('WhatsApp status posted successfully:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error posting WhatsApp status:', error.response ? error.response.data : error.message);
@@ -143,6 +143,33 @@ router.post('/', (req, res) => {
   statuses.push(status);
   writeStatuses(statuses);
   res.json({ success: true, id: status.id });
+});
+
+// Update a scheduled status
+router.put('/:id', (req, res) => {
+  const { caption, textColor, bgColor, time, repeat, days, mediaUrl } = req.body;
+  if (!mediaUrl || !time) return res.status(400).json({ error: 'Media and time required' });
+
+  let statuses = readStatuses();
+  const index = statuses.findIndex(s => s.id === req.params.id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: 'Status not found' });
+  }
+
+  statuses[index] = {
+    ...statuses[index],
+    media: mediaUrl,
+    caption,
+    textColor,
+    bgColor,
+    time,
+    repeat,
+    days: days || {}
+  };
+
+  writeStatuses(statuses);
+  res.json({ success: true, id: req.params.id });
 });
 
 // Delete a scheduled status

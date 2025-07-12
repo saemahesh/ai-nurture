@@ -38,7 +38,10 @@
       <i class="far fa-image w-6 text-center mr-3 text-gray-400"></i>
       Media Library
     </a>
-
+    <a href="#/settings" class="block px-4 py-3 hover:bg-gray-700 transition" ng-class="{'bg-gray-700': isActive('/settings')}">
+      <i class="fas fa-cog w-6 text-center mr-3 text-gray-400"></i>
+      Settings
+    </a>
     <a href="#/users" class="block px-4 py-3 hover:bg-gray-700 transition" ng-class="{'bg-gray-700': isActive('/users')}" ng-if="user.role === 'admin'">
       <i class="fas fa-user-shield w-6 text-center mr-3 text-gray-400"></i>
       Users
@@ -46,10 +49,6 @@
     <a href="#/status" class="block px-4 py-3 hover:bg-gray-700 transition" ng-class="{'bg-gray-700': isActive('/status')}">
       <i class="fas fa-hourglass-half w-6 text-center mr-3 text-gray-400"></i>
       Status
-    </a>
-        <a href="#/settings" class="block px-4 py-3 hover:bg-gray-700 transition" ng-class="{'bg-gray-700': isActive('/settings')}">
-      <i class="fas fa-cog w-6 text-center mr-3 text-gray-400"></i>
-      Settings
     </a>
   </nav>
 

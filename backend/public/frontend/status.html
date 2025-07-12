@@ -84,11 +84,18 @@
           <h3 class="text-lg font-semibold mb-4">Scheduled Statuses</h3>
           <div ng-if="scheduledStatuses.length === 0" class="text-gray-500">No statuses scheduled.</div>
           <div ng-repeat="s in scheduledStatuses" class="mb-4 p-3 border rounded flex items-center justify-between">
-            <div>
-              <div class="font-medium">{{s.caption}}</div>
-              <div class="text-xs text-gray-500">Time: {{s.timeDisplay}} | Repeat: {{s.repeat}} <span ng-if="s.repeat==='custom'">({{getSelectedDays(s.days)}})</span></div>
+            <div class="flex items-center">
+              <img ng-if="getMediaType(s.media)==='image'" ng-src="{{s.media}}" class="h-12 w-12 rounded shadow mr-4" />
+              <video ng-if="getMediaType(s.media)==='video'" ng-src="{{s.media}}" class="h-12 w-12 rounded shadow mr-4" controls></video>
+              <div>
+                <div class="font-medium">{{s.caption}}</div>
+                <div class="text-xs text-gray-500">Time: {{s.timeDisplay}} | Repeat: {{s.repeat}} <span ng-if="s.repeat==='custom'">({{getSelectedDays(s.days)}})</span></div>
+              </div>
             </div>
-            <button class="text-red-600 hover:underline" ng-click="deleteStatus(s.id)">Delete</button>
+            <div>
+              <button class="text-blue-600 hover:underline mr-2" ng-click="editStatus(s)">Edit</button>
+              <button class="text-red-600 hover:underline" ng-click="deleteStatus(s.id)">Delete</button>
+            </div>
           </div>
         </div>
       </div>

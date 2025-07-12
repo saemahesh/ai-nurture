@@ -18,6 +18,7 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
   $scope.saveError = '';
   $scope.mediaLibrary = [];
   $scope.createStatusModalVisible = false;
+  $scope.editingStatus = null;
 
   function loadStatuses() {
     ApiService.getStatuses().then(function(res) {
@@ -49,11 +50,9 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
       bgColor: $scope.status.bgColor,
       time: '', // will set below
       repeat: $scope.status.repeat,
-      mediaUrl: $scope.status.mediaUrl
+      mediaUrl: $scope.status.mediaUrl,
+      days: $scope.status.days
     };
-    if ($scope.status.repeat === 'custom') {
-      data.days = $scope.status.days;
-    }
 
     var hour = parseInt($scope.status.hour, 10);
     if ($scope.status.ampm === 'PM' && hour < 12) {
@@ -67,12 +66,18 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
     var selectedTime = new Date();
     selectedTime.setHours(hour, minute, 0, 0);
 
-    // Convert to user's local time, assuming input is local. Then convert to UTC.
     var localTime = new Date(selectedTime.getFullYear(), selectedTime.getMonth(), selectedTime.getDate(), selectedTime.getHours(), selectedTime.getMinutes(), selectedTime.getSeconds());
     data.time = localTime.toISOString();
 
+    var promise;
+    if ($scope.editingStatus) {
+      data.id = $scope.editingStatus.id;
+      promise = ApiService.updateStatus(data);
+    } else {
+      promise = ApiService.scheduleStatus(data);
+    }
 
-    ApiService.scheduleStatus(data).then(function() {
+    promise.then(function() {
       $scope.saving = false;
       $scope.saveSuccess = true;
       loadStatuses();
@@ -109,6 +114,7 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
   };
 
   $scope.showCreateStatusModal = function() {
+    $scope.editingStatus = null;
     $scope.createStatusModalVisible = true;
     var now = new Date();
     var hour = now.getHours();
@@ -131,6 +137,31 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
     $scope.saveSuccess = false;
     $scope.saveError = '';
   };
+
+  $scope.editStatus = function(status) {
+    $scope.editingStatus = status;
+    $scope.createStatusModalVisible = true;
+    var time = new Date(status.time);
+    var hour = time.getHours();
+    var minute = time.getMinutes();
+    var ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12;
+    hour = hour ? hour : 12; // the hour '0' should be '12'
+    $scope.status = {
+      caption: status.caption,
+      textColor: status.textColor,
+      bgColor: status.bgColor,
+      hour: hour.toString().padStart(2, '0'),
+      minute: minute.toString().padStart(2, '0'),
+      ampm: ampm,
+      repeat: status.repeat,
+      days: angular.copy(status.days),
+      mediaUrl: status.media
+    };
+    $scope.saveSuccess = false;
+    $scope.saveError = '';
+  };
+
   $scope.hideCreateStatusModal = function() {
     $scope.createStatusModalVisible = false;
     $scope.saveSuccess = false;

@@ -1,0 +1,1 @@
+angular.module('autopostWaApp.auth', ['autopostWaApp.core']);

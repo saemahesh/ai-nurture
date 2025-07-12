@@ -1,0 +1,83 @@
+[
+  {
+    "id": "seq-1",
+    "campaignId": "test-campaign-1",
+    "username": "testuser",
+    "keywords": [
+      "whatsapp",
+      "demo"
+    ],
+    "messages": [
+      {
+        "id": "msg-1",
+        "type": "text",
+        "message": "Hello {first_name}, welcome to our campaign!",
+        "delay": 0
+      },
+      {
+        "id": "msg-2",
+        "type": "text",
+        "message": "Hi {first_name}, this is a follow-up message from {company}.",
+        "delay": 60
+      }
+    ]
+  },
+  {
+    "id": "seq_1752221360754",
+    "name": "wa-test",
+    "description": "",
+    "status": "active",
+    "username": "mahesh",
+    "keywords": [
+      "wa",
+      "1"
+    ],
+    "messages": [
+      {
+        "day": 1,
+        "type": "media",
+        "message": "Hey {name} , drip media first, congratzzzz\n\nIts time to {rock|party|explode}",
+        "time": "09:00",
+        "mediaUrl": "https://cdn.prod.website-files.com/5d249063a5dbec3c6f57a8d4/6658a1f50a87b53a0e467f00_Ettv7FFQGtZu40rMOqSCDN8GgvnPkv0JtJ50q_FkifpoG1ubtWJiJ3qQDIrS3pfUAlvLgbz-Hk3Bz3TMcQmlE6AMpfL7lp9svVW1P-jYl_dm_RLmRtFxv7hV8k3aEqfqdS5qRvP9spywz3cBKTUewPQ.jpeg",
+        "mediaType": "image"
+      },
+      {
+        "day": 2,
+        "type": "text",
+        "message": "Hey , day 2 drip msg",
+        "time": "09:00"
+      }
+    ],
+    "total_days": 2,
+    "created_at": "2025-07-11T08:09:20.754Z",
+    "updated_at": "2025-07-11T15:57:30.617Z"
+  },
+  {
+    "id": "seq_1752247551668",
+    "name": "sai-seq",
+    "description": "",
+    "status": "active",
+    "username": "sai",
+    "keywords": [
+      "sai"
+    ],
+    "messages": [
+      {
+        "day": 1,
+        "type": "text",
+        "message": "Hey there, it is sai drip campaign",
+        "time": "09:00"
+      },
+      {
+        "day": 2,
+        "type": "media",
+        "message": "Hey there, it is sai drip campaign day 2",
+        "time": "09:00",
+        "mediaUrl": "https://img.etimg.com/thumb/width-1200,height-900,imgsize-1116304,resizemode-75,msid-121155185/tech/artificial-intelligence/behind-the-platform-the-tech-thinking-behind-spocto-x.jpg"
+      }
+    ],
+    "total_days": 2,
+    "created_at": "2025-07-11T15:25:51.668Z",
+    "updated_at": "2025-07-11T15:27:39.113Z"
+  }
+]

@@ -1,0 +1,1 @@
+angular.module('autopostWaApp.schedules', ['autopostWaApp.core']);

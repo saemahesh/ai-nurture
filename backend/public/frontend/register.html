@@ -1,0 +1,45 @@
+<!-- Register Page -->
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-200 p-4">
+  <div class="w-full max-w-md">
+    <div class="bg-white/90 shadow-xl rounded-2xl p-8">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-extrabold text-green-700">Create Account</h1>
+        <p class="text-gray-600 mt-2">Join AutoPost WA today!</p>
+      </div>
+      
+      <form ng-submit="register()" class="space-y-6" autocomplete="off">
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">Username</label>
+          <input type="text" 
+                ng-model="registerData.username" 
+                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500" 
+                placeholder="Choose a username"
+                required>
+        </div>
+        
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">Password</label>
+          <input type="password" 
+                ng-model="registerData.password" 
+                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500" 
+                placeholder="Choose a password"
+                required>
+        </div>
+
+        <div ng-if="error" class="text-sm text-red-600 text-center font-medium">
+          {{error}}
+        </div>
+
+        <button type="submit" 
+                class="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition duration-150 ease-in-out">
+          Register
+        </button>
+      </form>
+
+      <div class="mt-6 text-center text-sm">
+        <span class="text-gray-600">Already have an account?</span>
+        <a href="#/login" class="text-green-600 hover:text-green-500 font-medium">Login here</a>
+      </div>
+    </div>
+  </div>
+</div>

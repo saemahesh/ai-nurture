@@ -1,0 +1,34 @@
+[
+  {
+    "id": "lead-1752247943542",
+    "campaignId": "seq_1752247551668",
+    "username": "sai",
+    "phone": "919573713873",
+    "name": "saiji",
+    "createdAt": "2025-07-11T15:32:23.542Z"
+  },
+  {
+    "id": "lead-1752250880068",
+    "campaignId": "seq_1752221360754",
+    "username": "mahesh",
+    "phone": "919032655489",
+    "name": "webhook enroll",
+    "createdAt": "2025-07-11T16:21:20.068Z"
+  },
+  {
+    "id": "lead-1752291379386",
+    "campaignId": "seq_1752221360754",
+    "username": "mahesh",
+    "phone": "919398305627",
+    "name": "robomate",
+    "createdAt": "2025-07-12T03:36:19.386Z"
+  },
+  {
+    "id": "lead-1752291725513",
+    "campaignId": "seq_1752221360754",
+    "username": "mahesh",
+    "phone": "919573713873",
+    "name": "maheshji",
+    "createdAt": "2025-07-12T03:42:05.513Z"
+  }
+]

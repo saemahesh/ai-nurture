@@ -1,0 +1,319 @@
+<!-- Campaign Leads Template -->
+<div class="flex h-screen bg-gray-100">
+    <!-- Sidebar -->
+    <sidebar-nav></sidebar-nav>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <div class="bg-white shadow-sm border-b">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="#/campaigns" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-arrow-left text-lg"></i>
+                    </a>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Campaign Leads</h1>
+                        <p class="text-sm text-gray-600" ng-if="campaign.name">{{campaign.name}}</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button ng-click="showAddLeadModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Add Lead
+                    </button>
+                    <button ng-click="showImportModal()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                        <i class="fas fa-upload mr-2"></i>Import CSV
+                    </button>
+                    <button ng-click="exportLeads()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                        <i class="fas fa-download mr-2"></i>Export
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="px-6 py-6">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-blue-100 rounded-lg">
+                            <i class="fas fa-users text-blue-600"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-600">Total Leads</p>
+                            <p class="text-lg font-semibold text-gray-900">{{stats.total || 0}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-yellow-100 rounded-lg">
+                            <i class="fas fa-clock text-yellow-600"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-600">Pending</p>
+                            <p class="text-lg font-semibold text-gray-900">{{stats.pending || 0}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-blue-100 rounded-lg">
+                            <i class="fas fa-play text-blue-600"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-600">Active</p>
+                            <p class="text-lg font-semibold text-gray-900">{{stats.active || 0}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-green-100 rounded-lg">
+                            <i class="fas fa-check text-green-600"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-600">Completed</p>
+                            <p class="text-lg font-semibold text-gray-900">{{stats.completed || 0}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-red-100 rounded-lg">
+                            <i class="fas fa-times text-red-600"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-600">Failed</p>
+                            <p class="text-lg font-semibold text-gray-900">{{stats.failed || 0}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-gray-100 rounded-lg">
+                            <i class="fas fa-ban text-gray-600"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-600">Opted Out</p>
+                            <p class="text-lg font-semibold text-gray-900">{{stats.optedOut || 0}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white p-4 rounded-lg shadow mb-6">
+                <div class="flex flex-wrap items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-gray-700">Status:</label>
+                        <select ng-model="filterStatus" ng-change="filterLeads()" class="border border-gray-300 rounded px-3 py-1 text-sm">
+                            <option value="">All</option>
+                            <option value="pending">Pending</option>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-gray-700">Search:</label>
+                        <input type="text" ng-model="searchText" ng-change="filterLeads()" placeholder="Phone, name, or email" class="border border-gray-300 rounded px-3 py-1 text-sm w-64">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" ng-model="showOptedOut" ng-change="filterLeads()" id="showOptedOut" class="rounded">
+                        <label for="showOptedOut" class="text-sm font-medium text-gray-700">Show Opted Out</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leads Table -->
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lead Info</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Activity</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr ng-repeat="lead in filteredLeads" class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                                                <span class="text-white font-semibold text-sm">{{lead.name ? lead.name.charAt(0).toUpperCase() : 'L'}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">{{lead.name || 'Unknown'}}</div>
+                                            <div class="text-sm text-gray-500">{{lead.phone}}</div>
+                                            <div class="text-sm text-gray-500" ng-if="lead.email">{{lead.email}}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium" 
+                                          ng-class="{
+                                              'bg-yellow-100 text-yellow-800': lead.status === 'pending',
+                                              'bg-blue-100 text-blue-800': lead.status === 'active',
+                                              'bg-green-100 text-green-800': lead.status === 'completed',
+                                              'bg-red-100 text-red-800': lead.status === 'failed'
+                                          }">
+                                        {{lead.status | uppercase}}
+                                    </span>
+                                    <div ng-if="lead.isOptedOut" class="mt-1">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            <i class="fas fa-ban mr-1"></i>Opted Out
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-1">
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-green-600 h-2 rounded-full transition-all duration-300" 
+                                                     ng-style="{'width': getProgressPercentage(lead) + '%'}"></div>
+                                            </div>
+                                        </div>
+                                        <div class="ml-2 text-sm text-gray-600">
+                                            {{lead.currentStep}}/{{lead.totalSteps}}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div ng-if="lead.lastMessageSent">
+                                        <div>{{formatDate(lead.lastMessageSent)}}</div>
+                                    </div>
+                                    <div ng-if="!lead.lastMessageSent">
+                                        <div>{{formatDate(lead.addedAt)}}</div>
+                                        <div class="text-xs text-gray-400">Added</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div class="flex items-center space-x-2">
+                                        <button ng-click="viewLead(lead)" class="text-blue-600 hover:text-blue-900">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button ng-click="editLead(lead)" class="text-yellow-600 hover:text-yellow-900">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button ng-click="toggleOptOut(lead)" class="text-gray-600 hover:text-gray-900" ng-title="lead.isOptedOut ? 'Opt In' : 'Opt Out'">
+                                            <i class="fas" ng-class="lead.isOptedOut ? 'fa-user-check' : 'fa-user-slash'"></i>
+                                        </button>
+                                        <button ng-click="deleteLead(lead)" class="text-red-600 hover:text-red-900">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-if="filteredLeads.length === 0">
+                                <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-users text-4xl text-gray-300 mb-4"></i>
+                                        <p class="text-lg font-medium">No leads found</p>
+                                        <p class="text-sm">Start by adding leads manually or importing from CSV</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Lead Modal -->
+<div ng-if="showAddModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Add New Lead</h2>
+            <button ng-click="showAddModal = false" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form ng-submit="addLead()" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                <input type="tel" ng-model="newLead.phone" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+91 9876543210">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input type="text" ng-model="newLead.name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="John Doe">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" ng-model="newLead.email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="john@example.com">
+            </div>
+            <div class="flex justify-end space-x-3 pt-4">
+                <button type="button" ng-click="showAddModal = false" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                    Cancel
+                </button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Add Lead
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Import CSV Modal -->
+<div ng-if="showImportModalFlag" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Import Leads from CSV</h2>
+            <button ng-click="showImportModalFlag = false" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="space-y-4">
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="font-medium text-blue-900 mb-2">CSV Format Requirements:</h3>
+                <ul class="text-sm text-blue-800 space-y-1">
+                    <li>• <strong>phone</strong> or <strong>Phone</strong> column is required</li>
+                    <li>• Optional columns: <strong>name</strong>, <strong>Name</strong>, <strong>email</strong>, <strong>Email</strong></li>
+                    <li>• Any additional columns will be stored as custom fields</li>
+                    <li>• Maximum file size: 5MB</li>
+                </ul>
+            </div>
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer" ng-click="triggerFileSelect()">
+                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                <p class="text-lg font-medium text-gray-700">Drop CSV file here or click to browse</p>
+                <p class="text-sm text-gray-500">Supports .csv files up to 5MB</p>
+                <input type="file" accept=".csv" class="hidden" onchange="angular.element(this).scope().handleFileSelect(this)">
+            </div>
+            <div ng-if="importStatus" class="p-4 rounded-lg" ng-class="importStatus.success ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'">
+                <div class="flex items-center">
+                    <i class="fas" ng-class="importStatus.success ? 'fa-check-circle' : 'fa-exclamation-triangle'"></i>
+                    <div class="ml-3">
+                        <p class="font-medium">{{importStatus.message}}</p>
+                        <div ng-if="importStatus.details" class="mt-2 text-sm">
+                            <p ng-if="importStatus.details.imported">Imported: {{importStatus.details.imported}} leads</p>
+                            <p ng-if="importStatus.details.errors">Errors: {{importStatus.details.errors}}</p>
+                            <p ng-if="importStatus.details.duplicates">Duplicates: {{importStatus.details.duplicates}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 pt-4">
+                <button ng-click="showImportModalFlag = false" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notifications -->
+<div ng-if="toast.show" class="fixed top-4 right-4 z-50 max-w-sm w-full">
+    <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-4">
+        <div class="flex items-center">
+            <i class="fas" ng-class="toast.type === 'success' ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500'"></i>
+            <span class="ml-3 text-sm font-medium text-gray-900">{{toast.message}}</span>
+        </div>
+    </div>
+</div>

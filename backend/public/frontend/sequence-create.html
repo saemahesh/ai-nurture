@@ -1,0 +1,358 @@
+<div class="flex h-screen bg-gray-100">
+    <!-- Include Sidebar -->
+    <div ng-include="'sidebar.html'" ng-controller="SidebarController"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <button ng-click="goBack()" class="text-gray-600 hover:text-gray-800">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-2xl font-semibold text-gray-800">
+                            {{isEditMode ? 'Edit' : 'Create'}} Drip Sequence
+                        </h1>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button ng-click="saveAsDraft()" ng-disabled="saving"
+                                class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md transition duration-200">
+                            {{saving ? 'Saving...' : 'Save as Draft'}}
+                        </button>
+                        <button ng-click="saveAndActivate()" ng-disabled="saving || !isValidSequence()"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                            {{saving ? 'Saving...' : (isEditMode ? 'Save & Activate' : 'Create & Activate')}}
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Sequence Basic Info -->
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-lg font-semibold text-gray-800 mb-4">Sequence Details</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="sequenceName" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Sequence Name *
+                                </label>
+                                <input type="text" id="sequenceName" ng-model="sequence.name" 
+                                       placeholder="e.g., WhatsApp Marketing 1"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <p ng-if="errors.name" class="text-red-500 text-sm mt-1">{{errors.name}}</p>
+                            </div>
+                            
+                            <div>
+                                <label for="sequenceStatus" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Status
+                                </label>
+                                <select id="sequenceStatus" ng-model="sequence.status"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="inactive">Inactive (Draft)</option>
+                                    <option value="active">Active</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <label for="sequenceDescription" class="block text-sm font-medium text-gray-700 mb-2">
+                                Description (Optional)
+                            </label>
+                            <textarea id="sequenceDescription" ng-model="sequence.description" 
+                                      placeholder="Describe the purpose of this sequence..."
+                                      rows="3"
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Messages -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-lg font-semibold text-gray-800">Messages</h2>
+                            <button ng-click="addMessage()" 
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-200">
+                                <i class="fas fa-plus mr-2"></i>Add Message
+                            </button>
+                        </div>
+
+                        <!-- Messages List -->
+                        <div ng-if="sequence.messages.length === 0" class="text-center py-8 text-gray-500">
+                            <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                            <p class="text-lg">No messages added yet</p>
+                            <p class="text-sm">Add your first message to get started</p>
+                        </div>
+
+                        <div ng-if="sequence.messages.length > 0" class="space-y-4">
+                            <div ng-repeat="message in sequence.messages track by $index" 
+                                 class="border border-gray-200 rounded-lg p-4 relative">
+                                <!-- Message Header -->
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                                            Day {{message.day}}
+                                        </div>
+                                        <div class="text-sm text-gray-600">
+                                            {{message.type === 'text' ? 'Text Message' : 'Media Message'}}
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button ng-click="moveMessageUp($index)" ng-disabled="$index === 0"
+                                                class="text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </button>
+                                        <button ng-click="moveMessageDown($index)" ng-disabled="$index === sequence.messages.length - 1"
+                                                class="text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </button>
+                                        <button ng-click="removeMessage($index)" 
+                                                class="text-red-400 hover:text-red-600">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Message Form -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Day *</label>
+                                        <input type="number" ng-model="message.day" min="1" max="365"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                                        <select ng-model="message.type"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="text">Text Message</option>
+                                            <option value="media">Media Message</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Time (Optional)</label>
+                                        <input type="time" ng-model="message.time" ng-init="message.time = message.time || '09:00'"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <p class="text-xs text-gray-500 mt-1">Default: 9:00 AM</p>
+                                    </div>
+                                </div>
+
+                                <!-- Text Message Content -->
+                                <div ng-if="message.type === 'text'" class="mt-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Message *</label>
+                                    <textarea ng-model="message.message" 
+                                              placeholder="Type your message here... Use {name} to personalize."
+                                              rows="4"
+                                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                                    <div class="flex justify-between items-center mt-2">
+                                        <p class="text-xs text-gray-500">
+                                            Use {name} to personalize messages. Falls back to "there" if name is missing.
+                                        </p>
+                                        <span class="text-xs text-gray-500">{{message.message ? message.message.length : 0}} characters</span>
+                                    </div>
+                                </div>
+
+                                <!-- Media Message Content -->
+                                <div ng-if="message.type === 'media'" class="mt-4">
+                                    <div class="space-y-4">
+                                        <!-- Media Selection Options -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-3">Select Media Source</label>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <!-- Upload New File -->
+                                                <div class="border border-gray-300 rounded-lg p-4">
+                                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Upload New File</h4>
+                                                    <input type="file" accept="image/*,video/*,audio/*,.pdf,.doc,.docx" 
+                                                           ng-model="message.mediaFile" file-model="message.mediaFile"
+                                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                                    <p class="text-xs text-gray-500 mt-1">Images, Videos, Audio, PDFs, Documents</p>
+                                                </div>
+
+                                                <!-- Media Library -->
+                                                <div class="border border-gray-300 rounded-lg p-4">
+                                                    <h4 class="text-sm font-medium text-gray-700 mb-2">From Media Library</h4>
+                                                    <button type="button" ng-click="openMediaLibrary(message)" 
+                                                            class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-md text-sm transition duration-200">
+                                                        <i class="fas fa-photo-video mr-2"></i>Browse Library
+                                                    </button>
+                                                    <p class="text-xs text-gray-500 mt-1">Select from uploaded files</p>
+                                                </div>
+
+                                                <!-- URL Input -->
+                                                <div class="border border-gray-300 rounded-lg p-4">
+                                                    <h4 class="text-sm font-medium text-gray-700 mb-2">From URL</h4>
+                                                    <input type="url" ng-model="message.mediaUrl" 
+                                                           placeholder="https://example.com/image.jpg"
+                                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                                    <p class="text-xs text-gray-500 mt-1">Paste direct media URL</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Selected Media Preview -->
+                                        <div ng-if="message.mediaFile || message.mediaUrl || message.selectedMedia" class="bg-gray-50 rounded-lg p-4">
+                                            <h4 class="text-sm font-medium text-gray-700 mb-2">Selected Media:</h4>
+                                            <div class="flex items-center space-x-3">
+                                                <!-- Media thumbnail -->
+                                                <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                                                    <!-- Show actual image thumbnail -->
+                                                    <img ng-if="isSelectedMediaImage(message)" ng-src="{{getSelectedMediaUrl(message)}}" 
+                                                         alt="{{getSelectedMediaName(message)}}"
+                                                         class="w-full h-full object-cover"
+                                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                    
+                                                    <!-- Fallback icons -->
+                                                    <div class="w-full h-full flex items-center justify-center" ng-style="{'display': isSelectedMediaImage(message) ? 'none' : 'flex'}">
+                                                        <i ng-if="isSelectedMediaVideo(message)" class="fas fa-play-circle text-gray-500 text-xl"></i>
+                                                        <i ng-if="message.mediaFile && !isSelectedMediaImage(message) && !isSelectedMediaVideo(message)" class="fas fa-file text-gray-500"></i>
+                                                        <i ng-if="message.mediaUrl && !isSelectedMediaImage(message) && !isSelectedMediaVideo(message)" class="fas fa-link text-gray-500"></i>
+                                                        <i ng-if="message.selectedMedia && !isSelectedMediaImage(message) && !isSelectedMediaVideo(message)" class="fas fa-file text-gray-500"></i>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Media info -->
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="text-sm font-medium text-gray-900 truncate">{{getSelectedMediaName(message)}}</p>
+                                                    <p class="text-xs text-gray-500">
+                                                        <span ng-if="message.mediaFile">Size: {{formatFileSize(message.mediaFile.size)}}</span>
+                                                        <span ng-if="message.mediaUrl">External URL</span>
+                                                        <span ng-if="message.selectedMedia">From Library ({{getSelectedMediaType(message)}})</span>
+                                                    </p>
+                                                </div>
+                                                
+                                                <!-- Clear button -->
+                                                <button type="button" ng-click="clearMedia(message)" 
+                                                        class="text-red-500 hover:text-red-700 flex-shrink-0">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Message for media (caption) -->
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Message (Caption) *</label>
+                                            <textarea ng-model="message.message" 
+                                                      placeholder="Enter your message caption... Use {name} to personalize."
+                                                      rows="4"
+                                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                                            <div class="flex justify-between items-center mt-2">
+                                                <p class="text-xs text-gray-500">
+                                                    Caption is required for media messages. Use {name} to personalize.
+                                                </p>
+                                                <span class="text-xs text-gray-500">{{message.message ? message.message.length : 0}} characters</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Message Preview -->
+                                <div ng-if="message.message" class="mt-4 p-3 bg-gray-50 rounded-md">
+                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Preview:</h4>
+                                    <div class="text-sm text-gray-600">
+                                        {{getMessagePreview(message.message)}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Media Library Modal -->
+    <div ng-if="showMediaLibrary" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Media Library</h3>
+                    <button type="button" ng-click="closeMediaLibrary()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Loading State -->
+                <div ng-if="loadingMedia" class="text-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                    <p class="mt-4 text-gray-600">Loading media library...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div ng-if="!loadingMedia && mediaLibrary.length === 0" class="text-center py-12">
+                    <div class="w-16 h-16 mx-auto mb-4 text-gray-400">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No media files found</h3>
+                    <p class="text-gray-600">Upload media files to the library first.</p>
+                </div>
+
+                <!-- Media Grid -->
+                <div ng-if="!loadingMedia && mediaLibrary.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+                    <div ng-repeat="media in mediaLibrary" 
+                         class="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer transition-colors duration-200"
+                         ng-click="selectMediaFromLibrary(media)">
+                        <!-- Image Preview -->
+                        <div ng-if="isImageFile(media)" class="mb-2">
+                            <img ng-src="{{getMediaUrl(media)}}" alt="{{media.name}}" 
+                                 class="w-full h-24 object-cover rounded-md"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="w-full h-24 bg-gray-100 rounded-md flex items-center justify-center" style="display: none;">
+                                <i class="fas fa-image text-gray-400 text-2xl"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Preview -->
+                        <div ng-if="isVideoFile(media)" class="mb-2">
+                            <div class="w-full h-24 bg-gray-100 rounded-md flex items-center justify-center">
+                                <i class="fas fa-play-circle text-gray-400 text-2xl"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- File Icon for Other Files -->
+                        <div ng-if="!isImageFile(media) && !isVideoFile(media)" class="w-full h-24 bg-gray-100 rounded-md flex items-center justify-center mb-2">
+                            <i class="fas fa-file text-gray-400 text-2xl"></i>
+                        </div>
+                        
+                        <!-- Media Info -->
+                        <div>
+                            <p class="text-sm font-medium text-gray-900 truncate">{{media.name}}</p>
+                            <p class="text-xs text-gray-500">{{getFileTypeDisplay(media)}}</p>
+                            <p class="text-xs text-gray-500" ng-if="media.size || media.fileSize">{{formatFileSize(media.size || media.fileSize)}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="mt-6 flex justify-end">
+                    <button type="button" ng-click="closeMediaLibrary()"
+                            class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition duration-200">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+<script src="services/auth.service.js"></script>
+<script src="controllers/sidebar.controller.js"></script>
+<script src="directives/file-model.directive.js"></script>
+<script src="controllers/sequence-create.controller.js"></script>

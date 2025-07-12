@@ -1,0 +1,69 @@
+<!-- Automation Scheduling Page -->
+<div class="min-h-screen flex">
+  <!-- Sidebar (same as other pages) -->
+  <nav class="w-64 bg-white/90 shadow-lg flex flex-col py-8 px-4 fixed h-full">
+    <div class="mb-8 text-center">
+      <span class="text-2xl font-extrabold text-indigo-700">AutoPost WA</span>
+    </div>
+    <a href="#/dashboard" class="mb-2 py-2 px-4 rounded-lg font-semibold text-indigo-700 hover:bg-indigo-100 transition" ng-class="{'bg-indigo-200': isActive('/dashboard')}">Dashboard</a>
+    <a href="#/groups" class="mb-2 py-2 px-4 rounded-lg font-semibold text-blue-700 hover:bg-blue-100 transition" ng-class="{'bg-blue-200': isActive('/groups')}">Groups</a>
+    <a href="#/schedules" class="mb-2 py-2 px-4 rounded-lg font-semibold text-green-700 hover:bg-green-100 transition" ng-class="{'bg-green-200': isActive('/schedules')}">Schedules</a>
+    <a href="#/media" class="mb-2 py-2 px-4 rounded-lg font-semibold text-pink-700 hover:bg-pink-100 transition" ng-class="{'bg-pink-200': isActive('/media')}">Media</a>
+    <a href="#/automation/schedule" class="mb-2 py-2 px-4 rounded-lg font-semibold text-teal-700 hover:bg-teal-100 transition" ng-class="{'bg-teal-200': isActive('/automation/schedule')}">Automation</a>
+    <div class="flex-grow"></div>
+    <button class="btn btn-outline-danger mt-8 w-full" ng-click="logout()">Logout</button>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="ml-64 flex-1 p-8">
+    <div class="max-w-2xl mx-auto">
+      <h2 class="text-2xl font-bold mb-6 text-teal-700">Schedule Automation</h2>
+      
+      <!-- Automation Form -->
+      <div class="bg-white/90 rounded-xl shadow-lg p-6">
+        <form ng-submit="scheduleAutomation()" class="space-y-4">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">Select Group</label>
+            <select ng-model="automation.groupId" 
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500" 
+                    required>
+              <option value="" disabled selected>Choose a group</option>
+              <option ng-repeat="g in groups" value="{{g.groupId}}">{{g.name}} (ID: {{g.groupId}})</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">Event Date</label>
+            <input type="date" ng-model="automation.date" 
+                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500" 
+                   required>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">Message Template</label>
+            <textarea ng-model="automation.text" 
+                      class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500" 
+                      rows="3"
+                      placeholder="Use {{countdown}} in your message (e.g. 'Only {{countdown}} until the event!')"
+                      required></textarea>
+            <p class="text-sm text-gray-500">Use {{countdown}} to insert the countdown text (e.g. "5 days to go")</p>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">Image</label>
+            <input type="file" file-model="automation.image" 
+                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-teal-500" 
+                   required>
+          </div>
+          <div class="flex items-center justify-between">
+            <button type="submit" 
+                    class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition">
+              Schedule Automation
+            </button>
+            <span class="text-red-600" ng-if="error">{{error}}</span>
+          </div>
+          <div class="text-green-600 text-center" ng-if="success">
+            Automation scheduled successfully!
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

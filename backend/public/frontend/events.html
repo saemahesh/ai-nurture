@@ -1,0 +1,164 @@
+<!-- Events Page -->
+<div class="flex h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <sidebar-nav></sidebar-nav>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Top Header -->
+    <header class="bg-white shadow-sm z-10 py-4 px-6">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-semibold text-gray-800">Manage Events</h2>
+        <button ng-click="showCreateEventModal()" class="ml-4 p-2 rounded-full bg-green-600 hover:bg-green-700 text-white shadow transition" title="Create Event">
+          <i class="fas fa-plus"></i>
+          <span class="ml-2 hidden sm:inline">Add Event</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+      <!-- Create Event Modal -->
+      <div ng-if="createEventModalVisible" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-lg p-6 max-w-md w-full mx-4" ng-click="$event.stopPropagation()">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Create New Event</h3>
+            <button class="text-gray-500 hover:text-gray-700" ng-click="hideCreateEventModal()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <form name="eventForm" ng-submit="saveEvent(); hideCreateEventModal();" class="space-y-4" novalidate>
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Event Name</label>
+              <input type="text" ng-model="eventData.name" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" placeholder="Enter event name" required>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Description</label>
+              <textarea ng-model="eventData.description" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" placeholder="Enter event description" rows="3"></textarea>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Event Date & Time</label>
+              <input type="datetime-local" ng-model="eventData.time" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" required>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Select Groups</label>
+              <div class="border border-gray-300 rounded-lg p-2 max-h-40 overflow-y-auto">
+                <div ng-repeat="g in groups" class="flex items-center p-1 hover:bg-gray-50">
+                  <input type="checkbox" id="group-{{g.id}}" ng-model="g.selected" class="h-4 w-4 text-green-600 rounded focus:ring-green-500">
+                  <label for="group-{{g.id}}" class="ml-2 text-sm text-gray-700">{{g.name}} (ID: {{g.groupId}})</label>
+                </div>
+                <div ng-if="groups.length === 0" class="text-gray-500 text-sm p-2">No groups available. Please add groups first.</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition" ng-disabled="eventForm.$invalid || !hasSelectedGroups()">Create Event</button>
+              <span class="text-red-600" ng-if="eventError">{{eventError}}</span>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- Only show inline event form if editingEvent is set -->
+      <div class="bg-white rounded-xl shadow-sm p-6 mb-6 max-w-2xl mx-auto" ng-if="editingEvent">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+          Edit Event
+        </h3>
+        <form name="eventForm" ng-submit="saveEvent()" class="space-y-4" novalidate>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">Event Name</label>
+            <input type="text" ng-model="eventData.name" 
+                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" 
+                   placeholder="Enter event name" required>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">Description</label>
+            <textarea ng-model="eventData.description" 
+                     class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" 
+                     placeholder="Enter event description" rows="3"></textarea>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">Event Date & Time</label>
+            <input type="datetime-local" ng-model="eventData.time" 
+                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" 
+                   required>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">Select Groups</label>
+            <div class="border border-gray-300 rounded-lg p-2 max-h-40 overflow-y-auto">
+              <div ng-repeat="g in groups" class="flex items-center p-1 hover:bg-gray-50">
+                <input type="checkbox" 
+                       id="group-{{g.id}}" 
+                       ng-model="g.selected" 
+                       class="h-4 w-4 text-green-600 rounded focus:ring-green-500">
+                <label for="group-{{g.id}}" class="ml-2 text-sm text-gray-700">
+                  {{g.name}} (ID: {{g.groupId}})
+                </label>
+              </div>
+              <div ng-if="groups.length === 0" class="text-gray-500 text-sm p-2">
+                No groups available. Please add groups first.
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <button type="submit" 
+                      class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                      ng-disabled="eventForm.$invalid || !hasSelectedGroups()">
+                {{ editingEvent ? 'Update Event' : 'Create Event' }}
+              </button>
+              <button type="button" 
+                      ng-if="editingEvent"
+                      ng-click="cancelEdit()" 
+                      class="ml-2 px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                Cancel
+              </button>
+            </div>
+            <span class="text-red-600" ng-if="eventError">{{eventError}}</span>
+          </div>
+        </form>
+      </div>
+
+      <!-- Events List -->
+      <div class="bg-white rounded-xl shadow-sm p-6 max-w-2xl mx-auto">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold text-gray-800">Your Events</h3>
+        </div>
+        <div ng-if="events.length === 0" class="text-center text-gray-500 py-4">
+          No events added yet.
+        </div>
+        <div class="space-y-3">
+          <div ng-repeat="event in events | orderBy:'-time'" 
+               class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div class="flex-1">
+              <div class="font-medium text-gray-900">{{event.name}}</div>
+              <div class="text-sm text-gray-500 mt-1">
+                <span>{{event.time | date:'medium'}}</span>
+                <span ng-if="event.description" class="block mt-1 text-gray-600">{{event.description}}</span>
+              </div>
+              <div class="mt-1 flex flex-wrap gap-1">
+                <span 
+                  ng-repeat="groupId in event.groups"
+                  class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                  {{ getGroupName(groupId) }}
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <a ng-href="#/event-reminders/{{event.id}}" 
+                 class="px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition">
+                Configure Reminders
+              </a>
+              <button ng-click="editEvent(event)" 
+                      class="px-3 py-1 text-sm text-green-600 hover:bg-green-50 rounded-lg transition">
+                Edit
+              </button>
+              <button ng-click="deleteEvent(event.id)" 
+                      class="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded-lg transition">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

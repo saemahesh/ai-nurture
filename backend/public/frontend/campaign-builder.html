@@ -1,0 +1,557 @@
+<!-- Campaign Builder Template -->
+<div class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="#/campaigns" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <i class="fas fa-magic text-blue-600 text-xl"></i>
+                <h1 class="text-2xl font-bold text-gray-900">Create Campaign</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button ng-click="saveDraft()" class="text-gray-600 hover:text-gray-800 px-4 py-2">
+                    <i class="fas fa-save mr-2"></i>Save Draft
+                </button>
+                <button ng-click="previewCampaign()" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200">
+                    <i class="fas fa-eye mr-2"></i>Preview
+                </button>
+                <button ng-click="submitCampaign()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    <i class="fas fa-rocket mr-2"></i>Create Campaign
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex">
+                <div class="flex-1 text-center py-4 border-b-2 cursor-pointer"
+                     ng-class="currentStep === 1 ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500'"
+                     ng-click="goToStep(1)">
+                    <i class="fas fa-info-circle text-lg mb-2 block"></i>
+                    <div class="font-medium">Basic Info</div>
+                </div>
+                <div class="flex-1 text-center py-4 border-b-2 cursor-pointer"
+                     ng-class="currentStep === 2 ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500'"
+                     ng-click="goToStep(2)">
+                    <i class="fas fa-clock text-lg mb-2 block"></i>
+                    <div class="font-medium">Timeline</div>
+                </div>
+                <div class="flex-1 text-center py-4 border-b-2 cursor-pointer"
+                     ng-class="currentStep === 3 ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500'"
+                     ng-click="goToStep(3)">
+                    <i class="fas fa-envelope text-lg mb-2 block"></i>
+                    <div class="font-medium">Messages</div>
+                </div>
+                <div class="flex-1 text-center py-4 border-b-2 cursor-pointer"
+                     ng-class="currentStep === 4 ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500'"
+                     ng-click="goToStep(4)">
+                    <i class="fas fa-check-circle text-lg mb-2 block"></i>
+                    <div class="font-medium">Review</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
+        <!-- Step 1: Basic Info -->
+        <div ng-show="currentStep === 1">
+            <div class="max-w-2xl mx-auto">
+                <h2 class="text-2xl font-semibold mb-6">Campaign Information</h2>
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Campaign Name *</label>
+                            <input type="text" ng-model="campaign.name" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="Enter campaign name">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea ng-model="campaign.description" rows="3"
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                      placeholder="Describe your campaign purpose and goals"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Campaign Duration (Days) *</label>
+                            <input type="number" ng-model="campaign.duration" min="1" max="90"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="Enter duration in days (1-90)">
+                            <p class="text-sm text-gray-500 mt-1">How long should this campaign run?</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-end">
+                        <button ng-click="nextStep()" ng-disabled="!campaign.name || !campaign.duration"
+                                class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Next: Timeline
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Timeline -->
+        <div ng-show="currentStep === 2">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl font-semibold mb-6">Campaign Timeline</h2>
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <div class="mb-6">
+                        <p class="text-gray-600 mb-4">
+                            Select the days when messages should be sent during your 
+                            <span class="font-medium text-blue-600">{{campaign.duration}}</span>-day campaign:
+                        </p>
+                        <div class="grid grid-cols-5 md:grid-cols-10 gap-2">
+                            <div ng-repeat="day in availableDays" 
+                                 class="text-center p-2 border rounded cursor-pointer transition-colors"
+                                 ng-class="campaign.timeline.indexOf(day) !== -1 ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300 hover:border-blue-400'"
+                                 ng-click="toggleDay(day)">
+                                Day {{day}}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium mb-4">Quick Templates</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button ng-click="applyTemplate('quick')" 
+                                    class="p-4 border border-gray-300 rounded-lg text-left hover:border-blue-500 hover:bg-blue-50 transition-colors">
+                                <div class="font-medium">Quick Follow-up</div>
+                                <div class="text-sm text-gray-500">Days 1, 3, 7</div>
+                            </button>
+                            <button ng-click="applyTemplate('nurture')" 
+                                    class="p-4 border border-gray-300 rounded-lg text-left hover:border-blue-500 hover:bg-blue-50 transition-colors">
+                                <div class="font-medium">Lead Nurture</div>
+                                <div class="text-sm text-gray-500">Days 1, 3, 7, 14, 21</div>
+                            </button>
+                            <button ng-click="applyTemplate('extended')" 
+                                    class="p-4 border border-gray-300 rounded-lg text-left hover:border-blue-500 hover:bg-blue-50 transition-colors">
+                                <div class="font-medium">Extended Drip</div>
+                                <div class="text-sm text-gray-500">Days 1, 3, 7, 14, 21, 30, 60</div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div ng-show="campaign.timeline.length > 0" class="mb-6">
+                        <h3 class="text-lg font-medium mb-4">Selected Timeline</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="text-sm text-gray-600 mb-2">Messages will be sent on:</div>
+                            <div class="flex flex-wrap gap-2">
+                                <span ng-repeat="day in campaign.timeline | orderBy: 'toString()'" 
+                                      class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                                    Day {{day}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button ng-click="previousStep()" 
+                                class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Previous
+                        </button>
+                        <button ng-click="nextStep()" ng-disabled="campaign.timeline.length === 0"
+                                class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Next: Messages
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Messages -->
+        <div ng-show="currentStep === 3">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl font-semibold mb-6">Campaign Messages</h2>
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <p class="text-gray-600 mb-4">Create messages for each selected day in your timeline.</p>
+                    <div class="text-center py-8">
+                        <i class="fas fa-envelope text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">Message creation interface will be available here.</p>
+                        <p class="text-sm text-gray-400 mt-2">Selected days: {{campaign.timeline.join(', ')}}</p>
+                    </div>
+                    <div class="flex justify-between">
+                        <button ng-click="previousStep()" 
+                                class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Previous
+                        </button>
+                        <button ng-click="nextStep()"
+                                class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                            Next: Review
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Review -->
+        <div ng-show="currentStep === 4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl font-semibold mb-6">Review & Create</h2>
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Campaign Name</label>
+                            <div class="font-medium text-lg">{{campaign.name}}</div>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Duration</label>
+                            <div class="font-medium text-lg">{{campaign.duration}} days</div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="text-sm font-medium text-gray-500">Description</label>
+                            <div class="font-medium">{{campaign.description || 'No description provided'}}</div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="text-sm font-medium text-gray-500">Timeline</label>
+                            <div class="font-medium">Days: {{campaign.timeline.join(', ') || 'No days selected'}}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button ng-click="previousStep()" 
+                                class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Previous
+                        </button>
+                        <button ng-click="submitCampaign()" ng-disabled="saving"
+                                class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50">
+                            <i class="fas fa-check mr-2"></i>
+                            <span ng-show="saving">Creating...</span>
+                            <span ng-show="!saving">Create Campaign</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sidebar -->
+<div ng-include="'sidebar.html'" class="fixed left-0 top-0 bottom-0 z-10"></div>
+
+<!-- Toast Notifications -->
+<div ng-show="toast.show" class="fixed top-4 right-4 z-50 max-w-sm w-full">
+    <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-4">
+        <div class="flex items-center">
+            <i class="fas" ng-class="toast.type === 'success' ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500'"></i>
+            <span class="ml-3 text-sm font-medium text-gray-900">{{toast.message}}</span>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notifications -->
+<div ng-if="toast.show" class="fixed top-4 right-4 z-50 max-w-sm w-full">
+    <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-4">
+        <div class="flex items-center">
+            <i class="fas" ng-class="toast.type === 'success' ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500'"></i>
+            <span class="ml-3 text-sm font-medium text-gray-900">{{toast.message}}</span>
+        </div>
+    </div>
+</div>
+            
+            <!-- Step Indicator -->
+            <div class="bg-white border-b border-gray-200">
+                <div class="step-indicator">
+                    <div class="step" ng-class="{'active': currentStep === 1, 'completed': currentStep > 1}" ng-click="goToStep(1)">
+                        <i class="fas fa-info-circle text-lg mb-2"></i>
+                        <div class="font-medium">Basic Info</div>
+                    </div>
+                    <div class="step" ng-class="{'active': currentStep === 2, 'completed': currentStep > 2}" ng-click="goToStep(2)">
+                        <i class="fas fa-clock text-lg mb-2"></i>
+                        <div class="font-medium">Timeline</div>
+                    </div>
+                    <div class="step" ng-class="{'active': currentStep === 3, 'completed': currentStep > 3}" ng-click="goToStep(3)">
+                        <i class="fas fa-envelope text-lg mb-2"></i>
+                        <div class="font-medium">Messages</div>
+                    </div>
+                    <div class="step" ng-class="{'active': currentStep === 4}" ng-click="goToStep(4)">
+                        <i class="fas fa-check-circle text-lg mb-2"></i>
+                        <div class="font-medium">Review</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Step 1: Basic Info -->
+                <div ng-if="currentStep === 1" class="max-w-2xl mx-auto">
+                    <h2 class="text-xl font-semibold mb-6">Campaign Information</h2>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Campaign Name *</label>
+                                <input type="text" ng-model="campaign.name" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Enter campaign name">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea ng-model="campaign.description" rows="3"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Describe your campaign purpose and goals"></textarea>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Campaign Duration (Days) *</label>
+                                <input type="number" ng-model="campaign.duration" min="1" max="90"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Enter duration in days (1-90)">
+                                <p class="text-sm text-gray-500 mt-1">How long should this campaign run?</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 flex justify-end">
+                            <button ng-click="nextStep()" ng-disabled="!campaign.name || !campaign.duration"
+                                    class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                                Next: Timeline
+                                <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Timeline -->
+                <div ng-if="currentStep === 2" class="max-w-4xl mx-auto">
+                    <h2 class="text-xl font-semibold mb-6">Campaign Timeline</h2>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="mb-6">
+                            <p class="text-gray-600 mb-4">Select the days when messages should be sent during your {{campaign.duration}}-day campaign:</p>
+                            <div class="day-selector">
+                                <div ng-repeat="day in availableDays" class="day-button" 
+                                     ng-class="{'selected': campaign.timeline.indexOf(day) !== -1}"
+                                     ng-click="toggleDay(day)">
+                                    Day {{day}}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h3 class="text-lg font-medium mb-4">Quick Templates</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <button ng-click="applyTemplate('quick')" class="p-4 border border-gray-300 rounded-lg text-left hover:border-blue-500">
+                                    <div class="font-medium">Quick Follow-up</div>
+                                    <div class="text-sm text-gray-500">Days 1, 3, 7</div>
+                                </button>
+                                <button ng-click="applyTemplate('nurture')" class="p-4 border border-gray-300 rounded-lg text-left hover:border-blue-500">
+                                    <div class="font-medium">Lead Nurture</div>
+                                    <div class="text-sm text-gray-500">Days 1, 3, 7, 14, 21</div>
+                                </button>
+                                <button ng-click="applyTemplate('extended')" class="p-4 border border-gray-300 rounded-lg text-left hover:border-blue-500">
+                                    <div class="font-medium">Extended Drip</div>
+                                    <div class="text-sm text-gray-500">Days 1, 3, 7, 14, 21, 30, 60</div>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div ng-if="campaign.timeline.length > 0" class="mb-6">
+                            <h3 class="text-lg font-medium mb-4">Timeline Preview</h3>
+                            <div class="timeline-container">
+                                <div class="timeline-line"></div>
+                                <div ng-repeat="day in campaign.timeline | orderBy: 'toString()'" class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content">
+                                        <div class="bg-gray-50 p-4 rounded-lg">
+                                            <div class="font-medium">Day {{day}}</div>
+                                            <div class="text-sm text-gray-600">Message will be sent</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <button ng-click="previousStep()" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Previous
+                            </button>
+                            <button ng-click="nextStep()" ng-disabled="campaign.timeline.length === 0"
+                                    class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                                Next: Messages
+                                <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Messages -->
+                <div ng-if="currentStep === 3" class="max-w-4xl mx-auto">
+                    <h2 class="text-xl font-semibold mb-6">Campaign Messages</h2>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="mb-6">
+                            <p class="text-gray-600 mb-4">Create messages for each day in your timeline:</p>
+                            <div class="space-y-6">
+                                <div ng-repeat="day in campaign.timeline | orderBy: 'toString()'" class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-lg font-medium">Day {{day}} Message</h3>
+                                        <div class="flex items-center space-x-2">
+                                            <label class="text-sm text-gray-600">Type:</label>
+                                            <select ng-model="campaign.messages[day].type" class="border border-gray-300 rounded px-2 py-1">
+                                                <option value="text">Text</option>
+                                                <option value="media">Media</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Message Content *</label>
+                                            <!-- Text Message Content -->
+                                            <textarea ng-model="campaign.messages[day].message" rows="4"
+                                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                      placeholder="Enter your message... Use {first_name}, {company}, {phone} for personalization"></textarea>
+                                        </div>
+                                        
+                                        <div ng-if="campaign.messages[day].type === 'media'">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Media</label>
+                                            <div class="flex items-center space-x-4">
+                                                <button ng-click="openMediaLibrary(day)" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200">
+                                                    <i class="fas fa-image mr-2"></i>
+                                                    Select from Library
+                                                </button>
+                                                <span class="text-gray-500">or</span>
+                                                <input type="url" ng-model="campaign.messages[day].mediaUrl" 
+                                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                       placeholder="Enter media URL">
+                                            </div>
+                                            <div ng-if="campaign.messages[day].selectedMedia" class="mt-2">
+                                                <img ng-src="{{campaign.messages[day].selectedMedia.url}}" 
+                                                     class="media-preview" alt="Selected media">
+                                                <p class="text-sm text-gray-600">{{campaign.messages[day].selectedMedia.name}}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="bg-gray-50 p-3 rounded-lg">
+                                            <div class="text-sm font-medium text-gray-700 mb-2">Preview:</div>
+                                            <!-- Preview -->
+                                            <div class="text-sm text-gray-600">{{getPreviewMessage(campaign.messages[day].message)}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <button ng-click="previousStep()" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Previous
+                            </button>
+                            <button ng-click="nextStep()" ng-disabled="!allMessagesValid()"
+                                    class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                                Next: Review
+                                <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Review -->
+                <div ng-if="currentStep === 4" class="max-w-4xl mx-auto">
+                    <h2 class="text-xl font-semibold mb-6">Campaign Review</h2>
+                    <div class="space-y-6">
+                        <!-- Campaign Summary -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <h3 class="text-lg font-medium mb-4">Campaign Summary</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <div class="text-sm text-gray-600">Campaign Name</div>
+                                    <div class="font-medium">{{campaign.name}}</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-600">Duration</div>
+                                    <div class="font-medium">{{campaign.duration}} days</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-600">Total Messages</div>
+                                    <div class="font-medium">{{campaign.timeline.length}} messages</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-600">Timeline Days</div>
+                                    <div class="font-medium">{{campaign.timeline.join(', ')}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Messages Preview -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <h3 class="text-lg font-medium mb-4">Messages Preview</h3>
+                            <div class="space-y-4">
+                                <div ng-repeat="day in campaign.timeline | orderBy: 'toString()'" 
+                                     class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div class="font-medium">Day {{day}}</div>
+                                        <span class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                            {{campaign.messages[day].type}}
+                                        </span>
+                                    </div>
+                                    <div class="text-sm text-gray-600 mb-2">{{getPreviewMessage(campaign.messages[day].message)}}</div>
+                                    <div ng-if="campaign.messages[day].type === 'media' && campaign.messages[day].selectedMedia" class="mt-2">
+                                        <img ng-src="{{campaign.messages[day].selectedMedia.url}}" 
+                                             class="media-preview" alt="Media preview">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <button ng-click="previousStep()" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Previous
+                            </button>
+                            <button ng-click="submitCampaign()" ng-disabled="saving"
+                                    class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50">
+                                <i class="fas fa-check mr-2"></i>
+                                {{saving ? 'Creating...' : (isEditMode ? 'Update Campaign' : 'Create Campaign')}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Media Library Modal -->
+    <div ng-if="showMediaLibrary" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-hidden mx-4">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold">Select Media</h3>
+                    <button ng-click="closeMediaLibrary()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-96">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div ng-repeat="media in mediaLibrary" class="border border-gray-200 rounded-lg p-2 cursor-pointer hover:border-blue-500"
+                         ng-click="selectMedia(media)">
+                        <img ng-src="{{media.url}}" class="w-full h-24 object-cover rounded mb-2" alt="{{media.name}}">
+                        <div class="text-sm font-medium truncate">{{media.name}}</div>
+                        <div class="text-xs text-gray-500">{{media.type}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<!-- Toast Notifications -->
+<div ng-if="toast.show" class="fixed top-4 right-4 z-50 max-w-sm w-full">
+    <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-4">
+        <div class="flex items-center">
+            <i class="fas" ng-class="toast.type === 'success' ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500'"></i>
+            <span class="ml-3 text-sm font-medium text-gray-900">{{toast.message}}</span>
+        </div>
+    </div>
+</div>

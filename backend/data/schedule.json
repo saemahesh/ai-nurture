@@ -1,0 +1,114 @@
+[
+  {
+    "id": "174610059794188sdh88w20h",
+    "groupId": "1234",
+    "message": "Unlock WhatsApp Marketing Potential! Our software panel helps you: Send bulk messages Create automated chatbots Track campaign performance Get started today and grow your business!",
+    "time": "2025-05-01T14:30:00.000Z",
+    "media": "/uploads/1746100597931-f4 crop.jpg",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-05-01T14:30:00.039Z"
+  },
+  {
+    "id": "1746206782538jidohep",
+    "eventId": "1746183550907xn3yy01",
+    "reminderType": "12hours",
+    "groupId": "120363259609500535@g.us",
+    "message": "Just 12 hours to go until Digital Product Business Workshop!",
+    "time": "2025-05-03T01:30:00.000Z",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-05-03T04:16:00.131Z"
+  },
+  {
+    "id": "1746206782539ggwxyc2",
+    "eventId": "1746183550907xn3yy01",
+    "reminderType": "6hours",
+    "groupId": "120363259609500535@g.us",
+    "message": "6 hours to go until Digital Product Business Workshop!",
+    "time": "2025-05-03T07:30:00.000Z",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-10T08:41:00.254Z"
+  },
+  {
+    "id": "1746206782539l524qt2",
+    "eventId": "1746183550907xn3yy01",
+    "reminderType": "3hours",
+    "groupId": "120363259609500535@g.us",
+    "message": "3 hours to go until Digital Product Business Workshop!",
+    "time": "2025-05-03T10:30:00.000Z",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-10T08:41:00.254Z"
+  },
+  {
+    "id": "17462067825395sheay0",
+    "eventId": "1746183550907xn3yy01",
+    "reminderType": "1hour",
+    "groupId": "120363259609500535@g.us",
+    "message": "1 hour to go until Digital Product Business Workshop!",
+    "time": "2025-05-03T12:30:00.000Z",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-10T08:41:00.254Z"
+  },
+  {
+    "id": "174620678253980w5dz3",
+    "eventId": "1746183550907xn3yy01",
+    "reminderType": "30mins",
+    "groupId": "120363259609500535@g.us",
+    "message": "Only 30 minutes to go until Digital Product Business Workshop!",
+    "time": "2025-05-03T13:00:00.000Z",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-10T08:41:00.254Z"
+  },
+  {
+    "id": "1746206782539srl3489",
+    "eventId": "1746183550907xn3yy01",
+    "reminderType": "live",
+    "groupId": "120363259609500535@g.us",
+    "message": "We are LIVE now! Digital Product Business Workshop has started!",
+    "time": "2025-05-03T13:30:00.000Z",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-10T08:41:00.254Z"
+  },
+  {
+    "id": "175220857823010l5f7f",
+    "eventId": "1746109966554ixl5rmz",
+    "reminderType": "1hour",
+    "groupId": "120363259609500535@g.us",
+    "message": "1 hour to go until\n\n🚨 LIVE NOW! 🚨 \n\nWe're going live in 10 minutes was supposed to be the plan but looks like we're starting early! \n\n⏰ Join the WhatsApp webinar RIGHT NOW! \n\n🎙️ Click to join fast!",
+    "time": "2025-07-11T04:37:00.000Z",
+    "media": "/uploads/1746182391606-2dda6605df036945324e8555813d0513.jpg",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-11T04:37:00.412Z"
+  },
+  {
+    "id": "1752208578230hmapik1",
+    "eventId": "1746109966554ixl5rmz",
+    "reminderType": "30mins",
+    "groupId": "120363259609500535@g.us",
+    "message": "30 mins",
+    "time": "2025-07-11T05:07:00.000Z",
+    "media": null,
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-11T05:07:00.850Z"
+  },
+  {
+    "id": "17522085782305ahjprm",
+    "eventId": "1746109966554ixl5rmz",
+    "reminderType": "live",
+    "groupId": "120363259609500535@g.us",
+    "message": "🚨 LIVE NOW! 🚨 \n\nWe're going live in 10 minutes was supposed to be the plan but looks like we're starting early! \n\n⏰ Join the WhatsApp webinar RIGHT NOW! \n\n🎙️ Click to join fast!",
+    "time": "2025-07-11T05:37:00.000Z",
+    "media": null,
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-11T05:37:00.792Z"
+  }
+]

@@ -1,0 +1,41 @@
+[
+  {
+    "id": "1746109966554ixl5rmz",
+    "name": "whatsapp webinar today 7 pm",
+    "description": "description",
+    "time": "2025-07-11T05:37:00.000Z",
+    "groups": [
+      "120363259609500535@g.us"
+    ],
+    "username": "mahesh",
+    "createdAt": "2025-05-01T14:32:46.554Z",
+    "remindersConfigured": true,
+    "updatedAt": "2025-07-11T04:36:07.566Z"
+  },
+  {
+    "id": "1746183550907xn3yy01",
+    "name": "Digital Product Business Workshop",
+    "description": "Earn online",
+    "time": "2025-05-03T13:30:00.000Z",
+    "groups": [
+      "120363259609500535@g.us"
+    ],
+    "username": "mahesh",
+    "createdAt": "2025-05-02T10:59:10.907Z",
+    "remindersConfigured": true,
+    "updatedAt": "2025-05-02T17:26:22.538Z"
+  },
+  {
+    "id": "1746198884639zks3cw8",
+    "username": "mahesh",
+    "name": "Stock market Live",
+    "description": "Training on nifty",
+    "time": "2025-07-17T13:30:00.000Z",
+    "groups": [
+      "120363259609500535@g.us"
+    ],
+    "media": null,
+    "createdAt": "2025-05-02T15:14:44.639Z",
+    "updatedAt": "2025-07-11T04:01:55.197Z"
+  }
+]

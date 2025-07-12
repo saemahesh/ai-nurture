@@ -1,0 +1,1 @@
+angular.module('autopostWaApp.dashboard', ['autopostWaApp.core']);

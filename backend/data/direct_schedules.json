@@ -1,0 +1,79 @@
+[
+  {
+    "id": "8b82e514-cf19-46cb-be11-24eb8068b3e3",
+    "username": "mahesh",
+    "number": "919573713873",
+    "message": "Hello, test msg from direct schedule",
+    "mediaUrl": null,
+    "scheduledAt": "2025-07-10T09:23:00.000Z",
+    "status": "Sent",
+    "createdAt": "2025-07-10T09:21:28.032Z",
+    "sentAt": "2025-07-10T09:23:02.836Z"
+  },
+  {
+    "id": "1a93a0f8-217c-465f-8f7c-5405e5ed1db7",
+    "username": "mahesh",
+    "number": "919573713873",
+    "message": "testing img",
+    "mediaUrl": "/uploads/1746182391606-2dda6605df036945324e8555813d0513.jpg",
+    "scheduledAt": "2025-07-10T09:26:00.000Z",
+    "status": "Sent",
+    "createdAt": "2025-07-10T09:26:03.183Z",
+    "sentAt": "2025-07-10T09:27:03.462Z"
+  },
+  {
+    "id": "c0d431a3-54c3-45d6-b09a-fed37b5bd79a",
+    "username": "mahesh",
+    "number": "919573713873",
+    "message": "Media test",
+    "mediaUrl": "http://localhost:3000/uploads/1746182391606-2dda6605df036945324e8555813d0513.jpg",
+    "scheduledAt": "2025-07-10T09:32:00.000Z",
+    "status": "Sent",
+    "createdAt": "2025-07-10T09:32:25.313Z",
+    "sentAt": "2025-07-10T09:33:05.782Z"
+  },
+  {
+    "id": "8ebadac0-9a88-4125-a52f-24b628fe822b",
+    "username": "mahesh",
+    "number": "919573713873",
+    "message": "media",
+    "mediaUrl": "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg",
+    "scheduledAt": "2025-07-10T09:35:00.000Z",
+    "status": "Sent",
+    "createdAt": "2025-07-10T09:34:15.229Z",
+    "sentAt": "2025-07-10T09:35:04.805Z"
+  },
+  {
+    "id": "9fdcbe2a-2214-4a7c-b648-4c41e4fc609a",
+    "username": "mahesh",
+    "number": "919573713873",
+    "message": "chatbot",
+    "mediaUrl": "https://pg-p.ctme.caltech.edu/wp-content/uploads/sites/4/2024/02/What-is-AI-Chatbot.jpg",
+    "scheduledAt": "2025-07-10T09:36:00.000Z",
+    "status": "Sent",
+    "createdAt": "2025-07-10T09:36:01.459Z",
+    "sentAt": "2025-07-10T09:37:05.180Z"
+  },
+  {
+    "id": "7dbc5543-ed50-4214-9f2a-1445b754a916",
+    "username": "mahesh",
+    "number": "919573713873",
+    "message": "Hello There, how are you??",
+    "mediaUrl": "/uploads/1746182391606-2dda6605df036945324e8555813d0513.jpg",
+    "scheduledAt": "2025-07-11T04:04:00.000Z",
+    "status": "Failed",
+    "createdAt": "2025-07-11T04:03:48.986Z",
+    "sendError": "Instance ID Invalidated"
+  },
+  {
+    "id": "6eb3c850-c084-44ca-8c9b-849a059f0e4a",
+    "username": "mahesh",
+    "number": "919573713873",
+    "message": "Hey there, its scheduled",
+    "mediaUrl": null,
+    "scheduledAt": "2025-07-11T04:43:00.000Z",
+    "status": "Sent",
+    "createdAt": "2025-07-11T04:43:02.424Z",
+    "sentAt": "2025-07-11T04:44:02.754Z"
+  }
+]

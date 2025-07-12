@@ -1,0 +1,22 @@
+<!-- Group Creation Page -->
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200">
+  <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6 text-center text-indigo-700">Create New Group</h2>
+    <form ng-submit="createGroup()" autocomplete="off">
+      <div class="mb-4">
+        <label class="block text-gray-700 font-semibold mb-2">Group Name</label>
+        <input type="text" ng-model="group.name" class="form-control border-2 border-indigo-200 rounded px-3 py-2 focus:outline-none focus:border-indigo-500" required placeholder="Enter group name">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 font-semibold mb-2">Group ID</label>
+        <input type="text" ng-model="group.groupId" class="form-control border-2 border-indigo-200 rounded px-3 py-2 focus:outline-none focus:border-indigo-500" required placeholder="Enter group ID (for automation)">
+      </div>
+      <div class="mb-4 text-red-600" ng-if="error">{{error}}</div>
+      <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">Create Group</button>
+      <div class="mt-4 text-center">
+        <a href="#/dashboard" class="text-indigo-500 hover:underline">Back to Dashboard</a>
+      </div>
+    </form>
+    <div class="mt-4 text-green-600 text-center" ng-if="success">Group created successfully!</div>
+  </div>
+</div>

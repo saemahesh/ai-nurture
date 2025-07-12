@@ -1,0 +1,100 @@
+{
+  "1746109966554ixl5rmz": {
+    "5days": {
+      "enabled": true,
+      "text": "5 days to go until {{eventName}}!"
+    },
+    "4days": {
+      "enabled": true,
+      "text": "4 days to go until {{eventName}}!"
+    },
+    "3days": {
+      "enabled": true,
+      "text": "3 days to go until {{eventName}}!"
+    },
+    "2days": {
+      "enabled": true,
+      "text": "2 days to go until {{eventName}}!"
+    },
+    "1day": {
+      "enabled": true,
+      "text": "Only 1 day to go until {{eventName}}!"
+    },
+    "12hours": {
+      "enabled": true,
+      "text": "12. hsfksj"
+    },
+    "6hours": {
+      "enabled": true,
+      "text": "6 hours to go until {{eventName}}!\n\n🚨 LIVE NOW! 🚨 \n\nWe're going live in 10 minutes was supposed to be the plan but looks like we're starting early! \n\n⏰ Join the WhatsApp webinar RIGHT NOW! \n\n🎙️ Click to join fast!"
+    },
+    "3hours": {
+      "enabled": true,
+      "text": "3 hours\n\n🚨 LIVE NOW! 🚨 \n\nWe're going live in 10 minutes was supposed to be the plan but looks like we're starting early! \n\n⏰ Join the WhatsApp webinar RIGHT NOW! \n\n🎙️ Click to join fast!"
+    },
+    "1hour": {
+      "enabled": true,
+      "text": "1 hour to go until\n\n🚨 LIVE NOW! 🚨 \n\nWe're going live in 10 minutes was supposed to be the plan but looks like we're starting early! \n\n⏰ Join the WhatsApp webinar RIGHT NOW! \n\n🎙️ Click to join fast!",
+      "mediaId": "ma6nwshnicnri7sx60r",
+      "mediaUrl": "/uploads/1746182391606-2dda6605df036945324e8555813d0513.jpg"
+    },
+    "30mins": {
+      "enabled": true,
+      "text": "30 mins"
+    },
+    "live": {
+      "enabled": true,
+      "text": "🚨 LIVE NOW! 🚨 \n\nWe're going live in 10 minutes was supposed to be the plan but looks like we're starting early! \n\n⏰ Join the WhatsApp webinar RIGHT NOW! \n\n🎙️ Click to join fast!"
+    }
+  },
+  "1746183550907xn3yy01": {
+    "5days": {
+      "enabled": true,
+      "text": "5 days to go until {{eventName}}!"
+    },
+    "4days": {
+      "enabled": true,
+      "text": "4 days to go until {{eventName}}!"
+    },
+    "3days": {
+      "enabled": true,
+      "text": "3 days to go until {{eventName}}!"
+    },
+    "2days": {
+      "enabled": true,
+      "text": "2 days to go until {{eventName}}!"
+    },
+    "1day": {
+      "enabled": true,
+      "text": "Only 1 day to go until {{eventName}}!"
+    },
+    "12hours": {
+      "enabled": true,
+      "text": "Just 12 hours to go until {{eventName}}!"
+    },
+    "6hours": {
+      "enabled": true,
+      "text": "6 hours to go until {{eventName}}!"
+    },
+    "3hours": {
+      "enabled": true,
+      "text": "3 hours to go until {{eventName}}!"
+    },
+    "1hour": {
+      "enabled": true,
+      "text": "1 hour to go until {{eventName}}!"
+    },
+    "30mins": {
+      "enabled": true,
+      "text": "Only 30 minutes to go until {{eventName}}!",
+      "mediaId": "ma6o4d97ak81mbq4ywk",
+      "mediaUrl": "/uploads/1746182745104-virtual-zoom-background-1600-x-900-c4tv3kz07t13t2bz.jpg"
+    },
+    "live": {
+      "enabled": true,
+      "text": "We are LIVE now! {{eventName}} has started!",
+      "mediaId": "ma6nwshnicnri7sx60r",
+      "mediaUrl": "/uploads/1746182391606-2dda6605df036945324e8555813d0513.jpg"
+    }
+  }
+}

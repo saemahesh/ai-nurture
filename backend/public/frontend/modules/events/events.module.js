@@ -1,0 +1,1 @@
+angular.module('autopostWaApp.events', ['autopostWaApp.core']);

@@ -1,0 +1,63 @@
+[
+  {
+    "username": "mahesh",
+    "password": "123",
+    "status": "active",
+    "registrationDate": "2025-05-02",
+    "expirationDate": "2025-07-30T18:30:00.000Z",
+    "settings": {
+      "access_token": "668d650c1df10",
+      "instance_id": "6782310EA48EE",
+      "wa_phone": "916302009818",
+      "notification_enabled": true,
+      "timezone": "Asia/Kolkata",
+      "test_mobile": "919573713873"
+    }
+  },
+  {
+    "username": "sai",
+    "password": "123",
+    "status": "active",
+    "registrationDate": "2025-05-02",
+    "expirationDate": "2025-12-10T18:30:00.000Z",
+    "settings": {
+      "access_token": "668d650c1df10",
+      "instance_id": "6782310EA48ETest",
+      "wa_phone": "916302009818",
+      "notification_enabled": true,
+      "timezone": "Asia/Kolkata",
+      "test_mobile": "919573713873"
+    }
+  },
+  {
+    "username": "admin",
+    "password": "admin123",
+    "status": "active",
+    "registrationDate": "2025-05-02",
+    "expirationDate": "2029-09-01T18:30:00.000Z",
+    "role": "admin",
+    "settings": {
+      "access_token": "",
+      "instance_id": "",
+      "wa_phone": "",
+      "notification_enabled": true,
+      "timezone": "",
+      "test_mobile": ""
+    }
+  },
+  {
+    "username": "user3",
+    "password": "123",
+    "status": "active",
+    "registrationDate": "2025-05-02",
+    "expirationDate": "2025-05-29T18:30:00.000Z",
+    "settings": {
+      "access_token": "",
+      "instance_id": "",
+      "wa_phone": "",
+      "notification_enabled": true,
+      "timezone": "",
+      "test_mobile": ""
+    }
+  }
+]

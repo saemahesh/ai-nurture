@@ -1,0 +1,61 @@
+<div class="flex h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <sidebar-nav></sidebar-nav>
+  <!-- Main Content Area -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <header class="bg-white shadow-sm z-10 py-4 px-6">
+      <div class="flex items-center">
+        <h2 class="text-xl font-semibold text-gray-800">Settings</h2>
+      </div>
+    </header>
+    <main class="flex-1 overflow-y-auto bg-gray-50 p-6 flex justify-center items-start">
+      <div class="w-full max-w-md">
+        <!-- User Settings Form -->
+        <div class="bg-white rounded-xl shadow p-6">
+          <form name="settingsForm" ng-submit="saveSettings()" novalidate autocomplete="off">
+            <div class="mb-4">
+                <label class="form-label block text-gray-700 font-medium mb-1">WhatsApp Instance ID <span class="text-red-500">*</span></label>
+                <input type="text" ng-model="settings.instance_id" class="form-control block w-full border border-gray-300 rounded px-3 py-2" required>
+                <div ng-show="settingsForm.$submitted && !settings.instance_id" class="text-red-500 text-xs mt-1">Instance ID is required.</div>
+              </div>
+            <div class="mb-4">
+              <label class="form-label block text-gray-700 font-medium mb-1">WhatsApp Access Token <span class="text-red-500">*</span></label>
+              <input type="text" ng-model="settings.access_token" class="form-control block w-full border border-gray-300 rounded px-3 py-2" required>
+              <div ng-show="settingsForm.$submitted && !settings.access_token" class="text-red-500 text-xs mt-1">Access Token is required.</div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label block text-gray-700 font-medium mb-1">WhatsApp Phone Number <span class="text-red-500">*</span></label>
+              <input type="text" ng-model="settings.wa_phone" class="form-control block w-full border border-gray-300 rounded px-3 py-2" required placeholder="Include country code, e.g. 91XXXXXXXXXX" ng-init="settings.wa_phone = settings.wa_phone || '91'">
+              <div ng-show="settingsForm.$submitted && !settings.wa_phone" class="text-red-500 text-xs mt-1">Phone Number is required.</div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label block text-gray-700 font-medium mb-1">Test Mobile Number <span class="text-red-500">*</span></label>
+              <input type="text" ng-model="settings.test_mobile" class="form-control block w-full border border-gray-300 rounded px-3 py-2" required placeholder="Include country code, e.g. 91XXXXXXXXXX" ng-init="settings.test_mobile = settings.test_mobile || '91'">
+              <div ng-show="settingsForm.$submitted && !settings.test_mobile" class="text-red-500 text-xs mt-1">Test Mobile Number is required.</div>
+            </div>
+            <div class="mb-4 flex items-center">
+              <input type="checkbox" ng-model="settings.notification_enabled" id="notif" class="mr-2">
+              <label for="notif" class="text-gray-700">Enable WhatsApp Reminders</label>
+            </div>
+            <div class="mb-6">
+              <button type="button" class="btn btn-outline-primary bg-blue-100 text-blue-700 px-4 py-2 rounded mr-2" ng-click="testConnection()" ng-disabled="testingConn">
+                <i class="fas fa-plug mr-1"></i> Test WhatsApp Connection
+              </button>
+              <span ng-if="testResult" class="ml-2 text-sm align-middle" style="display:inline-block;vertical-align:middle;" ng-class="{'text-green-600': testResult.success, 'text-red-600': !testResult.success}">
+                <i class="fas" ng-class="{'fa-check-circle': testResult.success, 'fa-times-circle': !testResult.success}"></i>
+                <span style="white-space:nowrap;">{{testResult.message}}</span>
+              </span>
+            </div>
+            <button type="submit" class="btn btn-success bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold" ng-disabled="saving">
+              <i class="fas fa-spinner fa-spin mr-2" ng-if="saving"></i>
+              Save Settings
+            </button>
+            <span ng-if="saveSuccess" class="ml-3 text-green-600 font-medium">Saved!</span>
+            <span ng-if="saveError" class="ml-3 text-red-600 font-medium">{{saveError}}</span>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

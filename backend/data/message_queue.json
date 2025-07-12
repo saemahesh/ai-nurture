@@ -1,0 +1,50 @@
+[
+  {
+    "id": "msg-1752247954784-di09st29l",
+    "campaignId": "seq_1752247551668",
+    "username": "sai",
+    "phone": "919573713873",
+    "message": {
+      "id": "msg-0",
+      "type": "text",
+      "message": "Hey there, it is sai drip campaign",
+      "mediaUrl": null,
+      "day": 1
+    },
+    "sentAt": "2025-07-11T15:32:34.781Z",
+    "status": "sent",
+    "createdAt": "2025-07-11T15:32:34.784Z"
+  },
+  {
+    "id": "msg-1752250894607-on4ihe8dc",
+    "campaignId": "seq_1752221360754",
+    "username": "mahesh",
+    "phone": "919032655489",
+    "message": {
+      "id": "msg-0",
+      "type": "media",
+      "message": "Hey {name} , drip media first, congratzzzz\n\nIts time to {rock|party|explode}",
+      "mediaUrl": "https://cdn.prod.website-files.com/5d249063a5dbec3c6f57a8d4/6658a1f50a87b53a0e467f00_Ettv7FFQGtZu40rMOqSCDN8GgvnPkv0JtJ50q_FkifpoG1ubtWJiJ3qQDIrS3pfUAlvLgbz-Hk3Bz3TMcQmlE6AMpfL7lp9svVW1P-jYl_dm_RLmRtFxv7hV8k3aEqfqdS5qRvP9spywz3cBKTUewPQ.jpeg",
+      "day": 1
+    },
+    "sentAt": "2025-07-11T16:21:34.584Z",
+    "status": "sent",
+    "createdAt": "2025-07-11T16:21:34.607Z"
+  },
+  {
+    "id": "msg-1752289382410-3ug4k5zqb",
+    "campaignId": "seq_1752221360754",
+    "username": "mahesh",
+    "phone": "919032655489",
+    "message": {
+      "id": "msg-1",
+      "type": "text",
+      "message": "Hey , day 2 drip msg",
+      "mediaUrl": null,
+      "day": 2
+    },
+    "sentAt": "2025-07-12T03:03:02.394Z",
+    "status": "sent",
+    "createdAt": "2025-07-12T03:03:02.410Z"
+  }
+]

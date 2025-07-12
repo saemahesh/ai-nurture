@@ -1,0 +1,1 @@
+angular.module('autopostWaApp.groups', ['autopostWaApp.core']);

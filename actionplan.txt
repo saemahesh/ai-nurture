@@ -1,4 +1,4 @@
-# WhatsApp Drip Campaign Management System - Action Plan.
+# WhatsApp Drip Campaign Management System - Action Plan
 
 ## PROJECT OVERVIEW
 Create a comprehensive drip campaign system for automated lead nurturing through scheduled WhatsApp message sequences.

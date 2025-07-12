@@ -62,19 +62,56 @@ cron.schedule('* * * * *', async () => {
   const statuses = readStatuses();
   const users = readUsers();
   const now = new Date();
-  const dueStatuses = statuses.filter(s => !s.posted && new Date(s.time) <= now);
+  const dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][now.getDay()];
 
-  for (const status of dueStatuses) {
+  for (const status of statuses) {
     const user = users.find(u => u.username === status.username);
-    if (user && user.settings && user.settings.whapi_token) {
+    if (!user || !user.settings || !user.settings.whapi_token) {
+      console.error(`Could not find user or WHAPI token for status ${status.id}`);
+      continue;
+    }
+
+    let shouldPost = false;
+    const scheduledTime = new Date(status.time);
+
+    const isSameDay = (d1, d2) =>
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate();
+
+    switch (status.repeat) {
+      case 'once':
+        if (!status.posted && scheduledTime <= now) {
+          shouldPost = true;
+        }
+        break;
+      case 'daily':
+        if (scheduledTime.getHours() === now.getHours() && scheduledTime.getMinutes() === now.getMinutes()) {
+          if (!status.lastPosted || !isSameDay(new Date(status.lastPosted), now)) {
+            shouldPost = true;
+          }
+        }
+        break;
+      case 'custom':
+        if (status.days[dayOfWeek] && scheduledTime.getHours() === now.getHours() && scheduledTime.getMinutes() === now.getMinutes()) {
+          if (!status.lastPosted || !isSameDay(new Date(status.lastPosted), now)) {
+            shouldPost = true;
+          }
+        }
+        break;
+    }
+
+    if (shouldPost) {
       try {
         await postWhatsAppStatus(status, user.settings.whapi_token);
-        status.posted = true;
+        if (status.repeat === 'once') {
+          status.posted = true;
+        } else {
+          status.lastPosted = now.toISOString();
+        }
       } catch (error) {
         console.error(`Failed to post status ${status.id}:`, error);
       }
-    } else {
-      console.error(`Could not find user or WHAPI token for status ${status.id}`);
     }
   }
 

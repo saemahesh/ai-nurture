@@ -62,5 +62,37 @@
     "sentAt": "2025-07-12T05:55:35.940Z",
     "status": "sent",
     "createdAt": "2025-07-12T05:55:35.941Z"
+  },
+  {
+    "id": "msg-1752417244616-wz9bdc2v6",
+    "campaignId": "seq_1752221360754",
+    "username": "mahesh",
+    "phone": "919398305627",
+    "message": {
+      "id": "msg-1",
+      "type": "text",
+      "message": "Hey , day 2 drip msg",
+      "mediaUrl": null,
+      "day": 2
+    },
+    "sentAt": "2025-07-13T14:34:04.613Z",
+    "status": "sent",
+    "createdAt": "2025-07-13T14:34:04.616Z"
+  },
+  {
+    "id": "msg-1752417304669-xwa346xoe",
+    "campaignId": "seq_1752299917054",
+    "username": "mahesh",
+    "phone": "919398305627",
+    "message": {
+      "id": "msg-0",
+      "type": "text",
+      "message": "Hey, this is crm drip seq",
+      "mediaUrl": null,
+      "day": 2
+    },
+    "sentAt": "2025-07-13T14:35:04.613Z",
+    "status": "sent",
+    "createdAt": "2025-07-13T14:35:04.669Z"
   }
 ]

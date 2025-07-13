@@ -21,13 +21,14 @@
     "phone": "919398305627",
     "name": "robomate",
     "enrolled_at": "2025-07-12T05:53:36.201Z",
-    "current_day": 1,
-    "status": "active",
+    "current_day": 2,
+    "status": "completed",
     "last_message_sent": null,
-    "next_message_due": "2025-07-13T13:16:00.000Z",
-    "messages_sent": 1,
+    "next_message_due": null,
+    "messages_sent": 2,
     "total_messages": 2,
-    "custom_fields": {}
+    "custom_fields": {},
+    "completed_at": "2025-07-13T14:34:04.631Z"
   },
   {
     "id": "enroll_1752299847551",
@@ -51,12 +52,13 @@
     "phone": "919398305627",
     "name": "robomate",
     "enrolled_at": "2025-07-12T05:59:12.400Z",
-    "current_day": 0,
-    "status": "active",
+    "current_day": 1,
+    "status": "completed",
     "last_message_sent": null,
-    "next_message_due": "2025-07-13T05:59:12.400Z",
-    "messages_sent": 0,
+    "next_message_due": null,
+    "messages_sent": 1,
     "total_messages": 1,
-    "custom_fields": {}
+    "custom_fields": {},
+    "completed_at": "2025-07-13T14:35:04.725Z"
   }
 ]

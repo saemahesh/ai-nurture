@@ -293,9 +293,26 @@
       "day": 2
     },
     "scheduledAt": "2025-07-13T13:16:00.000Z",
-    "status": "pending",
+    "status": "sent",
     "createdAt": "2025-07-12T05:55:08.427Z",
-    "attempts": 0
+    "attempts": 0,
+    "sentAt": "2025-07-13T14:34:04.613Z",
+    "apiResponse": {
+      "status": "success",
+      "message": {
+        "key": {
+          "remoteJid": "919398305627@s.whatsapp.net",
+          "fromMe": true,
+          "id": "3EB01F1658432219339181"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": "Hey , day 2 drip msg"
+          }
+        },
+        "messageTimestamp": "1752417244"
+      }
+    }
   },
   {
     "id": "seq_1752299917054-919398305627-0-1752301765960",
@@ -319,8 +336,25 @@
       "day": 2
     },
     "scheduledAt": "2025-07-13T14:11:00.000Z",
-    "status": "pending",
+    "status": "sent",
     "createdAt": "2025-07-12T06:29:25.960Z",
-    "attempts": 0
+    "attempts": 0,
+    "sentAt": "2025-07-13T14:35:04.613Z",
+    "apiResponse": {
+      "status": "success",
+      "message": {
+        "key": {
+          "remoteJid": "919398305627@s.whatsapp.net",
+          "fromMe": true,
+          "id": "3EB055EDC9EC30287FD341"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": "Hey, this is crm drip seq"
+          }
+        },
+        "messageTimestamp": "1752417304"
+      }
+    }
   }
 ]

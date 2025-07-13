@@ -200,7 +200,7 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
       }
     }).then(function(res) {
       $scope.testingConn = false;
-      $scope.testResult = { success: true, message: 'Test message Sent successfully! Check ' + $scope.settings.test_mobile + '.' };
+      $scope.testResult = { success: true, message: 'Connected successfully! Check ' + $scope.settings.test_mobile + '.' };
     }, function(err) {
       $scope.testingConn = false;
       var msg = (err.data && err.data.message) ? err.data.message : 'Failed to send test message.';

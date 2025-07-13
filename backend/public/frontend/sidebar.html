@@ -162,9 +162,10 @@
         <span class="text-sm text-gray-200">Logged in as <span class="font-semibold text-green-300">{{user.username}}</span></span>
       </div>
       <!-- Logout button -->
-      <button ng-click="logout()" 
-              ng-disabled="loggingOut"
-              class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 text-white py-2 rounded-xl flex items-center justify-center font-semibold shadow-lg transition-all duration-200">
+      <button ng-click="logout()"
+          ng-disabled="loggingOut"
+          class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 text-white py-2 rounded-xl flex items-center justify-center font-semibold shadow-lg transition-all duration-200 mb-4 md:mb-0"
+          style="font-size:1.1rem; min-height:48px;">
         <i class="fas fa-spinner fa-spin mr-2" ng-if="loggingOut"></i>
         <i class="fas fa-sign-out-alt mr-2" ng-if="!loggingOut"></i>
         <span ng-if="loggingOut">Logging out...</span>
@@ -177,5 +178,10 @@
 <style>
   @media (max-width: 767px) {
     .min-w-64 { min-width: 0 !important; }
+    .sidebar-logout-btn {
+      font-size: 1.2rem !important;
+      min-height: 56px !important;
+      margin-bottom: 16px !important;
+    }
   }
 </style>

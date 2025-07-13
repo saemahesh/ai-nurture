@@ -1,5 +1,7 @@
 angular.module('autopostWaApp.core').factory('ApiService', function($http) {
-  var API_BASE = 'http://localhost:3000';
+  var API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:3000'
+    : 'https://whatspro.robomate.in';
   
   return {
     // Groups

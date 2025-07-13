@@ -38,11 +38,11 @@ A full-stack web application for managing and automating WhatsApp group posts, w
 - **Per-User Data**: Each user only sees and manages their own schedules.
 
 ### Direct Message Scheduling
-- **Schedule Direct Messages**: Send messages directly to individual phone numbers at specific times.
+- **Schedule Message Schedule**: Send messages directly to individual phone numbers at specific times.
 - **Text and Media Support**: Schedule both text-only messages and messages with media attachments.
 - **Media Library Integration**: Select media files from your personal library or provide external URLs.
 - **Full URL Generation**: Media URLs are automatically converted to full URLs for WhatsApp API compatibility.
-- **Status Tracking**: Monitor the status of scheduled direct messages (Scheduled, Sent, Failed).
+- **Status Tracking**: Monitor the status of scheduled Message Schedule (Scheduled, Sent, Failed).
 - **Per-User Data**: Each user only sees and manages their own direct message schedules.
 
 ### Media Management

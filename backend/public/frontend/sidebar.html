@@ -26,15 +26,15 @@
     </a>
     <a href="#/schedules" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/schedules'), 'text-gray-300': !isActive('/schedules')}">
       <i class="far fa-clock w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Schedules</span>
+      <span class="font-medium">Group Schedules</span>
     </a>
     <a href="#/direct-schedule" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/direct-schedule'), 'text-gray-300': !isActive('/direct-schedule')}">
       <i class="fas fa-paper-plane w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Direct Messages</span>
+      <span class="font-medium">Message Schedule</span>
     </a>
     <a href="#/sequences" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/sequences'), 'text-gray-300': !isActive('/sequences')}">
       <i class="fas fa-bullhorn w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Drip Sequences</span>
+      <span class="font-medium">Drip Campaigns</span>
     </a>
     <a href="#/media" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/media'), 'text-gray-300': !isActive('/media')}">
       <i class="far fa-image w-7 text-center text-lg group-hover:text-green-400 transition"></i>
@@ -66,24 +66,24 @@
       Error loading user
     </p>
     <!-- User info when available -->
-    <div ng-if="!loadingUser && !userError && user.username" class="flex items-center gap-3 mb-3 p-3 rounded-xl bg-gray-800/80 shadow">
-      <i class="fas fa-user-circle text-2xl text-green-400"></i>
-      <span class="text-sm text-gray-200">Logged in as <span class="font-semibold text-green-300">{{user.username}}</span></span>
+    <div ng-if="!loadingUser && !userError && user.username" class="flex items-center justify-between mb-2 p-1 rounded bg-gray-800/80 shadow" style="min-height:40px;">
+      <div class="flex items-center">
+        <i class="fas fa-user-circle text-lg text-green-400"></i>
+        <span class="font-semibold text-green-300 text-sm" style="margin-left:4px;">{{user.username | capitalize}}</span>
+      </div>
+      <button ng-click="logout()"
+              ng-disabled="loggingOut"
+              class="bg-transparent text-green-400 hover:text-green-600 p-1 rounded-full focus:outline-none"
+              title="Logout">
+        <i class="fas fa-sign-out-alt text-lg" ng-if="!loggingOut"></i>
+        <i class="fas fa-spinner fa-spin text-lg" ng-if="loggingOut"></i>
+      </button>
     </div>
-    <!-- Logout button -->
-    <button ng-click="logout()" 
-            ng-disabled="loggingOut"
-            class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 text-white py-2 rounded-xl flex items-center justify-center font-semibold shadow-lg transition-all duration-200">
-      <i class="fas fa-spinner fa-spin mr-2" ng-if="loggingOut"></i>
-      <i class="fas fa-sign-out-alt mr-2" ng-if="!loggingOut"></i>
-      <span ng-if="loggingOut">Logging out...</span>
-      <span ng-if="!loggingOut">Logout</span>
-    </button>
   </div>
 </div>
 
 <!-- Mobile Sidebar -->
-<div ng-controller="SidebarController">
+<div ng-controller="SidebarController"></div>
   <button aria-label="Open sidebar" class="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-900/80 text-green-400 shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400" ng-click="openSidebar()" type="button">
     <i class="fas fa-bars text-2xl"></i>
   </button>
@@ -117,15 +117,15 @@
       </a>
       <a href="#/schedules" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/schedules'), 'text-gray-300': !isActive('/schedules')}">
         <i class="far fa-clock w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Schedules</span>
+        <span class="font-medium">Group Schedules</span>
       </a>
       <a href="#/direct-schedule" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/direct-schedule'), 'text-gray-300': !isActive('/direct-schedule')}">
         <i class="fas fa-paper-plane w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Direct Messages</span>
+        <span class="font-medium">Message Schedule</span>
       </a>
       <a href="#/sequences" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/sequences'), 'text-gray-300': !isActive('/sequences')}">
         <i class="fas fa-bullhorn w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Drip Sequences</span>
+        <span class="font-medium">Drip Campaigns</span>
       </a>
       <a href="#/media" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/media'), 'text-gray-300': !isActive('/media')}">
         <i class="far fa-image w-7 text-center text-lg group-hover:text-green-400 transition"></i>
@@ -145,7 +145,7 @@
       </a>
     </nav>
 
-    <div class="px-6 py-8 border-t border-gray-700 bg-gray-900/60 shadow-inner">
+    <div class="px-6 py-2 border-t border-gray-700 bg-gray-900/60 shadow-inner" style="border-color: #75ff71;">
       <!-- Loading state -->
       <div ng-if="loadingUser" class="flex items-center space-x-2 mb-2">
         <div class="w-4 h-4 rounded-full border-2 border-green-400 border-t-transparent animate-spin"></div>
@@ -157,20 +157,19 @@
         Error loading user
       </p>
       <!-- User info when available -->
-      <div ng-if="!loadingUser && !userError && user.username" class="flex items-center gap-3 mb-3 p-3 rounded-xl bg-gray-800/80 shadow">
-        <i class="fas fa-user-circle text-2xl text-green-400"></i>
-        <span class="text-sm text-gray-200">Logged in as <span class="font-semibold text-green-300">{{user.username}}</span></span>
+      <div ng-if="!loadingUser && !userError && user.username" class="flex items-center justify-between mb-2 p-1 rounded bg-gray-800/80 shadow" style="min-height:40px;">
+        <div class="flex items-center">
+          <i class="fas fa-user-circle text-lg text-green-400"></i>
+          <span class="font-semibold text-green-300 text-sm" style="margin-left:4px;">{{user.username | uppercase}}</span>
+        </div>
+        <button ng-click="logout()"
+                ng-disabled="loggingOut"
+                class="bg-transparent text-green-400 hover:text-green-600 p-1 rounded-full focus:outline-none"
+                title="Logout">
+          <i class="fas fa-sign-out-alt text-lg" ng-if="!loggingOut"></i>
+          <i class="fas fa-spinner fa-spin text-lg" ng-if="loggingOut"></i>
+        </button>
       </div>
-      <!-- Logout button -->
-      <button ng-click="logout()"
-          ng-disabled="loggingOut"
-          class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 text-white py-2 rounded-xl flex items-center justify-center font-semibold shadow-lg transition-all duration-200 mb-4 md:mb-0"
-          style="font-size:1.1rem; min-height:48px;">
-        <i class="fas fa-spinner fa-spin mr-2" ng-if="loggingOut"></i>
-        <i class="fas fa-sign-out-alt mr-2" ng-if="!loggingOut"></i>
-        <span ng-if="loggingOut">Logging out...</span>
-        <span ng-if="!loggingOut">Logout</span>
-      </button>
     </div>
   </div>
 </div>
@@ -185,3 +184,12 @@
     }
   }
 </style>
+
+<script>
+angular.module('autopostWaApp.core').filter('capitalize', function() {
+  return function(input) {
+    if (!input) return '';
+    return input.charAt(0).toUpperCase() + input.slice(1);
+  };
+});
+</script>

@@ -55,7 +55,7 @@ Every data operation now validates that:
 ### 5. Cross-User Access Prevention
 - ✅ Sequences: Users cannot access other users' sequences
 - ✅ Enrollments: Users cannot enroll in other users' sequences
-- ✅ Direct Messages: Users cannot see other users' scheduled messages
+- ✅ Message Schedule: Users cannot see other users' scheduled messages
 - ✅ Message Queue: Users cannot see other users' pending messages
 - ✅ Media: Users cannot access other users' uploaded media
 - ✅ Groups: Users cannot access other users' groups
@@ -112,4 +112,4 @@ The frontend should continue to work without changes since:
 - `/backend/test-user-segregation.js` - Test script (new)
 
 ## Status: ✅ COMPLETE
-User-level data segregation is now fully implemented across the entire AutoPost WA application. Every user has secure, isolated access to only their own data across all features including sequences, enrollments, direct messages, media, groups, and campaigns.
+User-level data segregation is now fully implemented across the entire AutoPost WA application. Every user has secure, isolated access to only their own data across all features including sequences, enrollments, Message Schedule, media, groups, and campaigns.

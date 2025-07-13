@@ -33,17 +33,20 @@
 
 /* Main Content Styles */
 .main-content {
-  margin-left: 288px;
   transition: margin-left 0.3s ease-in-out;
+}
+
+.main-content.sidebar-open {
+  margin-left: 288px;
+}
+
+body.sidebar-open {
+  overflow: hidden;
 }
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-  .sidebar-container {
-    left: -288px;
-  }
-
-  .main-content {
+  .main-content.sidebar-open {
     margin-left: 0;
   }
 

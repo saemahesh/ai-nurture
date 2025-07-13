@@ -87,4 +87,6 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+  // Print port and environment to console
+  console.log(`App running on port ${addr.port} in ${process.env.NODE_ENV || 'development'} mode`);
 }

@@ -1,4 +1,25 @@
-angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', '$location', 'AuthService', function($scope, $location, AuthService) {
+angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', '$location', 'AuthService', '$window', function($scope, $location, AuthService, $window) {
+  $scope.isSidebarOpen = false;
+
+  $scope.toggleSidebar = function() {
+    $scope.isSidebarOpen = !$scope.isSidebarOpen;
+  };
+
+  // Close sidebar on route change
+  $scope.$on('$routeChangeStart', function() {
+    $scope.isSidebarOpen = false;
+  });
+
+  // Adjust sidebar based on window size
+  angular.element($window).bind('resize', function() {
+    if ($window.innerWidth > 768) {
+      $scope.isSidebarOpen = true;
+    } else {
+      $scope.isSidebarOpen = false;
+    }
+    $scope.$apply();
+  });
+
   $scope.isActive = function(route) {
     return $location.path().indexOf(route) === 0;
   };

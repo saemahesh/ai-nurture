@@ -1,0 +1,19 @@
+<div class="flex h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <div ng-include="'sidebar.html'" ng-controller="SidebarController" class="z-50 md:flex md:flex-shrink-0"></div>
+
+  <!-- Main content -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Mobile header -->
+    <div class="md:hidden">
+      <!-- This is where the mobile header with the hamburger menu will be included -->
+    </div>
+
+    <!-- Page content -->
+    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
+      <div class="container mx-auto px-6 py-8">
+        <div ng-view></div>
+      </div>
+    </main>
+  </div>
+</div>

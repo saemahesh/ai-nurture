@@ -1,5 +1,22 @@
-<!-- Left Navigation Sidebar -->
-<div class="w-72 min-w-64 h-screen flex flex-col shadow-2xl overflow-hidden" ng-controller="SidebarController" style="background: linear-gradient(135deg, #232526 0%, #414345 100%);">
+<!-- MOBILE HEADER -->
+<div class="md:hidden flex items-center justify-between bg-gray-800 text-white p-4">
+  <div>
+    <button ng-click="toggleSidebar()" class="text-white focus:outline-none">
+      <i class="fas fa-bars fa-lg"></i>
+    </button>
+  </div>
+  <div class="flex items-center">
+    <i class="fab fa-whatsapp text-2xl text-green-400"></i>
+    <h1 class="text-xl font-bold ml-2">WhatsPro</h1>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="w-72 min-w-64 h-full flex-col shadow-2xl overflow-hidden transition-transform duration-300 ease-in-out"
+     ng-class="{'translate-x-0': isSidebarOpen, '-translate-x-full': !isSidebarOpen}"
+     style="background: linear-gradient(135deg, #232526 0%, #414345 100%); position: fixed; top: 0; left: 0; z-index: 40;">
+
+  <!-- LOGO -->
   <div class="px-6 py-3 flex items-center bg-gray-900 border-b border-gray-700 shadow-md">
     <div class="flex items-center justify-center w-12 h-12 bg-transparent mr-4">
       <i class="fab fa-whatsapp text-3xl text-green-400"></i>
@@ -7,6 +24,7 @@
     <h1 class="text-2xl font-bold tracking-wide text-white">WhatsPro</h1>
   </div>
 
+  <!-- NAVIGATION -->
   <nav class="flex-1 overflow-y-auto py-4">
     <a href="#/dashboard" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/dashboard'), 'text-gray-300': !isActive('/dashboard')}">
       <i class="fas fa-tachometer-alt w-7 text-center text-lg group-hover:text-green-400 transition"></i>
@@ -54,23 +72,20 @@
     </a>
   </nav>
 
+  <!-- USER INFO & LOGOUT -->
   <div class="px-6 py-8 border-t border-gray-700 bg-gray-900/60 shadow-inner">
-    <!-- Loading state -->
     <div ng-if="loadingUser" class="flex items-center space-x-2 mb-2">
       <div class="w-4 h-4 rounded-full border-2 border-green-400 border-t-transparent animate-spin"></div>
       <span class="text-sm text-gray-300">Loading...</span>
     </div>
-    <!-- Error state -->
     <p ng-if="userError" class="text-sm text-red-400 mb-2">
       <i class="fas fa-exclamation-circle mr-1"></i> 
       Error loading user
     </p>
-    <!-- User info when available -->
     <div ng-if="!loadingUser && !userError && user.username" class="flex items-center gap-3 mb-3 p-3 rounded-xl bg-gray-800/80 shadow">
       <i class="fas fa-user-circle text-2xl text-green-400"></i>
       <span class="text-sm text-gray-200">Logged in as <span class="font-semibold text-green-300">{{user.username}}</span></span>
     </div>
-    <!-- Logout button -->
     <button ng-click="logout()" 
             ng-disabled="loggingOut"
             class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 text-white py-2 rounded-xl flex items-center justify-center font-semibold shadow-lg transition-all duration-200">

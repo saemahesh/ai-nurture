@@ -28,6 +28,9 @@ var app = angular.module('autopostWaApp', [
 // Main routing configuration
 app.config(function($routeProvider, $locationProvider, $httpProvider) {
   $routeProvider
+    .when('/', {
+      templateUrl: 'shell.html'
+    })
     .when('/login', {
       templateUrl: 'login.html',
       controller: 'AuthController'

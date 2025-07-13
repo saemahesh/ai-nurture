@@ -19,29 +19,25 @@ angular.module('autopostWaApp.media').controller('MediaPageController', function
   
   console.log("Media controller initialized");
 
-  // Trust URLs for ng-src (needed for proper display of images and videos)
-  $scope.trustSrc = function(src) {
-    if (!src) return '';
-    
-    // Fix URL format - make sure it has the correct prefix
-    if (src && !src.startsWith('http') && !src.startsWith('blob:') && !src.startsWith('/')) {
+  // Precompute and cache trusted URLs for all media files
+  function computeTrustedUrl(media) {
+    let src = media.url;
+    if (!src) {
+      // Use local placeholder if url is missing
+      src = media.type === 'video' ? '/images/video-placeholder.png' : '/images/image-placeholder.png';
+    } else if (!src.startsWith('http') && !src.startsWith('blob:') && !src.startsWith('/')) {
       src = '/' + src;
     }
-    
-    // For absolute URLs within the app - make sure to add the correct base URL
     if (src.startsWith('/uploads/')) {
-      // Make relative to current host
       src = window.location.origin + src;
     }
-    
+    // Always use local placeholder if placeholder.com is found (shouldn't happen, but for safety)
+    if (src.includes('placeholder.com')) {
+      src = media.type === 'video' ? '/images/video-placeholder.png' : '/images/image-placeholder.png';
+      src = window.location.origin + src;
+    }
     return $sce.trustAsResourceUrl(src);
-  };
-
-  // Use local placeholder instead of external placeholder.com
-  $scope.getPlaceholder = function(type) {
-    // Use locally hosted placeholder instead of external service
-    return type === 'video' ? '/images/video-placeholder.png' : '/images/image-placeholder.png';
-  };
+  }
 
   // Load media files
   function loadMedia() {
@@ -76,7 +72,8 @@ angular.module('autopostWaApp.media').controller('MediaPageController', function
         if (media.url && !media.url.startsWith('http') && !media.url.startsWith('/')) {
           media.url = '/' + media.url;
         }
-        
+        // Precompute trusted URL for template use
+        media._trustedUrl = computeTrustedUrl(media);
         // Mark as checked to remove loading indicator
         media.checked = true;
       });
@@ -105,7 +102,6 @@ angular.module('autopostWaApp.media').controller('MediaPageController', function
     }
   }
 
-  // Rest of the code remains unchanged
   $scope.getAcceptedFileTypes = function() {
     return $scope.newMedia.type === 'image' ? 'image/*' : 'video/*';
   };
@@ -335,30 +331,6 @@ angular.module('autopostWaApp.media').controller('MediaPageController', function
     $timeout(function() {
       $scope.success = '';
     }, 3000);
-  };
-
-  // Fix the placeholder image issue with a fallback system
-  $scope.getPlaceholderForType = function(type) {
-    // Use local placeholder images instead of external service
-    if (type === 'video') {
-      return window.location.origin + '/images/video-placeholder.png';
-    } else {
-      return window.location.origin + '/images/image-placeholder.png';
-    }
-  };
-
-  // Helper to force image refresh by adding a timestamp (circumvents browser cache)
-  $scope.getImageUrl = function(url) {
-    if (!url) return '';
-    
-    // Return local placeholders instead of external URL when needed
-    if (url.includes('placeholder.com')) {
-      return $scope.getPlaceholderForType($scope.newMedia.type);
-    }
-    
-    // Add a timestamp to bust cache
-    const separator = url.includes('?') ? '&' : '?';
-    return url + separator + '_t=' + new Date().getTime();
   };
 
   // Cleanup blob URLs when controller is destroyed

@@ -55,12 +55,16 @@ angular.module('autopostWaApp').controller('SequencesController', ['$scope', '$h
         $scope.dropdownOpen = $scope.dropdownOpen === sequenceId ? null : sequenceId;
     };
 
-    // Close dropdown when clicking outside
+    // Close dropdown when clicking outside (jqLite compatible)
     angular.element(document).on('click', function(event) {
-        if (!angular.element(event.target).closest('.relative').length) {
-            $scope.$apply(function() {
-                $scope.dropdownOpen = null;
-            });
+        var $target = angular.element(event.target);
+        // Only close if not inside a dropdown menu or toggle button
+        if (!$target.closest('[ng-click="toggleDropdown(sequence.id)"]').length && !$target.closest('.relative').length) {
+            if ($scope.dropdownOpen !== null) {
+                $scope.$apply(function() {
+                    $scope.dropdownOpen = null;
+                });
+            }
         }
     });
 

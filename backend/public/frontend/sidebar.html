@@ -1,5 +1,5 @@
-<!-- Left Navigation Sidebar -->
-<div class="w-72 min-w-64 h-screen flex flex-col shadow-2xl overflow-hidden" ng-controller="SidebarController" style="background: linear-gradient(135deg, #232526 0%, #414345 100%);">
+<!-- Desktop Sidebar -->
+<div class="hidden md:flex w-72 min-w-64 h-screen flex-col shadow-2xl overflow-hidden" ng-controller="SidebarController" style="background: linear-gradient(135deg, #232526 0%, #414345 100%);">
   <div class="px-6 py-3 flex items-center bg-gray-900 border-b border-gray-700 shadow-md">
     <div class="flex items-center justify-center w-12 h-12 bg-transparent mr-4">
       <i class="fab fa-whatsapp text-3xl text-green-400"></i>
@@ -81,3 +81,101 @@
     </button>
   </div>
 </div>
+
+<!-- Mobile Sidebar -->
+<div ng-controller="SidebarController">
+  <button aria-label="Open sidebar" class="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-900/80 text-green-400 shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400" ng-click="openSidebar()" type="button">
+    <i class="fas fa-bars text-2xl"></i>
+  </button>
+  <div ng-show="sidebarOpen" class="fixed inset-0 z-40 bg-black/40 md:hidden transition-opacity duration-200" ng-click="closeSidebar()" aria-hidden="true"></div>
+  <div class="w-72 h-screen flex flex-col shadow-2xl overflow-hidden fixed z-50 top-0 left-0 bg-gradient-to-br from-[#232526] to-[#414345] transition-transform duration-300 md:hidden" ng-class="{'-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen}" style="background: linear-gradient(135deg, #232526 0%, #414345 100%);" tabindex="-1" aria-label="Sidebar navigation" ng-show="sidebarOpen">
+    <button ng-click="closeSidebar()" aria-label="Close sidebar" class="absolute top-4 right-4 z-50 p-2 rounded-lg bg-gray-900/80 text-green-400 shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400">
+      <i class="fas fa-times text-2xl"></i>
+    </button>
+        <div class="px-6 py-3 flex items-center bg-gray-900 border-b border-gray-700 shadow-md">
+      <div class="flex items-center justify-center w-12 h-12 bg-transparent mr-4">
+        <i class="fab fa-whatsapp text-3xl text-green-400"></i>
+      </div>
+      <h1 class="text-2xl font-bold tracking-wide text-white">WhatsPro</h1>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-4">
+      <a href="#/dashboard" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/dashboard'), 'text-gray-300': !isActive('/dashboard')}">
+        <i class="fas fa-tachometer-alt w-7 text-center text-lg group-hover:text-green-400 transition"></i>
+        <span class="font-medium">Dashboard</span>
+      </a>
+      <a href="#/groups" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/groups'), 'text-gray-300': !isActive('/groups')}">
+        <i class="fas fa-users w-7 text-center text-lg group-hover:text-green-400 transition"></i>
+        <span class="font-medium">Groups</span>
+      </a>
+      <a href="#/events" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/events'), 'text-gray-300': !isActive('/events')}">
+        <i class="fas fa-calendar-alt w-7 text-center text-lg group-hover:text-green-400 transition"></i>
+        <span class="font-medium">Events</span>
+      </a>
+      <a href="#/event-reminders" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/event-reminders'), 'text-gray-300': !isActive('/event-reminders')}">
+        <i class="fas fa-bell w-7 text-center text-lg group-hover:text-green-400 transition"></i>
+        <span class="font-medium">Event Reminders</span>
+      </a>
+      <a href="#/schedules" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/schedules'), 'text-gray-300': !isActive('/schedules')}">
+        <i class="far fa-clock w-7 text-center text-lg group-hover:text-green-400 transition"></i>
+        <span class="font-medium">Schedules</span>
+      </a>
+      <a href="#/direct-schedule" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/direct-schedule'), 'text-gray-300': !isActive('/direct-schedule')}">
+        <i class="fas fa-paper-plane w-7 text-center text-lg group-hover:text-green-400 transition"></i>
+        <span class="font-medium">Direct Messages</span>
+      </a>
+      <a href="#/sequences" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/sequences'), 'text-gray-300': !isActive('/sequences')}">
+        <i class="fas fa-bullhorn w-7 text-center text-lg group-hover:text-green-400 transition"></i>
+        <span class="font-medium">Drip Sequences</span>
+      </a>
+      <a href="#/media" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/media'), 'text-gray-300': !isActive('/media')}">
+        <i class="far fa-image w-7 text-center text-lg group-hover:text-green-400 transition"></i>
+        <span class="font-medium">Media Library</span>
+      </a>
+      <a href="#/users" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/users'), 'text-gray-300': !isActive('/users')}" ng-if="user.role === 'admin'">
+        <i class="fas fa-user-shield w-7 text-center text-lg group-hover:text-green-400 transition"></i>
+        <span class="font-medium">Users</span>
+      </a>
+      <a href="#/status" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/status'), 'text-gray-300': !isActive('/status')}">
+        <i class="fas fa-hourglass-half w-7 text-center text-lg group-hover:text-green-400 transition"></i>
+        <span class="font-medium">Status</span>
+      </a>
+      <a href="#/settings" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/settings'), 'text-gray-300': !isActive('/settings')}">
+        <i class="fas fa-cog w-7 text-center text-lg group-hover:text-green-400 transition"></i>
+        <span class="font-medium">Settings</span>
+      </a>
+    </nav>
+
+    <div class="px-6 py-8 border-t border-gray-700 bg-gray-900/60 shadow-inner">
+      <!-- Loading state -->
+      <div ng-if="loadingUser" class="flex items-center space-x-2 mb-2">
+        <div class="w-4 h-4 rounded-full border-2 border-green-400 border-t-transparent animate-spin"></div>
+        <span class="text-sm text-gray-300">Loading...</span>
+      </div>
+      <!-- Error state -->
+      <p ng-if="userError" class="text-sm text-red-400 mb-2">
+        <i class="fas fa-exclamation-circle mr-1"></i> 
+        Error loading user
+      </p>
+      <!-- User info when available -->
+      <div ng-if="!loadingUser && !userError && user.username" class="flex items-center gap-3 mb-3 p-3 rounded-xl bg-gray-800/80 shadow">
+        <i class="fas fa-user-circle text-2xl text-green-400"></i>
+        <span class="text-sm text-gray-200">Logged in as <span class="font-semibold text-green-300">{{user.username}}</span></span>
+      </div>
+      <!-- Logout button -->
+      <button ng-click="logout()" 
+              ng-disabled="loggingOut"
+              class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 text-white py-2 rounded-xl flex items-center justify-center font-semibold shadow-lg transition-all duration-200">
+        <i class="fas fa-spinner fa-spin mr-2" ng-if="loggingOut"></i>
+        <i class="fas fa-sign-out-alt mr-2" ng-if="!loggingOut"></i>
+        <span ng-if="loggingOut">Logging out...</span>
+        <span ng-if="!loggingOut">Logout</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  @media (max-width: 767px) {
+    .min-w-64 { min-width: 0 !important; }
+  }
+</style>

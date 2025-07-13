@@ -7,9 +7,10 @@
     <!-- Top Header -->
     <header class="bg-white shadow-sm z-10 py-4 px-6">
       <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-gray-800">Dashboard</h2>
-        <div class="flex items-center space-x-3 relative" ng-controller="HeaderUserController">
-          <span class="text-gray-700">Welcome, {{user.username}}</span>
+        <div class="flex items-center gap-3">
+          <h2 class="text-2xl font-bold text-gray-900" style="padding-left:50px;">Dashboard</h2>
+        </div>
+        <div class="relative" ng-controller="HeaderUserController">
           <button class="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 focus:outline-none" ng-click="showUserMenu = !showUserMenu">
             <img src="https://cdn-icons-png.flaticon.com/512/9131/9131478.png" alt="User" class="w-7 h-7 rounded-full object-cover" />
           </button>
@@ -116,13 +117,11 @@
           <div class="text-gray-700 mb-4">
             <br/>
             Please contact the system administrator via WhatsApp:
-            <a href="https://wa.me/916302009818?text=Hello%20Robomate%2C%20My%20plan%20is%20expired%20for%20whatsapp%20autoposter%20panel%2C%20Please%20renew%20it" target="_blank" class="inline-flex items-center ml-1 px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200 transition">
-              <i class="fab fa-whatsapp mr-1"></i>+91 63020 09818
-            </a>
+            <a href="https://wa.me/916302009818?text=Hello%20Robomate%2C%20My%20plan%20is%20expired." class="text-red-600 font-semibold" target="_blank">+91 6302009818</a>
           </div>
-          <div class="mt-2">
-            <span class="inline-block px-3 py-1 bg-gray-100 rounded text-gray-700">Expiration Date: {{expirationDate | date:'yyyy-MM-dd'}}</span>
-          </div>
+          <button ng-click="expired = false" class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none">
+            Close
+          </button>
         </div>
       </div>
     </main>

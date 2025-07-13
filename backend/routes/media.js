@@ -26,11 +26,11 @@ const USER_MEDIA_FILE = path.join(__dirname, '../data/user_media.json');
 
 // Helper to generate full URL
 function getFullUrl(req, relativePath) {
-  const env = process.env.ENV || 'dev';
+  const env = process.env.NODE_ENV || 'dev';
   
   let baseUrl;
   if (env === 'prod') {
-    baseUrl = 'https://nurture.robomate.in';
+    baseUrl = 'https://whatspro.robomate.in';
   } else {
     baseUrl = 'http://localhost:3000';
   }

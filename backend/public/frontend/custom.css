@@ -1,0 +1,53 @@
+/* Sidebar Styles */
+.sidebar-container {
+  position: fixed;
+  top: 0;
+  left: -288px; /* 72 * 4 */
+  width: 288px;
+  height: 100%;
+  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  transition: left 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.sidebar-container.open {
+  left: 0;
+}
+
+/* Hamburger Menu Styles */
+.hamburger-menu {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 3rem;
+  height: 3rem;
+  background-color: #232526;
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1001;
+  display: none; /* Hidden by default on larger screens */
+}
+
+/* Main Content Styles */
+.main-content {
+  margin-left: 288px;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .sidebar-container {
+    left: -288px;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .hamburger-menu {
+    display: block;
+  }
+}

@@ -1,0 +1,142 @@
+<!-- Main Content -->
+<div class="flex-1 overflow-y-auto">
+  <div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Direct Message Scheduler</h1>
+
+    <!-- Schedule Form -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+      <h2 class="text-xl font-semibold mb-4">Schedule a New Message</h2>
+      <form ng-submit="createSchedule()">
+        <div class="mb-4">
+          <label for="number" class="block text-gray-700">Phone Number</label>
+          <input type="text" id="number" ng-model="newSchedule.number" class="w-full px-3 py-2 border rounded-lg" placeholder="e.g., 919876543210" required>
+        </div>
+        <div class="mb-4">
+          <label for="message" class="block text-gray-700">Message</label>
+          <textarea id="message" ng-model="newSchedule.message" class="w-full px-3 py-2 border rounded-lg" rows="3" placeholder="Your message here..." required></textarea>
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 mb-2">Media (Optional)</label>
+          <div class="space-y-2">
+            <!-- Media URL Input -->
+            <div>
+              <label for="mediaUrl" class="block text-sm text-gray-600">Media URL</label>
+              <input type="text" id="mediaUrl" ng-model="newSchedule.mediaUrl" class="w-full px-3 py-2 border rounded-lg" placeholder="https://example.com/image.jpg">
+            </div>
+
+            <!-- Media Library Selection -->
+            <div class="text-center">
+              <span class="text-sm text-gray-600">OR</span>
+            </div>
+            <div>
+              <button type="button" ng-click="openMediaSelector()" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition">
+                <i class="fas fa-images mr-2"></i>
+                Select from Media Library
+              </button>
+              <!-- Show selected media -->
+              <div ng-if="newSchedule.selectedMedia" class="mt-2 p-2 bg-blue-50 rounded-lg">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-blue-700">
+                    <i class="fas fa-check-circle mr-1"></i>
+                    Selected: {{ newSchedule.selectedMedia.originalName }}
+                  </span>
+                  <button type="button" ng-click="clearSelectedMedia()" class="text-red-500 hover:text-red-700">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label for="scheduledAt" class="block text-gray-700">Scheduled Time</label>
+          <input type="datetime-local" id="scheduledAt" ng-model="newSchedule.scheduledAt" class="w-full px-3 py-2 border rounded-lg" required>
+        </div>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Schedule Message</button>
+      </form>
+    </div>
+
+    <!-- Scheduled Messages List -->
+    <div>
+      <h2 class="text-xl font-semibold mb-4">Scheduled Messages</h2>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <table class="min-w-full">
+          <thead>
+            <tr>
+              <th class="px-4 py-2 text-left">Phone Number</th>
+              <th class="px-4 py-2 text-left">Message</th>
+              <th class="px-4 py-2 text-left">Media</th>
+              <th class="px-4 py-2 text-left">Scheduled At</th>
+              <th class="px-4 py-2 text-left">Status</th>
+              <th class="px-4 py-2 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="schedule in schedules | orderBy:'-createdAt'">
+              <td class="border px-4 py-2">{{ schedule.number }}</td>
+              <td class="border px-4 py-2">{{ schedule.message }}</td>
+              <td class="border px-4 py-2">
+                <span ng-if="schedule.mediaUrl" class="text-blue-600">
+                  <i class="fas fa-paperclip mr-1"></i>
+                  Media attached
+                </span>
+                <span ng-if="!schedule.mediaUrl" class="text-gray-500">
+                  Text only
+                </span>
+              </td>
+              <td class="border px-4 py-2">{{ schedule.scheduledAt | date:'yyyy-MM-dd HH:mm' }}</td>
+              <td class="border px-4 py-2">
+                <span ng-class="{'bg-yellow-200 text-yellow-800': schedule.status === 'Scheduled', 'bg-green-200 text-green-800': schedule.status === 'Sent', 'bg-red-200 text-red-800': schedule.status === 'Failed'}" class="px-2 py-1 rounded-full text-sm">
+                  {{ schedule.status }}
+                </span>
+              </td>
+              <td class="border px-4 py-2">
+                <button ng-click="deleteSchedule(schedule.id)" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Media Selector Modal -->
+<div ng-if="showMediaSelector" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold">Select Media from Library</h2>
+      <button ng-click="closeMediaSelector()" class="text-gray-500 hover:text-gray-700">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
+
+    <div ng-if="loadingMedia" class="text-center py-8">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      <p class="mt-2 text-gray-600">Loading media...</p>
+    </div>
+
+    <div ng-if="!loadingMedia && mediaLibrary.length === 0" class="text-center py-8">
+      <p class="text-gray-600">No media files found in your library.</p>
+      <a href="#/media" class="text-blue-500 hover:text-blue-700">Upload some media first</a>
+    </div>
+
+    <div ng-if="!loadingMedia && mediaLibrary.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div ng-repeat="media in mediaLibrary" class="border rounded-lg p-2 hover:bg-gray-50 cursor-pointer" ng-click="selectMediaForSchedule(media)">
+        <div class="aspect-square bg-gray-100 rounded flex items-center justify-center mb-2">
+          <img ng-if="media.type === 'image'" ng-src="{{ media.url }}" alt="{{ media.originalName }}" class="max-w-full max-h-full object-cover rounded">
+          <div ng-if="media.type !== 'image'" class="text-gray-500">
+            <i class="fas fa-file text-2xl"></i>
+          </div>
+        </div>
+        <p class="text-xs text-gray-600 text-center truncate">{{ media.originalName || media.name }}</p>
+      </div>
+    </div>
+
+    <div class="mt-6 text-right">
+      <button ng-click="closeMediaSelector()" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>

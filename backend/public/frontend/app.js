@@ -37,7 +37,7 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
       controller: 'AuthController'
     })
     .when('/dashboard', {
-      templateUrl: 'dashboard.html',
+      templateUrl: 'dashboard-content.html',
       controller: 'DashboardController'
     })
     .when('/groups/create', {
@@ -49,11 +49,11 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
       controller: 'AutomationScheduleController'
     })
     .when('/groups', {
-      templateUrl: 'groups.html',
+      templateUrl: 'groups-content.html',
       controller: 'GroupsController'  // Fixed from GroupsPageController
     })
     .when('/schedules', {
-      templateUrl: 'schedules.html',
+      templateUrl: 'schedules-content.html',
       controller: 'ScheduleController'  // Fixed from SchedulesPageController
     })
     .when('/events', {
@@ -61,19 +61,19 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
       controller: 'EventsController'  // Fixed from EventsPageController
     })
     .when('/event-reminders', {
-      templateUrl: 'event-reminders.html',
+      templateUrl: 'event-reminders-content.html',
       controller: 'EventRemindersController'
     })
     .when('/event-reminders/:id', {
-      templateUrl: 'event-reminders.html',
+      templateUrl: 'event-reminders-content.html',
       controller: 'EventRemindersController'
     })
     .when('/media', {
-      templateUrl: 'media.html',
+      templateUrl: 'media-content.html',
       controller: 'MediaPageController'
     })
     .when('/users', {
-      templateUrl: 'users.html',
+      templateUrl: 'users-content.html',
       controller: 'DashboardController'
     })
     .when('/settings', {
@@ -81,11 +81,11 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
       controller: 'SettingsController'
     })
     .when('/direct-schedule', {
-      templateUrl: 'direct-schedule.html',
+      templateUrl: 'direct-schedule-content.html',
       controller: 'DirectScheduleController'
     })
     .when('/sequences', {
-      templateUrl: 'sequences.html',
+      templateUrl: 'sequences-content.html',
       controller: 'SequencesController'
     })
     .when('/sequences/create', {

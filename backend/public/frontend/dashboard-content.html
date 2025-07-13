@@ -1,0 +1,125 @@
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col overflow-hidden">
+  <!-- Top Header -->
+  <header class="bg-white shadow-sm z-10 py-4 px-6">
+    <div class="flex justify-between items-center">
+      <h2 class="text-xl font-semibold text-gray-800">Dashboard</h2>
+      <div class="flex items-center space-x-3 relative" ng-controller="HeaderUserController">
+        <span class="text-gray-700">Welcome, {{user.username}}</span>
+        <button class="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 focus:outline-none" ng-click="showUserMenu = !showUserMenu">
+          <img src="https://cdn-icons-png.flaticon.com/512/9131/9131478.png" alt="User" class="w-7 h-7 rounded-full object-cover" />
+        </button>
+        <div ng-if="showUserMenu" class="absolute right-0 mt-12 w-40 bg-white border border-gray-200 rounded shadow-lg z-50">
+          <button ng-click="logout()" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center">
+            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div class="flex items-center">
+          <div class="p-3 rounded-lg bg-blue-50">
+            <i class="fa-solid fa-users text-blue-600"></i>
+          </div>
+          <div class="ml-4">
+            <h3 class="text-sm font-medium text-gray-900">Total Groups</h3>
+            <p class="text-2xl font-semibold text-blue-600">{{groups.length}}</p>
+          </div>
+        </div>
+        <a href="#/groups" class="mt-4 inline-block text-sm text-blue-600 hover:text-blue-700">
+          Manage Groups <i class="fa-solid fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div class="flex items-center">
+          <div class="p-3 rounded-lg bg-green-50">
+            <i class="fa-solid fa-calendar-check text-green-600"></i>
+          </div>
+          <div class="ml-4">
+            <h3 class="text-sm font-medium text-gray-900">Active Schedules</h3>
+            <p class="text-2xl font-semibold text-green-600">{{schedules.length}}</p>
+          </div>
+        </div>
+        <a href="#/schedules" class="mt-4 inline-block text-sm text-green-600 hover:text-green-700">
+          View Schedules <i class="fa-solid fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div class="flex items-center">
+          <div class="p-3 rounded-lg bg-purple-50">
+            <i class="fa-solid fa-images text-purple-600"></i>
+          </div>
+          <div class="ml-4">
+            <h3 class="text-sm font-medium text-gray-900">Media Files</h3>
+            <p class="text-2xl font-semibold text-purple-600">{{media.length}}</p>
+          </div>
+        </div>
+        <a href="#/media" class="mt-4 inline-block text-sm text-purple-600 hover:text-purple-700">
+          Browse Media <i class="fa-solid fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div>
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Recent Activity</h2>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-6" ng-if="schedules.length === 0">
+          <p class="text-gray-500 text-center">No recent activity to show</p>
+        </div>
+        <div class="divide-y divide-gray-100" ng-if="schedules.length > 0">
+          <div class="p-4" ng-repeat="s in schedules | orderBy:'-time' | limitTo:5">
+            <div class="flex items-start space-x-3">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                     ng-class="{'bg-green-100': !s.sent, 'bg-gray-100': s.sent}">
+                  <i class="fa-solid fa-paper-plane"
+                     ng-class="{'text-green-600': !s.sent, 'text-gray-600': s.sent}"></i>
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-900">{{s.message}}</p>
+                <div class="mt-1 text-xs text-gray-500">
+                  <span>{{s.time | date:'medium'}}</span>
+                  <span class="mx-2">•</span>
+                  <span>{{getGroupName(s.groupId)}}</span>
+                </div>
+              </div>
+              <div>
+                <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full"
+                      ng-class="{'bg-green-100 text-green-800': !s.sent, 'bg-gray-100 text-gray-800': s.sent}">
+                  {{s.sent ? 'Sent' : 'Scheduled'}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Access Control Notification -->
+      <div ng-if="expired" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+        <div class="bg-white rounded-xl shadow-xl p-8 max-w-md w-full text-center border-2 border-red-400">
+          <div class="text-2xl font-bold text-red-600 mb-2">Plan Expired</div>
+          <div class="text-gray-700 mb-4">
+            <br/>
+            Please contact the system administrator via WhatsApp:
+            <a href="https://wa.me/916302009818?text=Hello%20Robomate%2C%20My%20plan%20is%20expired%20for%20whatsapp%20autoposter%20panel%2C%20Please%20renew%20it" target="_blank" class="inline-flex items-center ml-1 px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200 transition">
+              <i class="fab fa-whatsapp mr-1"></i>+91 63020 09818
+            </a>
+          </div>
+          <div class="mt-2">
+            <span class="inline-block px-3 py-1 bg-gray-100 rounded text-gray-700">Expiration Date: {{expirationDate | date:'yyyy-MM-dd'}}</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

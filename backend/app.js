@@ -7,8 +7,9 @@ const session = require('express-session');
 const cron = require('node-cron');
 const axios = require('axios');
 const fs = require('fs');
-const FileStore = require('session-file-store')(session);
 const qs = require('querystring');
+
+const SingleFileSessionStore = require('./single-file-session-store');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -121,7 +122,7 @@ app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 // Session middleware
 app.use(session({
-  store: new FileStore({ path: './data/sessions', retries: 1 }),
+  store: new SingleFileSessionStore(path.join(__dirname, 'data/sessions.json')),
   secret: 'autopost-wa-secret',
   resave: false,
   saveUninitialized: true,

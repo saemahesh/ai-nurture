@@ -135,7 +135,7 @@ router.post("/enroll", (req, res) => {
     username: user.username,
     phone: phone,
     name: pushName || "",
-    enrolled_at: moment().toISOString(),
+    enrolled_at: moment().toISOString(), // Use snake_case for compatibility
     current_day: 0,
     status: "active",
     last_message_sent: null,
@@ -163,7 +163,10 @@ router.post("/enroll", (req, res) => {
   writeEnrollments(enrollments);
 
   // 5. Schedule messages using the CampaignExecutor
-  campaignExecutor.processEnrollment(newEnrollment);
+  campaignExecutor.processEnrollment({
+    ...newEnrollment,
+    enrolledAt: newEnrollment.enrolled_at,
+  });
 
   res
     .status(200)

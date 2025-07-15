@@ -78,10 +78,14 @@ router.post("/enroll", (req, res) => {
   const fromContact = data.message.from_contact;
   const pushName = data.message.push_name;
 
+  // Skip if from_contact is too long (invalid phone)
   if (!content || !fromContact) {
     return res
       .status(400)
       .json({ error: "Missing message content or contact information" });
+  }
+  if (fromContact.length > 15) {
+    return res.status(400).json({ error: "from_contact is too long, skipping enrollment" });
   }
 
   const keyword = content.trim().toLowerCase();

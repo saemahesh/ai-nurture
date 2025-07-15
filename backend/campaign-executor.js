@@ -186,6 +186,42 @@ class CampaignExecutor {
       console.log(`🔄 [CAMPAIGN_EXECUTOR] Generating queue entries for lead ${lead.id}`);
       this.generateQueueEntriesForLead(actualCampaignId, username, lead, sequence, enrolledAt);
 
+      // --- OPTIMIZED: Update enrollment's next_message_due only if needed, with minimal file reads/writes ---
+      const enrollments = this.loadData(this.enrollmentsFile);
+      const normalizedPhone = this.normalizePhone(phone);
+      const enrollment = enrollments.find(e =>
+        this.normalizePhone(e.phone) === normalizedPhone &&
+        e.username === username &&
+        (e.sequence_id === actualCampaignId || e.campaignId === actualCampaignId)
+      );
+      if (enrollment) {
+        // Only load queue if enrollment exists
+        const queue = this.loadData(this.queueFile);
+        // Find the first pending queue entry for this enrollment (single pass, no sort)
+        let firstPending = null;
+        let earliest = null;
+        for (const q of queue) {
+          if (
+            this.normalizePhone(q.phone) === normalizedPhone &&
+            q.username === username &&
+            (q.campaignId === actualCampaignId || q.sequence_id === actualCampaignId) &&
+            q.status === 'pending'
+          ) {
+            if (!earliest || new Date(q.scheduledAt) < earliest) {
+              earliest = new Date(q.scheduledAt);
+              firstPending = q;
+            }
+          }
+        }
+        if (firstPending && enrollment.next_message_due !== firstPending.scheduledAt) {
+          enrollment.next_message_due = firstPending.scheduledAt;
+          this.saveData(this.enrollmentsFile, enrollments);
+          console.log(`✅ [ENROLLMENT] next_message_due updated to ${firstPending.scheduledAt}`);
+        } else if (firstPending) {
+          console.log(`⏩ [ENROLLMENT] next_message_due already up-to-date (${firstPending.scheduledAt}), no update needed.`);
+        }
+      }
+
       console.log(`✅ [CAMPAIGN_EXECUTOR] Enrollment processed successfully`);
       return { success: true, message: 'Enrollment processed successfully' };
     } catch (error) {

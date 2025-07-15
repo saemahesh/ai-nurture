@@ -276,10 +276,16 @@ class CampaignExecutor {
           console.log(`📅 [QUEUE_GENERATOR] Using day-based scheduling (day ${message.day})`);
           // Existing system: messages are scheduled by day
           sendTime = new Date(baseTime.getTime() + (message.day - 1) * 24 * 60 * 60 * 1000);
-          // Add random time between 6 AM and 9 PM
-          const randomHours = Math.floor(Math.random() * 15); // 0-14 hours (6 AM to 9 PM)
-          const randomMinutes = Math.floor(Math.random() * 60);
-          sendTime.setHours(6 + randomHours, randomMinutes, 0, 0);
+          if (message.day === 1) {
+            // For day 1, always schedule 1 hour after enrollment
+            sendTime = new Date(baseTime.getTime() + 1 * 60 * 60 * 1000);
+            console.log('⏰ [QUEUE_GENERATOR] Day 1 message: forcing 1 hour delay after enrollment');
+          } else {
+            // Add random time between 6 AM and 9 PM
+            const randomHours = Math.floor(Math.random() * 15); // 0-14 hours (6 AM to 9 PM)
+            const randomMinutes = Math.floor(Math.random() * 60);
+            sendTime.setHours(6 + randomHours, randomMinutes, 0, 0);
+          }
         } else {
           console.log(`⏱️ [QUEUE_GENERATOR] Using delay-based scheduling (${message.delay || 0} minutes)`);
           // New system: messages are scheduled by delay in minutes

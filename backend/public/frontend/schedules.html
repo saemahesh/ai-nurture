@@ -114,28 +114,52 @@
             </div>
           </div>
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">Image (Optional)</label>
+            <label class="block text-sm font-medium text-gray-700">Media (Optional)</label>
             <div class="space-y-3">
-              <!-- Image Method Selection -->
+              <!-- Media Method Selection -->
               <div class="flex space-x-4">
                 <label class="flex items-center">
-                  <input type="radio" ng-model="newSchedule.imageMethod" value="upload" 
+                  <input type="radio" ng-model="newSchedule.imageMethod" value="library" 
                          name="imageMethod" class="h-4 w-4 text-green-600">
-                  <span class="ml-2 text-sm text-gray-700">Upload File</span>
+                  <span class="ml-2 text-sm text-gray-700">From Media Library</span>
                 </label>
                 <label class="flex items-center">
                   <input type="radio" ng-model="newSchedule.imageMethod" value="url" 
                          name="imageMethod" class="h-4 w-4 text-green-600">
-                  <span class="ml-2 text-sm text-gray-700">Image URL</span>
+                  <span class="ml-2 text-sm text-gray-700">External URL</span>
                 </label>
               </div>
               
-              <!-- File Upload Option -->
-              <div ng-if="newSchedule.imageMethod === 'upload'">
-                <input type="file" file-model="newSchedule.image" 
-                       name="scheduleImage"
-                       class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500"
-                       accept="image/*">
+              <!-- Media Library Selection -->
+              <div ng-if="newSchedule.imageMethod === 'library'">
+                <button type="button" ng-click="openMediaSelector()" 
+                        class="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Select from Media Library
+                </button>
+                <!-- Show selected media -->
+                <div ng-if="newSchedule.selectedMedia" class="mt-2 p-3 bg-blue-50 rounded-lg">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                      <img ng-src="{{getImageUrl(newSchedule.selectedMedia.url)}}" 
+                           alt="Selected media" 
+                           class="h-12 w-12 object-cover rounded border">                    <span class="text-sm text-blue-700">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      Selected: {{ newSchedule.selectedMedia.name }}
+                    </span>
+                    </div>
+                    <button type="button" ng-click="clearSelectedMedia()" 
+                            class="text-red-500 hover:text-red-700">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
               
               <!-- URL Input Option -->
@@ -317,27 +341,53 @@
           </div>
         </div>
         <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">Update Image (Optional)</label>
+          <label class="block text-sm font-medium text-gray-700">Update Media (Optional)</label>
           <div class="space-y-3">
-            <!-- Image Method Selection -->
+            <!-- Media Method Selection -->
             <div class="flex space-x-4">
               <label class="flex items-center">
-                <input type="radio" ng-model="editScheduleData.imageMethod" value="upload" 
+                <input type="radio" ng-model="editScheduleData.imageMethod" value="library" 
                        name="editImageMethod" class="h-4 w-4 text-green-600">
-                <span class="ml-2 text-sm text-gray-700">Upload File</span>
+                <span class="ml-2 text-sm text-gray-700">From Media Library</span>
               </label>
               <label class="flex items-center">
                 <input type="radio" ng-model="editScheduleData.imageMethod" value="url" 
                        name="editImageMethod" class="h-4 w-4 text-green-600">
-                <span class="ml-2 text-sm text-gray-700">Image URL</span>
+                <span class="ml-2 text-sm text-gray-700">External URL</span>
               </label>
             </div>
             
-            <!-- File Upload Option -->
-            <div ng-if="editScheduleData.imageMethod === 'upload'">
-              <input type="file" file-model="editScheduleData.image" 
-                     class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500"
-                     accept="image/*">
+            <!-- Media Library Selection -->
+            <div ng-if="editScheduleData.imageMethod === 'library'">
+              <button type="button" ng-click="openMediaSelectorForEdit()" 
+                      class="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Select from Media Library
+              </button>
+              <!-- Show selected media -->
+              <div ng-if="editScheduleData.selectedMedia" class="mt-2 p-3 bg-blue-50 rounded-lg">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <img ng-src="{{getImageUrl(editScheduleData.selectedMedia.url)}}" 
+                         alt="Selected media" 
+                         class="h-12 w-12 object-cover rounded border">
+                    <span class="text-sm text-blue-700">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      Selected: {{ editScheduleData.selectedMedia.name }}
+                    </span>
+                  </div>
+                  <button type="button" ng-click="clearSelectedMediaForEdit()" 
+                          class="text-red-500 hover:text-red-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
             
             <!-- URL Input Option -->
@@ -368,6 +418,50 @@
           <span class="text-red-600" ng-if="editScheduleError">{{editScheduleError}}</span>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- Media Selector Modal -->
+<div ng-if="showMediaSelector" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold">Select Media from Library</h2>
+      <button ng-click="closeMediaSelector()" class="text-gray-500 hover:text-gray-700">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    
+    <div ng-if="loadingMedia" class="text-center py-8">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+      <p class="mt-2 text-gray-600">Loading media...</p>
+    </div>
+    
+    <div ng-if="!loadingMedia && mediaLibrary.length === 0" class="text-center py-8">
+      <p class="text-gray-600">No media files found in your library.</p>
+      <a href="#/media" class="text-green-500 hover:text-green-700">Upload some media first</a>
+    </div>
+    
+    <div ng-if="!loadingMedia && mediaLibrary.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div ng-repeat="media in mediaLibrary" class="border rounded-lg p-2 hover:bg-gray-50 cursor-pointer" ng-click="selectMediaForSchedule(media)">
+        <div class="aspect-square bg-gray-100 rounded flex items-center justify-center mb-2">
+          <img ng-if="media.type === 'image'" ng-src="{{ getImageUrl(media.url) }}" alt="{{ media.name }}" class="max-w-full max-h-full object-cover rounded">
+          <div ng-if="media.type !== 'image'" class="text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+        </div>
+        <p class="text-xs text-gray-600 text-center truncate">{{ media.name }}</p>
+      </div>
+    </div>
+    
+    <div class="mt-6 text-right">
+      <button ng-click="closeMediaSelector()" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+        Cancel
+      </button>
     </div>
   </div>
 </div>

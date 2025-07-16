@@ -54,11 +54,71 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
     name: '',
     message: '',
     time: '',
-    imageMethod: 'upload', // Default to upload method
-    image: null,
+    imageMethod: 'library', // Default to media library
+    selectedMedia: null,
     imageUrl: ''
   };
   $scope.scheduleError = '';
+  
+  // Media library functionality
+  $scope.mediaLibrary = [];
+  $scope.showMediaSelector = false;
+  $scope.loadingMedia = false;
+  
+  // Load media library
+  $scope.loadMediaLibrary = function() {
+    $scope.loadingMedia = true;
+    ApiService.getMedia().then(function(response) {
+      $scope.mediaLibrary = response.data;
+      console.log('Loaded media library:', response.data);
+      $scope.loadingMedia = false;
+    }).catch(function(error) {
+      console.error('Error loading media library:', error);
+      $scope.loadingMedia = false;
+    });
+  };
+
+  // Open media selector
+  $scope.openMediaSelector = function() {
+    $scope.showMediaSelector = true;
+    $scope.loadMediaLibrary();
+  };
+
+  // Open media selector for edit mode
+  $scope.openMediaSelectorForEdit = function() {
+    $scope.editingForMedia = true;
+    $scope.showMediaSelector = true;
+    $scope.loadMediaLibrary();
+  };
+
+  // Close media selector
+  $scope.closeMediaSelector = function() {
+    $scope.showMediaSelector = false;
+    $scope.editingForMedia = false;
+  };
+
+  // Select media for schedule
+  $scope.selectMediaForSchedule = function(media) {
+    console.log('Selected media:', media);
+    if ($scope.editingForMedia) {
+      $scope.editScheduleData.selectedMedia = media;
+      $scope.editScheduleData.imageUrl = ''; // Clear URL field when selecting from library
+    } else {
+      $scope.newSchedule.selectedMedia = media;
+      $scope.newSchedule.imageUrl = ''; // Clear URL field when selecting from library
+    }
+    $scope.closeMediaSelector();
+  };
+
+  // Clear selected media
+  $scope.clearSelectedMedia = function() {
+    $scope.newSchedule.selectedMedia = null;
+  };
+
+  // Clear selected media for edit
+  $scope.clearSelectedMediaForEdit = function() {
+    $scope.editScheduleData.selectedMedia = null;
+  };
   
   // Check if any groups are selected
   $scope.hasSelectedGroups = function() {
@@ -112,9 +172,9 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
     });
     formData.append('groupIds', JSON.stringify(groupIds));
     
-    // Handle image - either file upload or URL
-    if ($scope.newSchedule.imageMethod === 'upload' && $scope.newSchedule.image) {
-      formData.append('image', $scope.newSchedule.image);
+    // Handle media - either library selection or URL
+    if ($scope.newSchedule.imageMethod === 'library' && $scope.newSchedule.selectedMedia) {
+      formData.append('imageUrl', $scope.newSchedule.selectedMedia.url);
     } else if ($scope.newSchedule.imageMethod === 'url' && $scope.newSchedule.imageUrl) {
       formData.append('imageUrl', $scope.newSchedule.imageUrl);
     }
@@ -127,8 +187,8 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
           name: '',
           message: '',
           time: '',
-          imageMethod: 'upload',
-          image: null,
+          imageMethod: 'library',
+          selectedMedia: null,
           imageUrl: ''
         };
         
@@ -193,6 +253,7 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
   $scope.editingSchedule = false;
   $scope.editScheduleData = {};
   $scope.editScheduleError = '';
+  $scope.editingForMedia = false;
   
   $scope.showEditModal = function(schedule) {
     $scope.editingSchedule = true;
@@ -203,8 +264,8 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
       time: new Date(schedule.time).toISOString().slice(0, 16), // Format for datetime-local input
       groupId: schedule.groupId,
       currentMediaUrl: schedule.media,
-      imageMethod: 'upload', // Default to upload method
-      image: null,
+      imageMethod: 'library', // Default to media library
+      selectedMedia: null,
       imageUrl: ''
     };
     $scope.editScheduleError = '';
@@ -232,9 +293,9 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
     formData.append('time', $scope.editScheduleData.time);
     formData.append('groupId', $scope.editScheduleData.groupId);
     
-    // Handle image - either file upload or URL
-    if ($scope.editScheduleData.imageMethod === 'upload' && $scope.editScheduleData.image) {
-      formData.append('image', $scope.editScheduleData.image);
+    // Handle media - either library selection or URL
+    if ($scope.editScheduleData.imageMethod === 'library' && $scope.editScheduleData.selectedMedia) {
+      formData.append('imageUrl', $scope.editScheduleData.selectedMedia.url);
     } else if ($scope.editScheduleData.imageMethod === 'url' && $scope.editScheduleData.imageUrl) {
       formData.append('imageUrl', $scope.editScheduleData.imageUrl);
     }

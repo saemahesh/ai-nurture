@@ -9,13 +9,24 @@ function getMediaUrlForSending(mediaUrl) {
   // If no media URL, return null
   if (!mediaUrl) return null;
   
-  // If NODE_ENV is not production and URL doesn't contain http (local relative path)
-  if (process.env.NODE_ENV !== 'prod' && !mediaUrl.includes('http')) {
+  // If NODE_ENV is production
+  if (process.env.NODE_ENV === 'prod') {
+    // If URL doesn't contain http (local relative path), prepend production domain
+    if (!mediaUrl.includes('http')) {
+      console.log(`🔗 [PRODUCTION] Converting local media URL "${mediaUrl}" to production URL`);
+      return `https://whatspro.robomate.in${mediaUrl.startsWith('/') ? '' : '/'}${mediaUrl}`;
+    }
+    // If URL already contains http, return as is
+    return mediaUrl;
+  }
+  
+  // For development/test environments
+  if (!mediaUrl.includes('http')) {
     console.log(`🧪 [TESTING] Converting local media URL "${mediaUrl}" to test image for development`);
     return 'https://ezofis.com/wp-content/uploads/2025/03/blog-workflowAutomation-featured-1560x740-copy-1.jpg';
   }
   
-  // For production or URLs that already contain http, return as is
+  // For URLs that already contain http, return as is
   return mediaUrl;
 }
 

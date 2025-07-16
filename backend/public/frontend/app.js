@@ -1,6 +1,10 @@
 // Core application module
 angular.module('autopostWaApp.core', []);
 
+// Add app version - ONLY change this when you deploy new code
+const APP_VERSION = '1.0.1'; // Static version - increment manually when deploying
+window.APP_VERSION = APP_VERSION;
+
 // Features modules
 angular.module('autopostWaApp.auth', ['autopostWaApp.core']);
 angular.module('autopostWaApp.dashboard', ['autopostWaApp.core']);
@@ -209,4 +213,92 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
   };
 
   loadSettings();
+})
+
+// App run block for cache busting and mobile optimization
+app.run(function($rootScope, $location, $timeout) {
+  // Register service worker for cache management
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then(function(registration) {
+        console.log('Service Worker registered successfully:', registration.scope);
+        
+        // Check for updates
+        registration.addEventListener('updatefound', function() {
+          console.log('New service worker found, updating...');
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', function() {
+            if (newWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                console.log('New content available, refresh needed');
+                // Notify user or auto-refresh
+                newWorker.postMessage({type: 'SKIP_WAITING'});
+              }
+            }
+          });
+        });
+      })
+      .catch(function(error) {
+        console.log('Service Worker registration failed:', error);
+      });
+    
+    // Listen for service worker messages
+    navigator.serviceWorker.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'CACHE_CLEARED') {
+        console.log('Cache cleared by service worker');
+      }
+    });
+  }
+  
+  // Check for mobile devices and implement cache busting
+  var isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  if (isMobile) {
+    console.log('Mobile device detected - implementing cache busting');
+    
+    // Store current app version
+    var currentVersion = window.APP_VERSION;
+    var storedVersion = localStorage.getItem('app_version');
+    
+    // Only force refresh if stored version exists and is different (not on first load)
+    if (storedVersion && storedVersion !== currentVersion && storedVersion !== 'undefined') {
+      console.log('App version changed from', storedVersion, 'to', currentVersion, '- forcing refresh...');
+      localStorage.setItem('app_version', currentVersion);
+      // Add a flag to prevent infinite reload loops
+      if (!sessionStorage.getItem('version_refresh_done')) {
+        sessionStorage.setItem('version_refresh_done', 'true');
+        window.location.reload(true);
+        return;
+      }
+    }
+    
+    // Store current version
+    localStorage.setItem('app_version', currentVersion);
+    // Clear the refresh flag after successful load
+    sessionStorage.removeItem('version_refresh_done');
+    
+    // Add meta tags to prevent caching on mobile
+    var metaElements = [
+      { name: 'Cache-Control', content: 'no-cache, no-store, must-revalidate' },
+      { name: 'Pragma', content: 'no-cache' },
+      { name: 'Expires', content: '0' }
+    ];
+    
+    metaElements.forEach(function(meta) {
+      var element = document.createElement('meta');
+      element.httpEquiv = meta.name;
+      element.content = meta.content;
+      document.head.appendChild(element);
+    });
+  }
+  
+  // Listen for route changes
+  $rootScope.$on('$routeChangeStart', function(event, next, current) {
+    if (isMobile && next && next.templateUrl) {
+      // Add cache buster to template URLs on mobile using timestamp
+      if (next.templateUrl.indexOf('?') === -1) {
+        next.templateUrl += '?v=' + Date.now(); // Use timestamp for templates only
+      }
+    }
+  });
 });

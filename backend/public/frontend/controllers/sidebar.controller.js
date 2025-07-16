@@ -32,6 +32,49 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
     });
   };
   
+  // Force refresh function for mobile cache issues
+  $scope.forceRefresh = function() {
+    $scope.refreshing = true;
+    
+    console.log('Force refresh initiated...');
+    
+    // Clear service worker caches
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({type: 'CLEAR_CACHE'});
+    }
+    
+    // Clear browser caches
+    if ('caches' in window) {
+      caches.keys().then(function(names) {
+        names.forEach(function(name) {
+          caches.delete(name);
+        });
+      });
+    }
+    
+    // Clear localStorage and sessionStorage
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Unregister service workers and force reload
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        registrations.forEach(function(registration) {
+          registration.unregister();
+        });
+        // Force hard reload after unregistering
+        setTimeout(function() {
+          window.location.reload(true);
+        }, 500);
+      });
+    } else {
+      // Force hard reload
+      setTimeout(function() {
+        window.location.reload(true);
+      }, 500);
+    }
+  };
+  
   $scope.sidebarOpen = false;
   $scope.openSidebar = function() {
     $scope.sidebarOpen = true;

@@ -78,13 +78,24 @@
         <i class="fas fa-user-circle text-lg text-green-400"></i>
         <span class="font-semibold text-green-300 text-sm ml-2">{{user.username | uppercase}}</span>
       </div>
-      <button ng-click="logout()"
-              ng-disabled="loggingOut"
-              class="bg-transparent text-green-400 hover:text-green-600 p-2 rounded-full focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center"
-              title="Logout">
-        <i class="fas fa-sign-out-alt text-lg" ng-if="!loggingOut"></i>
-        <i class="fas fa-spinner fa-spin text-lg" ng-if="loggingOut"></i>
-      </button>
+      <div class="flex items-center space-x-2">
+        <!-- Force refresh button for mobile cache issues -->
+        <button ng-click="forceRefresh()"
+                ng-disabled="refreshing"
+                class="bg-transparent text-green-400 hover:text-green-600 p-2 rounded-full focus:outline-none min-w-[36px] min-h-[36px] flex items-center justify-center md:hidden"
+                title="Force Refresh App">
+          <i class="fas fa-sync-alt text-sm" ng-if="!refreshing"></i>
+          <i class="fas fa-spinner fa-spin text-sm" ng-if="refreshing"></i>
+        </button>
+        <!-- Logout button -->
+        <button ng-click="logout()"
+                ng-disabled="loggingOut"
+                class="bg-transparent text-green-400 hover:text-green-600 p-2 rounded-full focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center"
+                title="Logout">
+          <i class="fas fa-sign-out-alt text-lg" ng-if="!loggingOut"></i>
+          <i class="fas fa-spinner fa-spin text-lg" ng-if="loggingOut"></i>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -176,13 +187,24 @@
           <i class="fas fa-user-circle text-lg text-green-400"></i>
           <span class="font-semibold text-green-300 text-sm ml-2">{{user.username | uppercase}}</span>
         </div>
-        <button ng-click="logout()"
-                ng-disabled="loggingOut"
-                class="bg-transparent text-green-400 hover:text-green-600 p-2 rounded-full focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center"
-                title="Logout">
-          <i class="fas fa-sign-out-alt text-lg" ng-if="!loggingOut"></i>
-          <i class="fas fa-spinner fa-spin text-lg" ng-if="loggingOut"></i>
-        </button>
+        <div class="flex items-center space-x-2">
+          <!-- Force refresh button for mobile cache issues -->
+          <button ng-click="forceRefresh()"
+                  ng-disabled="refreshing"
+                  class="bg-transparent text-green-400 hover:text-green-600 p-2 rounded-full focus:outline-none min-w-[36px] min-h-[36px] flex items-center justify-center"
+                  title="Force Refresh App">
+            <i class="fas fa-sync-alt text-sm" ng-if="!refreshing"></i>
+            <i class="fas fa-spinner fa-spin text-sm" ng-if="refreshing"></i>
+          </button>
+          <!-- Logout button -->
+          <button ng-click="logout()"
+                  ng-disabled="loggingOut"
+                  class="bg-transparent text-green-400 hover:text-green-600 p-2 rounded-full focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center"
+                  title="Logout">
+            <i class="fas fa-sign-out-alt text-lg" ng-if="!loggingOut"></i>
+            <i class="fas fa-spinner fa-spin text-lg" ng-if="loggingOut"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -12,6 +12,9 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <!-- Local Tailwind CSS (keep this line for when you fix the local build) -->
   <link href="tailwind.css" rel="stylesheet">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <style>
     .page-content {
       max-width: 768px;
@@ -98,5 +101,30 @@
   <!-- Directives -->
   <script src="directives/sidebar-nav.directive.js"></script>
   <script src="directives/file-model.directive.js"></script>
+  
+  <!-- Add cache busting for mobile -->
+  <script>
+    // Force page reload on mobile if cached version detected
+    if (typeof window !== 'undefined' && window.navigator && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      // Add timestamp to force cache refresh on mobile
+      var timestamp = new Date().getTime();
+      sessionStorage.setItem('app_version', timestamp);
+      
+      // Check if service worker exists and update it
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) {
+            registration.update();
+          }
+        });
+      }
+      
+      // Force hard refresh if needed
+      if (sessionStorage.getItem('force_refresh') === 'true') {
+        sessionStorage.removeItem('force_refresh');
+        window.location.reload(true);
+      }
+    }
+  </script>
 </body>
 </html>

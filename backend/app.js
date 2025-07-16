@@ -163,10 +163,32 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(cookieParser());
+
+// Add cache-busting headers for development/mobile to prevent caching issues
+app.use((req, res, next) => {
+  // Set cache control headers for static files to prevent caching issues
+  if (req.url.endsWith('.js') || req.url.endsWith('.css') || req.url.endsWith('.html')) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('ETag', Date.now().toString()); // Dynamic ETag based on current time
+  }
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve frontend as the main app
-app.use(express.static(path.join(__dirname, 'public/frontend')));
+// Serve frontend as the main app with cache-busting
+app.use(express.static(path.join(__dirname, 'public/frontend'), {
+  etag: false,
+  maxAge: 0,
+  setHeaders: (res, path) => {
+    // Force no-cache for all frontend files
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+}));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

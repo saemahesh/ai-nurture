@@ -52,6 +52,34 @@
       <i class="fas fa-cog w-7 text-center text-lg group-hover:text-green-400 transition"></i>
       <span class="font-medium">Settings</span>
     </a>
+    
+    <!-- User info and actions in nav -->
+    <div ng-if="!loadingUser && !userError && user.username" class="mt-4 px-6">
+      <!-- User info -->
+      <div class="flex items-center gap-3 px-3 py-2 mb-2 rounded-lg bg-gray-800/50">
+        <i class="fas fa-user-circle text-lg text-green-400"></i>
+        <span class="font-medium text-green-300 text-sm">{{user.username | uppercase}}</span>
+      </div>
+      
+      <!-- Action buttons -->
+      <div class="flex flex-col gap-2">
+        <!-- Force refresh button -->
+        <button ng-click="forceRefresh()"
+                ng-disabled="refreshing"
+                class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 text-gray-300 w-full text-left">
+          <i class="fas w-7 text-center text-lg group-hover:text-red-400 transition" ng-class="refreshing ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i>
+          <span class="font-medium">{{refreshing ? 'Refreshing...' : 'Force Refresh'}}</span>
+        </button>
+        
+        <!-- Logout button -->
+        <button ng-click="logout()"
+                ng-disabled="loggingOut"
+                class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 text-gray-300 w-full text-left">
+          <i class="fas w-7 text-center text-lg group-hover:text-red-400 transition" ng-class="loggingOut ? 'fa-spinner fa-spin' : 'fa-sign-out-alt'"></i>
+          <span class="font-medium">{{loggingOut ? 'Logging out...' : 'Logout'}}</span>
+        </button>
+      </div>
+    </div>
   </nav>
 
   <!-- Scroll indicator for desktop - positioned outside nav to stay fixed -->
@@ -161,63 +189,49 @@
         <i class="fas fa-cog w-7 text-center text-lg group-hover:text-green-400 transition"></i>
         <span class="font-medium">Settings</span>
       </a>
+      
+      <!-- User info and actions in mobile nav -->
+      <div ng-if="!loadingUser && !userError && user.username" class="mt-4 px-6">
+        <!-- User info -->
+        <div class="flex items-center gap-3 px-3 py-2 mb-2 rounded-lg bg-gray-800/50">
+          <i class="fas fa-user-circle text-lg text-green-400"></i>
+          <span class="font-medium text-green-300 text-sm">{{user.username | uppercase}}</span>
+        </div>
+        
+        <!-- Action buttons -->
+        <div class="flex flex-col gap-2">
+          <!-- Force refresh button -->
+          <button ng-click="forceRefresh()"
+                  ng-disabled="refreshing"
+                  class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 text-gray-300 w-full text-left mobile-nav-link">
+            <i class="fas w-7 text-center text-lg group-hover:text-red-400 transition" ng-class="refreshing ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i>
+            <span class="font-medium">{{refreshing ? 'Refreshing...' : 'Force Refresh'}}</span>
+          </button>
+          
+          <!-- Logout button -->
+          <button ng-click="logout()"
+                  ng-disabled="loggingOut"
+                  class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 text-gray-300 w-full text-left mobile-nav-link">
+            <i class="fas w-7 text-center text-lg group-hover:text-red-400 transition" ng-class="loggingOut ? 'fa-spinner fa-spin' : 'fa-sign-out-alt'"></i>
+            <span class="font-medium">{{loggingOut ? 'Logging out...' : 'Logout'}}</span>
+          </button>
+        </div>
+      </div>
     </nav>
 
   <!-- Scroll indicator for mobile - positioned outside nav to stay fixed -->
-  <div class="absolute bottom-28 right-4 z-10 md:hidden cursor-pointer" id="mobile-scroll-indicator" style="display: none;">
+  <div class="absolute bottom-16 right-4 z-10 md:hidden cursor-pointer" id="mobile-scroll-indicator" style="display: none;">
     <div class="pointer-events-auto bg-gray-800/70 rounded-full p-3 hover:bg-gray-700/80 transition-all duration-200 shadow-lg" ng-click="toggleScroll('mobile-nav')" title="Click to scroll">
       <i class="fas text-green-400 text-sm" ng-class="mobileScrollDirection === 'down' ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
     </div>
   </div>
 
-    <div class="px-6 py-3 border-t border-gray-700 bg-gray-900/60 shadow-inner flex-shrink-0" style="border-color: #75ff71; min-height: 80px;">
-      <!-- Loading state -->
-      <div ng-if="loadingUser" class="flex items-center space-x-2 mb-2">
-        <div class="w-4 h-4 rounded-full border-2 border-green-400 border-t-transparent animate-spin"></div>
-        <span class="text-sm text-gray-300">Loading...</span>
-      </div>
-      <!-- Error state -->
-      <p ng-if="userError" class="text-sm text-red-400 mb-2">
-        <i class="fas fa-exclamation-circle mr-1"></i> 
-        Error loading user
-      </p>
-      <!-- User info when available -->
-      <div ng-if="!loadingUser && !userError && user.username" class="flex items-center justify-between mb-2 p-2 rounded bg-gray-800/80 shadow" style="min-height:44px;">
-        <div class="flex items-center">
-          <i class="fas fa-user-circle text-lg text-green-400"></i>
-          <span class="font-semibold text-green-300 text-sm ml-2">{{user.username | uppercase}}</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <!-- Force refresh button for mobile cache issues -->
-          <button ng-click="forceRefresh()"
-                  ng-disabled="refreshing"
-                  class="bg-transparent text-green-400 hover:text-green-600 p-2 rounded-full focus:outline-none min-w-[36px] min-h-[36px] flex items-center justify-center"
-                  title="Force Refresh App">
-            <i class="fas fa-sync-alt text-sm" ng-if="!refreshing"></i>
-            <i class="fas fa-spinner fa-spin text-sm" ng-if="refreshing"></i>
-          </button>
-          <!-- Logout button -->
-          <button ng-click="logout()"
-                  ng-disabled="loggingOut"
-                  class="bg-transparent text-green-400 hover:text-green-600 p-2 rounded-full focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center"
-                  title="Logout">
-            <i class="fas fa-sign-out-alt text-lg" ng-if="!loggingOut"></i>
-            <i class="fas fa-spinner fa-spin text-lg" ng-if="loggingOut"></i>
-          </button>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 
 <style>
   @media (max-width: 767px) {
     .min-w-64 { min-width: 0 !important; }
-    .sidebar-logout-btn {
-      font-size: 1.2rem !important;
-      min-height: 56px !important;
-      margin-bottom: 16px !important;
-    }
     /* Ensure mobile sidebar takes full height */
     .mobile-sidebar-container {
       height: 100vh !important;
@@ -225,6 +239,10 @@
     }
     /* Better mobile touch targets */
     .mobile-nav-link {
+      min-height: 48px !important;
+    }
+    /* Ensure action buttons in nav have good touch targets */
+    .mobile-nav-link button {
       min-height: 48px !important;
     }
   }

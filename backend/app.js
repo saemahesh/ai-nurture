@@ -8,6 +8,21 @@ const cors = require('cors');
 const session = require('express-session');
 const cron = require('node-cron');
 const axios = require('axios');
+
+// Helper function to get the correct media URL for sending
+function getMediaUrlForSending(mediaUrl) {
+  // If no media URL, return null
+  if (!mediaUrl) return null;
+  
+  // If NODE_ENV is not production and URL doesn't contain http (local relative path)
+  if (process.env.NODE_ENV !== 'prod' && !mediaUrl.includes('http')) {
+    console.log(`🧪 [TESTING] Converting local media URL "${mediaUrl}" to test image for development`);
+    return 'https://ezofis.com/wp-content/uploads/2025/03/blog-workflowAutomation-featured-1560x740-copy-1.jpg';
+  }
+  
+  // For production or URLs that already contain http, return as is
+  return mediaUrl;
+}
 const fs = require('fs');
 const qs = require('querystring');
 
@@ -360,15 +375,22 @@ cron.schedule('* * * * *', async () => {
             // Send text or media
             let sendResult;
             const mediaUrl = item.mediaUrl || item.media; // Support both keys
-            if (mediaUrl) {
+            
+            // Get the correct media URL for sending (handles test URL replacement)
+            const mediaUrlForSending = getMediaUrlForSending(mediaUrl);
+            
+            if (mediaUrlForSending) {
               sendResult = await sendWhatsAppGroupMessage({
                 group_id: item.groupId,
                 type: 'media',
                 message: item.message,
-                media_url: mediaUrl,
+                media_url: mediaUrlForSending,
                 instance_id: user.settings.instance_id,
                 access_token: user.settings.access_token
               });
+              
+              console.log(`📸 [GROUP MEDIA] Original URL: ${mediaUrl}`);
+              console.log(`📸 [GROUP MEDIA] Sending URL: ${mediaUrlForSending}`);
             } else {
               sendResult = await sendWhatsAppGroupMessage({
                 group_id: item.groupId,
@@ -444,15 +466,22 @@ cron.schedule('* * * * *', async () => {
           // Send text or media
           let sendResult;
           const mediaUrl = item.mediaUrl || item.media; // Support both keys
-          if (mediaUrl) {
+          
+          // Get the correct media URL for sending (handles test URL replacement)
+          const mediaUrlForSending = getMediaUrlForSending(mediaUrl);
+          
+          if (mediaUrlForSending) {
             sendResult = await sendWhatsAppGroupMessage({
               group_id: item.groupId,
               type: 'media',
               message: item.message,
-              media_url: mediaUrl,
+              media_url: mediaUrlForSending,
               instance_id: user.settings.instance_id,
               access_token: user.settings.access_token
             });
+            
+            console.log(`📸 [REGULAR SCHEDULE MEDIA] Original URL: ${mediaUrl}`);
+            console.log(`📸 [REGULAR SCHEDULE MEDIA] Sending URL: ${mediaUrlForSending}`);
           } else {
             sendResult = await sendWhatsAppGroupMessage({
               group_id: item.groupId,
@@ -527,14 +556,20 @@ cron.schedule('* * * * *', async () => {
             
             const type = item.mediaUrl ? 'media' : 'text';
             
+            // Get the correct media URL for sending (handles test URL replacement)
+            const mediaUrlForSending = getMediaUrlForSending(item.mediaUrl);
+            
             const sendResult = await sendWhatsAppDirectMessage({
               number: item.number,
               type: type,
               message: item.message,
-              media_url: item.mediaUrl,
+              media_url: mediaUrlForSending,
               instance_id: user.settings.instance_id,
               access_token: user.settings.access_token
             });
+            
+            console.log(`📸 [DIRECT MEDIA] Original URL: ${item.mediaUrl}`);
+            console.log(`📸 [DIRECT MEDIA] Sending URL: ${mediaUrlForSending}`);
             
             await sleep(500); // Throttle
             

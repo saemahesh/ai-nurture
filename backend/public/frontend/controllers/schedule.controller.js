@@ -49,6 +49,108 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
   // Load groups when controller initializes
   loadGroups();
   
+  // Initialize new schedule form
+  $scope.newSchedule = {
+    name: '',
+    message: '',
+    time: '',
+    imageMethod: 'upload', // Default to upload method
+    image: null,
+    imageUrl: ''
+  };
+  $scope.scheduleError = '';
+  
+  // Check if any groups are selected
+  $scope.hasSelectedGroups = function() {
+    return $scope.groups && $scope.groups.some(function(group) {
+      return group.selected;
+    });
+  };
+  
+  // Add new schedule
+  $scope.addSchedule = function() {
+    // Mark form as submitted for validation display
+    $scope.scheduleForm.$setSubmitted();
+    
+    // Reset error
+    $scope.scheduleError = '';
+    
+    // Force validation display with timeout to ensure form state is updated
+    setTimeout(function() {
+      $scope.$apply();
+    }, 10);
+    
+    // Validate form
+    if (!$scope.newSchedule.message || !$scope.newSchedule.time) {
+      $scope.scheduleError = 'Please fill in all required fields';
+      return;
+    }
+    
+    if (!$scope.hasSelectedGroups()) {
+      $scope.scheduleError = 'Please select at least one group';
+      return;
+    }
+    
+    // Note: Image is optional, so no validation needed for it
+    
+    // Get selected groups
+    var selectedGroups = $scope.groups.filter(function(group) {
+      return group.selected;
+    });
+    
+    // Prepare form data with groupIds array
+    var formData = new FormData();
+    if ($scope.newSchedule.name) {
+      formData.append('name', $scope.newSchedule.name);
+    }
+    formData.append('message', $scope.newSchedule.message);
+    formData.append('time', $scope.newSchedule.time);
+    
+    // Send groupIds as an array (backend expects this)
+    var groupIds = selectedGroups.map(function(group) {
+      return group.groupId; // Use groupId (with @g.us) instead of id
+    });
+    formData.append('groupIds', JSON.stringify(groupIds));
+    
+    // Handle image - either file upload or URL
+    if ($scope.newSchedule.imageMethod === 'upload' && $scope.newSchedule.image) {
+      formData.append('image', $scope.newSchedule.image);
+    } else if ($scope.newSchedule.imageMethod === 'url' && $scope.newSchedule.imageUrl) {
+      formData.append('imageUrl', $scope.newSchedule.imageUrl);
+    }
+    
+    // Send single request with all groups
+    ApiService.addSchedule(formData)
+      .then(function() {
+        // Reset form
+        $scope.newSchedule = {
+          name: '',
+          message: '',
+          time: '',
+          imageMethod: 'upload',
+          image: null,
+          imageUrl: ''
+        };
+        
+        // Reset group selections
+        $scope.groups.forEach(function(group) {
+          group.selected = false;
+        });
+        
+        // Reset form validation
+        $scope.scheduleForm.$setPristine();
+        $scope.scheduleForm.$setUntouched();
+        
+        // Reload schedules
+        loadSchedules();
+        $scope.success = 'Schedule(s) added successfully';
+      })
+      .catch(function(error) {
+        console.error('Error adding schedule:', error);
+        $scope.scheduleError = 'Failed to add schedule. Please try again.';
+      });
+  };
+  
   $scope.deleteSchedule = function(id) {
     if (confirm('Are you sure you want to delete this schedule?')) {
       ApiService.deleteSchedule(id)
@@ -71,5 +173,128 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
       console.error('Logout failed:', error);
       $scope.error = 'Logout failed. Please try again.';
     });
+  };
+  
+  // Image popup functionality
+  $scope.imagePopupVisible = false;
+  $scope.popupImageUrl = '';
+  
+  $scope.showImagePopup = function(imageUrl) {
+    $scope.popupImageUrl = imageUrl;
+    $scope.imagePopupVisible = true;
+  };
+  
+  $scope.hideImagePopup = function() {
+    $scope.imagePopupVisible = false;
+    $scope.popupImageUrl = '';
+  };
+  
+  // Edit schedule functionality
+  $scope.editingSchedule = false;
+  $scope.editScheduleData = {};
+  $scope.editScheduleError = '';
+  
+  $scope.showEditModal = function(schedule) {
+    $scope.editingSchedule = true;
+    $scope.editScheduleData = {
+      id: schedule.id,
+      name: schedule.name,
+      message: schedule.message,
+      time: new Date(schedule.time).toISOString().slice(0, 16), // Format for datetime-local input
+      groupId: schedule.groupId,
+      currentMediaUrl: schedule.media,
+      imageMethod: 'upload', // Default to upload method
+      image: null,
+      imageUrl: ''
+    };
+    $scope.editScheduleError = '';
+  };
+  
+  $scope.hideEditModal = function() {
+    $scope.editingSchedule = false;
+    $scope.editScheduleData = {};
+    $scope.editScheduleError = '';
+  };
+  
+  $scope.saveEditedSchedule = function() {
+    $scope.editScheduleError = '';
+    
+    if (!$scope.editScheduleData.message || !$scope.editScheduleData.time || !$scope.editScheduleData.groupId) {
+      $scope.editScheduleError = 'Please fill in all required fields';
+      return;
+    }
+    
+    var formData = new FormData();
+    if ($scope.editScheduleData.name) {
+      formData.append('name', $scope.editScheduleData.name);
+    }
+    formData.append('message', $scope.editScheduleData.message);
+    formData.append('time', $scope.editScheduleData.time);
+    formData.append('groupId', $scope.editScheduleData.groupId);
+    
+    // Handle image - either file upload or URL
+    if ($scope.editScheduleData.imageMethod === 'upload' && $scope.editScheduleData.image) {
+      formData.append('image', $scope.editScheduleData.image);
+    } else if ($scope.editScheduleData.imageMethod === 'url' && $scope.editScheduleData.imageUrl) {
+      formData.append('imageUrl', $scope.editScheduleData.imageUrl);
+    }
+    
+    ApiService.editSchedule($scope.editScheduleData.id, formData)
+      .then(function() {
+        $scope.hideEditModal();
+        loadSchedules();
+        $scope.success = 'Schedule updated successfully';
+      })
+      .catch(function(error) {
+        console.error('Error updating schedule:', error);
+        $scope.editScheduleError = 'Failed to update schedule. Please try again.';
+      });
+  };
+  
+  // Helper function to get group name by ID
+  $scope.getGroupName = function(groupId) {
+    var group = $scope.groups.find(function(g) {
+      return g.groupId === groupId; // Match using groupId field
+    });
+    return group ? group.name : 'Unknown Group';
+  };
+  
+  // Helper function to get full image URL
+  $scope.getImageUrl = function(imagePath) {
+    if (!imagePath) return null;
+    
+    // If it's already a complete URL (starts with http:// or https://), return as is
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      console.log('External image URL returned as is:', imagePath);
+      return imagePath;
+    }
+    
+    // Otherwise, it's a relative path, prepend API base
+    var API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:3000'
+      : 'https://whatspro.robomate.in';
+    var fullUrl = API_BASE + imagePath;
+    console.log('Local image URL generated:', fullUrl);
+    console.log('User agent (mobile check):', navigator.userAgent);
+    console.log('Window size:', window.innerWidth + 'x' + window.innerHeight);
+    return fullUrl;
+  };
+  
+  // Debug function to check image loading
+  $scope.onImageError = function(event) {
+    console.error('Image failed to load:', event.target.src);
+    console.error('Image element:', event.target);
+    console.error('Image natural dimensions:', event.target.naturalWidth + 'x' + event.target.naturalHeight);
+    event.target.style.display = 'none';
+    if (event.target.nextElementSibling) {
+      event.target.nextElementSibling.style.display = 'block';
+    }
+  };
+  
+  // Debug function for successful image loading
+  $scope.onImageLoad = function(event) {
+    console.log('Image loaded successfully:', event.target.src);
+    console.log('Image natural dimensions:', event.target.naturalWidth + 'x' + event.target.naturalHeight);
+    console.log('Image display dimensions:', event.target.width + 'x' + event.target.height);
   };
 });

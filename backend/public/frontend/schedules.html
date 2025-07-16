@@ -11,32 +11,97 @@
       </div>
     </header>
 
+    <!-- Custom styles for mobile image fixes -->
+    <style>
+      .schedule-image {
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        max-width: 48px !important;
+        max-height: 48px !important;
+        object-fit: cover !important;
+        border-radius: 6px !important;
+        border: 1px solid #e5e7eb !important;
+        display: block !important;
+      }
+      
+      .schedule-image-placeholder {
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+        max-width: 48px !important;
+        max-height: 48px !important;
+        display: none !important;
+      }
+      
+      .schedule-image-container {
+        flex-shrink: 0 !important;
+        width: 48px !important;
+        height: 48px !important;
+      }
+      
+      @media (max-width: 640px) {
+        .schedule-item {
+          flex-direction: column !important;
+          align-items: flex-start !important;
+        }
+        
+        .schedule-content {
+          width: 100% !important;
+          margin-bottom: 0.75rem !important;
+        }
+        
+        .schedule-actions {
+          width: 100% !important;
+          justify-content: space-between !important;
+        }
+      }
+    </style>
+
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
       <!-- Schedule Form -->
       <div class="bg-white rounded-xl shadow-sm p-6 mb-6 max-w-2xl mx-auto">
         <form name="scheduleForm" ng-submit="addSchedule()" class="space-y-4" novalidate>
           <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">Short Name (Optional)</label>
+            <input type="text" ng-model="newSchedule.name"
+                   name="name"
+                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500"
+                   placeholder="Enter a short name for this schedule (optional)">
+            <small class="text-gray-500">If not provided, the first 30 characters of the message will be used</small>
+          </div>
+          <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-700">Message</label>
             <textarea ng-model="newSchedule.message"
+                      name="message"
                       class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500"
                       placeholder="Enter message" required rows="4"></textarea>
+            <div ng-if="(scheduleForm.message.$touched || scheduleForm.$submitted) && scheduleForm.message.$invalid" class="text-red-600 text-sm">
+              Message is required
+            </div>
           </div>
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-700">Date & Time</label>
             <input type="datetime-local" ng-model="newSchedule.time" 
+                   name="scheduleTime"
                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" 
                    required>
+            <div ng-if="(scheduleForm.scheduleTime.$touched || scheduleForm.$submitted) && scheduleForm.scheduleTime.$invalid" class="text-red-600 text-sm">
+              Date & Time is required
+            </div>
           </div>
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-700">Select Groups</label>
             <div class="border border-gray-300 rounded-lg p-2 max-h-40 overflow-y-auto">
               <div ng-repeat="g in groups" class="flex items-center p-1 hover:bg-gray-50">
                 <input type="checkbox" 
-                       id="group-{{g.id}}" 
+                       id="group-{{g.groupId}}" 
                        ng-model="g.selected" 
                        class="h-4 w-4 text-green-600 rounded focus:ring-green-500">
-                <label for="group-{{g.id}}" class="ml-2 text-sm text-gray-700">
+                <label for="group-{{g.groupId}}" class="ml-2 text-sm text-gray-700">
                   {{g.name}}
                 </label>
               </div>
@@ -44,20 +109,75 @@
                 No groups available. Please add groups first.
               </div>
             </div>
+            <div ng-if="!hasSelectedGroups() && scheduleForm.$submitted" class="text-red-600 text-sm">
+              Please select at least one group
+            </div>
           </div>
           <div class="space-y-2">
-            <label class="block text-sm font-medium text-gray-700">Image</label>
-            <input type="file" file-model="newSchedule.image" 
-                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" 
-                   required>
+            <label class="block text-sm font-medium text-gray-700">Image (Optional)</label>
+            <div class="space-y-3">
+              <!-- Image Method Selection -->
+              <div class="flex space-x-4">
+                <label class="flex items-center">
+                  <input type="radio" ng-model="newSchedule.imageMethod" value="upload" 
+                         name="imageMethod" class="h-4 w-4 text-green-600">
+                  <span class="ml-2 text-sm text-gray-700">Upload File</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="radio" ng-model="newSchedule.imageMethod" value="url" 
+                         name="imageMethod" class="h-4 w-4 text-green-600">
+                  <span class="ml-2 text-sm text-gray-700">Image URL</span>
+                </label>
+              </div>
+              
+              <!-- File Upload Option -->
+              <div ng-if="newSchedule.imageMethod === 'upload'">
+                <input type="file" file-model="newSchedule.image" 
+                       name="scheduleImage"
+                       class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500"
+                       accept="image/*">
+              </div>
+              
+              <!-- URL Input Option -->
+              <div ng-if="newSchedule.imageMethod === 'url'">
+                <input type="url" ng-model="newSchedule.imageUrl" 
+                       name="scheduleImageUrl"
+                       class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500"
+                       placeholder="Enter image URL (e.g., https://example.com/image.jpg)">
+              </div>
+              
+              <!-- Image Preview -->
+              <div ng-if="newSchedule.imageUrl && newSchedule.imageMethod === 'url'" class="mt-2">
+                <img ng-src="{{newSchedule.imageUrl}}" 
+                     alt="Image Preview" 
+                     class="h-20 w-20 object-cover rounded-md border border-gray-200"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="text-red-500 text-sm mt-1" style="display: none;">
+                  Failed to load image from URL
+                </div>
+              </div>
+            </div>
           </div>
+          <!-- Error message display -->
+          <div class="mb-4" ng-if="scheduleError">
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              {{scheduleError}}
+            </div>
+          </div>
+          
+          <!-- Success message display -->
+          <div class="mb-4" ng-if="success">
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+              {{success}}
+            </div>
+          </div>
+          
           <div class="flex items-center justify-between">
             <button type="submit" 
-                    class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                    ng-disabled="scheduleForm.$invalid || !hasSelectedGroups()">
+                    class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    ng-disabled="(scheduleForm.message.$invalid || scheduleForm.scheduleTime.$invalid) || !hasSelectedGroups()">
               Add Schedule
             </button>
-            <span class="text-red-600" ng-if="scheduleError">{{scheduleError}}</span>
           </div>
         </form>
       </div>
@@ -69,29 +189,47 @@
         </div>
         <div class="space-y-3">
           <div ng-repeat="s in schedules | orderBy:'-time'" 
-               class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-            <div class="flex flex-col flex-grow">
-              <span class="font-medium text-gray-900">{{s.message}}</span>
-              <div class="text-sm text-gray-500">
-                <span>{{s.time | date:'medium'}}</span>
-                <span class="ml-2">Group: {{getGroupName(s.groupId)}}</span>
-              </div>
-            </div>
-            <div class="flex items-center space-x-3">
-              <!-- Thumbnail Image -->
-              <div ng-if="s.media" class="relative">
-                <img ng-src="{{s.media}}" 
-                     alt="Schedule Image" 
-                     class="h-12 w-12 object-cover rounded-md cursor-pointer border border-gray-200"
-                     ng-click="showImagePopup(s.media)">
+               class="p-3 bg-gray-50 rounded-lg schedule-item">
+            <!-- Mobile Layout: Stack content vertically -->
+            <div class="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+              <!-- Main Content -->
+              <div class="flex-grow schedule-content">
+                <span class="font-medium text-gray-900 block">{{s.name || (s.message.substring(0, 30) + (s.message.length > 30 ? '...' : ''))}}</span>
+                <div class="text-sm text-gray-500 mt-1">
+                  <div>{{s.time | date:'MMM dd, yyyy h:mm:ss a'}}</div>
+                  <div>Group: {{getGroupName(s.groupId)}}</div>
+                </div>
+                <div ng-if="s.name && s.message.length > 30" class="text-xs text-gray-400 mt-1" title="{{s.message}}">
+                  {{s.message.substring(0, 50) + (s.message.length > 50 ? '...' : '')}}
+                </div>
               </div>
               
-              <div class="flex flex-col items-end">
-                <span class="inline-flex items-center px-2 py-1 mb-2 text-xs font-medium rounded-full"
-                      ng-class="{'bg-green-100 text-green-800': !s.sent, 'bg-gray-100 text-gray-800': s.sent}">
-                  {{s.sent ? 'Sent' : 'Scheduled'}}
-                </span>
-                <div class="flex space-x-2">
+              <!-- Right side: Image + Actions -->
+              <div class="flex items-center justify-between sm:flex-col sm:items-end sm:space-y-2 schedule-actions">
+                <!-- Image and Status in mobile horizontal layout -->
+                <div class="flex items-center space-x-3">
+                  <!-- Thumbnail Image -->
+                  <div ng-if="s.media" class="schedule-image-container">
+                    <img ng-src="{{getImageUrl(s.media)}}" 
+                         alt="Schedule Image" 
+                         class="schedule-image cursor-pointer"
+                         ng-click="showImagePopup(getImageUrl(s.media))"
+                         onerror="angular.element(this).scope().onImageError(event)"
+                         onload="angular.element(this).scope().onImageLoad(event)">
+                    <div class="schedule-image-placeholder bg-gray-200 rounded-md flex items-center justify-center border border-gray-300 text-xs text-gray-500">
+                      📷
+                    </div>
+                  </div>
+                  
+                  <!-- Status Badge -->
+                  <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full flex-shrink-0"
+                        ng-class="{'bg-green-100 text-green-800': !s.sent, 'bg-gray-100 text-gray-800': s.sent}">
+                    {{s.sent ? 'Sent' : 'Scheduled'}}
+                  </span>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex space-x-2 flex-shrink-0">
                   <!-- Edit Button -->
                   <button ng-click="showEditModal(s)" 
                           ng-if="!s.sent"
@@ -140,6 +278,13 @@
       
       <form name="editScheduleForm" ng-submit="saveEditedSchedule()" class="space-y-4" novalidate>
         <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">Short Name (Optional)</label>
+          <input type="text" ng-model="editScheduleData.name" 
+                 class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" 
+                 placeholder="Enter a short name for this schedule (optional)">
+          <small class="text-gray-500">If not provided, the first 30 characters of the message will be used</small>
+        </div>
+        <div class="space-y-2">
           <label class="block text-sm font-medium text-gray-700">Message</label>
           <input type="text" ng-model="editScheduleData.message" 
                  class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" 
@@ -160,19 +305,59 @@
               {{g.name}} (ID: {{g.groupId}})
             </option>
           </select>
-        </div>
-        <div class="space-y-2">
+        </div>        <div class="space-y-2">
           <label class="block text-sm font-medium text-gray-700">Current Image</label>
-          <div class="flex items-center space-x-3">
-            <img ng-src="{{editScheduleData.currentMediaUrl}}" alt="Current Image" 
+          <div class="flex items-center space-x-3" ng-if="editScheduleData.currentMediaUrl">
+            <img ng-src="{{getImageUrl(editScheduleData.currentMediaUrl)}}" alt="Current Image" 
                  class="h-16 w-16 object-cover rounded-md border border-gray-200">
             <span class="text-sm text-gray-500">Current image will be kept if no new image is selected</span>
           </div>
+          <div ng-if="!editScheduleData.currentMediaUrl" class="text-sm text-gray-500">
+            No current image
+          </div>
         </div>
         <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">New Image (Optional)</label>
-          <input type="file" file-model="editScheduleData.image" 
-                 class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500">
+          <label class="block text-sm font-medium text-gray-700">Update Image (Optional)</label>
+          <div class="space-y-3">
+            <!-- Image Method Selection -->
+            <div class="flex space-x-4">
+              <label class="flex items-center">
+                <input type="radio" ng-model="editScheduleData.imageMethod" value="upload" 
+                       name="editImageMethod" class="h-4 w-4 text-green-600">
+                <span class="ml-2 text-sm text-gray-700">Upload File</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" ng-model="editScheduleData.imageMethod" value="url" 
+                       name="editImageMethod" class="h-4 w-4 text-green-600">
+                <span class="ml-2 text-sm text-gray-700">Image URL</span>
+              </label>
+            </div>
+            
+            <!-- File Upload Option -->
+            <div ng-if="editScheduleData.imageMethod === 'upload'">
+              <input type="file" file-model="editScheduleData.image" 
+                     class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500"
+                     accept="image/*">
+            </div>
+            
+            <!-- URL Input Option -->
+            <div ng-if="editScheduleData.imageMethod === 'url'">
+              <input type="url" ng-model="editScheduleData.imageUrl" 
+                     class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500"
+                     placeholder="Enter image URL (e.g., https://example.com/image.jpg)">
+            </div>
+            
+            <!-- Image Preview for URL -->
+            <div ng-if="editScheduleData.imageUrl && editScheduleData.imageMethod === 'url'" class="mt-2">
+              <img ng-src="{{editScheduleData.imageUrl}}" 
+                   alt="Image Preview" 
+                   class="h-20 w-20 object-cover rounded-md border border-gray-200"
+                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+              <div class="text-red-500 text-sm mt-1" style="display: none;">
+                Failed to load image from URL
+              </div>
+            </div>
+          </div>
         </div>
         <div class="flex items-center justify-between">
           <button type="submit" 

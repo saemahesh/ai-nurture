@@ -18,11 +18,15 @@
     },
     "1day": {
       "enabled": true,
-      "text": "Only 1 day to go until {{eventName}}!"
+      "text": "Only 1 day to go until {{eventName}}!",
+      "mediaId": "md1s5yai5ukt2e71h7d",
+      "mediaUrl": "/uploads/1752417553587-automation.png"
     },
     "12hours": {
       "enabled": true,
-      "text": "12. hsfksj"
+      "text": "12. hsfksj",
+      "mediaId": null,
+      "mediaUrl": null
     },
     "6hours": {
       "enabled": true,
@@ -35,8 +39,8 @@
     "1hour": {
       "enabled": true,
       "text": "1 hour to go until\n\n🚨 LIVE NOW! 🚨 \n\nWe're going live in 10 minutes was supposed to be the plan but looks like we're starting early! \n\n⏰ Join the WhatsApp webinar RIGHT NOW! \n\n🎙️ Click to join fast!",
-      "mediaId": "ma6nwshnicnri7sx60r",
-      "mediaUrl": "/uploads/1746182391606-2dda6605df036945324e8555813d0513.jpg"
+      "mediaId": "md1s5yai5ukt2e71h7d",
+      "mediaUrl": "/uploads/1752417553587-automation.png"
     },
     "30mins": {
       "enabled": true,

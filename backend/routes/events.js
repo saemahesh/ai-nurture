@@ -355,7 +355,15 @@ function generateRemindersSchedule(event, reminderConfig) {
       message = message.replace(/\{\{eventName\}\}/g, eventName);
       
       // Determine media URL for this reminder
-      const mediaUrl = config.mediaUrl || config.media || (config.mediaFromLibrary && config.mediaFromLibrary.url) || null;
+      // If mediaUrl is explicitly set to null, don't use any media
+      let mediaUrl = null;
+      if (config.mediaUrl !== null && config.mediaUrl !== undefined) {
+        mediaUrl = config.mediaUrl;
+      } else if (config.media) {
+        mediaUrl = config.media;
+      } else if (config.mediaFromLibrary && config.mediaFromLibrary.url) {
+        mediaUrl = config.mediaFromLibrary.url;
+      }
       
       // Create a schedule for each group
       for (const groupId of event.groups) {

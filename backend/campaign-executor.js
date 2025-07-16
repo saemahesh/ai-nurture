@@ -4,6 +4,21 @@ const cron = require('node-cron');
 const axios = require('axios');
 const qs = require('querystring');
 
+// Helper function to get the correct media URL for sending
+function getMediaUrlForSending(mediaUrl) {
+  // If no media URL, return null
+  if (!mediaUrl) return null;
+  
+  // If NODE_ENV is not production and URL doesn't contain http (local relative path)
+  if (process.env.NODE_ENV !== 'prod' && !mediaUrl.includes('http')) {
+    console.log(`🧪 [TESTING] Converting local media URL "${mediaUrl}" to test image for development`);
+    return 'https://ezofis.com/wp-content/uploads/2025/03/blog-workflowAutomation-featured-1560x740-copy-1.jpg';
+  }
+  
+  // For production or URLs that already contain http, return as is
+  return mediaUrl;
+}
+
 class CampaignExecutor {
   constructor() {
     // Prevent multiple instances
@@ -584,15 +599,21 @@ class CampaignExecutor {
       // Prepare API payload
       let payload;
       if (message.type === 'media' || message.mediaUrl) {
+        // Get the correct media URL for sending (handles test URL replacement)
+        const mediaUrlForSending = getMediaUrlForSending(message.mediaUrl);
+        
         // For media, treat the caption as the main message (caption = message)
         payload = {
           number: phone,
           type: 'media',
           message: message.message, // Use message.message as the caption
-          media_url: message.mediaUrl,
+          media_url: mediaUrlForSending,
           instance_id: user.settings.instance_id,
           access_token: user.settings.access_token
         };
+        
+        console.log(`📸 [MEDIA] Original URL: ${message.mediaUrl}`);
+        console.log(`📸 [MEDIA] Sending URL: ${mediaUrlForSending}`);
       } else {
         payload = {
           number: phone,

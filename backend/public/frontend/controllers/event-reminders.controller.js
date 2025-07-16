@@ -174,16 +174,42 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
         
         if (event) {
             $scope.currentEvent = event;
-            ApiService.getEventReminders(eventId)
-                .then(function(response) {
-                    $scope.reminders = response.data;
-                    $scope.loading = false;
-                })
-                .catch(function(error) {
-                    $scope.error = error.message || 'Failed to load reminders';
-                    $scope.loading = false;
-                });
+            $scope.loadReminders();
         }
+    };
+
+    // Helper function to load reminders data
+    $scope.loadReminders = function(setLoading = true) {
+        if (setLoading) {
+            $scope.loading = true;
+        }
+        
+        if (!$scope.currentEvent) {
+            if (setLoading) {
+                $scope.loading = false;
+            }
+            return;
+        }
+        
+        ApiService.getEventReminders($scope.currentEvent.id)
+            .then(function(response) {
+                $scope.reminders = response.data;
+                
+                // Clear any temporary flags
+                Object.keys($scope.reminders).forEach(function(key) {
+                    $scope.reminders[key].removingMedia = false;
+                });
+                
+                if (setLoading) {
+                    $scope.loading = false;
+                }
+            })
+            .catch(function(error) {
+                $scope.error = error.message || 'Failed to load reminders';
+                if (setLoading) {
+                    $scope.loading = false;
+                }
+            });
     };
 
     $scope.saveReminders = function() {
@@ -211,6 +237,13 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
                 reminderData[key].mediaId = reminder.mediaFromLibrary.id;
                 reminderData[key].mediaUrl = reminder.mediaFromLibrary.url;
             }
+            // If media should be removed, explicitly set to null
+            else if (reminder.removeMedia) {
+                reminderData[key].mediaId = null;
+                reminderData[key].mediaUrl = null;
+                // Clear the remove flag after saving
+                reminder.removeMedia = false;
+            }
         });
 
         // Send as JSON, not FormData
@@ -221,6 +254,10 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
                     $scope.hasPastReminders = true;
                     $scope.pastReminders = response.data.scheduleInfo.skippedReminders;
                 }
+                
+                // Reload reminders data to refresh UI after successful save
+                // Don't set loading state since we're already in a loading state
+                $scope.loadReminders(false);
             })
             .catch(function(error) {
                 $scope.error = error.data?.error || 'Failed to save reminders';
@@ -255,9 +292,19 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
 
     // Remove media from a reminder
     $scope.removeImage = function(reminderType) {
+        // Clear all media-related properties
         $scope.reminders[reminderType].mediaFromLibrary = null;
         $scope.reminders[reminderType].mediaPreview = null;
         $scope.reminders[reminderType].hasNewMedia = false;
+        
+        // Mark that image should be removed in the backend
+        $scope.reminders[reminderType].removeMedia = true;
+        
+        // Show user feedback during removal
+        $scope.reminders[reminderType].removingMedia = true;
+        
+        // Auto-save the changes to persist the removal
+        $scope.saveReminders();
     };
 
     // Helper: get all reminder types and their offsets (ms)

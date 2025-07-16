@@ -86,18 +86,23 @@ router.post('/', authRequired, upload.single('image'), (req, res) => {
     
     const { message, time } = req.body;
     let groupIds = req.body.groupIds;
+    const name = req.body.name; // Add name field
+    const providedImageUrl = req.body.imageUrl; // Add imageUrl field
     
     console.log('message:', message);
     console.log('time:', time);
+    console.log('name:', name);
+    console.log('providedImageUrl:', providedImageUrl);
     console.log('groupIds (raw):', groupIds);
     
-    // Check if we received the image file
+    // Image is optional - log if present or not
     if (!req.file) {
-      console.log('ERROR: Image file is missing');
-      return res.status(400).json({ error: 'Image file is required' });
+      console.log('INFO: No image file uploaded (optional)');
+    } else {
+      console.log('INFO: Image file uploaded:', req.file.filename);
     }
     
-    // Check for required fields
+    // Check for required fields (image is not required)
     if (!message || !time || !groupIds) {
       console.log('ERROR: Missing required fields');
       console.log('message exists:', !!message);
@@ -137,18 +142,22 @@ router.post('/', authRequired, upload.single('image'), (req, res) => {
     
     const schedule = readSchedule();
     const username = req.session.user.username;
-    const imageUrl = `/uploads/${req.file.filename}`;
+    // Handle image - either uploaded file or provided URL
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : (providedImageUrl || null);
     const createdIds = [];
     
     // Create a schedule entry for each group ID
     groupIds.forEach(groupId => {
       const id = Date.now().toString() + Math.random().toString(36).slice(2);
+      // Ensure time is stored as ISO 8601 string for consistency
+      const isoTime = new Date(time).toISOString();
       schedule.push({ 
         id, 
         groupId, 
+        name: name || message.substring(0, 30) + (message.length > 30 ? '...' : ''), // Use provided name or truncate message
         message, 
-        time, 
-        media: imageUrl, 
+        time: isoTime, 
+        media: imageUrl, // Will be null if no image uploaded
         username 
       });
       createdIds.push(id);
@@ -166,11 +175,23 @@ router.post('/', authRequired, upload.single('image'), (req, res) => {
 // Keep the old single-group API endpoint for backward compatibility
 router.post('/single', authRequired, (req, res) => {
   try {
-    const { groupId, message, time, media } = req.body;
+    const { groupId, message, time, media, name, imageUrl } = req.body;
     if (!groupId || !message || !time) return res.status(400).json({ error: 'Missing fields' });
     const schedule = readSchedule();
     const id = Date.now().toString();
-    schedule.push({ id, groupId, message, time, media, username: req.session.user.username });
+    // Ensure time is stored as ISO 8601 string for consistency
+    const isoTime = new Date(time).toISOString();
+    // Use provided media, imageUrl, or null
+    const finalMedia = media || imageUrl || null;
+    schedule.push({ 
+      id, 
+      groupId, 
+      name: name || message.substring(0, 30) + (message.length > 30 ? '...' : ''),
+      message, 
+      time: isoTime, 
+      media: finalMedia, 
+      username: req.session.user.username 
+    });
     writeSchedule(schedule);
     res.json({ success: true, id });
   } catch (err) {
@@ -190,9 +211,10 @@ router.put('/:id', authRequired, upload.single('image'), (req, res) => {
     } : 'No new image uploaded');
 
     const { id } = req.params;
-    const { groupId, message, time } = req.body;
+    const { groupId, message, time, name } = req.body;
+    const providedImageUrl = req.body.imageUrl;
     
-    if (!groupId && !message && !time && !req.file) {
+    if (!groupId && !message && !time && !name && !req.file && !providedImageUrl) {
       return res.status(400).json({ error: 'No changes provided' });
     }
     
@@ -207,13 +229,19 @@ router.put('/:id', authRequired, upload.single('image'), (req, res) => {
     // Update fields if provided
     if (groupId) item.groupId = groupId;
     if (message) item.message = message;
-    if (time) item.time = time;
+    if (time) item.time = new Date(time).toISOString();
+    if (name !== undefined) {
+      item.name = name || message.substring(0, 30) + (message.length > 30 ? '...' : '');
+    }
     
-    // If a new image was uploaded, update the media path
+    // Handle image update - either file upload or URL
     if (req.file) {
-      const imageUrl = `/uploads/${req.file.filename}`;
-      item.media = imageUrl;
-      console.log('Updated media URL to:', imageUrl);
+      const uploadedImageUrl = `/uploads/${req.file.filename}`;
+      item.media = uploadedImageUrl;
+      console.log('Updated media URL to uploaded file:', uploadedImageUrl);
+    } else if (providedImageUrl) {
+      item.media = providedImageUrl;
+      console.log('Updated media URL to provided URL:', providedImageUrl);
     }
     
     writeSchedule(schedule);
@@ -223,6 +251,7 @@ router.put('/:id', authRequired, upload.single('image'), (req, res) => {
       schedule: {
         id: item.id,
         groupId: item.groupId,
+        name: item.name,
         message: item.message,
         time: item.time,
         media: item.media,
@@ -263,6 +292,7 @@ router.post('/automation', authRequired, upload.single('image'), (req, res) => {
       schedule.push({
         id: Date.now().toString() + Math.random().toString(36).slice(2),
         groupId,
+        name: c.countdown, // Use countdown text as name for automation schedules
         message,
         time: c.time,
         media: imageUrl,

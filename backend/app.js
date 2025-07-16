@@ -178,6 +178,9 @@ app.use('/status', statusRouter);
 
 // Centralized WhatsApp group message sender
 async function sendWhatsAppGroupMessage({ group_id, type, message, media_url, instance_id, access_token }) {
+  // Get the correct media URL for sending (handles test URL replacement)
+  const mediaUrlForSending = getMediaUrlForSending(media_url);
+  
   const payload = {
     group_id,
     type,
@@ -185,8 +188,8 @@ async function sendWhatsAppGroupMessage({ group_id, type, message, media_url, in
     instance_id,
     access_token
   };
-  if (type === 'media' && media_url) {
-    payload.media_url = media_url;
+  if (type === 'media' && mediaUrlForSending) {
+    payload.media_url = mediaUrlForSending;
   }
   
   const apiUrl = 'https://wa.robomate.in/api/send_group';
@@ -194,6 +197,10 @@ async function sendWhatsAppGroupMessage({ group_id, type, message, media_url, in
   console.log('[WA API] Sending to group:', group_id);
   console.log('[WA API] Instance ID:', instance_id);
   console.log('[WA API] Access Token:', access_token ? access_token.substring(0, 8) + '...' : 'MISSING');
+  if (media_url) {
+    console.log(`📸 [WA API GROUP] Original URL: ${media_url}`);
+    console.log(`📸 [WA API GROUP] Sending URL: ${mediaUrlForSending}`);
+  }
   console.log('[WA API] Payload:', JSON.stringify(payload));
   console.log('[WA API] Form data that will be sent:', qs.stringify(payload));
   
@@ -237,6 +244,9 @@ async function sendWhatsAppGroupMessage({ group_id, type, message, media_url, in
 
 // Centralized WhatsApp direct message sender
 async function sendWhatsAppDirectMessage({ number, type, message, media_url, instance_id, access_token }) {
+  // Get the correct media URL for sending (handles test URL replacement)
+  const mediaUrlForSending = getMediaUrlForSending(media_url);
+  
   const payload = {
     number,
     type,
@@ -244,8 +254,8 @@ async function sendWhatsAppDirectMessage({ number, type, message, media_url, ins
     instance_id,
     access_token
   };
-  if (type === 'media' && media_url) {
-    payload.media_url = media_url;
+  if (type === 'media' && mediaUrlForSending) {
+    payload.media_url = mediaUrlForSending;
   }
   
   const apiUrl = 'https://wa.robomate.in/api/send';
@@ -253,6 +263,10 @@ async function sendWhatsAppDirectMessage({ number, type, message, media_url, ins
   console.log('[WA API Direct] Sending to number:', number);
   console.log('[WA API Direct] Instance ID:', instance_id);
   console.log('[WA API Direct] Access Token:', access_token ? access_token.substring(0, 8) + '...' : 'MISSING');
+  if (media_url) {
+    console.log(`📸 [WA API DIRECT] Original URL: ${media_url}`);
+    console.log(`📸 [WA API DIRECT] Sending URL: ${mediaUrlForSending}`);
+  }
   console.log('[WA API Direct] Payload:', JSON.stringify(payload));
   console.log('[WA API Direct] Form data that will be sent:', qs.stringify(payload));
   
@@ -376,21 +390,15 @@ cron.schedule('* * * * *', async () => {
             let sendResult;
             const mediaUrl = item.mediaUrl || item.media; // Support both keys
             
-            // Get the correct media URL for sending (handles test URL replacement)
-            const mediaUrlForSending = getMediaUrlForSending(mediaUrl);
-            
-            if (mediaUrlForSending) {
+            if (mediaUrl) {
               sendResult = await sendWhatsAppGroupMessage({
                 group_id: item.groupId,
                 type: 'media',
                 message: item.message,
-                media_url: mediaUrlForSending,
+                media_url: mediaUrl,
                 instance_id: user.settings.instance_id,
                 access_token: user.settings.access_token
               });
-              
-              console.log(`📸 [GROUP MEDIA] Original URL: ${mediaUrl}`);
-              console.log(`📸 [GROUP MEDIA] Sending URL: ${mediaUrlForSending}`);
             } else {
               sendResult = await sendWhatsAppGroupMessage({
                 group_id: item.groupId,
@@ -467,21 +475,15 @@ cron.schedule('* * * * *', async () => {
           let sendResult;
           const mediaUrl = item.mediaUrl || item.media; // Support both keys
           
-          // Get the correct media URL for sending (handles test URL replacement)
-          const mediaUrlForSending = getMediaUrlForSending(mediaUrl);
-          
-          if (mediaUrlForSending) {
+          if (mediaUrl) {
             sendResult = await sendWhatsAppGroupMessage({
               group_id: item.groupId,
               type: 'media',
               message: item.message,
-              media_url: mediaUrlForSending,
+              media_url: mediaUrl,
               instance_id: user.settings.instance_id,
               access_token: user.settings.access_token
             });
-            
-            console.log(`📸 [REGULAR SCHEDULE MEDIA] Original URL: ${mediaUrl}`);
-            console.log(`📸 [REGULAR SCHEDULE MEDIA] Sending URL: ${mediaUrlForSending}`);
           } else {
             sendResult = await sendWhatsAppGroupMessage({
               group_id: item.groupId,
@@ -556,20 +558,14 @@ cron.schedule('* * * * *', async () => {
             
             const type = item.mediaUrl ? 'media' : 'text';
             
-            // Get the correct media URL for sending (handles test URL replacement)
-            const mediaUrlForSending = getMediaUrlForSending(item.mediaUrl);
-            
             const sendResult = await sendWhatsAppDirectMessage({
               number: item.number,
               type: type,
               message: item.message,
-              media_url: mediaUrlForSending,
+              media_url: item.mediaUrl,
               instance_id: user.settings.instance_id,
               access_token: user.settings.access_token
             });
-            
-            console.log(`📸 [DIRECT MEDIA] Original URL: ${item.mediaUrl}`);
-            console.log(`📸 [DIRECT MEDIA] Sending URL: ${mediaUrlForSending}`);
             
             await sleep(500); // Throttle
             

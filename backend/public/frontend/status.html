@@ -1,21 +1,29 @@
-<div class="flex bg-gray-100 min-h-screen">
-  <sidebar-nav></sidebar-nav>
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="dark-theme.css">
+</head>
+<body>
+<div class="flex dark-theme min-h-screen">
+  <div ng-include="'sidebar.html'" ng-controller="SidebarController"></div>
   <div class="flex-1 flex flex-col overflow-hidden">
-    <header class="bg-white shadow-sm z-10 py-4 px-6 flex items-center justify-between">
-      <h2 class="text-xl font-semibold text-gray-800" style="padding-left:50px;">Status Scheduler</h2>
-      <button class="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold shadow hover:bg-green-700" ng-click="showCreateStatusModal()">
-        <i class="fas fa-plus mr-2"></i> Create
-      </button>
+    <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">Status Scheduler</h2>
+        <button class="px-4 py-2 bg-teal-600 text-white rounded-lg font-semibold shadow hover:bg-teal-500 transition" ng-click="showCreateStatusModal()">
+          <i class="fas fa-plus mr-2"></i> Create
+        </button>
+      </div>
     </header>
-    <main class="flex-1 bg-gray-50 p-6 flex justify-center items-start">
-      <div class="w-full max-w-lg mt-8">
+    <main class="flex-1 p-6" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 30%, #1a202c 100%), radial-gradient(circle at 20% 60%, #2c5282 0%, transparent 50%), radial-gradient(circle at 80% 40%, #2a4365 0%, transparent 50%); background-blend-mode: overlay;">
+      <div class="max-w-2xl mx-auto">
         <!-- Create Status Modal -->
-        <div ng-if="createStatusModalVisible" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div class="bg-white rounded-xl shadow-lg p-6 max-w-md w-full mx-4" ng-click="$event.stopPropagation()">
-            <form name="statusForm" ng-submit="scheduleStatus()" novalidate autocomplete="off">
+        <div ng-if="createStatusModalVisible" class="fixed inset-0 z-50 flex items-center justify-center min-h-screen overflow-y-auto" style="background: rgba(15,23,42,0.7);" ng-click="hideCreateStatusModal()">
+          <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative" style="background: linear-gradient(135deg, #334155 0%, #475569 30%, #1e293b 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%); min-height: 0; margin-top: 6rem; margin-bottom: 2rem;" ng-click="$event.stopPropagation()">
+            <form name="statusForm" ng-submit="scheduleStatus()" novalidate autocomplete="off" class="status-form">
               <div class="mb-4">
-                <label class="block text-gray-700 font-medium mb-1">Select Media <span class="text-red-500">*</span></label>
-                <select ng-model="status.mediaUrl" class="block w-full border border-gray-300 rounded px-3 py-2" required>
+                <label class="block text-teal-300 font-medium mb-1">Select Media <span class="text-red-400">*</span></label>
+                <select ng-model="status.mediaUrl" class="dark-theme-input w-full px-3 py-2 rounded-lg" required>
                   <option value="" disabled selected>Select from Media Library</option>
                   <option ng-repeat="m in mediaLibrary" value="{{m.url}}">{{m.name}} ({{m.type}})</option>
                 </select>
@@ -25,76 +33,79 @@
                 </div>
               </div>
               <div class="mb-4">
-                <label class="block text-gray-700 font-medium mb-1">Caption</label>
-                <textarea ng-model="status.caption" class="block w-full border border-gray-300 rounded px-3 py-2" maxlength="220" placeholder="Enter status caption (max 220 chars)"></textarea>
+                <label class="block text-teal-300 font-medium mb-1">Caption</label>
+                <textarea ng-model="status.caption" class="dark-theme-input w-full px-3 py-2 rounded-lg" maxlength="220" placeholder="Enter status caption (max 220 chars)"></textarea>
               </div>
               <div class="mb-4 flex items-center space-x-4">
                 <div>
-                  <label class="block text-gray-700 font-medium mb-1">Text Color</label>
-                  <input type="color" ng-model="status.textColor" class="w-10 h-10 p-0 border-0">
+                  <label class="block text-teal-300 font-medium mb-1">Text Color</label>
+                  <input type="color" ng-model="status.textColor" class="w-10 h-10 p-0 border-0 rounded">
                 </div>
                 <div>
-                  <label class="block text-gray-700 font-medium mb-1">Background Color</label>
-                  <input type="color" ng-model="status.bgColor" class="w-10 h-10 p-0 border-0">
+                  <label class="block text-teal-300 font-medium mb-1">Background Color</label>
+                  <input type="color" ng-model="status.bgColor" class="w-10 h-10 p-0 border-0 rounded">
                 </div>
               </div>
               <div class="mb-4">
-                <label class="block text-gray-700 font-medium mb-1">Schedule Time <span class="text-red-500">*</span></label>
+                <label class="block text-teal-300 font-medium mb-1">Schedule Time <span class="text-red-400">*</span></label>
                 <div class="flex items-center space-x-2">
-                  <select ng-model="status.hour" class="block w-full border border-gray-300 rounded px-3 py-2" required>
+                  <select ng-model="status.hour" class="dark-theme-input w-full px-3 py-2 rounded-lg" required>
                     <option ng-repeat="h in hours" value="{{h}}">{{h}}</option>
                   </select>
-                  <select ng-model="status.minute" class="block w-full border border-gray-300 rounded px-3 py-2" required>
+                  <select ng-model="status.minute" class="dark-theme-input w-full px-3 py-2 rounded-lg" required>
                     <option ng-repeat="m in minutes" value="{{m}}">{{m}}</option>
                   </select>
-                  <select ng-model="status.ampm" class="block w-full border border-gray-300 rounded px-3 py-2" required>
+                  <select ng-model="status.ampm" class="dark-theme-input w-full px-3 py-2 rounded-lg" required>
                     <option value="AM">AM</option>
                     <option value="PM">PM</option>
                   </select>
                 </div>
               </div>
               <div class="mb-4">
-                <label class="block text-gray-700 font-medium mb-1">Repeat</label>
-                <select ng-model="status.repeat" class="block w-full border border-gray-300 rounded px-3 py-2">
+                <label class="block text-teal-300 font-medium mb-1">Repeat</label>
+                <select ng-model="status.repeat" class="dark-theme-input w-full px-3 py-2 rounded-lg">
                   <option value="once">Once</option>
                   <option value="daily">Daily</option>
                   <option value="custom">Specific Days</option>
                 </select>
               </div>
               <div class="mb-4" ng-if="status.repeat === 'custom'">
-                <label class="block text-gray-700 font-medium mb-1">Select Days</label>
+                <label class="block text-teal-300 font-medium mb-1">Select Days</label>
                 <div class="flex flex-wrap gap-2">
-                  <label ng-repeat="day in days" class="flex items-center">
-                    <input type="checkbox" ng-model="status.days[day]" class="mr-1"> {{day}}
+                  <label ng-repeat="day in days" class="flex items-center text-gray-300">
+                    <input type="checkbox" ng-model="status.days[day]" class="mr-1 text-teal-500"> {{day}}
                   </label>
                 </div>
               </div>
-              <button type="submit" class="btn btn-success bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold" ng-disabled="saving">
+              <button type="submit" class="bg-teal-600 hover:bg-teal-500 text-white px-6 py-2 rounded-lg font-semibold transition" ng-disabled="saving">
                 <i class="fas fa-spinner fa-spin mr-2" ng-if="saving"></i>
                 Schedule Status
               </button>
-              <span ng-if="saveSuccess" class="ml-3 text-green-600 font-medium">Scheduled!</span>
-              <span ng-if="saveError" class="ml-3 text-red-600 font-medium">{{saveError}}</span>
-              <button type="button" class="ml-4 px-4 py-2 bg-gray-200 rounded-lg text-gray-700 font-semibold" ng-click="hideCreateStatusModal()">Cancel</button>
+              <span ng-if="saveSuccess" class="ml-3 text-teal-400 font-medium">Scheduled!</span>
+              <span ng-if="saveError" class="ml-3 text-red-400 font-medium">{{saveError}}</span>
+              <button type="button" class="ml-4 px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg text-gray-200 font-semibold transition" ng-click="hideCreateStatusModal()">Cancel</button>
             </form>
           </div>
         </div>
         <!-- Scheduled Statuses List -->
-        <div class="bg-white rounded-xl shadow p-6 mt-6">
-          <h3 class="text-lg font-semibold mb-4">Scheduled Statuses</h3>
-          <div ng-if="scheduledStatuses.length === 0" class="text-gray-500">No statuses scheduled.</div>
-          <div ng-repeat="s in scheduledStatuses" class="mb-4 p-3 border rounded flex items-center justify-between">
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg p-6 mt-6 border border-gray-700">
+          <h3 class="text-lg font-semibold mb-4 text-white">Scheduled Statuses</h3>
+          <div ng-if="scheduledStatuses.length === 0" class="text-gray-400 text-center py-8">
+            <i class="fas fa-calendar-alt text-3xl text-gray-500 mb-3"></i>
+            <p>No statuses scheduled.</p>
+          </div>
+          <div ng-repeat="s in scheduledStatuses" class="mb-4 p-4 bg-gray-700 rounded-lg border border-gray-600 flex items-center justify-between hover:bg-gray-650 transition-all">
             <div class="flex items-center">
               <img ng-if="getMediaType(s.media)==='image'" ng-src="{{s.media}}" class="h-12 w-12 rounded shadow mr-4" />
               <video ng-if="getMediaType(s.media)==='video'" ng-src="{{s.media}}" class="h-12 w-12 rounded shadow mr-4" controls></video>
               <div>
-                <div class="font-medium">{{s.caption}}</div>
-                <div class="text-xs text-gray-500">Time: {{s.timeDisplay}} | Repeat: {{s.repeat}} <span ng-if="s.repeat==='custom'">({{getSelectedDays(s.days)}})</span></div>
+                <div class="font-medium text-white">{{s.caption}}</div>
+                <div class="text-xs text-gray-400">Time: {{s.timeDisplay}} | Repeat: {{s.repeat}} <span ng-if="s.repeat==='custom'">({{getSelectedDays(s.days)}})</span></div>
               </div>
             </div>
             <div>
-              <button class="text-blue-600 hover:underline mr-2" ng-click="editStatus(s)">Edit</button>
-              <button class="text-red-600 hover:underline" ng-click="deleteStatus(s.id)">Delete</button>
+              <button class="text-teal-400 hover:text-teal-300 mr-2 px-2 py-1 rounded hover:bg-gray-700 transition" ng-click="editStatus(s)">Edit</button>
+              <button class="text-red-400 hover:text-red-300 px-2 py-1 rounded hover:bg-gray-700 transition" ng-click="deleteStatus(s.id)">Delete</button>
             </div>
           </div>
         </div>

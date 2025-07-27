@@ -1,54 +1,10 @@
 {
   "1746109966554ixl5rmz": {
-    "5days": {
-      "enabled": true,
-      "text": "5 days to go until {{eventName}}!"
-    },
-    "4days": {
-      "enabled": true,
-      "text": "4 days to go until {{eventName}}!"
-    },
-    "3days": {
-      "enabled": true,
-      "text": "3 days to go until {{eventName}}!"
-    },
-    "2days": {
-      "enabled": true,
-      "text": "2 days to go until {{eventName}}!"
-    },
-    "1day": {
-      "enabled": true,
-      "text": "Only 1 day to go until {{eventName}}!",
-      "mediaId": "md1s5yai5ukt2e71h7d",
-      "mediaUrl": "/uploads/1752417553587-automation.png"
-    },
-    "12hours": {
-      "enabled": true,
-      "text": "12. hsfksj",
-      "mediaId": null,
-      "mediaUrl": null
-    },
-    "6hours": {
-      "enabled": true,
-      "text": "6 hours to go until {{eventName}}!\n\n🚨 LIVE NOW! 🚨 \n\nWe're going live in 10 minutes was supposed to be the plan but looks like we're starting early! \n\n⏰ Join the WhatsApp webinar RIGHT NOW! \n\n🎙️ Click to join fast!"
-    },
-    "3hours": {
-      "enabled": true,
-      "text": "3 hours\n\n🚨 LIVE NOW! 🚨 \n\nWe're going live in 10 minutes was supposed to be the plan but looks like we're starting early! \n\n⏰ Join the WhatsApp webinar RIGHT NOW! \n\n🎙️ Click to join fast!"
-    },
     "1hour": {
       "enabled": true,
-      "text": "1 hour to go until\n\n🚨 LIVE NOW! 🚨 \n\nWe're going live in 10 minutes was supposed to be the plan but looks like we're starting early! \n\n⏰ Join the WhatsApp webinar RIGHT NOW! \n\n🎙️ Click to join fast!",
+      "text": "1 hour to go until {{eventName}}!",
       "mediaId": "md1s5yai5ukt2e71h7d",
       "mediaUrl": "/uploads/1752417553587-automation.png"
-    },
-    "30mins": {
-      "enabled": true,
-      "text": "30 mins"
-    },
-    "live": {
-      "enabled": true,
-      "text": "🚨 LIVE NOW! 🚨 \n\nWe're going live in 10 minutes was supposed to be the plan but looks like we're starting early! \n\n⏰ Join the WhatsApp webinar RIGHT NOW! \n\n🎙️ Click to join fast!"
     }
   },
   "1746183550907xn3yy01": {

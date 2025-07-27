@@ -1,66 +1,99 @@
-<div class="flex h-screen bg-gray-100">
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="dark-theme.css">
+</head>
+<body>
+<div class="flex h-screen dark-theme" ng-controller="SettingsController">
   <!-- Sidebar -->
-  <sidebar-nav></sidebar-nav>
+  <div ng-include="'sidebar.html'" ng-controller="SidebarController"></div>
   <!-- Main Content Area -->
   <div class="flex-1 flex flex-col overflow-hidden">
-    <header class="bg-white shadow-sm z-10 py-4 px-6">
-      <div class="flex items-center">
-        <h2 class="text-xl font-semibold text-gray-800" style="padding-left:50px;">Settings</h2>
+    <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">Settings</h2>
+        <!-- ...existing header actions/buttons... -->
       </div>
     </header>
-    <main class="flex-1 overflow-y-auto bg-gray-50 p-6 flex justify-center items-start">
-      <div class="w-full max-w-md">
+    <main class="flex-1 overflow-y-auto p-6" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 30%, #1a202c 100%), radial-gradient(circle at 20% 60%, #2c5282 0%, transparent 50%), radial-gradient(circle at 80% 40%, #2a4365 0%, transparent 50%); background-blend-mode: overlay;">
+      <div class="max-w-4xl mx-auto">
         <!-- User Settings Form -->
-        <div class="bg-white rounded-xl shadow p-6">
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl p-8 border border-gray-600">
+          <div class="mb-6">
+            <h3 class="text-2xl font-semibold text-white mb-2">WhatsApp Configuration</h3>
+            <p class="text-gray-300 text-sm">Configure your WhatsApp integration settings</p>
+          </div>
           <form name="settingsForm" ng-submit="saveSettings()" novalidate autocomplete="off">
-            <div class="mb-4">
-                <label class="form-label block text-gray-700 font-medium mb-1">WhatsApp Instance ID <span class="text-red-500">*</span></label>
-                <input type="text" ng-model="settings.instance_id" class="form-control block w-full border border-gray-300 rounded px-3 py-2" required>
-                <div ng-show="settingsForm.$submitted && !settings.instance_id" class="text-red-500 text-xs mt-1">Instance ID is required.</div>
+            <div class="space-y-6">
+              <div>
+                <label class="block text-cyan-300 font-medium mb-2">WhatsApp Instance ID <span class="text-red-400">*</span></label>
+                <input type="text" ng-model="settings.instance_id" class="block w-full rounded-lg px-4 py-3 bg-gray-700 border border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300" required>
+                <div ng-show="settingsForm.$submitted && !settings.instance_id" class="text-red-400 text-xs mt-1">Instance ID is required.</div>
               </div>
-            <div class="mb-4">
-              <label class="form-label block text-gray-700 font-medium mb-1">WhatsApp Access Token <span class="text-red-500">*</span></label>
-              <input type="text" ng-model="settings.access_token" class="form-control block w-full border border-gray-300 rounded px-3 py-2" required>
-              <div ng-show="settingsForm.$submitted && !settings.access_token" class="text-red-500 text-xs mt-1">Access Token is required.</div>
+              <div>
+                <label class="block text-cyan-300 font-medium mb-2">WhatsApp Access Token <span class="text-red-400">*</span></label>
+                <input type="text" ng-model="settings.access_token" class="block w-full rounded-lg px-4 py-3 bg-gray-700 border border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300" required>
+                <div ng-show="settingsForm.$submitted && !settings.access_token" class="text-red-400 text-xs mt-1">Access Token is required.</div>
+              </div>
+              <div>
+                <label class="block text-cyan-300 font-medium mb-2">WhatsApp Phone Number <span class="text-red-400">*</span></label>
+                <input type="text" ng-model="settings.wa_phone" class="block w-full rounded-lg px-4 py-3 bg-gray-700 border border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300" required placeholder="Include country code, e.g. 91XXXXXXXXXX">
+                <div ng-show="settingsForm.$submitted && !settings.wa_phone" class="text-red-400 text-xs mt-1">Phone Number is required.</div>
+              </div>
+              <div>
+                <label class="block text-cyan-300 font-medium mb-2">Test Mobile Number <span class="text-red-400">*</span></label>
+                <input type="text" ng-model="settings.test_mobile" class="block w-full rounded-lg px-4 py-3 bg-gray-700 border border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300" required placeholder="Include country code, e.g. 91XXXXXXXXXX">
+                <div ng-show="settingsForm.$submitted && !settings.test_mobile" class="text-red-400 text-xs mt-1">Test Mobile Number is required.</div>
+              </div>
+              <div>
+                <label class="block text-cyan-300 font-medium mb-2">WHAPI Token <span class="text-red-400">*</span></label>
+                <input type="text" ng-model="settings.whapi_token" class="block w-full rounded-lg px-4 py-3 bg-gray-700 border border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300" required>
+                <div ng-show="settingsForm.$submitted && !settings.whapi_token" class="text-red-400 text-xs mt-1">WHAPI Token is required for group sync.</div>
+              </div>
+              
+              <div class="flex items-center">
+                <input type="checkbox" ng-model="settings.notification_enabled" id="notif" class="mr-3 rounded h-4 w-4 text-cyan-400 bg-gray-600 border-gray-500 focus:ring-cyan-300">
+                <label for="notif" class="text-gray-200">Enable WhatsApp Reminders</label>
+              </div>
+              
+              <div class="pt-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button type="button" ng-click="testConnection()" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-md" ng-disabled="testing">
+                    <i class="fas fa-spinner fa-spin mr-2" ng-if="testing"></i>
+                    <i class="fas fa-plug mr-2" ng-if="!testing"></i>
+                    Test Connection
+                  </button>
+                  <button type="submit" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-md" ng-disabled="saving">
+                    <i class="fas fa-spinner fa-spin mr-2" ng-if="saving"></i>
+                    <i class="fas fa-save mr-2" ng-if="!saving"></i>
+                    Save Settings
+                  </button>
+                </div>
+                <div class="mt-3 text-center">
+                  <span ng-if="testSuccess" class="text-blue-300 font-medium">
+                    <i class="fas fa-check mr-1"></i>Connection test successful!
+                  </span>
+                  <span ng-if="testError" class="text-red-300 font-medium">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>{{testError}}
+                  </span>
+                  <span ng-if="saveSuccess" class="text-emerald-300 font-medium">
+                    <i class="fas fa-check mr-1"></i>Settings saved successfully!
+                  </span>
+                  <span ng-if="saveError" class="text-red-300 font-medium">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>{{saveError}}
+                  </span>
+                </div>
+              </div>
             </div>
-
-            <div class="mb-4">
-              <label class="form-label block text-gray-700 font-medium mb-1">WhatsApp Phone Number <span class="text-red-500">*</span></label>
-              <input type="text" ng-model="settings.wa_phone" class="form-control block w-full border border-gray-300 rounded px-3 py-2" required placeholder="Include country code, e.g. 91XXXXXXXXXX" ng-init="settings.wa_phone = settings.wa_phone || '91'">
-              <div ng-show="settingsForm.$submitted && !settings.wa_phone" class="text-red-500 text-xs mt-1">Phone Number is required.</div>
-            </div>
-            <div class="mb-4">
-              <label class="form-label block text-gray-700 font-medium mb-1">Test Mobile Number <span class="text-red-500">*</span></label>
-              <input type="text" ng-model="settings.test_mobile" class="form-control block w-full border border-gray-300 rounded px-3 py-2" required placeholder="Include country code, e.g. 91XXXXXXXXXX" ng-init="settings.test_mobile = settings.test_mobile || '91'">
-              <div ng-show="settingsForm.$submitted && !settings.test_mobile" class="text-red-500 text-xs mt-1">Test Mobile Number is required.</div>
-            </div>
-            <div class="mb-4">
-              <label class="form-label block text-gray-700 font-medium mb-1">WHAPI Token <span class="text-red-500">*</span></label>
-              <input type="text" ng-model="settings.whapi_token" class="form-control block w-full border border-gray-300 rounded px-3 py-2" required>
-              <div ng-show="settingsForm.$submitted && !settings.whapi_token" class="text-red-500 text-xs mt-1">WHAPI Token is required for group sync.</div>
-            </div>
-            <div class="mb-4 flex items-center">
-              <input type="checkbox" ng-model="settings.notification_enabled" id="notif" class="mr-2">
-              <label for="notif" class="text-gray-700">Enable WhatsApp Reminders</label>
-            </div>
-            <div class="mb-6">
-              <button type="button" class="btn btn-outline-primary bg-blue-100 text-blue-700 px-4 py-2 rounded mr-2" ng-click="testConnection()" ng-disabled="testingConn">
-                <i class="fas fa-plug mr-1"></i> Test WhatsApp Connection
-              </button>
-              <span ng-if="testResult" class="ml-2 text-sm align-middle" style="display:inline-block;vertical-align:middle;" ng-class="{'text-green-600': testResult.success, 'text-red-600': !testResult.success}">
-                <i class="fas" ng-class="{'fa-check-circle': testResult.success, 'fa-times-circle': !testResult.success}"></i>
-                <span style="white-space:nowrap;">{{testResult.message}}</span>
-              </span>
-            </div>
-            <button type="submit" class="btn btn-success bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold" ng-disabled="saving">
-              <i class="fas fa-spinner fa-spin mr-2" ng-if="saving"></i>
-              Save Settings
-            </button>
-            <span ng-if="saveSuccess" class="ml-3 text-green-600 font-medium">Saved!</span>
-            <span ng-if="saveError" class="ml-3 text-red-600 font-medium">{{saveError}}</span>
           </form>
         </div>
       </div>
     </main>
   </div>
 </div>
+
+<script src="app.js"></script>
+<script src="services/auth.service.js"></script>
+<script src="controllers/sidebar.controller.js"></script>
+</body>
+</html>

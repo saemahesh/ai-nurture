@@ -1,127 +1,149 @@
-<!-- Desktop Sidebar -->
-<div class="hidden md:flex w-72 min-w-64 h-screen flex-col shadow-2xl overflow-hidden" ng-controller="SidebarController" style="background: linear-gradient(135deg, #232526 0%, #414345 100%);">
-  <div class="px-6 py-3 flex items-center bg-gray-900 border-b border-gray-700 shadow-md">
-    <div class="flex items-center justify-center w-12 h-12 bg-transparent mr-4">
-      <i class="fab fa-whatsapp text-3xl text-green-400"></i>
+<div>
+<!-- Modern Desktop Sidebar -->
+<div class="hidden lg:flex w-80 h-screen flex-col shadow-2xl overflow-hidden border-r border-gray-700" style="background: #1a202c;">
+  
+  <!-- Brand Header with Glass Effect -->
+  <div class="px-8 py-3 bg-teal-800 border-b border-gray-600">
+    <div class="flex items-center">
+      <div class="flex items-center justify-center w-14 h-14 mr-4">
+        <i class="fab fa-whatsapp text-3xl" style="color: #25D366 !important; font-family: 'Font Awesome 6 Brands', 'Font Awesome 6 Pro', FontAwesome !important; font-weight: 400 !important; filter: drop-shadow(0 0 12px rgba(37, 211, 102, 1)) drop-shadow(0 0 6px rgba(37, 211, 102, 0.8));"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold tracking-wide" style="background: linear-gradient(135deg, #ffffff, #7dd3fc, #34d399, #fbbf24); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">WhatsPro</h1>
+        <p class="text-xs text-white font-bold mt-1" style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Advanced Messaging</p>
+      </div>
     </div>
-    <h1 class="text-2xl font-bold tracking-wide text-white">WhatsPro</h1>
   </div>
 
-  <nav class="flex-1 overflow-y-auto py-4 relative" id="desktop-nav">
-    <a href="#/dashboard" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/dashboard'), 'text-gray-300': !isActive('/dashboard')}">
-      <i class="fas fa-tachometer-alt w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Dashboard</span>
-    </a>
-    <a href="#/groups" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/groups'), 'text-gray-300': !isActive('/groups')}">
-      <i class="fas fa-users w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Groups</span>
-    </a>
-    <a href="#/events" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/events'), 'text-gray-300': !isActive('/events')}">
-      <i class="fas fa-calendar-alt w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Events</span>
-    </a>
-    <a href="#/event-reminders" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/event-reminders'), 'text-gray-300': !isActive('/event-reminders')}">
-      <i class="fas fa-bell w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Event Reminders</span>
-    </a>
-    <a href="#/schedules" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/schedules'), 'text-gray-300': !isActive('/schedules')}">
-      <i class="far fa-clock w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Group Schedules</span>
-    </a>
-    <a href="#/direct-schedule" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/direct-schedule'), 'text-gray-300': !isActive('/direct-schedule')}">
-      <i class="fas fa-paper-plane w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Message Schedule</span>
-    </a>
-    <a href="#/sequences" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/sequences'), 'text-gray-300': !isActive('/sequences')}">
-      <i class="fas fa-bullhorn w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Drip Campaigns</span>
-    </a>
-    <a href="#/media" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/media'), 'text-gray-300': !isActive('/media')}">
-      <i class="far fa-image w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Media Library</span>
-    </a>
-    <a href="#/users" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/users'), 'text-gray-300': !isActive('/users')}" ng-if="user.role === 'admin'">
-      <i class="fas fa-user-shield w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Users</span>
-    </a>
-    <a href="#/status" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/status'), 'text-gray-300': !isActive('/status')}">
-      <i class="fas fa-hourglass-half w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Status</span>
-    </a>
-    <a href="#/settings" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300" ng-class="{'bg-green-600/30 text-green-300': isActive('/settings'), 'text-gray-300': !isActive('/settings')}">
-      <i class="fas fa-cog w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-      <span class="font-medium">Settings</span>
-    </a>
-    
-    <!-- User info and actions in nav -->
-    <div ng-if="!loadingUser && !userError && user.username" class="mt-4 px-6">
-      <!-- User info -->
-      <div class="flex items-center gap-3 px-3 py-2 mb-2 rounded-lg bg-gray-800/50">
-        <i class="fas fa-user-circle text-lg text-green-400"></i>
-        <span class="font-medium text-green-300 text-sm">{{user.username | uppercase}}</span>
+  <!-- Navigation with Enhanced UX -->
+  <nav class="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar" id="desktop-nav">
+    <div class="space-y-2">
+      <!-- Workspace Section -->
+      <div class="mb-6">
+        <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Workspace</p>
+        <a href="#/dashboard" class="nav-item group relative" ng-class="{'active': isActive('/dashboard')}">
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-chart-line nav-icon"></i>
+          <span class="nav-text">Dashboard</span>
+          <div class="nav-indicator" ng-if="isActive('/dashboard')"></div>
+        </a>
+        <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}">
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-users nav-icon"></i>
+          <span class="nav-text">Groups</span>
+          <div class="nav-indicator" ng-if="isActive('/groups')"></div>
+        </a>
+        <a href="#/events" class="nav-item group relative" ng-class="{'active': isActive('/events')}">
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-calendar-alt nav-icon"></i>
+          <span class="nav-text">Events</span>
+          <div class="nav-indicator" ng-if="isActive('/events')"></div>
+        </a>
+        <a href="#/media" class="nav-item group relative" ng-class="{'active': isActive('/media')}">
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-photo-film nav-icon"></i>
+          <span class="nav-text">Media Library</span>
+          <div class="nav-indicator" ng-if="isActive('/media')"></div>
+        </a>
       </div>
-      
-      <!-- Action buttons -->
-      <div class="flex flex-col gap-2">
-        <!-- Force refresh button -->
-        <button ng-click="forceRefresh()"
-                ng-disabled="refreshing"
-                class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 text-gray-300 w-full text-left">
-          <i class="fas w-7 text-center text-lg group-hover:text-red-400 transition" ng-class="refreshing ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i>
-          <span class="font-medium">{{refreshing ? 'Refreshing...' : 'Force Refresh'}}</span>
-        </button>
-        
-        <!-- Logout button -->
-        <button ng-click="logout()"
-                ng-disabled="loggingOut"
-                class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 text-gray-300 w-full text-left">
-          <i class="fas w-7 text-center text-lg group-hover:text-red-400 transition" ng-class="loggingOut ? 'fa-spinner fa-spin' : 'fa-sign-out-alt'"></i>
-          <span class="font-medium">{{loggingOut ? 'Logging out...' : 'Logout'}}</span>
-        </button>
+
+      <!-- Automation & Scheduling Section -->
+      <div class="mb-6">
+        <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Automation</p>
+        <a href="#/sequences" class="nav-item group relative" ng-class="{'active': isActive('/sequences')}">
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-robot nav-icon"></i>
+          <span class="nav-text">Drip Campaigns</span>
+          <div class="nav-indicator" ng-if="isActive('/sequences')"></div>
+        </a>
+       
+        <a href="#/event-reminders" class="nav-item group relative" ng-class="{'active': isActive('/event-reminders')}">
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-bell nav-icon"></i>
+          <span class="nav-text">Event Reminders</span>
+          <div class="nav-indicator" ng-if="isActive('/event-reminders')"></div>
+        </a>
+        <a href="#/schedules" class="nav-item group relative" ng-class="{'active': isActive('/schedules')}">
+          <div class="nav-item-bg"></div>
+          <i class="far fa-clock nav-icon"></i>
+          <span class="nav-text">Group Schedules</span>
+          <div class="nav-indicator" ng-if="isActive('/schedules')"></div>
+        </a>
+        <a href="#/direct-schedule" class="nav-item group relative" ng-class="{'active': isActive('/direct-schedule')}">
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-paper-plane nav-icon"></i>
+          <span class="nav-text">Message Schedule</span>
+          <div class="nav-indicator" ng-if="isActive('/direct-schedule')"></div>
+        </a>
+        <a href="#/status" class="nav-item group relative" ng-class="{'active': isActive('/status')}">
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-server nav-icon"></i>
+          <span class="nav-text">Status Schedule</span>
+          <div class="nav-indicator" ng-if="isActive('/status')"></div>
+        </a>
+      </div>
+
+      <!-- System & Admin Section -->
+      <div>
+        <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Admin</p>
+        <a href="#/users" class="nav-item group relative" ng-class="{'active': isActive('/users')}" ng-if="user.role === 'admin'">
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-user-shield nav-icon"></i>
+          <span class="nav-text">Users</span>
+          <div class="nav-indicator" ng-if="isActive('/users')"></div>
+        </a>
+
+        <a href="#/settings" class="nav-item group relative" ng-class="{'active': isActive('/settings')}">
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-sliders nav-icon"></i>
+          <span class="nav-text">Settings</span>
+          <div class="nav-indicator" ng-if="isActive('/settings')"></div>
+        </a>
       </div>
     </div>
   </nav>
 
-  <!-- Scroll indicator for desktop - positioned outside nav to stay fixed -->
-  <div class="absolute bottom-16 right-6 z-10 hidden md:block cursor-pointer" id="desktop-scroll-indicator" style="display: none;">
-    <div class="pointer-events-auto bg-gray-800/70 rounded-full p-3 hover:bg-gray-700/80 transition-all duration-200 shadow-lg" ng-click="toggleScroll('desktop-nav')" title="Click to scroll">
-      <i class="fas text-green-400 text-sm" ng-class="desktopScrollDirection === 'down' ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
+  <!-- Enhanced User Section -->
+  <div class="px-6 py-1 border-t border-gray-600 bg-gray-800 mt-auto">
+    <!-- Loading State -->
+    <div ng-if="loadingUser" class="flex items-center justify-center space-x-3 py-4">
+      <div class="w-6 h-6 rounded-full border-2 border-teal-400 border-t-transparent animate-spin"></div>
+      <span class="text-sm text-teal-300 font-medium">Loading user...</span>
     </div>
-  </div>
-
-  <div class="px-6 py-4 border-t border-gray-700 bg-gray-900/60 shadow-inner flex-shrink-0" style="min-height: 80px;">
-    <!-- Loading state -->
-    <div ng-if="loadingUser" class="flex items-center space-x-2 mb-2">
-      <div class="w-4 h-4 rounded-full border-2 border-green-400 border-t-transparent animate-spin"></div>
-      <span class="text-sm text-gray-300">Loading...</span>
+    
+    <!-- Error State -->
+    <div ng-if="userError" class="flex items-center space-x-3 p-4 rounded-lg bg-red-900/20 border border-red-500/20">
+      <i class="fas fa-exclamation-triangle text-red-400 text-lg"></i>
+      <span class="text-sm text-red-300 font-medium">Failed to load user data</span>
     </div>
-    <!-- Error state -->
-    <p ng-if="userError" class="text-sm text-red-400 mb-2">
-      <i class="fas fa-exclamation-circle mr-1"></i> 
-      Error loading user
-    </p>
-    <!-- User info when available -->
-    <div ng-if="!loadingUser && !userError && user.username" class="flex items-center justify-between mb-2 p-2 rounded bg-gray-800/80 shadow" style="min-height:44px;">
-      <div class="flex items-center">
-        <i class="fas fa-user-circle text-lg text-green-400"></i>
-        <span class="font-semibold text-green-300 text-sm ml-2">{{user.username | uppercase}}</span>
+    
+    <!-- User Info -->
+    <div ng-if="!loadingUser && !userError && user.username" class="space-y-3">
+      <!-- User Profile Card -->
+      <div class="p-1 rounded-lg bg-gray-700 border border-gray-600">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
+            <i class="fas fa-user text-white"></i>
+          </div>            <div class="flex-1 min-w-0">
+              <p class="text-white font-bold text-lg truncate">{{user.username | uppercase}}</p>
+            </div>
+        </div>
       </div>
-      <div class="flex items-center space-x-2">
-        <!-- Force refresh button for mobile cache issues -->
-        <button ng-click="forceRefresh()"
+      
+      <!-- Action Buttons -->
+      <div class="grid grid-cols-2 gap-2">
+        <button ng-click="forceRefresh()" 
                 ng-disabled="refreshing"
-                class="bg-transparent text-green-400 hover:text-green-600 p-2 rounded-full focus:outline-none min-w-[36px] min-h-[36px] flex items-center justify-center md:hidden"
-                title="Force Refresh App">
-          <i class="fas fa-sync-alt text-sm" ng-if="!refreshing"></i>
-          <i class="fas fa-spinner fa-spin text-sm" ng-if="refreshing"></i>
+                class="p-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-center transition-colors text-xs">
+          <i class="fas block mb-1" ng-class="refreshing ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i>
+          <span class="font-medium">{{refreshing ? 'Syncing...' : 'Refresh'}}</span>
         </button>
-        <!-- Logout button -->
-        <button ng-click="logout()"
+        
+        <button ng-click="logout()" 
                 ng-disabled="loggingOut"
-                class="bg-transparent text-green-400 hover:text-green-600 p-2 rounded-full focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center"
-                title="Logout">
-          <i class="fas fa-sign-out-alt text-lg" ng-if="!loggingOut"></i>
-          <i class="fas fa-spinner fa-spin text-lg" ng-if="loggingOut"></i>
+                class="p-2 rounded bg-red-600 hover:bg-red-700 text-white text-center transition-colors text-xs">
+          <i class="fas block mb-1" ng-class="loggingOut ? 'fa-spinner fa-spin' : 'fa-sign-out-alt'"></i>
+          <span class="font-medium">{{loggingOut ? 'Logging out...' : 'Logout'}}</span>
         </button>
       </div>
     </div>
@@ -129,103 +151,340 @@
 </div>
 
 <!-- Mobile Sidebar -->
-<div ng-controller="SidebarController"></div>
-  <button aria-label="Open sidebar" class="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-900/80 text-green-400 shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400" ng-click="openSidebar()" type="button">
-    <i class="fas fa-bars text-2xl"></i>
+<div>
+  <!-- Mobile hamburger button -->
+  <button aria-label="Open sidebar" class="md:hidden fixed top-4 left-4 z-50 p-3 rounded-lg bg-gray-800 text-white shadow-xl focus:outline-none focus:ring-2 focus:ring-teal-400 hover:bg-gray-700" ng-click="openSidebar()" type="button">
+    <i class="fas fa-bars text-2xl" style="color: white !important;"></i>
   </button>
-  <div ng-show="sidebarOpen" class="fixed inset-0 z-40 bg-black/40 md:hidden transition-opacity duration-200" ng-click="closeSidebar()" aria-hidden="true"></div>
-  <div class="w-72 h-screen flex flex-col shadow-2xl overflow-hidden fixed z-50 top-0 left-0 bg-gradient-to-br from-[#232526] to-[#414345] transition-transform duration-300 md:hidden mobile-sidebar-container" ng-class="{'-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen}" style="background: linear-gradient(135deg, #232526 0%, #414345 100%);" tabindex="-1" aria-label="Sidebar navigation" ng-show="sidebarOpen">
-    <button ng-click="closeSidebar()" aria-label="Close sidebar" class="absolute top-4 right-4 z-50 p-2 rounded-lg bg-gray-900/80 text-green-400 shadow-lg focus:outline-none focus:ring-2 focus:ring-green-400">
+  
+  <!-- Backdrop overlay -->
+  <div ng-if="sidebarOpen" class="fixed inset-0 z-40 bg-black/40 md:hidden transition-opacity duration-200" ng-click="closeSidebar()" aria-hidden="true"></div>
+  
+  <!-- Mobile sidebar container -->
+  <div class="w-80 h-screen flex flex-col shadow-2xl overflow-hidden fixed z-50 top-0 left-0 transition-transform duration-300 md:hidden mobile-sidebar-container border-r border-gray-700" style="background: #1a202c;" ng-class="{'-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen}" tabindex="-1" aria-label="Sidebar navigation">
+    
+    <!-- Close button -->
+    <button ng-click="closeSidebar()" aria-label="Close sidebar" class="absolute top-4 right-4 z-60 p-2 rounded-lg bg-gray-900 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 hover:bg-gray-800">
       <i class="fas fa-times text-2xl"></i>
     </button>
-        <div class="px-6 py-3 flex items-center bg-gray-900 border-b border-gray-700 shadow-md">
-      <div class="flex items-center justify-center w-12 h-12 bg-transparent mr-4">
-        <i class="fab fa-whatsapp text-3xl text-green-400"></i>
+    
+    <!-- Brand Header with Glass Effect - EXACT MATCH TO DESKTOP -->
+    <div class="px-8 py-3 bg-teal-800 border-b border-gray-600">
+      <div class="flex items-center">
+        <div class="flex items-center justify-center w-14 h-14 mr-4">
+          <i class="fab fa-whatsapp text-3xl" style="color: #25D366 !important; font-family: 'Font Awesome 6 Brands', 'Font Awesome 6 Pro', FontAwesome !important; font-weight: 400 !important; filter: drop-shadow(0 0 12px rgba(37, 211, 102, 1)) drop-shadow(0 0 6px rgba(37, 211, 102, 0.8));"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold tracking-wide" style="background: linear-gradient(135deg, #ffffff, #7dd3fc, #34d399, #fbbf24); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">WhatsPro</h1>
+          <p class="text-xs text-white font-bold mt-1" style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Advanced Messaging</p>
+        </div>
       </div>
-      <h1 class="text-2xl font-bold tracking-wide text-white">WhatsPro</h1>
     </div>
-    <nav class="flex-1 overflow-y-auto py-4 relative" id="mobile-nav">
-      <a href="#/dashboard" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300 mobile-nav-link" ng-class="{'bg-green-600/30 text-green-300': isActive('/dashboard'), 'text-gray-300': !isActive('/dashboard')}">
-        <i class="fas fa-tachometer-alt w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Dashboard</span>
-      </a>
-      <a href="#/groups" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300 mobile-nav-link" ng-class="{'bg-green-600/30 text-green-300': isActive('/groups'), 'text-gray-300': !isActive('/groups')}">
-        <i class="fas fa-users w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Groups</span>
-      </a>
-      <a href="#/events" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300 mobile-nav-link" ng-class="{'bg-green-600/30 text-green-300': isActive('/events'), 'text-gray-300': !isActive('/events')}">
-        <i class="fas fa-calendar-alt w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Events</span>
-      </a>
-      <a href="#/event-reminders" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300 mobile-nav-link" ng-class="{'bg-green-600/30 text-green-300': isActive('/event-reminders'), 'text-gray-300': !isActive('/event-reminders')}">
-        <i class="fas fa-bell w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Event Reminders</span>
-      </a>
-      <a href="#/schedules" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300 mobile-nav-link" ng-class="{'bg-green-600/30 text-green-300': isActive('/schedules'), 'text-gray-300': !isActive('/schedules')}">
-        <i class="far fa-clock w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Group Schedules</span>
-      </a>
-      <a href="#/direct-schedule" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300 mobile-nav-link" ng-class="{'bg-green-600/30 text-green-300': isActive('/direct-schedule'), 'text-gray-300': !isActive('/direct-schedule')}">
-        <i class="fas fa-paper-plane w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Message Schedule</span>
-      </a>
-      <a href="#/sequences" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300 mobile-nav-link" ng-class="{'bg-green-600/30 text-green-300': isActive('/sequences'), 'text-gray-300': !isActive('/sequences')}">
-        <i class="fas fa-bullhorn w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Drip Campaigns</span>
-      </a>
-      <a href="#/media" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300 mobile-nav-link" ng-class="{'bg-green-600/30 text-green-300': isActive('/media'), 'text-gray-300': !isActive('/media')}">
-        <i class="far fa-image w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Media Library</span>
-      </a>
-      <a href="#/users" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300 mobile-nav-link" ng-class="{'bg-green-600/30 text-green-300': isActive('/users'), 'text-gray-300': !isActive('/users')}" ng-if="user.role === 'admin'">
-        <i class="fas fa-user-shield w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Users</span>
-      </a>
-      <a href="#/status" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300 mobile-nav-link" ng-class="{'bg-green-600/30 text-green-300': isActive('/status'), 'text-gray-300': !isActive('/status')}">
-        <i class="fas fa-hourglass-half w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Status</span>
-      </a>
-      <a href="#/settings" class="group flex items-center gap-3 px-6 py-3 my-1 rounded-xl transition-all duration-200 hover:bg-green-500/20 hover:text-green-300 mobile-nav-link" ng-class="{'bg-green-600/30 text-green-300': isActive('/settings'), 'text-gray-300': !isActive('/settings')}">
-        <i class="fas fa-cog w-7 text-center text-lg group-hover:text-green-400 transition"></i>
-        <span class="font-medium">Settings</span>
-      </a>
+    <!-- Navigation with Enhanced UX - EXACT MATCH TO DESKTOP -->
+    <nav class="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar" id="mobile-nav">
+      <div class="space-y-2">
+        <!-- Workspace Section -->
+        <div class="mb-6">
+          <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Workspace</p>
+          <a href="#/dashboard" class="nav-item group relative" ng-class="{'active': isActive('/dashboard')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-chart-line nav-icon"></i>
+            <span class="nav-text">Dashboard</span>
+            <div class="nav-indicator" ng-if="isActive('/dashboard')"></div>
+          </a>
+          
+          <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-users nav-icon"></i>
+            <span class="nav-text">Groups</span>
+            <div class="nav-indicator" ng-if="isActive('/groups')"></div>
+          </a>
+          
+          <a href="#/events" class="nav-item group relative" ng-class="{'active': isActive('/events')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-calendar-alt nav-icon"></i>
+            <span class="nav-text">Events</span>
+            <div class="nav-indicator" ng-if="isActive('/events')"></div>
+          </a>
+        </div>
+
+        <!-- Automation & Scheduling Section -->
+        <div class="mb-6">
+          <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Automation</p>
+          <a href="#/sequences" class="nav-item group relative" ng-class="{'active': isActive('/sequences')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-robot nav-icon"></i>
+            <span class="nav-text">Drip Campaigns</span>
+            <div class="nav-indicator" ng-if="isActive('/sequences')"></div>
+          </a>
+       
+          
+          <a href="#/event-reminders" class="nav-item group relative" ng-class="{'active': isActive('/event-reminders')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-bell nav-icon"></i>
+            <span class="nav-text">Event Reminders</span>
+            <div class="nav-indicator" ng-if="isActive('/event-reminders')"></div>
+          </a>
+          
+          <a href="#/schedules" class="nav-item group relative" ng-class="{'active': isActive('/schedules')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="far fa-clock nav-icon"></i>
+            <span class="nav-text">Group Schedules</span>
+            <div class="nav-indicator" ng-if="isActive('/schedules')"></div>
+          </a>
+          
+          <a href="#/direct-schedule" class="nav-item group relative" ng-class="{'active': isActive('/direct-schedule')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-paper-plane nav-icon"></i>
+            <span class="nav-text">Message Schedule</span>
+            <div class="nav-indicator" ng-if="isActive('/direct-schedule')"></div>
+          </a>
+
+          <a href="#/status" class="nav-item group relative" ng-class="{'active': isActive('/status')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-server nav-icon"></i>
+            <span class="nav-text">Status Schedule</span>
+            <div class="nav-indicator" ng-if="isActive('/status')"></div>
+          </a>
+          
+
+        </div>
+
+        <!-- System & Admin Section -->
+        <div>
+          <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Admin</p>
+          <a href="#/users" class="nav-item group relative" ng-class="{'active': isActive('/users')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-user-shield nav-icon"></i>
+            <span class="nav-text">Users</span>
+            <div class="nav-indicator" ng-if="isActive('/users')"></div>
+          </a>
+          
+
+          <a href="#/settings" class="nav-item group relative" ng-class="{'active': isActive('/settings')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-sliders nav-icon"></i>
+            <span class="nav-text">Settings</span>
+            <div class="nav-indicator" ng-if="isActive('/settings')"></div>
+          </a>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- Enhanced User Section - EXACT MATCH TO DESKTOP -->
+    <div class="px-6 py-1 border-t border-gray-600 bg-gray-800 mt-auto">
+      <!-- Loading State -->
+      <div ng-if="loadingUser" class="flex items-center justify-center space-x-3 py-4">
+        <div class="w-6 h-6 rounded-full border-2 border-teal-400 border-t-transparent animate-spin"></div>
+        <span class="text-sm text-teal-300 font-medium">Loading user...</span>
+      </div>
       
-      <!-- User info and actions in mobile nav -->
-      <div ng-if="!loadingUser && !userError && user.username" class="mt-4 px-6">
-        <!-- User info -->
-        <div class="flex items-center gap-3 px-3 py-2 mb-2 rounded-lg bg-gray-800/50">
-          <i class="fas fa-user-circle text-lg text-green-400"></i>
-          <span class="font-medium text-green-300 text-sm">{{user.username | uppercase}}</span>
+      <!-- Error State -->
+      <div ng-if="userError" class="flex items-center space-x-3 p-4 rounded-lg bg-red-900/20 border border-red-500/20">
+        <i class="fas fa-exclamation-triangle text-red-400 text-lg"></i>
+        <span class="text-sm text-red-300 font-medium">Failed to load user data</span>
+      </div>
+      
+      <!-- User Info -->
+      <div ng-if="!loadingUser && !userError && user.username" class="space-y-3">
+        <!-- User Profile Card -->
+        <div class="p-1 rounded-lg bg-gray-700 border border-gray-600">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
+              <i class="fas fa-user text-white"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white font-bold text-lg truncate">{{user.username | uppercase}}</p>
+            </div>
+          </div>
         </div>
         
-        <!-- Action buttons -->
-        <div class="flex flex-col gap-2">
-          <!-- Force refresh button -->
-          <button ng-click="forceRefresh()"
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-2">
+          <button ng-click="forceRefresh()" 
                   ng-disabled="refreshing"
-                  class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 text-gray-300 w-full text-left mobile-nav-link">
-            <i class="fas w-7 text-center text-lg group-hover:text-red-400 transition" ng-class="refreshing ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i>
-            <span class="font-medium">{{refreshing ? 'Refreshing...' : 'Force Refresh'}}</span>
+                  class="p-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-center transition-colors text-xs">
+            <i class="fas block mb-1" ng-class="refreshing ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i>
+            <span class="font-medium">{{refreshing ? 'Syncing...' : 'Refresh'}}</span>
           </button>
           
-          <!-- Logout button -->
-          <button ng-click="logout()"
+          <button ng-click="logout()" 
                   ng-disabled="loggingOut"
-                  class="group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 text-gray-300 w-full text-left mobile-nav-link">
-            <i class="fas w-7 text-center text-lg group-hover:text-red-400 transition" ng-class="loggingOut ? 'fa-spinner fa-spin' : 'fa-sign-out-alt'"></i>
+                  class="p-2 rounded bg-red-600 hover:bg-red-700 text-white text-center transition-colors text-xs">
+            <i class="fas block mb-1" ng-class="loggingOut ? 'fa-spinner fa-spin' : 'fa-sign-out-alt'"></i>
             <span class="font-medium">{{loggingOut ? 'Logging out...' : 'Logout'}}</span>
           </button>
         </div>
       </div>
-    </nav>
-
-  <!-- Scroll indicator for mobile - positioned outside nav to stay fixed -->
-  <div class="absolute bottom-16 right-4 z-10 md:hidden cursor-pointer" id="mobile-scroll-indicator" style="display: none;">
-    <div class="pointer-events-auto bg-gray-800/70 rounded-full p-3 hover:bg-gray-700/80 transition-all duration-200 shadow-lg" ng-click="toggleScroll('mobile-nav')" title="Click to scroll">
-      <i class="fas text-green-400 text-sm" ng-class="mobileScrollDirection === 'down' ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
     </div>
   </div>
+</div>
 
+<!-- Mobile Sidebar -->
+<div>
+  <!-- Mobile hamburger button -->
+  <button aria-label="Open sidebar" class="md:hidden fixed top-4 left-4 z-50 p-3 rounded-lg bg-gray-800 text-white shadow-xl focus:outline-none focus:ring-2 focus:ring-teal-400 hover:bg-gray-700" ng-click="openSidebar()" type="button">
+    <i class="fas fa-bars text-2xl" style="color: white !important;"></i>
+  </button>
+  
+  <!-- Backdrop overlay -->
+  <div ng-if="sidebarOpen" class="fixed inset-0 z-40 bg-black/40 md:hidden transition-opacity duration-200" ng-click="closeSidebar()" aria-hidden="true"></div>
+  
+  <!-- Mobile sidebar container -->
+  <div class="w-80 h-screen flex flex-col shadow-2xl overflow-hidden fixed z-50 top-0 left-0 transition-transform duration-300 md:hidden mobile-sidebar-container border-r border-gray-700" style="background: #1a202c;" ng-class="{'-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen}" tabindex="-1" aria-label="Sidebar navigation">
+    
+    <!-- Close button -->
+    <button ng-click="closeSidebar()" aria-label="Close sidebar" class="absolute top-4 right-4 z-60 p-2 rounded-lg bg-gray-900 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 hover:bg-gray-800">
+      <i class="fas fa-times text-2xl"></i>
+    </button>
+    
+    <!-- Brand Header with Glass Effect - EXACT MATCH TO DESKTOP -->
+    <div class="px-8 py-3 bg-teal-800 border-b border-gray-600">
+      <div class="flex items-center">
+        <div class="flex items-center justify-center w-14 h-14 mr-4">
+          <i class="fab fa-whatsapp text-3xl" style="color: #25D366 !important; font-family: 'Font Awesome 6 Brands', 'Font Awesome 6 Pro', FontAwesome !important; font-weight: 400 !important; filter: drop-shadow(0 0 12px rgba(37, 211, 102, 1)) drop-shadow(0 0 6px rgba(37, 211, 102, 0.8));"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold tracking-wide" style="background: linear-gradient(135deg, #ffffff, #7dd3fc, #34d399, #fbbf24); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">WhatsPro</h1>
+          <p class="text-xs text-white font-bold mt-1" style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Advanced Messaging</p>
+        </div>
+      </div>
+    </div>
+    <!-- Navigation with Enhanced UX - EXACT MATCH TO DESKTOP -->
+    <nav class="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar" id="mobile-nav">
+      <div class="space-y-2">
+        <!-- Workspace Section -->
+        <div class="mb-6">
+          <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Workspace</p>
+          <a href="#/dashboard" class="nav-item group relative" ng-class="{'active': isActive('/dashboard')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-chart-line nav-icon"></i>
+            <span class="nav-text">Dashboard</span>
+            <div class="nav-indicator" ng-if="isActive('/dashboard')"></div>
+          </a>
+          
+          <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-users nav-icon"></i>
+            <span class="nav-text">Groups</span>
+            <div class="nav-indicator" ng-if="isActive('/groups')"></div>
+          </a>
+          
+          <a href="#/events" class="nav-item group relative" ng-class="{'active': isActive('/events')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-calendar-alt nav-icon"></i>
+            <span class="nav-text">Events</span>
+            <div class="nav-indicator" ng-if="isActive('/events')"></div>
+          </a>
+        </div>
+
+        <!-- Automation Section -->
+        <div class="mb-6">
+          <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Automation</p>
+          <a href="#/sequences" class="nav-item group relative" ng-class="{'active': isActive('/sequences')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-robot nav-icon"></i>
+            <span class="nav-text">Drip Campaigns</span>
+            <div class="nav-indicator" ng-if="isActive('/sequences')"></div>
+          </a>
+       
+          
+          <a href="#/event-reminders" class="nav-item group relative" ng-class="{'active': isActive('/event-reminders')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-bell nav-icon"></i>
+            <span class="nav-text">Event Reminders</span>
+            <div class="nav-indicator" ng-if="isActive('/event-reminders')"></div>
+          </a>
+          
+          <a href="#/schedules" class="nav-item group relative" ng-class="{'active': isActive('/schedules')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="far fa-clock nav-icon"></i>
+            <span class="nav-text">Group Schedules</span>
+            <div class="nav-indicator" ng-if="isActive('/schedules')"></div>
+          </a>
+          
+          <a href="#/direct-schedule" class="nav-item group relative" ng-class="{'active': isActive('/direct-schedule')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-paper-plane nav-icon"></i>
+            <span class="nav-text">Message Schedule</span>
+            <div class="nav-indicator" ng-if="isActive('/direct-schedule')"></div>
+          </a>
+
+          <a href="#/status" class="nav-item group relative" ng-class="{'active': isActive('/status')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-server nav-icon"></i>
+            <span class="nav-text">Status Schedule</span>
+            <div class="nav-indicator" ng-if="isActive('/status')"></div>
+          </a>
+        </div>
+
+        <!-- System & Admin Section -->
+        <div>
+          <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Admin</p>
+          <a href="#/users" class="nav-item group relative" ng-class="{'active': isActive('/users')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-user-shield nav-icon"></i>
+            <span class="nav-text">Users</span>
+            <div class="nav-indicator" ng-if="isActive('/users')"></div>
+          </a>
+        
+          
+          <a href="#/settings" class="nav-item group relative" ng-class="{'active': isActive('/settings')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-sliders nav-icon"></i>
+            <span class="nav-text">Settings</span>
+            <div class="nav-indicator" ng-if="isActive('/settings')"></div>
+          </a>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- Enhanced User Section - EXACT MATCH TO DESKTOP -->
+    <div class="px-6 py-1 border-t border-gray-600 bg-gray-800 mt-auto">
+      <!-- Loading State -->
+      <div ng-if="loadingUser" class="flex items-center justify-center space-x-3 py-4">
+        <div class="w-6 h-6 rounded-full border-2 border-teal-400 border-t-transparent animate-spin"></div>
+        <span class="text-sm text-teal-300 font-medium">Loading user...</span>
+      </div>
+      
+      <!-- Error State -->
+      <div ng-if="userError" class="flex items-center space-x-3 p-4 rounded-lg bg-red-900/20 border border-red-500/20">
+        <i class="fas fa-exclamation-triangle text-red-400 text-lg"></i>
+        <span class="text-sm text-red-300 font-medium">Failed to load user data</span>
+      </div>
+      
+      <!-- User Info -->
+      <div ng-if="!loadingUser && !userError && user.username" class="space-y-3">
+        <!-- User Profile Card -->
+        <div class="p-1 rounded-lg bg-gray-700 border border-gray-600">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
+              <i class="fas fa-user text-white"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white font-bold text-lg truncate">{{user.username | uppercase}}</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-2">
+          <button ng-click="forceRefresh()" 
+                  ng-disabled="refreshing"
+                  class="p-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-center transition-colors text-xs">
+            <i class="fas block mb-1" ng-class="refreshing ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i>
+            <span class="font-medium">{{refreshing ? 'Syncing...' : 'Refresh'}}</span>
+          </button>
+          
+          <button ng-click="logout()" 
+                  ng-disabled="loggingOut"
+                  class="p-2 rounded bg-red-600 hover:bg-red-700 text-white text-center transition-colors text-xs">
+            <i class="fas block mb-1" ng-class="loggingOut ? 'fa-spinner fa-spin' : 'fa-sign-out-alt'"></i>
+            <span class="font-medium">{{loggingOut ? 'Logging out...' : 'Logout'}}</span>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -246,51 +505,653 @@
       min-height: 48px !important;
     }
   }
-  
-  /* Scroll indicator animations */
-  @keyframes fadeInOut {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
+
+  /* Navigation Item Styles */
+  .nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    margin: 0 0.5rem;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #d1d5db;
+    cursor: pointer;
+    text-decoration: none;
+    min-height: 52px;
   }
   
-  .scroll-indicator {
-    animation: fadeInOut 2s infinite;
+  .nav-item:hover {
+    color: #7dd3fc;
+    transform: translateX(4px);
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(14, 165, 233, 0.15));
+  }
+  
+  .nav-item.active {
+    color: #7dd3fc;
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.25), rgba(14, 165, 233, 0.25));
+    border: 1px solid rgba(20, 184, 166, 0.4);
+    box-shadow: 0 8px 32px rgba(20, 184, 166, 0.3);
+  }
+  
+  .nav-item-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(14, 165, 233, 0.15));
+  }
+  
+  .nav-item:hover .nav-item-bg {
+    opacity: 1;
+  }
+  
+  .nav-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    font-size: 1.25rem;
+  }
+  
+  .nav-item:hover .nav-icon,
+  .nav-item.active .nav-icon {
+    color: #14b8a6;
+    transform: scale(1.1);
+  }
+  
+  .nav-text {
+    font-weight: 500;
+    transition: all 0.3s ease;
+    flex: 1;
+  }
+  
+  .nav-indicator {
+    color: #14b8a6;
+    position: absolute;
+    right: 1rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: #14b8a6;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  /* Action Button Styles */
+  .action-btn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-height: 80px;
+    background: rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+  }
+  
+  .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  .action-btn:active {
+    transform: scale(0.95);
+  }
+  
+  .action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #14b8a6, #0ea5e9);
+    border-radius: 3px;
     transition: all 0.3s ease;
   }
   
-  .scroll-indicator:hover {
-    opacity: 1 !important;
-    transform: translateY(-2px);
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  }
+
+  /* Animations */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
   }
   
-  .scroll-indicator:hover .fas {
-    transform: scale(1.2);
-    color: #22c55e !important;
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
   
-  /* Better positioning for scroll indicators */
-  #desktop-scroll-indicator,
-  #mobile-scroll-indicator {
-    z-index: 30 !important;
-    pointer-events: auto;
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Mobile specific fixes */
+  @media (max-width: 1023px) {
+    .lg\\:flex {
+      display: none !important;
+    }
   }
   
-  #desktop-scroll-indicator i,
-  #mobile-scroll-indicator i {
-    animation: blink 1.5s infinite;
+  @media (min-width: 1024px) {
+    .md\\:hidden {
+      display: none !important;
+    }
+  }
+
+  /* Ensure main content respects sidebar on desktop */
+  @media (min-width: 1024px) {
+    .flex.h-screen {
+      margin-left: 0;
+    }
+    
+    /* Ensure sidebar nav directive is displayed */
+    sidebar-nav {
+      display: block !important;
+      flex-shrink: 0;
+      width: 320px;
+    }
+  }
+
+  /* Ensure sidebar is visible on desktop */
+  @media (min-width: 1024px) {
+    .hidden.lg\\:flex {
+      display: flex !important;
+    }
+  }
+
+  /* Fix mobile sidebar transform */
+  .mobile-sidebar-container {
+    will-change: transform;
   }
   
-  @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.3; }
+  .mobile-sidebar-container.-translate-x-full {
+    transform: translateX(-100%) !important;
+  }
+  
+  .mobile-sidebar-container.translate-x-0 {
+    transform: translateX(0) !important;
+  }
+
+  /* Ensure icons are properly sized and visible */
+  .nav-icon,
+  .mobile-nav-link i {
+    display: inline-block !important;
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", FontAwesome !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+  }
+  
+  /* Force icon visibility */
+  .fas, .far, .fab {
+    display: inline-block !important;
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+  }
+  
+  .far {
+    font-weight: 400 !important;
+  }
+
+  /* Close button specific styles */
+  .mobile-sidebar-container button[aria-label="Close sidebar"] {
+    z-index: 60 !important;
+    position: absolute !important;
+    top: 1rem !important;
+    right: 1rem !important;
+  }
+
+  /* Debug styles for icon visibility */
+  .fas.fa-calendar-alt::before {
+    content: "\f133" !important;
+  }
+  
+  .fas.fa-server::before {
+    content: "\f233" !important;
+  }
+  
+  .fas.fa-times::before {
+    content: "\f00d" !important;
+  }
+  
+  .fas.fa-bars::before {
+    content: "\f0c9" !important;
+  }
+
+  /* Ensure proper stacking order */
+  .z-60 {
+    z-index: 60 !important;
+  }
+
+  /* Final layout fixes for desktop sidebar */
+  @media (min-width: 1024px) {
+    /* Ensure the main container has proper layout */
+    .flex.h-screen {
+      display: flex !important;
+    }
+    
+    /* Force sidebar to display on desktop */
+    .hidden.lg\\:flex {
+      display: flex !important;
+      position: relative !important;
+      transform: none !important;
+    }
+    
+    /* Ensure content doesn't overlap sidebar */
+    .flex.h-screen > .flex-1 {
+      flex: 1 !important;
+      min-width: 0 !important;
+    }
+    
+    /* Ensure sidebar directive works */
+    sidebar-nav {
+      display: block !important;
+      width: 320px;
+      flex-shrink: 0;
+    }
+  }
+
+  /* Prevent horizontal scrolling */
+  .flex.h-screen {
+    overflow-x: hidden;
+  }
+
+  /* Mobile improvements */
+  @media (max-width: 1023px) {
+    /* Ensure mobile hamburger is always visible */
+    .md\\:hidden {
+      display: block !important;
+    }
+    
+    /* Hide desktop sidebar completely on mobile */
+    .hidden.lg\\:flex {
+      display: none !important;
+    }
+  }
+  
+  /* Remove mobile-specific nav item class conflicts */
+  .mobile-nav-item {
+    /* Make mobile nav items use same styling as desktop nav items */
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    margin: 0 0.5rem;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #d1d5db;
+    cursor: pointer;
+    text-decoration: none;
+    min-height: 52px;
+  }
+  
+  .mobile-nav-item:hover {
+    color: #7dd3fc;
+    transform: translateX(4px);
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(14, 165, 233, 0.15));
+  }
+  
+  .mobile-nav-item.active {
+    color: #7dd3fc;
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.25), rgba(14, 165, 233, 0.25));
+    border: 1px solid rgba(20, 184, 166, 0.4);
+    box-shadow: 0 8px 32px rgba(20, 184, 166, 0.3);
+  }
+  
+  /* Remove fixed positioning to work in flex layouts */
+  .desktop-sidebar {
+    width: 320px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, rgba(6, 11, 40, 0.98) 0%, rgba(17, 24, 71, 0.96) 25%, rgba(30, 41, 95, 0.94) 50%, rgba(45, 58, 120, 0.96) 75%, rgba(60, 80, 150, 0.98) 100%);
+    z-index: 1000;
+  }
+  
+  .desktop-sidebar-header {
+    position: relative;
+    padding: 2rem;
+    backdrop-filter: blur(16px);
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.25), rgba(14, 165, 233, 0.25), rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.25));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  
+  .desktop-sidebar-header-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(14, 165, 233, 0.15), rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+    filter: blur(40px);
+  }
+  
+  .desktop-sidebar-brand {
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .desktop-sidebar-brand:hover {
+    transform: scale(1.02);
+  }
+  
+  .desktop-sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #14b8a6, #0ea5e9, #6366f1, #8b5cf6);
+    border-radius: 16px;
+    margin-right: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(20, 184, 166, 0.5);
+    transition: transform 0.3s ease;
+  }
+  
+  .desktop-sidebar-logo:hover {
+    transform: scale(1.05);
+  }
+  
+  .desktop-sidebar-logo i {
+    font-size: 1.5rem;
+    color: white;
+  }
+  
+  .desktop-sidebar-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff, #a7f3d0, #7dd3fc, #c4b5fd);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.025em;
+    margin: 0;
+  }
+  
+  .desktop-sidebar-subtitle {
+    font-size: 0.75rem;
+    color: rgba(196, 181, 253, 0.8);
+    font-weight: 500;
+    margin: 0.25rem 0 0 0;
+  }
+  
+  .desktop-sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 1rem;
+  }
+  
+  .desktop-sidebar-nav-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .nav-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .nav-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(125, 211, 252, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    padding: 0 1rem;
+  }
+  
+  .desktop-sidebar-footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, rgba(6, 11, 40, 0.9), rgba(17, 24, 71, 0.8), rgba(30, 41, 95, 0.8));
+    backdrop-filter: blur(16px);
+  }
+  
+  /* ===== SIMPLIFIED MOBILE SIDEBAR STYLES ===== */
+  
+  .mobile-sidebar-container {
+    /* Uses same background as desktop: #1a202c */
+    background: #1a202c !important;
+  }
+  
+  /* Simplified mobile button styling to match desktop theme */
+  .mobile-menu-btn {
+    background: rgba(20, 184, 166, 0.9) !important;
+    backdrop-filter: blur(10px);
+  }
+  
+  /* Remove all complex mobile-specific styling to match desktop theme */
+  /* ===== NAVIGATION ITEMS - UNIFIED STYLING ===== */
+  
+  .nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    margin: 0 0.5rem;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #d1d5db;
+    cursor: pointer;
+    text-decoration: none;
+    min-height: 52px;
+  }
+  
+  .nav-item:hover {
+    color: #7dd3fc;
+    transform: translateX(4px);
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(14, 165, 233, 0.15));
+  }
+  
+  .nav-item.active {
+    color: #7dd3fc;
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.25), rgba(14, 165, 233, 0.25));
+    border: 1px solid rgba(20, 184, 166, 0.4);
+    box-shadow: 0 8px 32px rgba(20, 184, 166, 0.3);
+  }
+  
+  .nav-item-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(99, 102, 241, 0.15), rgba(59, 130, 246, 0.15));
+  }
+  
+  .nav-item:hover .nav-item-bg {
+    opacity: 1;
+  }
+  
+  .nav-icon,
+  .mobile-nav-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    font-size: 1.25rem;
+  }
+  
+  .nav-item:hover .nav-icon,
+  .nav-item.active .nav-icon,
+  .mobile-nav-item:hover .mobile-nav-icon,
+  .mobile-nav-item.active .mobile-nav-icon {
+    color: #14b8a6;
+    transform: scale(1.1);
+  }
+  
+  .nav-text,
+  .mobile-nav-text {
+    font-weight: 500;
+    transition: all 0.3s ease;
+    flex: 1;
+  }
+  
+  .nav-indicator,
+  .mobile-nav-arrow {
+    color: #14b8a6;
+    font-size: 0.875rem;
+    transition: transform 0.3s ease;
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  .nav-indicator {
+    position: absolute;
+    right: 1rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: #14b8a6;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  
+  /* ===== SIMPLIFIED STYLING - REMOVE MOBILE COMPLEXITY ===== */
+  
+  /* Remove all mobile-specific classes and gradients - use desktop theme only */
+  
+  /* ===== CUSTOM SCROLLBAR ===== */
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #14b8a6, #0ea5e9);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  }
+  
+  /* ===== ANIMATIONS ===== */
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* ===== RESPONSIVE DESIGN - SIMPLIFIED ===== */
+  
+  @media (min-width: 1024px) {
+    .mobile-sidebar-container {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 1023px) {
+    .hidden.lg\\:flex {
+      display: none !important;
+    }
+  }
+  
+  /* ===== ACCESSIBILITY - SIMPLIFIED ===== */
+  
+  .nav-item:focus {
+    outline: 2px solid #14b8a6;
+    outline-offset: 2px;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .nav-item {
+      transition: none;
+    }
+    
+    .nav-indicator {
+      animation: none;
+    }
+  }
+  
+  /* ===== FONTAWESOME ICON FIXES ===== */
+  
+  .fab.fa-whatsapp {
+    font-family: 'Font Awesome 6 Brands', 'Font Awesome 6 Pro', FontAwesome !important;
+    font-weight: 400 !important;
+    display: inline-block !important;
+    color: #25D366 !important; /* WhatsApp green */
+  }
+  
+  .fab.fa-whatsapp::before {
+    content: "\f232" !important;
+  }
+  
+  .fas.fa-times {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Pro', FontAwesome !important;
+    font-weight: 900 !important;
+    display: inline-block !important;
+  }
+  
+  .fas.fa-times::before {
+    content: "\f00d" !important;
+  }
+  
+  .fas.fa-bars {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Pro', FontAwesome !important;
+    font-weight: 900 !important;
+    display: inline-block !important;
+    color: white !important;
+  }
+  
+  .fas.fa-bars::before {
+    content: "\f0c9" !important;
   }
 </style>
-
-<script>
-angular.module('autopostWaApp.core').filter('capitalize', function() {
-  return function(input) {
-    if (!input) return '';
-    return input.charAt(0).toUpperCase() + input.slice(1);
-  };
-});
-</script>
+</div>

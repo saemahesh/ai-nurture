@@ -1,13 +1,19 @@
 <!-- Users Management Page -->
-<div class="flex h-screen bg-gray-100">
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="dark-theme.css">
+</head>
+<body>
+<div class="flex h-screen dark-theme">
   <!-- Sidebar -->
-  <sidebar-nav></sidebar-nav>
+  <div ng-include="'sidebar.html'" ng-controller="SidebarController"></div>
   <!-- Main Content Area -->
   <div class="flex-1 flex flex-col overflow-hidden">
     <!-- Top Header -->
-    <header class="bg-white shadow-sm z-10 py-4 px-6">
+    <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
       <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-gray-800" style="padding-left:50px;">User Management</h2>
+        <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">User Management</h2>
         <div class="flex items-center space-x-3">
           <span class="text-gray-700">Welcome, {{user.username}}</span>
         </div>

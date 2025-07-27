@@ -1,20 +1,27 @@
-<div class="flex h-screen bg-gray-100">
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="dark-theme.css">
+</head>
+<body>
+<div class="flex h-screen dark-theme">
   <!-- Sidebar -->
-  <sidebar-nav></sidebar-nav>
+  <div ng-include="'sidebar.html'" ng-controller="SidebarController"></div>
   
   <div class="flex-1 flex flex-col overflow-hidden">
-    <header class="bg-white shadow-sm z-10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <h1 class="text-2xl font-semibold text-gray-900" style="padding-left:50px;">Media Library</h1>
+    <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">Media Library</h2>
+        <!-- ...existing header actions/buttons... -->
       </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-4">
+    <main class="flex-1 overflow-y-auto p-4" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 40%, #1a202c 100%), radial-gradient(circle at 30% 70%, #2c5282 0%, transparent 50%), radial-gradient(circle at 70% 30%, #2a4365 0%, transparent 50%); background-blend-mode: overlay;">
       <div class="max-w-7xl mx-auto">
         <!-- Upload Form -->
-        <div class="bg-white shadow rounded-lg mb-6">
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg rounded-lg mb-6 border border-gray-700">
           <div class="p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Upload New Media</h3>
+            <h3 class="text-lg font-medium text-white mb-4">Upload New Media</h3>
             
             <!-- Alerts -->
             <div ng-show="error" class="mb-4 bg-red-50 border-l-4 border-red-400 p-4">
@@ -130,13 +137,13 @@
         </div>
 
         <!-- Media List -->
-        <div class="bg-white shadow rounded-lg">
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg rounded-lg border border-gray-700">
           <div class="p-6">
             <div class="flex justify-between items-center mb-4">
-              <h3 class="text-lg font-medium text-gray-900">Media Library</h3>
+              <h3 class="text-lg font-medium text-white">Media Library</h3>
               <div class="flex items-center">
-                <span ng-if="loading" class="text-sm text-gray-500 flex items-center">
-                  <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <span ng-if="loading" class="text-sm text-gray-400 flex items-center">
+                  <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
@@ -145,34 +152,30 @@
               </div>
             </div>
             
-            <div ng-if="!loading && (!mediaFiles || mediaFiles.length === 0)" class="text-center py-6 text-gray-500">
+            <div ng-if="!loading && (!mediaFiles || mediaFiles.length === 0)" class="text-center py-6 text-gray-400">
               No media files uploaded yet
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <div ng-repeat="media in mediaFiles" 
-                   class="relative group bg-white rounded-lg border overflow-hidden hover:shadow-md transition-shadow">
-                
+                   class="relative group bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:shadow-md transition-shadow">
                 <!-- Media content -->
-                <div class="cursor-pointer h-48 relative bg-gray-50" ng-click="openImageModal(media)">
+                <div class="cursor-pointer h-48 relative bg-gray-900" ng-click="openImageModal(media)">
                   <img ng-if="media.type === 'image'" 
                        ng-src="{{media._trustedUrl}}" 
                        class="w-full h-full object-cover"
                        alt="{{media.name}}"
                        onerror="this.onerror=null; this.src='/images/image-placeholder.png';">
-                  
                   <video ng-if="media.type === 'video'" 
                          ng-src="{{media._trustedUrl}}"
                          class="w-full h-full object-cover"
                          poster="/images/video-placeholder.png"
                          preload="metadata">
                   </video>
-                  
                   <!-- Floating information badge -->
                   <div class="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
                     {{media.formattedSize || 'Unknown size'}}
                   </div>
-                  
                   <!-- Loading indicator overlay -->
                   <div ng-if="!media.checked" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
                     <svg class="animate-spin h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -181,60 +184,56 @@
                     </svg>
                   </div>
                 </div>
-                
                 <!-- Media info -->
                 <div class="p-4">
                   <!-- Normal display mode (not editing) -->
                   <div ng-if="editingMedia.id !== media.id">
                     <div class="flex justify-between items-start">
-                      <h4 class="text-sm font-medium text-gray-900 truncate flex-grow">{{media.name || 'Unnamed Media'}}</h4>
+                      <h4 class="text-sm font-medium text-white truncate flex-grow">{{media.name || 'Unnamed Media'}}</h4>
                       <div class="flex space-x-1 ml-2">
                         <!-- Edit button -->
                         <button 
                           ng-click="startEditing(media)"
                           title="Edit name"
-                          class="text-gray-400 hover:text-blue-500 focus:outline-none p-1">
+                          class="text-gray-400 hover:text-blue-400 focus:outline-none p-1">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                           </svg>
                         </button>
-                        
                         <!-- Delete button -->
                         <button 
                           ng-click="confirmDelete(media)"
                           title="Delete media"
-                          class="text-gray-400 hover:text-red-500 focus:outline-none p-1">
+                          class="text-gray-400 hover:text-red-400 focus:outline-none p-1">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                         </button>
                       </div>
                     </div>
-                    <p class="text-xs text-gray-500 mt-1">{{media.formattedDate || 'Unknown date'}}</p>
-                    
+                    <p class="text-xs text-gray-400 mt-1">{{media.formattedDate || 'Unknown date'}}</p>
                     <!-- Action buttons -->
                     <div class="mt-4 flex justify-between items-center">
-                      <span class="text-xs px-2 py-1 bg-gray-100 text-gray-800 rounded-full">{{media.type}}</span>
+                      <span class="text-xs px-2 py-1 bg-gray-800 text-gray-200 rounded-full">{{media.type}}</span>
                       <button 
                         ng-click="selectForEventReminder(media)"
-                        class="text-xs text-blue-600 hover:text-blue-800 px-2 py-1 rounded hover:bg-blue-50 transition"
+                        class="text-xs text-blue-400 hover:text-blue-200 px-2 py-1 rounded hover:bg-blue-900 transition"
                         title="Use this media in event reminders">
                         Use in Reminders
                       </button>
                     </div>
                   </div>
-                  
                   <!-- Edit mode -->
                   <div ng-if="editingMedia.id === media.id" class="flex flex-col space-y-2">
                     <div class="flex items-start space-x-1">
                       <input type="text" 
                              ng-model="editingMedia.name" 
-                             class="block flex-grow text-sm py-1 px-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+                             class="block flex-grow text-sm py-1 px-2 border border-gray-600 rounded bg-gray-900 text-white focus:ring-blue-500 focus:border-blue-500"
                              placeholder="Enter media name">
                       <button 
                         ng-click="saveMediaName(media)"
                         title="Save changes"
-                        class="text-white bg-blue-500 hover:bg-blue-600 rounded p-1">
+                        class="text-white bg-blue-600 hover:bg-blue-700 rounded p-1">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
@@ -242,7 +241,7 @@
                       <button 
                         ng-click="cancelEditing()"
                         title="Cancel"
-                        class="text-white bg-gray-500 hover:bg-gray-600 rounded p-1">
+                        class="text-white bg-gray-600 hover:bg-gray-700 rounded p-1">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>

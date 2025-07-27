@@ -120,8 +120,17 @@ angular.module('autopostWaApp').controller('EnrollmentsController', ['$scope', '
     };
     $scope.csvFile = null;
 
+    // Responsive view: track window width
+    $scope.windowWidth = window.innerWidth;
+    window.addEventListener('resize', function() {
+        $scope.$apply(function() {
+            $scope.windowWidth = window.innerWidth;
+        });
+    });
+
     // Initialize
     $scope.init = function() {
+        $scope.windowWidth = window.innerWidth; // Ensure correct value on load
         $scope.loadSequence();
         $scope.loadEnrollments();
     };

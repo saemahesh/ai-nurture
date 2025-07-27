@@ -141,6 +141,9 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
   $scope.saving = false;
   $scope.saveSuccess = false;
   $scope.saveError = '';
+  $scope.testing = false;
+  $scope.testSuccess = false;
+  $scope.testError = '';
   $scope.testingConn = false;
   $scope.testResult = null;
   $scope.showTestPopup = false;
@@ -164,33 +167,29 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
     $http.post('/users/settings', $scope.settings).then(function() {
       $scope.saving = false;
       $scope.saveSuccess = true;
+      $timeout(function() {
+        $scope.saveSuccess = false;
+      }, 3000);
     }, function(err) {
       $scope.saving = false;
       $scope.saveError = err.data && err.data.error ? err.data.error : 'Failed to save settings';
     });
   };
 
-  $scope.openTestPopup = function() {
-    $scope.testMobile = '';
-    $scope.testResult = null;
-    $scope.showTestPopup = true;
-  };
-
-  $scope.closeTestPopup = function() {
-    $scope.showTestPopup = false;
-    $scope.testMobile = '';
-  };
-
   $scope.testConnection = function() {
     if (!$scope.settings.test_mobile || !$scope.settings.test_mobile.trim()) {
-      $scope.testResult = { success: false, message: 'Please enter a test mobile number.' };
+      $scope.testError = 'Please enter a test mobile number in the form.';
+      $scope.testSuccess = false;
       return;
     }
     if (!$scope.settings.access_token || !$scope.settings.instance_id || !$scope.settings.wa_phone) {
-      $scope.testResult = { success: false, message: 'Please fill all required fields and save first.' };
+      $scope.testError = 'Please fill all required fields first.';
+      $scope.testSuccess = false;
       return;
     }
-    $scope.testingConn = true;
+    $scope.testing = true;
+    $scope.testSuccess = false;
+    $scope.testError = '';
     $http({
       method: 'POST',
       url: 'https://wa.robomate.in/api/send',
@@ -203,12 +202,17 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
         access_token: $scope.settings.access_token
       }
     }).then(function(res) {
-      $scope.testingConn = false;
-      $scope.testResult = { success: true, message: 'Connected successfully! Check ' + $scope.settings.test_mobile + '.' };
+      $scope.testing = false;
+      $scope.testSuccess = true;
+      $scope.testError = '';
+      $timeout(function() {
+        $scope.testSuccess = false;
+      }, 5000);
     }, function(err) {
-      $scope.testingConn = false;
+      $scope.testing = false;
+      $scope.testSuccess = false;
       var msg = (err.data && err.data.message) ? err.data.message : 'Failed to send test message.';
-      $scope.testResult = { success: false, message: msg };
+      $scope.testError = msg;
     });
   };
 

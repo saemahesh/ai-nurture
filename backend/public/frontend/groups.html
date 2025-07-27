@@ -1,19 +1,25 @@
-<div class="flex h-screen bg-gray-100">
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="dark-theme.css">
+</head>
+<body>
+<div class="flex h-screen dark-theme">
   <!-- Sidebar -->
-  <sidebar-nav></sidebar-nav>
+  <div ng-include="'sidebar.html'" ng-controller="SidebarController"></div>
 
   <!-- Main Content Area -->
   <div class="flex-1 flex flex-col overflow-hidden">
     <!-- Top Header -->
-    <header class="bg-white shadow-sm z-10 py-4 px-6">
+    <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
       <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-gray-800" style="padding-left:50px;">Manage Groups</h2>
+        <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">Manage Groups</h2>
         <div class="flex items-center">
-          <button ng-click="showCreateGroupModal()" class="ml-4 p-2 rounded-full bg-green-600 hover:bg-green-700 text-white shadow transition" title="Create Group">
+          <button ng-click="showCreateGroupModal()" class="ml-4 p-2 rounded-full dark-theme-button-primary shadow transition" title="Create Group">
             <i class="fas fa-plus"></i>
             <span class="ml-2 hidden sm:inline">Add Group</span>
           </button>
-          <button ng-click="syncGroups()" class="ml-2 p-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow transition" title="Sync Groups">
+          <button ng-click="syncGroups()" class="ml-2 p-2 rounded-full dark-theme-button-secondary shadow transition" title="Sync Groups">
             <i class="fas fa-sync"></i>
             <span class="ml-2 hidden sm:inline">Sync Groups</span>
           </button>
@@ -22,51 +28,88 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
-      <!-- Create Group Modal -->
-      <div ng-if="createGroupModalVisible" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-lg p-6 max-w-md w-full mx-4" ng-click="$event.stopPropagation()">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-semibold text-gray-800">Create New Group</h3>
-            <button class="text-gray-500 hover:text-gray-700" ng-click="hideCreateGroupModal()">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          <form ng-submit="addGroup(); hideCreateGroupModal();" class="space-y-4">
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Group Name</label>
-              <input type="text" ng-model="newGroup.name" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" placeholder="Enter group name" required>
-            </div>
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-700">Group ID</label>
-              <input type="text" ng-model="newGroup.groupId" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" placeholder="Enter group ID for automation" required>
-            </div>
-            <div class="flex items-center justify-between">
-              <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Create Group</button>
-              <span class="text-red-600" ng-if="groupError">{{groupError}}</span>
-            </div>
-          </form>
-        </div>
-      </div>
+    <main class="flex-1 overflow-y-auto p-6" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 30%, #1a202c 100%), radial-gradient(circle at 20% 60%, #2c5282 0%, transparent 50%), radial-gradient(circle at 80% 40%, #2a4365 0%, transparent 50%); background-blend-mode: overlay;">
 
       <!-- Groups List -->
-      <div class="bg-white rounded-xl shadow-sm p-6 max-w-2xl mx-auto">
-        <div ng-if="groups.length === 0" class="text-center text-gray-500 py-4">
-          No groups added yet.
+      <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg p-6 max-w-4xl mx-auto border border-gray-700">
+        <div class="mb-6">
+          <h3 class="text-xl font-semibold text-white mb-2">WhatsApp Groups</h3>
+          <p class="text-gray-400">Manage your WhatsApp groups for automated messaging</p>
         </div>
-        <div class="space-y-3">
+        <div ng-if="groups.length === 0" class="text-center text-gray-400 py-12">
+          <div class="mb-4">
+            <i class="fas fa-users text-4xl text-gray-500"></i>
+          </div>
+          <h4 class="text-lg font-medium text-gray-300 mb-2">No groups added yet</h4>
+          <p class="text-gray-500 mb-4">Start by adding your first WhatsApp group</p>
+          <button ng-click="showCreateGroupModal()" class="bg-gradient-to-r from-teal-600 to-teal-700 text-white px-4 py-2 rounded-lg hover:from-teal-500 hover:to-teal-600 transition">
+            <i class="fas fa-plus mr-2"></i>Add First Group
+          </button>
+        </div>
+        <div class="space-y-3" ng-if="groups.length > 0">
           <div ng-repeat="g in groups" 
-               class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-            <div>
-              <span class="font-medium text-gray-900">{{g.name}}</span>
+               class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-700 to-gray-800 rounded-lg border border-gray-600 hover:from-gray-650 hover:to-gray-750 transition-all">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-users text-teal-200"></i>
+              </div>
+              <div>
+                <span class="font-medium text-white">{{g.name}}</span>
+                <p class="text-sm text-gray-400">Group ID: {{g.groupId || g.id}}</p>
+              </div>
             </div>
             <button ng-click="deleteGroup(g.id)" 
-                    class="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded-lg transition">
-              Delete
+                    class="px-3 py-1 text-sm text-red-400 hover:bg-red-900/30 rounded-lg transition-colors">
+              <i class="fas fa-trash mr-1"></i>Delete
             </button>
           </div>
         </div>
       </div>
     </main>
+
+    <!-- Create Group Modal (positioned to avoid layout issues but within controller scope) -->
+    <div ng-if="createGroupModalVisible" 
+         class="fixed" 
+         ng-click="hideCreateGroupModal(); $event.preventDefault();" 
+         style="top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 99999 !important; display: block !important; cursor: pointer !important; background-color: rgba(0, 0, 0, 0.3) !important;">
+      <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-xl border border-gray-700" 
+           ng-click="$event.stopPropagation();" 
+           style="position: fixed !important; 
+                  top: 50vh !important; 
+                  left: 50vw !important; 
+                  transform: translate(-50%, -50%) !important; 
+                  width: 90% !important; 
+                  max-width: 500px !important; 
+                  max-height: 90vh !important; 
+                  overflow-y: auto !important; 
+                  padding: 24px !important; 
+                  z-index: 100000 !important; 
+                  cursor: default !important;">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-semibold text-white">Create New Group</h3>
+          <button class="text-gray-400 hover:text-gray-300" ng-click="hideCreateGroupModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form ng-submit="addGroup(); hideCreateGroupModal();" class="space-y-4">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-teal-300">Group Name</label>
+            <input type="text" ng-model="newGroup.name" class="dark-theme-input w-full px-4 py-2 rounded-lg" placeholder="Enter group name" required>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-teal-300">Group ID</label>
+            <input type="text" ng-model="newGroup.groupId" class="dark-theme-input w-full px-4 py-2 rounded-lg" placeholder="Enter group ID for automation" required>
+          </div>
+          <div class="flex items-center justify-between pt-4">
+            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-lg hover:from-teal-500 hover:to-teal-600 transition">
+              <i class="fas fa-plus mr-2"></i>Create Group
+            </button>
+            <span class="text-red-400" ng-if="groupError">{{groupError}}</span>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
+</body>
+</html>

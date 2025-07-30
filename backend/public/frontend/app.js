@@ -2,7 +2,7 @@
 angular.module('autopostWaApp.core', []);
 
 // Add app version - ONLY change this when you deploy new code
-const APP_VERSION = '1.0.1'; // Static version - increment manually when deploying
+const APP_VERSION = 'v1753894033'; // Static version - increment manually when deploying
 window.APP_VERSION = APP_VERSION;
 
 // Features modules

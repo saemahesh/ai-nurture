@@ -3,7 +3,7 @@
 <head>
   <link rel="stylesheet" href="dark-theme.css">
 </head>
-<body>
+<body class="sequences-page">
 <div class="flex h-screen dark-theme">
     <!-- Sidebar -->
     <div ng-include="'sidebar.html'" ng-controller="SidebarController"></div>
@@ -16,13 +16,13 @@
             <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">Sequences</h2>
             <button ng-click="createSequence()" 
                     class="bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-500 hover:to-teal-600 text-white px-6 py-2 rounded-md transition duration-200 shadow-lg">
-                <i class="fas fa-plus mr-2"></i>Create Campaign
+                <i class="fas fa-plus mr-2"></i>Create
             </button>
           </div>
         </header>
 
         <!-- Content -->
-        <main class="flex-1 overflow-y-auto p-6" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 30%, #1a202c 100%), radial-gradient(circle at 20% 60%, #2c5282 0%, transparent 50%), radial-gradient(circle at 80% 40%, #2a4365 0%, transparent 50%); background-blend-mode: overlay;">
+        <main class="flex-1 overflow-y-auto p-2" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
             <!-- Loading State -->
             <div ng-if="loading" class="text-center py-8">
                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-400 mx-auto"></div>

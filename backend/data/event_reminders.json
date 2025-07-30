@@ -1,12 +1,4 @@
 {
-  "1746109966554ixl5rmz": {
-    "1hour": {
-      "enabled": true,
-      "text": "1 hour to go until {{eventName}}!",
-      "mediaId": "md1s5yai5ukt2e71h7d",
-      "mediaUrl": "/uploads/1752417553587-automation.png"
-    }
-  },
   "1746183550907xn3yy01": {
     "5days": {
       "enabled": true,
@@ -55,6 +47,14 @@
       "text": "We are LIVE now! {{eventName}} has started!",
       "mediaId": "ma6nwshnicnri7sx60r",
       "mediaUrl": "/uploads/1746182391606-2dda6605df036945324e8555813d0513.jpg"
+    }
+  },
+  "1753892353855cknc2gv": {
+    "1day": {
+      "enabled": true,
+      "text": "Only 1 day to go until {{eventName}}!",
+      "mediaId": "md1s5yai5ukt2e71h7d",
+      "mediaUrl": "/uploads/1752417553587-automation.png"
     }
   }
 }

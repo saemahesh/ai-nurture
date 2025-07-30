@@ -270,6 +270,85 @@
       padding: 0.5rem;
       margin-right: 0.75rem;
     }
+    /* Responsive fixes for mobile */
+    @media (max-width: 640px) {
+      main.flex-1, main.flex-1.overflow-y-auto, .max-w-7xl.mx-auto {
+        padding: 0.5rem !important;
+        max-width: 100% !important;
+      }
+      .event-card-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+      }
+      .event-card {
+        padding: 1rem 0.5rem !important;
+        margin: 0.5rem 0 !important;
+        min-height: 0 !important;
+        border-radius: 0.75rem !important;
+      }
+      .event-title {
+        font-size: 1.1rem !important;
+        word-break: break-word !important;
+      }
+      .event-date-container {
+        flex-direction: row !important;
+        padding: 0.5rem !important;
+        font-size: 0.95rem !important;
+      }
+      .event-date-container .text-cyan-400, .event-date-container .text-cyan-200 {
+        font-size: 0.95rem !important;
+      }
+      .flex-1.mb-4, .flex-1 {
+        font-size: 0.95rem !important;
+        word-break: break-word !important;
+      }
+      .status-badge {
+        font-size: 0.85rem !important;
+        padding: 0.3em 0.8em !important;
+      }
+      .arrow-icon {
+        font-size: 1.1rem !important;
+      }
+      .reminder-config-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+        padding: 1rem 0.5rem !important;
+      }
+      .reminder-config-header .flex-1 {
+        width: 100% !important;
+      }
+      .bg-gradient-to-br, .bg-gradient-to-r, .bg-slate-900, .bg-slate-800 {
+        padding: 1rem 0.5rem !important;
+        border-radius: 0.75rem !important;
+      }
+      .px-4.py-5, .sm\:px-6, .sm\:p-6 {
+        padding: 0.5rem !important;
+      }
+      .text-lg.leading-6.font-semibold.text-white {
+        font-size: 1.1rem !important;
+      }
+      .text-sm.text-cyan-300, .text-cyan-300.font-semibold {
+        font-size: 0.95rem !important;
+      }
+      .text-sm.text-gray-200, .text-sm.text-gray-400, .text-sm.text-cyan-200 {
+        font-size: 0.95rem !important;
+      }
+      .mb-4 {
+        margin-bottom: 0.5rem !important;
+      }
+      .border-t.border-slate-700 {
+        margin-top: 0.5rem !important;
+      }
+    }
+    /* Remove unwanted padding and border-radius from .bg-gradient-to-br when used on <body> or main container */
+    body.bg-gradient-to-br,
+    body > .bg-gradient-to-br,
+    main.bg-gradient-to-br,
+    .main.bg-gradient-to-br {
+      padding: 0 !important;
+      border-radius: 0 !important;
+    }
   </style>
 </head>
 <body>
@@ -334,7 +413,6 @@
             <div class="flex-shrink-0">
               <svg class="h-5 w-5 text-red-300" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-              </svg>
             </div>
             <div class="ml-3">
               <p class="text-sm text-red-200">{{error}}</p>

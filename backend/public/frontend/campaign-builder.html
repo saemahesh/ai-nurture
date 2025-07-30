@@ -8,7 +8,7 @@
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <i class="fas fa-magic text-blue-600 text-xl"></i>
-                <h1 class="text-2xl font-bold text-gray-900" style="padding-left:50px;">Create Campaign</h1>
+                <h1 class="text-2xl font-bold text-gray-900" style="padding-left:50px;">Create</h1>
             </div>
             <div class="flex items-center space-x-4">
                 <button ng-click="saveDraft()" class="text-gray-600 hover:text-gray-800 px-4 py-2">
@@ -18,7 +18,7 @@
                     <i class="fas fa-eye mr-2"></i>Preview
                 </button>
                 <button ng-click="submitCampaign()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                    <i class="fas fa-rocket mr-2"></i>Create Campaign
+                    <i class="fas fa-rocket mr-2"></i>Create
                 </button>
             </div>
         </div>
@@ -229,7 +229,7 @@
                                 class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50">
                             <i class="fas fa-check mr-2"></i>
                             <span ng-show="saving">Creating...</span>
-                            <span ng-show="!saving">Create Campaign</span>
+                            <span ng-show="!saving">Create</span>
                         </button>
                     </div>
                 </div>
@@ -284,7 +284,7 @@
             </div>
             
             <!-- Main Content Area -->
-            <main class="flex-1 overflow-y-auto p-6">
+            <main class="flex-1 overflow-y-auto p-2">
                 <!-- Step 1: Basic Info -->
                 <div ng-if="currentStep === 1" class="max-w-2xl mx-auto">
                     <h2 class="text-xl font-semibold mb-6">Campaign Information</h2>
@@ -513,7 +513,7 @@
                             <button ng-click="submitCampaign()" ng-disabled="saving"
                                     class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50">
                                 <i class="fas fa-check mr-2"></i>
-                                {{saving ? 'Creating...' : (isEditMode ? 'Update Campaign' : 'Create Campaign')}}
+                                {{saving ? 'Creating...' : (isEditMode ? 'Update' : 'Create')}}
                             </button>
                         </div>
                     </div>

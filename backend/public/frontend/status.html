@@ -3,24 +3,26 @@
 <head>
   <link rel="stylesheet" href="dark-theme.css">
 </head>
-<body>
+<body class="status-page">
 <div class="flex dark-theme min-h-screen">
   <div ng-include="'sidebar.html'" ng-controller="SidebarController"></div>
   <div class="flex-1 flex flex-col overflow-hidden">
-    <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
+    <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6" style="position: relative; z-index: 5 !important;">
       <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">Status Scheduler</h2>
-        <button class="px-4 py-2 bg-teal-600 text-white rounded-lg font-semibold shadow hover:bg-teal-500 transition" ng-click="showCreateStatusModal()">
+        <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">Status</h2>
+        <button class="px-4 py-2 bg-blue-900 text-white rounded-lg font-semibold shadow hover:bg-blue-800 transition" ng-click="showCreateStatusModal()">
           <i class="fas fa-plus mr-2"></i> Create
         </button>
       </div>
     </header>
-    <main class="flex-1 p-6" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 30%, #1a202c 100%), radial-gradient(circle at 20% 60%, #2c5282 0%, transparent 50%), radial-gradient(circle at 80% 40%, #2a4365 0%, transparent 50%); background-blend-mode: overlay;">
+    <main class="flex-1 p-6" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
       <div class="max-w-2xl mx-auto">
         <!-- Create Status Modal -->
-        <div ng-if="createStatusModalVisible" class="fixed inset-0 z-50 flex items-center justify-center min-h-screen overflow-y-auto" style="background: rgba(15,23,42,0.7);" ng-click="hideCreateStatusModal()">
-          <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative" style="background: linear-gradient(135deg, #334155 0%, #475569 30%, #1e293b 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%); min-height: 0; margin-top: 6rem; margin-bottom: 2rem;" ng-click="$event.stopPropagation()">
-            <form name="statusForm" ng-submit="scheduleStatus()" novalidate autocomplete="off" class="status-form">
+        <div ng-if="createStatusModalVisible" class="fixed inset-0 z-50 flex items-center justify-center min-h-screen overflow-y-auto" style="background: rgba(15,23,42,0.7); z-index: 99999 !important; padding-top: 60px !important;" ng-click="hideCreateStatusModal()">
+          <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important; min-height: 0; margin-top: 4rem; margin-bottom: 2rem; padding-top: 1rem;" ng-click="$event.stopPropagation()">
+            <!-- Close X button at top -->
+            <button type="button" class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl font-bold close-x-button" style="border: none !important; outline: none !important; background: transparent !important;" ng-click="hideCreateStatusModal()">✕</button>
+            <form name="statusForm" ng-submit="scheduleStatus()" novalidate autocomplete="off" class="status-form" style="margin-top: 10px !important; padding-top: 10px !important;">
               <div class="mb-4">
                 <label class="block text-teal-300 font-medium mb-1">Select Media <span class="text-red-400">*</span></label>
                 <select ng-model="status.mediaUrl" class="dark-theme-input w-full px-3 py-2 rounded-lg" required>
@@ -77,13 +79,10 @@
                   </label>
                 </div>
               </div>
-              <button type="submit" class="bg-teal-600 hover:bg-teal-500 text-white px-6 py-2 rounded-lg font-semibold transition" ng-disabled="saving">
-                <i class="fas fa-spinner fa-spin mr-2" ng-if="saving"></i>
-                Schedule Status
-              </button>
+                            <button type="submit" class="px-4 py-2 bg-blue-900 hover:bg-blue-800 rounded-lg text-white font-semibold transition">Create Status</button>
               <span ng-if="saveSuccess" class="ml-3 text-teal-400 font-medium">Scheduled!</span>
               <span ng-if="saveError" class="ml-3 text-red-400 font-medium">{{saveError}}</span>
-              <button type="button" class="ml-4 px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg text-gray-200 font-semibold transition" ng-click="hideCreateStatusModal()">Cancel</button>
+              <button type="button" class="ml-4 px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg text-gray-200 font-semibold transition border border-gray-400" ng-click="hideCreateStatusModal()">Cancel</button>
             </form>
           </div>
         </div>
@@ -104,8 +103,8 @@
               </div>
             </div>
             <div>
-              <button class="text-teal-400 hover:text-teal-300 mr-2 px-2 py-1 rounded hover:bg-gray-700 transition" ng-click="editStatus(s)">Edit</button>
-              <button class="text-red-400 hover:text-red-300 px-2 py-1 rounded hover:bg-gray-700 transition" ng-click="deleteStatus(s.id)">Delete</button>
+              <button class="text-blue-400 hover:text-blue-300 mr-2 px-2 py-1 rounded hover:bg-gray-700 transition" ng-click="editStatus(s)">Edit</button>
+              <button class="text-blue-400 hover:text-blue-300 px-2 py-1 rounded hover:bg-gray-700 transition" ng-click="deleteStatus(s.id)">Delete</button>
             </div>
           </div>
         </div>

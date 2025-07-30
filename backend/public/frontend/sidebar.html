@@ -78,7 +78,7 @@
         <a href="#/status" class="nav-item group relative" ng-class="{'active': isActive('/status')}">
           <div class="nav-item-bg"></div>
           <i class="fas fa-server nav-icon"></i>
-          <span class="nav-text">Status Schedule</span>
+          <span class="nav-text">Status</span>
           <div class="nav-indicator" ng-if="isActive('/status')"></div>
         </a>
       </div>
@@ -154,7 +154,9 @@
 <div>
   <!-- Mobile hamburger button -->
   <button aria-label="Open sidebar" class="md:hidden fixed top-4 left-4 z-50 p-3 rounded-lg bg-gray-800 text-white shadow-xl focus:outline-none focus:ring-2 focus:ring-teal-400 hover:bg-gray-700" ng-click="openSidebar()" type="button">
-    <i class="fas fa-bars text-2xl" style="color: white !important;"></i>
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
   </button>
   
   <!-- Backdrop overlay -->
@@ -165,7 +167,9 @@
     
     <!-- Close button -->
     <button ng-click="closeSidebar()" aria-label="Close sidebar" class="absolute top-4 right-4 z-60 p-2 rounded-lg bg-gray-900 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 hover:bg-gray-800">
-      <i class="fas fa-times text-2xl"></i>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
     </button>
     
     <!-- Brand Header with Glass Effect - EXACT MATCH TO DESKTOP -->
@@ -243,7 +247,7 @@
           <a href="#/status" class="nav-item group relative" ng-class="{'active': isActive('/status')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
             <i class="fas fa-server nav-icon"></i>
-            <span class="nav-text">Status Schedule</span>
+            <span class="nav-text">Status</span>
             <div class="nav-indicator" ng-if="isActive('/status')"></div>
           </a>
           
@@ -253,7 +257,7 @@
         <!-- System & Admin Section -->
         <div>
           <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Admin</p>
-          <a href="#/users" class="nav-item group relative" ng-class="{'active': isActive('/users')}" ng-click="closeSidebar()">
+          <a href="#/users" class="nav-item group relative" ng-class="{'active': isActive('/users')}" ng-click="closeSidebar()" ng-if="user.role === 'admin'">
             <div class="nav-item-bg"></div>
             <i class="fas fa-user-shield nav-icon"></i>
             <span class="nav-text">Users</span>
@@ -320,173 +324,7 @@
   </div>
 </div>
 
-<!-- Mobile Sidebar -->
-<div>
-  <!-- Mobile hamburger button -->
-  <button aria-label="Open sidebar" class="md:hidden fixed top-4 left-4 z-50 p-3 rounded-lg bg-gray-800 text-white shadow-xl focus:outline-none focus:ring-2 focus:ring-teal-400 hover:bg-gray-700" ng-click="openSidebar()" type="button">
-    <i class="fas fa-bars text-2xl" style="color: white !important;"></i>
-  </button>
-  
-  <!-- Backdrop overlay -->
-  <div ng-if="sidebarOpen" class="fixed inset-0 z-40 bg-black/40 md:hidden transition-opacity duration-200" ng-click="closeSidebar()" aria-hidden="true"></div>
-  
-  <!-- Mobile sidebar container -->
-  <div class="w-80 h-screen flex flex-col shadow-2xl overflow-hidden fixed z-50 top-0 left-0 transition-transform duration-300 md:hidden mobile-sidebar-container border-r border-gray-700" style="background: #1a202c;" ng-class="{'-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen}" tabindex="-1" aria-label="Sidebar navigation">
-    
-    <!-- Close button -->
-    <button ng-click="closeSidebar()" aria-label="Close sidebar" class="absolute top-4 right-4 z-60 p-2 rounded-lg bg-gray-900 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 hover:bg-gray-800">
-      <i class="fas fa-times text-2xl"></i>
-    </button>
-    
-    <!-- Brand Header with Glass Effect - EXACT MATCH TO DESKTOP -->
-    <div class="px-8 py-3 bg-teal-800 border-b border-gray-600">
-      <div class="flex items-center">
-        <div class="flex items-center justify-center w-14 h-14 mr-4">
-          <i class="fab fa-whatsapp text-3xl" style="color: #25D366 !important; font-family: 'Font Awesome 6 Brands', 'Font Awesome 6 Pro', FontAwesome !important; font-weight: 400 !important; filter: drop-shadow(0 0 12px rgba(37, 211, 102, 1)) drop-shadow(0 0 6px rgba(37, 211, 102, 0.8));"></i>
-        </div>
-        <div>
-          <h1 class="text-2xl font-bold tracking-wide" style="background: linear-gradient(135deg, #ffffff, #7dd3fc, #34d399, #fbbf24); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">WhatsPro</h1>
-          <p class="text-xs text-white font-bold mt-1" style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Advanced Messaging</p>
-        </div>
-      </div>
-    </div>
-    <!-- Navigation with Enhanced UX - EXACT MATCH TO DESKTOP -->
-    <nav class="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar" id="mobile-nav">
-      <div class="space-y-2">
-        <!-- Workspace Section -->
-        <div class="mb-6">
-          <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Workspace</p>
-          <a href="#/dashboard" class="nav-item group relative" ng-class="{'active': isActive('/dashboard')}" ng-click="closeSidebar()">
-            <div class="nav-item-bg"></div>
-            <i class="fas fa-chart-line nav-icon"></i>
-            <span class="nav-text">Dashboard</span>
-            <div class="nav-indicator" ng-if="isActive('/dashboard')"></div>
-          </a>
-          
-          <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}" ng-click="closeSidebar()">
-            <div class="nav-item-bg"></div>
-            <i class="fas fa-users nav-icon"></i>
-            <span class="nav-text">Groups</span>
-            <div class="nav-indicator" ng-if="isActive('/groups')"></div>
-          </a>
-          
-          <a href="#/events" class="nav-item group relative" ng-class="{'active': isActive('/events')}" ng-click="closeSidebar()">
-            <div class="nav-item-bg"></div>
-            <i class="fas fa-calendar-alt nav-icon"></i>
-            <span class="nav-text">Events</span>
-            <div class="nav-indicator" ng-if="isActive('/events')"></div>
-          </a>
-        </div>
 
-        <!-- Automation Section -->
-        <div class="mb-6">
-          <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Automation</p>
-          <a href="#/sequences" class="nav-item group relative" ng-class="{'active': isActive('/sequences')}" ng-click="closeSidebar()">
-            <div class="nav-item-bg"></div>
-            <i class="fas fa-robot nav-icon"></i>
-            <span class="nav-text">Drip Campaigns</span>
-            <div class="nav-indicator" ng-if="isActive('/sequences')"></div>
-          </a>
-       
-          
-          <a href="#/event-reminders" class="nav-item group relative" ng-class="{'active': isActive('/event-reminders')}" ng-click="closeSidebar()">
-            <div class="nav-item-bg"></div>
-            <i class="fas fa-bell nav-icon"></i>
-            <span class="nav-text">Event Reminders</span>
-            <div class="nav-indicator" ng-if="isActive('/event-reminders')"></div>
-          </a>
-          
-          <a href="#/schedules" class="nav-item group relative" ng-class="{'active': isActive('/schedules')}" ng-click="closeSidebar()">
-            <div class="nav-item-bg"></div>
-            <i class="far fa-clock nav-icon"></i>
-            <span class="nav-text">Group Schedules</span>
-            <div class="nav-indicator" ng-if="isActive('/schedules')"></div>
-          </a>
-          
-          <a href="#/direct-schedule" class="nav-item group relative" ng-class="{'active': isActive('/direct-schedule')}" ng-click="closeSidebar()">
-            <div class="nav-item-bg"></div>
-            <i class="fas fa-paper-plane nav-icon"></i>
-            <span class="nav-text">Message Schedule</span>
-            <div class="nav-indicator" ng-if="isActive('/direct-schedule')"></div>
-          </a>
-
-          <a href="#/status" class="nav-item group relative" ng-class="{'active': isActive('/status')}" ng-click="closeSidebar()">
-            <div class="nav-item-bg"></div>
-            <i class="fas fa-server nav-icon"></i>
-            <span class="nav-text">Status Schedule</span>
-            <div class="nav-indicator" ng-if="isActive('/status')"></div>
-          </a>
-        </div>
-
-        <!-- System & Admin Section -->
-        <div>
-          <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Admin</p>
-          <a href="#/users" class="nav-item group relative" ng-class="{'active': isActive('/users')}" ng-click="closeSidebar()">
-            <div class="nav-item-bg"></div>
-            <i class="fas fa-user-shield nav-icon"></i>
-            <span class="nav-text">Users</span>
-            <div class="nav-indicator" ng-if="isActive('/users')"></div>
-          </a>
-        
-          
-          <a href="#/settings" class="nav-item group relative" ng-class="{'active': isActive('/settings')}" ng-click="closeSidebar()">
-            <div class="nav-item-bg"></div>
-            <i class="fas fa-sliders nav-icon"></i>
-            <span class="nav-text">Settings</span>
-            <div class="nav-indicator" ng-if="isActive('/settings')"></div>
-          </a>
-        </div>
-      </div>
-    </nav>
-    
-    <!-- Enhanced User Section - EXACT MATCH TO DESKTOP -->
-    <div class="px-6 py-1 border-t border-gray-600 bg-gray-800 mt-auto">
-      <!-- Loading State -->
-      <div ng-if="loadingUser" class="flex items-center justify-center space-x-3 py-4">
-        <div class="w-6 h-6 rounded-full border-2 border-teal-400 border-t-transparent animate-spin"></div>
-        <span class="text-sm text-teal-300 font-medium">Loading user...</span>
-      </div>
-      
-      <!-- Error State -->
-      <div ng-if="userError" class="flex items-center space-x-3 p-4 rounded-lg bg-red-900/20 border border-red-500/20">
-        <i class="fas fa-exclamation-triangle text-red-400 text-lg"></i>
-        <span class="text-sm text-red-300 font-medium">Failed to load user data</span>
-      </div>
-      
-      <!-- User Info -->
-      <div ng-if="!loadingUser && !userError && user.username" class="space-y-3">
-        <!-- User Profile Card -->
-        <div class="p-1 rounded-lg bg-gray-700 border border-gray-600">
-          <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
-              <i class="fas fa-user text-white"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-white font-bold text-lg truncate">{{user.username | uppercase}}</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Action Buttons -->
-        <div class="grid grid-cols-2 gap-2">
-          <button ng-click="forceRefresh()" 
-                  ng-disabled="refreshing"
-                  class="p-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-center transition-colors text-xs">
-            <i class="fas block mb-1" ng-class="refreshing ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i>
-            <span class="font-medium">{{refreshing ? 'Syncing...' : 'Refresh'}}</span>
-          </button>
-          
-          <button ng-click="logout()" 
-                  ng-disabled="loggingOut"
-                  class="p-2 rounded bg-red-600 hover:bg-red-700 text-white text-center transition-colors text-xs">
-            <i class="fas block mb-1" ng-class="loggingOut ? 'fa-spinner fa-spin' : 'fa-sign-out-alt'"></i>
-            <span class="font-medium">{{loggingOut ? 'Logging out...' : 'Logout'}}</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <style>
   @media (max-width: 767px) {

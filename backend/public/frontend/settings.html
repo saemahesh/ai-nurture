@@ -15,10 +15,10 @@
         <!-- ...existing header actions/buttons... -->
       </div>
     </header>
-    <main class="flex-1 overflow-y-auto p-6" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 30%, #1a202c 100%), radial-gradient(circle at 20% 60%, #2c5282 0%, transparent 50%), radial-gradient(circle at 80% 40%, #2a4365 0%, transparent 50%); background-blend-mode: overlay;">
+    <main class="flex-1 overflow-y-auto p-2" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
       <div class="max-w-4xl mx-auto">
         <!-- User Settings Form -->
-        <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl p-8 border border-gray-600">
+        <div style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;" class="rounded-xl shadow-2xl p-8 border border-gray-600">
           <div class="mb-6">
             <h3 class="text-2xl font-semibold text-white mb-2">WhatsApp Configuration</h3>
             <p class="text-gray-300 text-sm">Configure your WhatsApp integration settings</p>
@@ -58,7 +58,7 @@
               
               <div class="pt-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <button type="button" ng-click="testConnection()" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-md" ng-disabled="testing">
+                  <button type="button" ng-click="testConnection()" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-md border border-blue-400" ng-disabled="testing">
                     <i class="fas fa-spinner fa-spin mr-2" ng-if="testing"></i>
                     <i class="fas fa-plug mr-2" ng-if="!testing"></i>
                     Test Connection

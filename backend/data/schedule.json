@@ -119,18 +119,6 @@
     "sentAt": "2025-07-17T04:33:00.501Z"
   },
   {
-    "id": "1752757068470swzlwqn",
-    "eventId": "1746109966554ixl5rmz",
-    "reminderType": "1hour",
-    "groupId": "120363259609500535@g.us",
-    "message": "1 hour to go until whatsapp webinar today 7 pm!",
-    "time": "2025-07-17T12:58:00.000Z",
-    "media": "/uploads/1752417553587-automation.png",
-    "username": "mahesh",
-    "sent": true,
-    "sentAt": "2025-07-17T12:58:00.308Z"
-  },
-  {
     "id": "17527571280835um5u2bepav",
     "groupId": "120363259609500535@g.us",
     "name": "Hey, testing again",
@@ -140,5 +128,28 @@
     "username": "mahesh",
     "sent": true,
     "sentAt": "2025-07-17T12:59:00.390Z"
+  },
+  {
+    "id": "175389236665335hesyb",
+    "eventId": "1753892353855cknc2gv",
+    "reminderType": "1day",
+    "groupId": "120363259609500535@g.us",
+    "message": "Only 1 day to go until Whatsapp Automation Workshop!",
+    "time": "2025-07-30T16:20:00.000Z",
+    "media": "/uploads/1752417553587-automation.png",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-30T16:21:00.573Z"
+  },
+  {
+    "id": "1753892610549bsiokxtzu76",
+    "groupId": "120363259609500535@g.us",
+    "name": "Hey , testing from group schedule",
+    "message": "Hey , testing from group schedule",
+    "time": "2025-07-30T16:24:00.000Z",
+    "media": "/uploads/1752417553587-automation.png",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-30T16:24:00.806Z"
   }
 ]

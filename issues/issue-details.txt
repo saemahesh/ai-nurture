@@ -1,0 +1,59 @@
+Manditory instructions: 
+You are instructed to finish the task completely, one by one, and not leave any issues open.
+For the you need to first read this issue-details.txt file and analyse the files that related
+to the issues. and give the code changes that are needed to fix the issues.
+Once you think the issues are fixed, You need to analyse the code you generated to complete your task if you find any issues, 
+iterate and fix it again
+after that, you need to read this file issue-details.txt again 
+for issues, because i will test your changes and see if the issues are fixed.
+if not fixed, i will mention in this file you need to iterate on the code changes and fix the issues.
+
+Analyse/see the images present in the issues directory and iterate on fixing the issues.
+
+Until you see total issues count = 0, you need to keep iterating on the code changes.
+If you do not see count = 0, recheck the code you generated and see if there are any issues in the code.
+you need to keep on reading the issue-details.txt file and iterate on the code changes until you see total issues count = 0.
+do not assume that the issues are fixed, until you see total issues count = 0.
+Again check all images in issues directory and iterate on fixing the issues.
+
+You should not make any changes to this file issue-details.txt.
+i will only make changes to this file manually.
+
+These are the issues in the after verifying your recent edits. 
+Please review the changes and ensure they align with your task goals.
+
+Lets fix the issues one by one, and then update the actionplan.txt file accordingly.
+If phase 1 is completed, then move to phase 2.
+If phase 1 is not completed, then iterate on the code changes until you see total issues count = 0.
+If you do not see any changes in the stage 1, that means, i am still testing your code changes, so wait for my next instructions until i update the stage 1 is completed.
+meanwhile creation action plan for next stage items, but do not image changes for next stage items until current stage is completed.
+once current stage items completed, then only go to next stage.
+
+**** issue list **** issue count : 2
+keep this background for all forms and main page backgrounds in all pages
+linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important
+hey, users seciton should only show to admins, but in mobile view, it is showing for all 
+
+hamberger menu icon size reduce
+
+
+http://localhost:3000/#/direct-schedule and http://localhost:3000/#/media 
+pages background is not as per above REQUIREMENT
+
+
+http://localhost:3000/#/settings this page also , keep above background and also form
+
+keep border for cancel button in status page form - not fixed
+
+
+
+Image Reference:
+Path: issues/
+analyse or see the images in issues directory and iterate on fixing the issues.
+
+
+after analysing images, tell me what changes you will make to fix the issues.
+
+clear contents in actionplan.txt and update actionplan.txt with new plan and then do code changes.
+
+after that iterate 28 times on this entire issues-details.txt file for issues and feedback on your changes.

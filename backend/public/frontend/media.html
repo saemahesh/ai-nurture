@@ -16,15 +16,15 @@
       </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-4" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 40%, #1a202c 100%), radial-gradient(circle at 30% 70%, #2c5282 0%, transparent 50%), radial-gradient(circle at 70% 30%, #2a4365 0%, transparent 50%); background-blend-mode: overlay;">
+    <main class="flex-1 overflow-y-auto p-4" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
       <div class="max-w-7xl mx-auto">
         <!-- Upload Form -->
-        <div class="bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg rounded-lg mb-6 border border-gray-700">
+        <div style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;" class="shadow-lg rounded-lg mb-6 border border-gray-700">
           <div class="p-6">
             <h3 class="text-lg font-medium text-white mb-4">Upload New Media</h3>
             
             <!-- Alerts -->
-            <div ng-show="error" class="mb-4 bg-red-50 border-l-4 border-red-400 p-4">
+            <div ng-show="error" class="mb-4 bg-red-900/20 border-l-4 border-red-400 p-4 rounded-lg">
               <div class="flex">
                 <div class="flex-shrink-0">
                   <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
@@ -32,12 +32,12 @@
                   </svg>
                 </div>
                 <div class="ml-3">
-                  <p class="text-sm text-red-700">{{error}}</p>
+                  <p class="text-sm text-red-200">{{error}}</p>
                 </div>
               </div>
             </div>
 
-            <div ng-show="success" class="mb-4 bg-green-50 border-l-4 border-green-400 p-4">
+            <div ng-show="success" class="mb-4 bg-green-900/20 border-l-4 border-green-400 p-4 rounded-lg">
               <div class="flex">
                 <div class="flex-shrink-0">
                   <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
@@ -45,7 +45,7 @@
                   </svg>
                 </div>
                 <div class="ml-3">
-                  <p class="text-sm text-green-700">{{success}}</p>
+                  <p class="text-sm text-green-200">{{success}}</p>
                 </div>
               </div>
             </div>
@@ -137,7 +137,7 @@
         </div>
 
         <!-- Media List -->
-        <div class="bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg rounded-lg border border-gray-700">
+        <div style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;" class="shadow-lg rounded-lg border border-gray-700">
           <div class="p-6">
             <div class="flex justify-between items-center mb-4">
               <h3 class="text-lg font-medium text-white">Media Library</h3>
@@ -224,27 +224,25 @@
                     </div>
                   </div>
                   <!-- Edit mode -->
-                  <div ng-if="editingMedia.id === media.id" class="flex flex-col space-y-2">
-                    <div class="flex items-start space-x-1">
+                  <div ng-if="editingMedia.id === media.id" class="space-y-2">
+                    <div class="w-full">
                       <input type="text" 
                              ng-model="editingMedia.name" 
-                             class="block flex-grow text-sm py-1 px-2 border border-gray-600 rounded bg-gray-900 text-white focus:ring-blue-500 focus:border-blue-500"
+                             class="w-full text-sm py-2 px-3 border border-gray-600 rounded-lg bg-gray-900 text-white focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                              placeholder="Enter media name">
-                      <button 
-                        ng-click="saveMediaName(media)"
-                        title="Save changes"
-                        class="text-white bg-blue-600 hover:bg-blue-700 rounded p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                      </button>
+                    </div>
+                    <div class="flex justify-end space-x-2">
                       <button 
                         ng-click="cancelEditing()"
                         title="Cancel"
-                        class="text-white bg-gray-600 hover:bg-gray-700 rounded p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        class="text-white bg-gray-600 hover:bg-gray-700 rounded-lg px-3 py-1.5 text-xs font-medium transition">
+                        Cancel
+                      </button>
+                      <button 
+                        ng-click="saveMediaName(media)"
+                        title="Save changes"
+                        class="text-white bg-blue-600 hover:bg-blue-700 rounded-lg px-3 py-1.5 text-xs font-medium transition">
+                        Save
                       </button>
                     </div>
                   </div>
@@ -258,41 +256,54 @@
   </div>
   
   <!-- Delete Confirmation Modal -->
-  <div ng-if="confirmingDelete" class="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-md m-4 overflow-hidden" 
-         ng-click="$event.stopPropagation()">
-      <div class="p-4 bg-red-50">
-        <h3 class="text-lg font-medium text-red-800">Confirm Deletion</h3>
-      </div>
-      <div class="p-6">
-        <p class="text-gray-700">Are you sure you want to delete <span class="font-medium">{{confirmingDelete.name}}</span>?</p>
-        <p class="text-sm text-gray-500 mt-2">This action cannot be undone.</p>
-      </div>
-      <div class="bg-gray-50 px-6 py-3 flex justify-end space-x-3">
-        <button 
-          ng-click="cancelDelete()"
-          class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300">
-          Cancel
-        </button>
-        <button 
-          ng-click="deleteMedia(confirmingDelete.id)"
-          class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-          Delete
-        </button>
+  <div ng-if="confirmingDelete" class="fixed inset-0 z-50 flex items-center justify-center min-h-screen overflow-y-auto" style="background: rgba(15,23,42,0.7); z-index: 99999 !important;" ng-click="cancelDelete()">
+    <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important; min-height: 0; margin-top: 4rem; margin-bottom: 2rem;" ng-click="$event.stopPropagation()">
+      <!-- Close X button at top -->
+      <button type="button" class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl font-bold close-x-button" style="border: none !important; outline: none !important; background: transparent !important;" ng-click="cancelDelete()">✕</button>
+      
+      <div class="pt-4">
+        <div class="flex items-center mb-4">
+          <div class="flex-shrink-0 mr-3">
+            <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-white">Confirm Deletion</h3>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <p class="text-gray-300">Are you sure you want to delete <span class="font-medium text-white">{{confirmingDelete.name}}</span>?</p>
+          <p class="text-sm text-gray-400 mt-2">This action cannot be undone.</p>
+        </div>
+        
+        <div class="flex justify-end space-x-3">
+          <button 
+            ng-click="cancelDelete()"
+            class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg text-gray-200 font-semibold transition border border-gray-400">
+            Cancel
+          </button>
+          <button 
+            ng-click="deleteMedia(confirmingDelete.id)"
+            class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold transition">
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   </div>
   
   <!-- Image Preview Modal -->
-  <div ng-if="showImageModal" class="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-75"
+  <div ng-if="showImageModal" class="fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(15,23,42,0.8); z-index: 99999 !important;"
        ng-click="closeImageModal()">
-    <div class="relative max-w-4xl w-full max-h-[90vh] flex flex-col bg-white rounded-lg shadow-xl m-4"
+    <div class="relative max-w-4xl w-full max-h-[90vh] flex flex-col rounded-xl shadow-2xl m-4 border-2 border-slate-600" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;"
          ng-click="$event.stopPropagation()">
-      <div class="p-4 flex justify-between items-center border-b">
-        <h3 class="text-lg font-medium text-gray-900">{{selectedImage.name}}</h3>
+      <div class="p-4 flex justify-between items-center border-b border-gray-600">
+        <h3 class="text-lg font-semibold text-white">{{selectedImage.name}}</h3>
         <button 
           ng-click="closeImageModal()"
-          class="text-gray-400 hover:text-gray-500 focus:outline-none">
+          class="text-gray-400 hover:text-white focus:outline-none">
           <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -301,28 +312,28 @@
       <div class="flex-grow overflow-auto p-4 flex items-center justify-center">
         <img ng-if="selectedImage.type === 'image'"
              ng-src="{{selectedImage._trustedUrl}}"
-             class="max-w-full max-h-[60vh] object-contain"
+             class="max-w-full max-h-[60vh] object-contain rounded-lg"
              onerror="this.onerror=null; this.src='/images/image-placeholder.png';">
         <video ng-if="selectedImage.type === 'video'"
                ng-src="{{selectedImage._trustedUrl}}"
                controls
-               class="max-w-full max-h-[60vh]"
+               class="max-w-full max-h-[60vh] rounded-lg"
                poster="/images/video-placeholder.png">
         </video>
       </div>
-      <div class="p-4 border-t bg-gray-50">
+      <div class="p-4 border-t border-gray-600">
         <div class="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <p class="text-gray-500">Type: <span class="text-gray-900">{{selectedImage.type}}</span></p>
-            <p class="text-gray-500">Size: <span class="text-gray-900">{{selectedImage.formattedSize || 'Unknown'}}</span></p>
+            <p class="text-gray-400">Type: <span class="text-white font-medium">{{selectedImage.type}}</span></p>
+            <p class="text-gray-400">Size: <span class="text-white font-medium">{{selectedImage.formattedSize || 'Unknown'}}</span></p>
           </div>
           <div>
-            <p class="text-gray-500">Uploaded: <span class="text-gray-900">{{selectedImage.formattedDate || 'Unknown'}}</span></p>
+            <p class="text-gray-400">Uploaded: <span class="text-white font-medium">{{selectedImage.formattedDate || 'Unknown'}}</span></p>
           </div>
         </div>
         <div class="mt-4 flex justify-end space-x-3">
           <button ng-click="selectForEventReminder(selectedImage)"
-                  class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition">
             Use in Event Reminders
           </button>
         </div>

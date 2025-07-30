@@ -1,18 +1,5 @@
 [
   {
-    "id": "1746109966554ixl5rmz",
-    "name": "whatsapp webinar today 7 pm",
-    "description": "description",
-    "time": "2025-07-17T13:58:00.000Z",
-    "groups": [
-      "120363259609500535@g.us"
-    ],
-    "username": "mahesh",
-    "createdAt": "2025-05-01T14:32:46.554Z",
-    "remindersConfigured": true,
-    "updatedAt": "2025-07-17T12:57:41.426Z"
-  },
-  {
     "id": "1746183550907xn3yy01",
     "name": "Digital Product Business Workshop",
     "description": "Earn online",
@@ -37,5 +24,19 @@
     "media": null,
     "createdAt": "2025-05-02T15:14:44.639Z",
     "updatedAt": "2025-07-11T04:01:55.197Z"
+  },
+  {
+    "id": "1753892353855cknc2gv",
+    "username": "mahesh",
+    "name": "Whatsapp Automation Workshop",
+    "description": "Join now",
+    "time": "2025-07-31T16:20:00.000Z",
+    "groups": [
+      "120363259609500535@g.us"
+    ],
+    "media": null,
+    "createdAt": "2025-07-30T16:19:13.855Z",
+    "updatedAt": "2025-07-30T16:19:13.856Z",
+    "remindersConfigured": true
   }
 ]

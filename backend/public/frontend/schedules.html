@@ -3,7 +3,7 @@
 <head>
   <link rel="stylesheet" href="dark-theme.css">
 </head>
-<body>
+<body class="schedules-page">
 <div class="flex h-screen dark-theme">
   <!-- Sidebar -->
   <div ng-include="'sidebar.html'" ng-controller="SidebarController"></div>
@@ -67,9 +67,9 @@
     </style>
 
     <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto dark-theme-content p-6" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 30%, #1a202c 100%), radial-gradient(circle at 20% 60%, #2c5282 0%, transparent 50%), radial-gradient(circle at 80% 40%, #2a4365 0%, transparent 50%); background-blend-mode: overlay;">
+    <main class="flex-1 overflow-y-auto dark-theme-content p-6" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
       <!-- Schedule Form -->
-      <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-6 mb-6 max-w-2xl mx-auto border-2 border-slate-600" style="background: linear-gradient(135deg, #334155 0%, #475569 30%, #1e293b 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%);">
+      <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-2 mb-6 max-w-2xl mx-auto border-2 border-slate-600" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
         <h3 class="text-xl font-semibold text-white mb-6">Create New Schedule</h3>
         <form name="scheduleForm" ng-submit="addSchedule()" class="space-y-4" novalidate>
           <div class="space-y-2">
@@ -213,7 +213,7 @@
       </div>
 
       <!-- Schedules List -->
-      <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-6 max-w-2xl mx-auto border-2 border-slate-600" style="background: linear-gradient(135deg, #334155 0%, #475569 30%, #1e293b 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%);">
+      <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-2 max-w-2xl mx-auto border-2 border-slate-600" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
         <div ng-if="schedules.length === 0" class="text-center text-gray-300 py-4">
           No schedules added yet.
         </div>
@@ -296,7 +296,7 @@
   
   <!-- Edit Schedule Modal -->
   <div ng-if="editingSchedule" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-xl shadow-lg p-6 max-w-lg w-full mx-4" ng-click="$event.stopPropagation()">
+    <div class="bg-white rounded-xl shadow-lg p-6 max-w-lg w-full mx-4" ng-click="$event.stopPropagation()" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-semibold text-gray-800" style="padding-left:50px;">Edit Schedule</h3>
         <button class="text-gray-500 hover:text-gray-700" ng-click="hideEditModal()">
@@ -430,7 +430,7 @@
 
 <!-- Media Selector Modal -->
 <div ng-if="showMediaSelector" class="fixed" style="top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.5) !important; display: flex !important; align-items: center !important; justify-content: center !important; z-index: 9999 !important;" ng-click="closeMediaSelector()">
-  <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700" style="width: 90% !important; max-width: 600px !important; max-height: 80vh !important; overflow-y: auto !important;" ng-click="$event.stopPropagation()">
+  <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700" style="width: 90% !important; max-width: 600px !important; max-height: 80vh !important; overflow-y: auto !important; background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;" ng-click="$event.stopPropagation()">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-xl font-semibold text-white">Select Media from Library</h2>
       <button ng-click="closeMediaSelector()" class="text-gray-400 hover:text-gray-300 transition-colors">

@@ -5,7 +5,7 @@
   --bg-primary: #1a202c;          /* Main background (matches sidebar) */
   --bg-secondary: #2d3748;        /* Secondary background */
   --bg-tertiary: #4a5568;         /* Card backgrounds */
-  --bg-header: #2c5282;           /* Header background (darker blue) */
+  --bg-header: #07192e;           /* Header background (darker blue) */
   --bg-teal: #2d7d7d;            /* Teal accents */
   --bg-teal-dark: #1e5a5a;       /* Dark teal */
   
@@ -939,4 +939,431 @@ textarea::placeholder {
 
 .reminder-card button:hover {
   background: var(--bg-teal-dark) !important;
+}
+
+/* Mobile Optimizations for Enrollments Page */
+@media (max-width: 768px) {
+  /* CRITICAL: Hide ALL sidebar hamburger buttons on enrollments page */
+  body.enrollments-page .mobile-menu-btn,
+  body.enrollments-page button[aria-label="Open sidebar"],
+  .enrollments-page .mobile-menu-btn,
+  .enrollments-page button[aria-label="Open sidebar"],
+  .enrollments-page .fa-bars {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  
+  /* Prevent any fixed positioned elements from interfering */
+  body.enrollments-page .fixed {
+    position: static !important;
+  }
+  
+  body.enrollments-page .fixed.enrollments-header {
+    position: relative !important;
+  }
+  
+  /* Header positioning and z-index */
+  .enrollments-header {
+    padding: 12px 16px !important;
+    min-height: 56px !important;
+    position: relative !important;
+    z-index: 1000 !important;
+    background-color: #1a202c !important;
+    width: 100% !important;
+    left: 0 !important;
+    top: 0 !important;
+    border-bottom: 1px solid white !important;
+  }
+  
+  /* Ensure back button replaces hamburger position */
+  .enrollments-header button:first-child {
+    background-color: #374151 !important;
+    border: 1px solid white !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    z-index: 1000 !important;
+    margin: 0 !important;
+    flex-shrink: 0 !important;
+    border-radius: 8px !important;
+  }
+  
+  /* Back button icon sizing */
+  .enrollments-header button:first-child svg {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  /* Title positioning and sizing */
+  .enrollments-header h1 {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: white !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    position: relative !important;
+    z-index: 1000 !important;
+    margin-left: 8px !important;
+    padding-left: 0 !important;
+  }
+  
+  /* Button container positioning */
+  .enrollments-header .flex-shrink-0 {
+    display: flex !important;
+    gap: 6px !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    max-width: 50% !important;
+    position: relative !important;
+    z-index: 1000 !important;
+  }
+  
+  .enrollments-header .flex-shrink-0::-webkit-scrollbar {
+    display: none !important;
+  }
+  
+  /* Action button styling with white borders */
+  .enrollments-header .flex-shrink-0 button {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    z-index: 1000 !important;
+    border-radius: 8px !important;
+    border: 1px solid white !important;
+  }
+  
+  /* Icon sizing for mobile - larger icons */
+  .enrollments-header button i {
+    font-size: 18px !important;
+  }
+  
+  /* Force proper header layout */
+  .enrollments-header > div {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    position: relative !important;
+    z-index: 1000 !important;
+    gap: 8px !important;
+  }
+  
+  /* Left section (back button + title) */
+  .enrollments-header > div > div:first-child {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    position: relative !important;
+    z-index: 1000 !important;
+  }
+  
+  /* Right section (action buttons) */
+  .enrollments-header > div > div:last-child {
+    flex-shrink: 0 !important;
+    position: relative !important;
+    z-index: 1000 !important;
+  }
+}
+
+/* APPLY WHITE BORDERS ONLY TO ACTION BUTTONS ON SPECIFIC PAGES */
+.enrollments-page button[ng-click*="openEnrollModal"],
+.enrollments-page button[ng-click*="bulkResumeAll"],
+.enrollments-page button[ng-click*="bulkUnenrollAll"],
+.enrollments-page button[ng-click*="exportEnrollments"],
+.enrollments-page button[type="submit"] {
+  border: 1px solid white !important;
+}
+
+/* APPLY WHITE BORDERS TO SEQUENCES PAGE ACTION BUTTONS */
+.sequences-page button[ng-click*="createSequence"],
+.sequences-page button[ng-click*="editSequence"],
+.sequences-page button[type="submit"] {
+  border: 1px solid white !important;
+}
+
+/* APPLY WHITE BORDERS TO SCHEDULES PAGE ACTION BUTTONS */
+.schedules-page button[ng-click*="createSchedule"],
+.schedules-page button[ng-click*="editSchedule"],
+.schedules-page button[type="submit"] {
+  border: 1px solid white !important;
+}
+
+/* REMOVE UNIVERSAL BUTTON BORDER RULES - REPLACED WITH SPECIFIC TARGETING */
+
+/* MOBILE SPECIFIC - REMOVED UNIVERSAL RULE */
+@media (max-width: 768px) {
+  /* Removed universal button border rule */
+}
+
+/* SCHEDULES PAGE FORM BACKGROUND STYLING */
+.schedules-page form {
+  background: linear-gradient(135deg, #071c38 0%, #092651 30%, #051228 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+}
+
+/* APPLY BACKGROUND TO ALL FORMS ON SCHEDULES PAGE */
+.schedules-page form,
+.schedules-page form[name="scheduleForm"],
+.schedules-page form[name="editScheduleForm"] {
+  background: linear-gradient(135deg, #071c38 0%, #092651 30%, #051228 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+}
+
+/* ENSURE ALL FORMS ON SCHEDULES GET THE BACKGROUND */
+.schedules-page .space-y-4 {
+  background: linear-gradient(135deg, #071c38 0%, #092651 30%, #051228 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+}
+
+/* COMPREHENSIVE SCHEDULES FORM BACKGROUND TARGETING */
+.schedules-page form:not([class*="hidden"]),
+.schedules-page form[novalidate],
+body.schedules-page form {
+  background: linear-gradient(135deg, #071c38 0%, #092651 30%, #051228 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+}
+
+/* FORCE BACKGROUND ON ANY FORM ELEMENT IN SCHEDULES */
+.schedules-page form,
+.schedules-page form *,
+.schedules-page [ng-submit] {
+  background: linear-gradient(135deg, #071c38 0%, #092651 30%, #051228 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+}
+
+/* SCHEDULES FORM CONTAINER BACKGROUND */
+.schedules-page .bg-gray-800,
+.schedules-page .bg-gray-900,
+.schedules-page div:has(form) {
+  background: linear-gradient(135deg, #071c38 0%, #092651 30%, #051228 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+}
+
+/* TARGET THE SPECIFIC FORM CONTAINER DIV */
+.schedules-page .bg-gradient-to-br.from-slate-700,
+.schedules-page .rounded-xl.shadow-2xl,
+.schedules-page .max-w-2xl.mx-auto {
+  background: linear-gradient(135deg, #071c38 0%, #092651 30%, #051228 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+}
+
+/* TARGET EDIT SCHEDULE MODAL */
+.schedules-page .bg-white.rounded-xl.shadow-lg,
+.schedules-page .max-w-lg.w-full.mx-4 {
+  background: linear-gradient(135deg, #071c38 0%, #092651 30%, #051228 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+}
+
+/* TARGET ALL bg-gradient-to-br DIVS ON SCHEDULES PAGE */
+.schedules-page .bg-gradient-to-br {
+  background: linear-gradient(135deg, #071c38 0%, #092651 30%, #051228 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+}
+
+/* STATUS PAGE FORM MARGIN-TOP STYLING */
+.status-form {
+  margin-top: 20px !important;
+}
+
+/* STATUS PAGE SPECIFIC FORM STYLING */
+form[name="statusForm"] {
+  margin-top: 20px !important;
+}
+
+/* STATUS PAGE ALL FORMS */
+.status-page form {
+  margin-top: 20px !important;
+}
+
+/* COMPREHENSIVE STATUS PAGE FORM MARGIN TARGETING */
+body.status-page form,
+.status-page form:not([class*="hidden"]),
+.status-page form[novalidate] {
+  margin-top: 20px !important;
+}
+
+/* STRONGER STATUS PAGE FORM MARGIN */
+.status-page .status-form,
+.status-page form[name="statusForm"],
+.status-page [ng-submit="scheduleStatus()"] {
+  margin-top: 20px !important;
+  padding-top: 20px !important;
+}
+
+/* UNIVERSAL STATUS PAGE FORM SPACING */
+.status-page form {
+  margin-top: 25px !important;
+}
+
+/* STATUS PAGE MODAL CONTENT SPACING */
+.status-page .rounded-xl.shadow-2xl {
+  margin-top: 80px !important;
+  padding-top: 20px !important;
+}
+
+/* STATUS PAGE bg-gradient-to-br DIVS */
+.status-page .bg-gradient-to-br {
+  background: linear-gradient(135deg, #071c38 0%, #092651 30%, #051228 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+}
+
+/* MOBILE-SPECIFIC STATUS PAGE FIXES */
+@media (max-width: 768px) {
+  /* Hide sidebar on status page mobile */
+  .status-page .flex.dark-theme.min-h-screen > div:first-child {
+    display: none !important;
+  }
+  
+  /* Fix header overlap issue on mobile */
+  .status-page header {
+    position: relative !important;
+    z-index: 10 !important;
+  }
+  
+  /* Ensure modal is above everything on mobile */
+  .status-page [ng-if="createStatusModalVisible"] {
+    z-index: 99999 !important;
+    position: fixed !important;
+  }
+  
+  /* Force modal to top of viewport */
+  .status-page .fixed.inset-0 {
+    top: 0 !important;
+    z-index: 99999 !important;
+    padding-top: 80px !important;
+  }
+  
+  /* Add aggressive spacing for status form on mobile */
+  .status-page .status-form {
+    margin-top: 50px !important;
+    padding-top: 30px !important;
+  }
+  
+  /* Ensure form container has proper spacing */
+  .status-page form[name="statusForm"] {
+    margin-top: 40px !important;
+    padding-top: 25px !important;
+  }
+  
+  /* Adjust modal content positioning */
+  .status-page .rounded-xl.shadow-2xl {
+    margin-top: 120px !important;
+    padding-top: 30px !important;
+  }
+}
+
+/* SPECIFIC BUTTON BORDER TARGETING - ONLY APPLY TO BUTTONS THAT NEED BORDERS */
+
+/* Create a specific class for buttons that need white borders */
+.btn-with-border,
+.action-button {
+  border: 1px solid white !important;
+}
+
+/* Action buttons in headers that need white borders */
+.enrollments-page .bg-gradient-to-r,
+.sequences-page .bg-gradient-to-r,
+.schedules-page .bg-gradient-to-r,
+.status-page .bg-gradient-to-r,
+.events-page .bg-gradient-to-r,
+.groups-page .bg-gradient-to-r,
+.media-page .bg-gradient-to-r,
+.direct-schedule-page .bg-gradient-to-r {
+  border: 1px solid white !important;
+}
+
+/* Form submit buttons that need white borders */
+button[type="submit"]:not(.close-x-button):not([ng-click*="close"]),
+.btn-primary,
+.dark-theme-button-primary {
+  border: 1px solid white !important;
+}
+
+/* Additional specific button targeting for forms and actions */
+.schedules-page form button[type="submit"],
+form[name="scheduleForm"] button[type="submit"],
+.schedules-page .from-emerald-600,
+.status-page button[type="submit"] {
+  border: 1px solid white !important;
+}
+
+/* ENSURE SPECIFIC BUTTONS NEVER GET BORDERS */
+.close-x-button,
+button.close-x-button,
+button[ng-click*="removeNotification"],
+button[ng-click*="close"],
+button[ng-click*="Close"],
+button[ng-click*="Cancel"],
+button[ng-click*="handleCancel"],
+button[ng-click*="hideEditModal"],
+button[ng-click*="hideCreateStatusModal"],
+button[ng-click*="hideCreateEventModal"],
+button[ng-click*="hideCreateGroupModal"],
+button[ng-click*="goBack"],
+button[aria-label*="close"],
+button[aria-label*="Close"],
+button.absolute.top-3.right-3,
+.notification button,
+.mb-3 button,
+button[ng-click*="closeSidebar"],
+button[ng-click*="openSidebar"] {
+  border: none !important;
+  border-width: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Extra small screens - even more compact */
+@media (max-width: 480px) {
+  .enrollments-header h1 {
+    font-size: 11px;
+    max-width: 35%;
+  }
+  
+  .enrollments-header button {
+    min-height: 32px;
+    min-width: 32px;
+    padding: 4px;
+    font-size: 10px;
+  }
+  
+  .enrollments-header button i {
+    font-size: 11px;
+  }
+}
+
+/* Enhanced touch targets for all interactive elements */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive header improvements */
+.responsive-header {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+@media (max-width: 640px) {
+  .responsive-header h1 {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.5;
+  }
+  
+  .responsive-header button span {
+    font-size: 0.875rem; /* 14px */
+  }
 }

@@ -2,7 +2,7 @@
 angular.module('autopostWaApp.core', []);
 
 // Add app version - ONLY change this when you deploy new code
-const APP_VERSION = 'v1753894033'; // Static version - increment manually when deploying
+var APP_VERSION = 'v1753958800'; // Static version - increment manually when deploying
 window.APP_VERSION = APP_VERSION;
 
 // Features modules
@@ -125,9 +125,11 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
         if (rejection.status === 401) {
           // Only redirect to login for critical endpoints, not for optional ones like media list
           const url = rejection.config.url;
-          const isOptionalEndpoint = url.includes('/media/list') || url.includes('/uploads/');
+          const isOptionalEndpoint = url.includes('/media/list') || url.includes('/uploads/') || url.includes('/plan-status');
+          const currentPath = $location.path();
           
-          if (!isOptionalEndpoint) {
+          // Don't redirect if on register page, even for auth errors
+          if (!isOptionalEndpoint && currentPath !== '/register') {
             $location.path('/login');
           }
         }
@@ -190,17 +192,12 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
     $scope.testing = true;
     $scope.testSuccess = false;
     $scope.testError = '';
-    $http({
-      method: 'POST',
-      url: 'https://wa.robomate.in/api/send',
-      headers: { 'Content-Type': 'application/json' },
-      data: {
-        number: $scope.settings.test_mobile,
-        type: 'text',
-        message: 'WhatsApp API connection is working! You are ready to go! 🚀',
-        instance_id: $scope.settings.instance_id,
-        access_token: $scope.settings.access_token
-      }
+    
+    // Use backend endpoint to avoid CORS issues
+    $http.post('/users/test-connection', {
+      test_mobile: $scope.settings.test_mobile,
+      access_token: $scope.settings.access_token,
+      instance_id: $scope.settings.instance_id
     }).then(function(res) {
       $scope.testing = false;
       $scope.testSuccess = true;
@@ -211,7 +208,7 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
     }, function(err) {
       $scope.testing = false;
       $scope.testSuccess = false;
-      var msg = (err.data && err.data.message) ? err.data.message : 'Failed to send test message.';
+      var msg = (err.data && err.data.error) ? err.data.error : 'Failed to send test message.';
       $scope.testError = msg;
     });
   };
@@ -220,7 +217,19 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
 })
 
 // App run block for cache busting and mobile optimization
-app.run(function($rootScope, $location, $timeout) {
+app.run(function($rootScope, $location, $timeout, PlanExpiryService) {
+  // Initialize plan expiry service
+  PlanExpiryService.init();
+  
+  // Expose test functions to window for browser console testing
+  window.testPlanExpiry = function() {
+    PlanExpiryService.simulateExpiry();
+  };
+  
+  window.resetPlanExpiry = function() {
+    PlanExpiryService.resetExpiry();
+  };
+  
   // Register service worker for cache management
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js', { scope: '/' })
@@ -298,6 +307,16 @@ app.run(function($rootScope, $location, $timeout) {
   
   // Listen for route changes
   $rootScope.$on('$routeChangeStart', function(event, next, current) {
+    // Plan expiry check - redirect to dashboard if expired (except login/register)
+    if (next && next.templateUrl) {
+      if (!PlanExpiryService.isRouteAllowed(next.templateUrl)) {
+        console.log('Plan expired - blocking route:', next.templateUrl);
+        event.preventDefault();
+        PlanExpiryService.redirectToDashboard();
+        return;
+      }
+    }
+    
     if (isMobile && next && next.templateUrl) {
       // Add cache buster to template URLs on mobile using timestamp
       if (next.templateUrl.indexOf('?') === -1) {

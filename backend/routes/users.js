@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
+const qs = require('querystring');
 const USERS_FILE = path.join(__dirname, '../data/users.json');
 
 function readUsers() {
@@ -76,6 +78,74 @@ router.post('/settings', authRequired, (req, res) => {
   delete user.whapi_token;
   writeUsers(users);
   res.json({ success: true });
+});
+
+// POST test WhatsApp connection
+router.post('/test-connection', authRequired, async (req, res) => {
+  try {
+    const { test_mobile, access_token, instance_id } = req.body;
+    
+    // Validate required fields
+    if (!test_mobile || !access_token || !instance_id) {
+      return res.status(400).json({ 
+        error: 'Missing required fields: test_mobile, access_token, and instance_id' 
+      });
+    }
+
+    // Prepare the payload for wa.robomate.in API
+    const payload = {
+      number: test_mobile,
+      type: 'text',
+      message: 'WhatsApp API connection is working! You are ready to go! 🚀',
+      instance_id: instance_id,
+      access_token: access_token
+    };
+
+    console.log(`[TEST CONNECTION] Testing for user: ${req.session.user.username}`);
+    console.log(`[TEST CONNECTION] Target number: ${test_mobile}`);
+    console.log(`[TEST CONNECTION] Instance ID: ${instance_id}`);
+
+    // Make the API call to wa.robomate.in
+    const response = await axios.post(
+      'https://wa.robomate.in/api/send',
+      qs.stringify(payload),
+      {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        timeout: 30000 // 30 second timeout
+      }
+    );
+
+    console.log(`[TEST CONNECTION] API Response:`, response.data);
+
+    // Check for successful response
+    if (response.data && (response.data.status === 'success' || response.data.success === true)) {
+      res.json({ 
+        success: true, 
+        message: 'Test message sent successfully!',
+        details: response.data 
+      });
+    } else {
+      res.status(400).json({ 
+        error: response.data?.message || 'Failed to send test message',
+        details: response.data 
+      });
+    }
+
+  } catch (error) {
+    console.error(`[TEST CONNECTION] Error:`, error.response?.data || error.message);
+    
+    // Handle different types of errors
+    if (error.response) {
+      res.status(400).json({ 
+        error: error.response.data?.message || 'API request failed',
+        details: error.response.data
+      });
+    } else if (error.code === 'ECONNABORTED') {
+      res.status(408).json({ error: 'Request timeout - please try again' });
+    } else {
+      res.status(500).json({ error: 'Network error - please check your connection' });
+    }
+  }
 });
 
 module.exports = router;

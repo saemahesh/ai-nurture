@@ -29,5 +29,20 @@
     "total_messages": 1,
     "custom_fields": {},
     "completed_at": "2025-07-13T14:35:04.725Z"
+  },
+  {
+    "id": "enroll_1753946483470",
+    "sequence_id": "seq_1752221360754",
+    "username": "mahesh",
+    "phone": "919573713873",
+    "name": "maheshji",
+    "enrolled_at": "2025-07-31T07:21:23.470Z",
+    "current_day": 1,
+    "status": "active",
+    "last_message_sent": null,
+    "next_message_due": "2025-08-01T14:42:00.000Z",
+    "messages_sent": 1,
+    "total_messages": 2,
+    "custom_fields": {}
   }
 ]

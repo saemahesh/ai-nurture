@@ -1,45 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WhatsPro - Register</title>
+  <link rel="stylesheet" href="dark-theme.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(37, 211, 102, 0.4); }
+      50% { box-shadow: 0 0 30px rgba(37, 211, 102, 0.8); }
+    }
+    @keyframes bounce-slow {
+      0%, 100% { transform: translateY(0px) rotate(12deg); }
+      50% { transform: translateY(-10px) rotate(12deg); }
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .float { animation: float 6s ease-in-out infinite; }
+    .pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+    .bounce-slow { animation: bounce-slow 4s ease-in-out infinite; }
+    .spin-slow { animation: spin-slow 8s linear infinite; }
+    .glow-message { text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.8); }
+    .glow-green { text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.8); }
+    .glow-blue { text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.8); }
+    .glow-cyan { text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.8); }
+    .glow-purple { text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.8); }
+  </style>
+</head>
+<body class="dark-theme">
 <!-- Register Page -->
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-200 p-4">
-  <div class="w-full max-w-md">
-    <div class="bg-white/90 shadow-xl rounded-2xl p-8">
-      <div class="text-center mb-8">
-        <h1 class="text-3xl font-extrabold text-green-700">Create Account</h1>
-        <p class="text-gray-600 mt-2">Join AutoPost WA today!</p>
+<div class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 40% 60%, #059669 0%, transparent 80%);">
+  
+  <!-- Animated Background Elements -->
+  <div class="absolute inset-0 pointer-events-none">
+    <!-- WhatsApp Icons -->
+    <div class="absolute top-16 right-12 float">
+      <div class="w-18 h-18 bg-green-500 rounded-full flex items-center justify-center pulse-glow opacity-35 shadow-xl">
+        <i class="fab fa-whatsapp text-3xl text-white" style="filter: drop-shadow(0 0 10px rgba(255,255,255,0.9)); font-weight: 900 !important;"></i>
       </div>
-      
-      <form ng-submit="register()" class="space-y-6" autocomplete="off">
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">Username</label>
-          <input type="text" 
-                ng-model="registerData.username" 
-                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500" 
-                placeholder="Choose a username"
-                required>
-        </div>
-        
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">Password</label>
-          <input type="password" 
-                ng-model="registerData.password" 
-                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500" 
-                placeholder="Choose a password"
-                required>
-        </div>
-
-        <div ng-if="error" class="text-sm text-red-600 text-center font-medium">
-          {{error}}
-        </div>
-
-        <button type="submit" 
-                class="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition duration-150 ease-in-out">
-          Register
-        </button>
-      </form>
-
-      <div class="mt-6 text-center text-sm">
-        <span class="text-gray-600">Already have an account?</span>
-        <a href="#/login" class="text-green-600 hover:text-green-500 font-medium">Login here</a>
+    </div>
+    <div class="absolute top-56 left-8 float" style="animation-delay: -2s;">
+      <div class="w-14 h-14 bg-green-400 rounded-full flex items-center justify-center pulse-glow opacity-30 shadow-lg">
+        <i class="fas fa-comments text-xl text-white" style="filter: drop-shadow(0 0 8px rgba(255,255,255,0.8)); font-weight: 900 !important;"></i>
+      </div>
+    </div>
+    <div class="absolute bottom-40 right-20 float" style="animation-delay: -4s;">
+      <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center pulse-glow opacity-25 shadow-lg">
+        <i class="fas fa-message text-lg text-white" style="filter: drop-shadow(0 0 6px rgba(255,255,255,0.8)); font-weight: 900 !important;"></i>
+      </div>
+    </div>
+    
+    <!-- Automation/Bot Icons -->
+    <div class="absolute top-28 left-16 bounce-slow">
+      <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center opacity-40 shadow-xl">
+        <i class="fas fa-robot text-2xl text-white" style="filter: drop-shadow(0 0 8px rgba(255,255,255,0.8)); font-weight: 900 !important;"></i>
+      </div>
+    </div>
+    <div class="absolute bottom-32 left-10 bounce-slow" style="animation-delay: -1s;">
+      <div class="w-12 h-12 bg-teal-500 rounded-xl flex items-center justify-center opacity-35 shadow-lg">
+        <i class="fas fa-cogs text-lg text-white spin-slow" style="filter: drop-shadow(0 0 6px rgba(255,255,255,0.8)); font-weight: 900 !important;"></i>
+      </div>
+    </div>
+    <div class="absolute top-40 right-32 bounce-slow" style="animation-delay: -2s;">
+      <div class="w-10 h-10 bg-cyan-500 rounded-full flex items-center justify-center opacity-30 shadow-md">
+        <i class="fas fa-bolt text-sm text-white" style="filter: drop-shadow(0 0 4px rgba(255,255,255,0.8)); font-weight: 900 !important;"></i>
+      </div>
+    </div>
+    <div class="absolute bottom-16 right-8 float" style="animation-delay: -3s;">
+      <div class="w-14 h-14 bg-purple-500 rounded-2xl flex items-center justify-center opacity-35 shadow-lg">
+        <i class="fas fa-magic text-xl text-white" style="filter: drop-shadow(0 0 6px rgba(255,255,255,0.8)); font-weight: 900 !important;"></i>
       </div>
     </div>
   </div>
+
+  <div class="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto relative z-10">
+    <!-- Logo and Title -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl sm:text-4xl font-extrabold mb-2 flex items-center justify-center">
+        <i class="fab fa-whatsapp mr-2" style="color: #3b82f6 !important; text-shadow: 0 0 15px #3b82f650, 0 0 25px #3b82f640, 0 0 35px #3b82f630 !important;"></i>
+        <span style="background: linear-gradient(135deg, #3b82f6 0%, #93c5fd 50%, #ffffff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-shadow: 0 0 20px #3b82f640 !important;">WhatsPro</span>
+      </h1>
+      <p class="text-blue-200 text-base sm:text-lg">Create your account</p>
+    </div>
+
+    <!-- Register Form -->
+        <!-- Register Form -->
+        <!-- Register Form -->
+    <div class="shadow-2xl rounded-2xl sm:rounded-3xl p-6 sm:p-8 border-2 border-blue-400" style="background: linear-gradient(135deg, #0f1419 0%, #1e293b 50%, #0f172a 100%); box-shadow: 0 0 40px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.5);">
+      <form class="space-y-6" ng-submit="register()" autocomplete="off" name="registerForm">
+        <!-- Error Message -->
+        <div ng-if="error" class="text-sm text-red-300 text-center font-medium bg-red-900/40 border border-red-700/60 rounded-xl p-4">
+          <i class="fas fa-exclamation-triangle mr-2"></i>{{error}}
+        </div>
+
+                <!-- Username Input -->
+        <div class="space-y-2">
+          <label for="username" class="block text-sm font-bold text-blue-200" style="color: #bfdbfe !important;">Username</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i class="fas fa-user text-blue-300"></i>
+            </div>
+            <input id="username" name="username" type="text" ng-model="registerData.username" required
+              class="w-full pl-12 pr-4 py-3 sm:py-4 rounded-xl bg-blue-900/80 border border-blue-500/80 text-blue-100 placeholder-blue-400 focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition duration-300"
+              placeholder="Choose a username">
+          </div>
+        </div>
+
+        <!-- Password Input -->
+        <div class="space-y-2">
+          <label for="password" class="block text-sm font-bold text-blue-200" style="color: #bfdbfe !important;">Password</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i class="fas fa-lock text-blue-300"></i>
+            </div>
+            <input id="password" name="password" type="password" ng-model="registerData.password" required
+              class="w-full pl-12 pr-4 py-3 sm:py-4 rounded-xl bg-blue-900/80 border border-blue-500/80 text-blue-100 placeholder-blue-400 focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition duration-300"
+              placeholder="Create a password">
+          </div>
+        </div>
+
+        <!-- Confirm Password Input -->
+        <div class="space-y-2">
+          <label for="confirmPassword" class="block text-sm font-bold text-blue-200" style="color: #bfdbfe !important;">Confirm Password</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <i class="fas fa-check text-blue-300"></i>
+            </div>
+            <input id="confirmPassword" name="confirmPassword" type="password" ng-model="registerData.confirmPassword" required
+              class="w-full pl-12 pr-4 py-3 sm:py-4 rounded-xl bg-blue-900/80 border border-blue-500/80 text-blue-100 placeholder-blue-400 focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition duration-300"
+              ng-class="{'border-red-500 focus:border-red-500 focus:ring-red-400': registerData.password && registerData.confirmPassword && registerData.password !== registerData.confirmPassword, 'border-green-500 focus:border-green-500 focus:ring-green-400': registerData.password && registerData.confirmPassword && registerData.password === registerData.confirmPassword}"
+              placeholder="Confirm your password">
+          </div>
+          <!-- Password Mismatch Error -->
+          <div ng-if="registerData.password && registerData.confirmPassword && registerData.password !== registerData.confirmPassword" class="text-sm text-red-300 font-medium mt-2">
+            <i class="fas fa-exclamation-triangle mr-2"></i>Passwords do not match
+          </div>
+          <!-- Password Match Success -->
+          <div ng-if="registerData.password && registerData.confirmPassword && registerData.password === registerData.confirmPassword" class="text-sm text-green-300 font-medium mt-2">
+            <i class="fas fa-check mr-2"></i>Passwords match
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" 
+          ng-disabled="!registerData.username || !registerData.password || !registerData.confirmPassword || registerData.password !== registerData.confirmPassword"
+          class="w-full py-3 sm:py-4 px-6 bg-gradient-to-r from-blue-600 via-blue-600 to-blue-700 hover:from-blue-500 hover:via-blue-500 hover:to-blue-600 text-white font-bold rounded-xl transition duration-300 shadow-xl transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-900 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+          <i class="fas fa-user-plus mr-2 glow-message"></i>Create Account
+        </button>
+      </form>
+
+      <!-- Login Link -->
+      <div class="mt-6 text-center">
+        <div class="text-center mb-3">
+          <span class="text-blue-200 text-lg font-bold">Already have an account?</span>
+        </div>
+        <div class="mt-4">
+          <a href="#/login" class="text-blue-300 hover:text-blue-100 font-bold transition duration-300 inline-flex items-center text-lg">
+            <i class="fas fa-sign-in-alt mr-2 glow-message"></i>Sign in here
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Showcase -->
+    <div class="mt-6 grid grid-cols-3 gap-4 text-center">
+      <div class="text-blue-200">
+        <i class="fas fa-robot text-blue-300 text-lg mb-2 glow-message"></i>
+        <p class="text-xs font-medium">AI Powered</p>
+      </div>
+      <div class="text-blue-200">
+        <i class="fas fa-bolt text-blue-300 text-lg mb-2 glow-message"></i>
+        <p class="text-xs font-medium">Fast</p>
+      </div>
+      <div class="text-blue-200">
+        <i class="fas fa-shield-alt text-blue-300 text-lg mb-2 glow-message"></i>
+        <p class="text-xs font-medium">Secure</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-6 text-center text-blue-400 text-sm">
+      <p>© 2024 WhatsPro. All rights reserved.</p>
+    </div>
+  </div>
 </div>
+</body>
+</html>

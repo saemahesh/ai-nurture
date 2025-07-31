@@ -104,4 +104,27 @@ router.get('/me', (req, res) => {
   res.json({ user: req.session.user });
 });
 
+// Get current user's plan status and expiration
+router.get('/plan-status', (req, res) => {
+  if (!req.session.user) return res.status(401).json({ error: 'Not logged in' });
+  
+  const users = readUsers();
+  const user = users.find(u => u.username === req.session.user.username);
+  
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  
+  const today = new Date();
+  const expirationDate = user.expirationDate ? new Date(user.expirationDate) : null;
+  const isExpired = expirationDate && expirationDate < today;
+  const isActive = user.status === 'active' && !isExpired;
+  
+  res.json({
+    status: user.status,
+    expirationDate: user.expirationDate,
+    isExpired: isExpired,
+    isActive: isActive,
+    daysRemaining: expirationDate ? Math.ceil((expirationDate - today) / (1000 * 60 * 60 * 24)) : null
+  });
+});
+
 module.exports = router;

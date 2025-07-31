@@ -127,8 +127,26 @@ angular.module('autopostWaApp.core').factory('ApiService', function($http) {
     scheduleStatus: function(data) {
       return $http.post(API_BASE + '/status', data, { withCredentials: true });
     },
+    updateStatus: function(data) {
+      return $http.put(API_BASE + '/status/' + data.id, data, { withCredentials: true });
+    },
     deleteStatus: function(id) {
       return $http.delete(API_BASE + '/status/' + id, { withCredentials: true });
+    },
+
+    // Sequences
+    getSequences: function() {
+      return $http.get(API_BASE + '/api/sequences', { withCredentials: true });
+    },
+
+    // Direct Schedules
+    getDirectSchedules: function() {
+      return $http.get(API_BASE + '/direct-schedule', { withCredentials: true });
+    },
+
+    // Plan Expiry Management
+    checkPlanExpiry: function() {
+      return $http.get(API_BASE + '/auth/plan-status', { withCredentials: true });
     }
   };
 });

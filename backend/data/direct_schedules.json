@@ -97,5 +97,16 @@
     "status": "Sent",
     "createdAt": "2025-07-30T16:24:46.866Z",
     "sentAt": "2025-07-30T16:25:05.852Z"
+  },
+  {
+    "id": "7df1b476-cf86-4637-88f8-31c52cac6567",
+    "username": "mahesh",
+    "number": "919573713873",
+    "message": "hey ,testing now",
+    "mediaUrl": "/uploads/1753955626889-automation.png",
+    "scheduledAt": "2025-07-31T09:57:00.000Z",
+    "status": "Sent",
+    "createdAt": "2025-07-31T09:56:12.005Z",
+    "sentAt": "2025-07-31T09:57:05.989Z"
   }
 ]

@@ -24,6 +24,7 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
     ApiService.getStatuses().then(function(res) {
       $scope.scheduledStatuses = res.data.map(function(s) {
         s.timeDisplay = $scope.formatIST(s.time, s.repeat !== 'once');
+        s.statusDisplay = $scope.getStatusDisplay(s);
         return s;
       });
     });
@@ -32,6 +33,47 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
   ApiService.getMedia().then(function(res) {
     $scope.mediaLibrary = res.data;
   });
+
+  // Function to get status display text for UI
+  $scope.getStatusDisplay = function(status) {
+    if (status.repeat === 'once') {
+      if (status.posted) {
+        return {
+          text: 'Sent',
+          class: 'bg-green-900/50 text-green-300 border-green-500/30',
+          icon: 'fas fa-check-circle'
+        };
+      } else {
+        var scheduledTime = new Date(status.time);
+        var now = new Date();
+        if (scheduledTime <= now) {
+          return {
+            text: 'Pending',
+            class: 'bg-orange-900/50 text-orange-300 border-orange-500/30',
+            icon: 'fas fa-clock'
+          };
+        } else {
+          return {
+            text: 'Scheduled',
+            class: 'bg-blue-900/50 text-blue-300 border-blue-500/30',
+            icon: 'fas fa-calendar-check'
+          };
+        }
+      }
+    } else if (status.repeat === 'daily') {
+      return {
+        text: 'Daily',
+        class: 'bg-blue-900/50 text-blue-300 border-blue-500/30',
+        icon: 'fas fa-repeat'
+      };
+    } else if (status.repeat === 'custom') {
+      return {
+        text: 'Custom',
+        class: 'bg-purple-900/50 text-purple-300 border-purple-500/30',
+        icon: 'fas fa-calendar-days'
+      };
+    }
+  };
 
   $scope.getMediaType = function(url) {
     var ext = (url||'').split('.').pop().toLowerCase();
@@ -63,11 +105,15 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
     }
     var minute = parseInt($scope.status.minute, 10);
 
+    // Since both server and users are in India, no timezone conversion needed
     var selectedTime = new Date();
     selectedTime.setHours(hour, minute, 0, 0);
+    
+    // Store as ISO string for backend
+    data.time = selectedTime.toISOString();
 
-    var localTime = new Date(selectedTime.getFullYear(), selectedTime.getMonth(), selectedTime.getDate(), selectedTime.getHours(), selectedTime.getMinutes(), selectedTime.getSeconds());
-    data.time = localTime.toISOString();
+    console.log('Scheduling status for:', selectedTime.toLocaleString('en-IN'));
+    console.log('ISO time:', data.time);
 
     var promise;
     if ($scope.editingStatus) {
@@ -141,12 +187,23 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
   $scope.editStatus = function(status) {
     $scope.editingStatus = status;
     $scope.createStatusModalVisible = true;
+    
+    // Since both server and users are in India, no timezone conversion needed
     var time = new Date(status.time);
     var hour = time.getHours();
     var minute = time.getMinutes();
     var ampm = hour >= 12 ? 'PM' : 'AM';
     hour = hour % 12;
     hour = hour ? hour : 12; // the hour '0' should be '12'
+    
+    // Find the selected media object from media library
+    var selectedMedia = null;
+    if (status.media) {
+      selectedMedia = $scope.mediaLibrary.find(function(media) {
+        return media.url === status.media;
+      });
+    }
+    
     $scope.status = {
       caption: status.caption,
       textColor: status.textColor,
@@ -156,7 +213,8 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
       ampm: ampm,
       repeat: status.repeat,
       days: angular.copy(status.days),
-      mediaUrl: status.media
+      mediaUrl: status.media,
+      selectedMedia: selectedMedia
     };
     $scope.saveSuccess = false;
     $scope.saveError = '';
@@ -164,8 +222,75 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
 
   $scope.hideCreateStatusModal = function() {
     $scope.createStatusModalVisible = false;
+    $scope.editingStatus = null;
+    $scope.status = {
+      caption: '',
+      textColor: '#000000',
+      bgColor: '#ffffff',
+      hour: '12',
+      minute: '00',
+      ampm: 'AM',
+      repeat: 'once',
+      days: {},
+      mediaUrl: '',
+      selectedMedia: null
+    };
     $scope.saveSuccess = false;
     $scope.saveError = '';
+  };
+
+  // Media selector functions (like group schedule)
+  $scope.showMediaSelector = false;
+  $scope.loadingMedia = false;
+
+  $scope.openMediaSelector = function() {
+    $scope.showMediaSelector = true;
+    $scope.loadingMedia = true;
+    // Reload media library
+    ApiService.getMedia().then(function(res) {
+      $scope.mediaLibrary = res.data;
+      $scope.loadingMedia = false;
+    }).catch(function() {
+      $scope.loadingMedia = false;
+    });
+  };
+
+  $scope.closeMediaSelector = function() {
+    $scope.showMediaSelector = false;
+  };
+
+  $scope.selectMediaForStatus = function(media) {
+    $scope.status.selectedMedia = media;
+    $scope.status.mediaUrl = media.url;
+    $scope.closeMediaSelector();
+  };
+
+  $scope.removeSelectedMedia = function() {
+    $scope.status.selectedMedia = null;
+    $scope.status.mediaUrl = '';
+  };
+
+  $scope.getImageUrl = function(url) {
+    if (!url) return '';
+    
+    // Check if we're in development environment (localhost)
+    var isDevelopment = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.includes('local');
+    
+    // If URL is relative or starts with /uploads/, prepend localhost for development
+    if (isDevelopment && (url.startsWith('/uploads/') || url.startsWith('uploads/'))) {
+      return 'http://localhost:3000/' + url.replace(/^\//, '');
+    }
+    
+    return url;
+  };
+
+  $scope.getSelectedDays = function(days) {
+    if (!days) return '';
+    return Object.keys(days).filter(function(day) {
+      return days[day];
+    }).join(', ');
   };
 
   loadStatuses();

@@ -1,5 +1,5 @@
 angular.module('autopostWaApp.dashboard')
-  .controller('DashboardController', function($scope, $location, AuthService, ApiService) {
+  .controller('DashboardController', function($scope, $location, AuthService, ApiService, PlanExpiryService) {
   $scope.isActive = function(path) {
     return $location.path().indexOf(path) === 0;
   };
@@ -18,23 +18,64 @@ angular.module('autopostWaApp.dashboard')
   $scope.accessCountdown = '';
   $scope.expirationDate = '';
 
+  // Update expired status from PlanExpiryService
+  $scope.$watch(function() {
+    return PlanExpiryService.isExpired;
+  }, function(newVal) {
+    $scope.expired = newVal;
+  });
+
   function loadAll() {
     ApiService.getGroups().then(function(res) {
       $scope.groups = res.data;
     });
     ApiService.getSchedules().then(function(res) {
       $scope.schedules = res.data.sort((a, b) => new Date(b.time) - new Date(a.time));
+      // Calculate group schedules (schedules with groupId that are not event reminders)
+      $scope.groupSchedules = $scope.schedules.filter(schedule => 
+        schedule.groupId && !schedule.eventId && !schedule.reminderType
+      );
     });
     ApiService.getMedia().then(function(res) {
       $scope.media = res.data;
     });
+    
+    // Load additional data for new dashboard cards
+    ApiService.getEvents().then(function(res) {
+      $scope.events = res.data || [];
+    }).catch(function() {
+      $scope.events = [];
+    });
+    
+    ApiService.getSequences().then(function(res) {
+      $scope.sequences = res.data || [];
+    }).catch(function() {
+      $scope.sequences = [];
+    });
+    
+    ApiService.getStatuses().then(function(res) {
+      $scope.statuses = res.data || [];
+    }).catch(function() {
+      $scope.statuses = [];
+    });
+    
+    ApiService.getDirectSchedules().then(function(res) {
+      $scope.directSchedules = res.data || [];
+    }).catch(function() {
+      $scope.directSchedules = [];
+    });
+    
     ApiService.getUsers().then(function(res) {
       $scope.users = res.data;
       if ($scope.user) {
         var me = $scope.users.find(u => u.username === $scope.user.username);
         if (me) {
           $scope.expirationDate = me.expirationDate;
-          $scope.expired = me.status !== 'active' || (me.expirationDate && new Date(me.expirationDate) < new Date());
+          var isExpired = me.status !== 'active' || (me.expirationDate && new Date(me.expirationDate) < new Date());
+          
+          // Update PlanExpiryService with current expiry status
+          PlanExpiryService.setExpiryStatus(isExpired);
+          
           $scope.accessCountdown = getCountdown(me.expirationDate);
         }
       }

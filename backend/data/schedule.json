@@ -10,72 +10,6 @@
     "sentAt": "2025-05-01T14:30:00.039Z"
   },
   {
-    "id": "1746206782538jidohep",
-    "eventId": "1746183550907xn3yy01",
-    "reminderType": "12hours",
-    "groupId": "120363259609500535@g.us",
-    "message": "Just 12 hours to go until Digital Product Business Workshop!",
-    "time": "2025-05-03T01:30:00.000Z",
-    "username": "mahesh",
-    "sent": true,
-    "sentAt": "2025-05-03T04:16:00.131Z"
-  },
-  {
-    "id": "1746206782539ggwxyc2",
-    "eventId": "1746183550907xn3yy01",
-    "reminderType": "6hours",
-    "groupId": "120363259609500535@g.us",
-    "message": "6 hours to go until Digital Product Business Workshop!",
-    "time": "2025-05-03T07:30:00.000Z",
-    "username": "mahesh",
-    "sent": true,
-    "sentAt": "2025-07-10T08:41:00.254Z"
-  },
-  {
-    "id": "1746206782539l524qt2",
-    "eventId": "1746183550907xn3yy01",
-    "reminderType": "3hours",
-    "groupId": "120363259609500535@g.us",
-    "message": "3 hours to go until Digital Product Business Workshop!",
-    "time": "2025-05-03T10:30:00.000Z",
-    "username": "mahesh",
-    "sent": true,
-    "sentAt": "2025-07-10T08:41:00.254Z"
-  },
-  {
-    "id": "17462067825395sheay0",
-    "eventId": "1746183550907xn3yy01",
-    "reminderType": "1hour",
-    "groupId": "120363259609500535@g.us",
-    "message": "1 hour to go until Digital Product Business Workshop!",
-    "time": "2025-05-03T12:30:00.000Z",
-    "username": "mahesh",
-    "sent": true,
-    "sentAt": "2025-07-10T08:41:00.254Z"
-  },
-  {
-    "id": "174620678253980w5dz3",
-    "eventId": "1746183550907xn3yy01",
-    "reminderType": "30mins",
-    "groupId": "120363259609500535@g.us",
-    "message": "Only 30 minutes to go until Digital Product Business Workshop!",
-    "time": "2025-05-03T13:00:00.000Z",
-    "username": "mahesh",
-    "sent": true,
-    "sentAt": "2025-07-10T08:41:00.254Z"
-  },
-  {
-    "id": "1746206782539srl3489",
-    "eventId": "1746183550907xn3yy01",
-    "reminderType": "live",
-    "groupId": "120363259609500535@g.us",
-    "message": "We are LIVE now! Digital Product Business Workshop has started!",
-    "time": "2025-05-03T13:30:00.000Z",
-    "username": "mahesh",
-    "sent": true,
-    "sentAt": "2025-07-10T08:41:00.254Z"
-  },
-  {
     "id": "1752598947257sb38g420brb",
     "groupId": "120363259609500535@g.us",
     "message": "Heyyy",
@@ -130,18 +64,6 @@
     "sentAt": "2025-07-17T12:59:00.390Z"
   },
   {
-    "id": "175389236665335hesyb",
-    "eventId": "1753892353855cknc2gv",
-    "reminderType": "1day",
-    "groupId": "120363259609500535@g.us",
-    "message": "Only 1 day to go until Whatsapp Automation Workshop!",
-    "time": "2025-07-30T16:20:00.000Z",
-    "media": "/uploads/1752417553587-automation.png",
-    "username": "mahesh",
-    "sent": true,
-    "sentAt": "2025-07-30T16:21:00.573Z"
-  },
-  {
     "id": "1753892610549bsiokxtzu76",
     "groupId": "120363259609500535@g.us",
     "name": "Hey , testing from group schedule",
@@ -151,5 +73,40 @@
     "username": "mahesh",
     "sent": true,
     "sentAt": "2025-07-30T16:24:00.806Z"
+  },
+  {
+    "id": "1753948650467871xjz9",
+    "eventId": "1753948639393zhmaxgg",
+    "reminderType": "live",
+    "groupId": "120363259609500535@g.us",
+    "message": "We are LIVE now! Trading webinar has started!",
+    "time": "2025-07-31T07:58:00.000Z",
+    "media": "/uploads/1752417553587-automation.png",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-31T07:58:00.354Z"
+  },
+  {
+    "id": "17539537075744ll77v8",
+    "eventId": "1753892353855cknc2gv",
+    "reminderType": "live",
+    "groupId": "120363259609500535@g.us",
+    "message": "Heyyy,,,,,\n\nWe are LIVE now! Whatsapp Automation Workshop has started!",
+    "time": "2025-07-31T09:23:00.000Z",
+    "media": "/uploads/1752417553587-automation.png",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-31T09:23:00.706Z"
+  },
+  {
+    "id": "1753955750266gw36oiklgj",
+    "groupId": "120363259609500535@g.us",
+    "name": "Test",
+    "message": "Testing group msg",
+    "time": "2025-07-31T09:56:00.000Z",
+    "media": "/uploads/1753955626889-automation.png",
+    "username": "mahesh",
+    "sent": true,
+    "sentAt": "2025-07-31T09:56:00.774Z"
   }
 ]

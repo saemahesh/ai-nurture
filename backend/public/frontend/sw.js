@@ -1,5 +1,5 @@
 // Simple Service Worker for cache management
-const CACHE_NAME = 'whatspro-app-v1753894033'; // Static version - update when deploying
+const CACHE_NAME = 'whatspro-app-v1753972006'; // Static version - update when deploying
 const urlsToCache = [
   '/',
   '/app.js',

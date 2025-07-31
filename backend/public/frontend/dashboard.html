@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>WhatsPro - Dashboard</title>
   <link rel="stylesheet" href="dark-theme.css">
 </head>
 <body>
@@ -32,49 +33,132 @@
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto p-2" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
       <!-- Stats Overview -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-xl shadow-lg p-6 border border-blue-500 transform hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #4338ca 100%), radial-gradient(circle at 30% 30%, #60a5fa 0%, transparent 50%);">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <!-- Groups Card -->
+        <div class="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-xl shadow-lg p-4 sm:p-6 border border-blue-500 transform hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #4338ca 100%), radial-gradient(circle at 30% 30%, #60a5fa 0%, transparent 50%);">
           <div class="flex items-center">
-            <div class="p-3 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 shadow-md">
-              <i class="fa-solid fa-users text-white text-lg"></i>
+            <div class="p-2 sm:p-3 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 shadow-md">
+              <i class="fa-solid fa-users text-white text-base sm:text-lg"></i>
             </div>
-            <div class="ml-4">
-              <h3 class="text-sm font-medium text-blue-100">Total Groups</h3>
-              <p class="text-2xl font-bold text-white">{{groups.length}}</p>
+            <div class="ml-3 sm:ml-4">
+              <h3 class="text-xs sm:text-sm font-medium text-blue-100">Total Groups</h3>
+              <p class="text-lg sm:text-2xl font-bold text-white">{{groups.length}}</p>
             </div>
           </div>
-          <a href="#/groups" class="mt-4 inline-block text-sm text-blue-200 hover:text-white transition-colors duration-200">
+          <a href="#/groups" class="mt-3 sm:mt-4 inline-block text-xs sm:text-sm text-blue-200 hover:text-white transition-colors duration-200">
             Manage Groups <i class="fa-solid fa-arrow-right ml-1"></i>
           </a>
         </div>
 
-        <div class="bg-gradient-to-br from-emerald-600 via-teal-700 to-cyan-800 rounded-xl shadow-lg p-6 border border-emerald-500 transform hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #10b981 0%, #0d9488 50%, #0891b2 100%), radial-gradient(circle at 70% 20%, #34d399 0%, transparent 50%);">
+        <!-- Schedules Card -->
+        <div class="bg-gradient-to-br from-emerald-600 via-teal-700 to-cyan-800 rounded-xl shadow-lg p-4 sm:p-6 border border-emerald-500 transform hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #10b981 0%, #0d9488 50%, #0891b2 100%), radial-gradient(circle at 70% 20%, #34d399 0%, transparent 50%);">
           <div class="flex items-center">
-            <div class="p-3 rounded-lg bg-white/20 shadow-md">
-              <i class="fa-solid fa-calendar-check text-white text-xl shadow-sm"></i>
+            <div class="p-2 sm:p-3 rounded-lg bg-white/20 shadow-md">
+              <i class="fa-solid fa-calendar-check text-white text-base sm:text-xl shadow-sm"></i>
             </div>
-            <div class="ml-4">
-              <h3 class="text-sm font-medium text-emerald-100">Active Schedules</h3>
-              <p class="text-2xl font-bold text-white">{{schedules.length}}</p>
+            <div class="ml-3 sm:ml-4">
+              <h3 class="text-xs sm:text-sm font-medium text-emerald-100">Active Schedules</h3>
+              <p class="text-lg sm:text-2xl font-bold text-white">{{schedules.length}}</p>
             </div>
           </div>
-          <a href="#/schedules" class="mt-4 inline-block text-sm text-emerald-200 hover:text-white transition-colors duration-200">
+          <a href="#/schedules" class="mt-3 sm:mt-4 inline-block text-xs sm:text-sm text-emerald-200 hover:text-white transition-colors duration-200">
             View Schedules <i class="fa-solid fa-arrow-right ml-1"></i>
           </a>
         </div>
 
-        <div class="bg-gradient-to-br from-purple-600 via-violet-700 to-fuchsia-800 rounded-xl shadow-lg p-6 border border-purple-500 transform hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #c026d3 100%), radial-gradient(circle at 80% 70%, #a855f7 0%, transparent 50%);">
+        <!-- Media Card -->
+        <div class="bg-gradient-to-br from-purple-600 via-violet-700 to-fuchsia-800 rounded-xl shadow-lg p-4 sm:p-6 border border-purple-500 transform hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #c026d3 100%), radial-gradient(circle at 80% 70%, #a855f7 0%, transparent 50%);">
           <div class="flex items-center">
-            <div class="p-3 rounded-lg bg-gradient-to-br from-purple-400 to-fuchsia-600 shadow-md">
-              <i class="fa-solid fa-images text-white text-lg"></i>
+            <div class="p-2 sm:p-3 rounded-lg bg-gradient-to-br from-purple-400 to-fuchsia-600 shadow-md">
+              <i class="fa-solid fa-images text-white text-base sm:text-lg"></i>
             </div>
-            <div class="ml-4">
-              <h3 class="text-sm font-medium text-purple-100">Media Files</h3>
-              <p class="text-2xl font-bold text-white">{{media.length}}</p>
+            <div class="ml-3 sm:ml-4">
+              <h3 class="text-xs sm:text-sm font-medium text-purple-100">Media Files</h3>
+              <p class="text-lg sm:text-2xl font-bold text-white">{{media.length}}</p>
             </div>
           </div>
-          <a href="#/media" class="mt-4 inline-block text-sm text-purple-200 hover:text-white transition-colors duration-200">
+          <a href="#/media" class="mt-3 sm:mt-4 inline-block text-xs sm:text-sm text-purple-200 hover:text-white transition-colors duration-200">
             Browse Media <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+
+        <!-- Events Card -->
+        <div class="bg-gradient-to-br from-orange-600 via-red-600 to-pink-700 rounded-xl shadow-lg p-4 sm:p-6 border border-orange-500 transform hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #ea580c 0%, #dc2626 50%, #be185d 100%), radial-gradient(circle at 40% 60%, #fb923c 0%, transparent 50%);">
+          <div class="flex items-center">
+            <div class="p-2 sm:p-3 rounded-lg bg-gradient-to-br from-orange-400 to-red-600 shadow-md">
+              <i class="fa-solid fa-calendar-days text-white text-base sm:text-lg"></i>
+            </div>
+            <div class="ml-3 sm:ml-4">
+              <h3 class="text-xs sm:text-sm font-medium text-orange-100">Events</h3>
+              <p class="text-lg sm:text-2xl font-bold text-white">{{events.length || 0}}</p>
+            </div>
+          </div>
+          <a href="#/events" class="mt-3 sm:mt-4 inline-block text-xs sm:text-sm text-orange-200 hover:text-white transition-colors duration-200">
+            Manage Events <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+
+        <!-- Sequences Card -->
+        <div class="bg-gradient-to-br from-cyan-600 via-sky-700 to-blue-800 rounded-xl shadow-lg p-4 sm:p-6 border border-cyan-500 transform hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #0891b2 0%, #0369a1 50%, #1e40af 100%), radial-gradient(circle at 60% 40%, #22d3ee 0%, transparent 50%);">
+          <div class="flex items-center">
+            <div class="p-2 sm:p-3 rounded-lg  from-cyan-400 to-blue-600 shadow-md">
+              <i class="fa-solid fa-list-ol text-white text-base sm:text-lg"></i>
+            </div>
+            <div class="ml-3 sm:ml-4">
+              <h3 class="text-xs sm:text-sm font-medium text-cyan-100">Sequences</h3>
+              <p class="text-lg sm:text-2xl font-bold text-white">{{sequences.length || 0}}</p>
+            </div>
+          </div>
+          <a href="#/sequences" class="mt-3 sm:mt-4 inline-block text-xs sm:text-sm text-cyan-200 hover:text-white transition-colors duration-200">
+            View Sequences <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+
+        <!-- Status Card -->
+        <div class="bg-gradient-to-br from-green-600 via-emerald-700 to-teal-800 rounded-xl shadow-lg p-4 sm:p-6 border border-green-500 transform hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #16a34a 0%, #059669 50%, #0f766e 100%), radial-gradient(circle at 30% 70%, #4ade80 0%, transparent 50%);">
+          <div class="flex items-center">
+            <div class="p-2 sm:p-3 rounded-lg bg-gradient-to-br from-green-400 to-teal-600 shadow-md">
+              <i class="fa-solid fa-clock text-white text-base sm:text-lg"></i>
+            </div>
+            <div class="ml-3 sm:ml-4">
+              <h3 class="text-xs sm:text-sm font-medium text-green-100">Status Schedules</h3>
+              <p class="text-lg sm:text-2xl font-bold text-white">{{statuses.length || 0}}</p>
+            </div>
+          </div>
+          <a href="#/status" class="mt-3 sm:mt-4 inline-block text-xs sm:text-sm text-green-200 hover:text-white transition-colors duration-200">
+            Schedule Status <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+
+        <!-- Group Schedule Card -->
+        <div class="bg-gradient-to-br from-green-600 via-emerald-700 to-teal-800 rounded-xl shadow-lg p-4 sm:p-6 border border-green-500 transform hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #0f766e 100%), radial-gradient(circle at 50% 30%, #34d399 0%, transparent 50%);">
+          <div class="flex items-center">
+            <div class="p-2 sm:p-3 rounded-lg bg-gradient-to-br from-green-400 to-teal-600 shadow-md">
+              <i class="fa-solid fa-calendar-check text-white text-base sm:text-lg"></i>
+            </div>
+            <div class="ml-3 sm:ml-4">
+              <h3 class="text-xs sm:text-sm font-medium text-green-100">Group Schedules</h3>
+              <p class="text-lg sm:text-2xl font-bold text-white">{{groupSchedules.length || 0}}</p>
+            </div>
+          </div>
+          <a href="#/schedules" class="mt-3 sm:mt-4 inline-block text-xs sm:text-sm text-green-200 hover:text-white transition-colors duration-200">
+            View Schedules <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+
+        <!-- Direct Schedule Card -->
+        <div class="bg-gradient-to-br from-indigo-600 via-purple-700 to-pink-800 rounded-xl shadow-lg p-4 sm:p-6 border border-indigo-500 transform hover:scale-105 transition-all duration-300" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #be185d 100%), radial-gradient(circle at 70% 50%, #818cf8 0%, transparent 50%);">
+          <div class="flex items-center">
+            <div class="p-2 sm:p-3 rounded-lg bg-gradient-to-br from-indigo-400 to-purple-600 shadow-md">
+              <i class="fa-solid fa-paper-plane text-white text-base sm:text-lg"></i>
+            </div>
+            <div class="ml-3 sm:ml-4">
+              <h3 class="text-xs sm:text-sm font-medium text-indigo-100">Direct Schedule</h3>
+              <p class="text-lg sm:text-2xl font-bold text-white">{{directSchedules.length || 0}}</p>
+            </div>
+          </div>
+          <a href="#/direct-schedule" class="mt-3 sm:mt-4 inline-block text-xs sm:text-sm text-indigo-200 hover:text-white transition-colors duration-200">
+            Quick Send <i class="fa-solid fa-arrow-right ml-1"></i>
           </a>
         </div>
       </div>
@@ -117,17 +201,44 @@
       </div>
 
       <!-- Access Control Notification -->
-      <div ng-if="expired" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-        <div class="dark-theme-modal p-8 max-w-md w-full text-center border-2 border-red-400">
-          <div class="text-2xl font-bold text-red-400 mb-2">Plan Expired</div>
-          <div class="text-gray-300 mb-4">
-            <br/>
-            Please contact the system administrator via WhatsApp:
-            <a href="https://wa.me/916302009818?text=Hello%20Robomate%2C%20My%20plan%20is%20expired." class="text-red-400 font-semibold" target="_blank">+91 6302009818</a>
+      <div ng-if="expired" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" style="display: flex !important; align-items: center !important; justify-content: center !important;">
+        <div class="backdrop-blur-lg rounded-2xl shadow-2xl p-6 sm:p-8 max-w-sm sm:max-w-md w-full text-center border-2 border-gray-700/50 relative overflow-hidden mx-auto" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important; margin: auto; position: relative; transform: translate(0, 0);">
+          <!-- Animated Background Pattern -->
+          <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-4 right-4 w-16 h-16 bg-blue-600/20 rounded-full animate-pulse"></div>
+            <div class="absolute bottom-4 left-4 w-12 h-12 bg-blue-700/20 rounded-full animate-pulse delay-300"></div>
           </div>
-          <button ng-click="expired = false" class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none">
-            Close
-          </button>
+          
+          <!-- Content -->
+          <div class="relative z-10">
+            <div class="flex items-center justify-center mb-4">
+              <div class="w-12 h-12 sm:w-16 sm:h-16 bg-red-500 rounded-full flex items-center justify-center animate-bounce">
+                <i class="fas fa-exclamation-triangle text-white text-lg sm:text-xl"></i>
+              </div>
+            </div>
+            
+            <div class="text-xl sm:text-2xl font-bold text-red-300 mb-2">Plan Expired</div>
+            
+            <div class="text-gray-200 mb-6 text-sm sm:text-base leading-relaxed">
+              Your subscription has expired. Please contact our support team to renew your plan and continue using all features.
+            </div>
+            
+            <!-- Contact Button -->
+            <a href="https://wa.me/916302009818?text=Hello%20Robomate%2C%20My%20plan%20is%20expired." 
+               class="inline-flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 mb-4 w-full sm:w-auto" 
+               target="_blank">
+              <i class="fab fa-whatsapp mr-2 text-lg"></i>
+              Contact Support
+            </a>
+            
+            <!-- Support Info -->
+            <div class="mt-4 pt-4 border-t border-gray-600/30">
+              <div class="text-xs text-gray-300">
+                <i class="fas fa-phone mr-1"></i>
+                Support: +91 6302009818
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>

@@ -1,24 +1,13 @@
 [
   {
-    "id": "md1s5yai5ukt2e71h7d",
+    "id": "mdr7w7821trk3kkqphm",
     "username": "mahesh",
-    "name": "automation",
+    "name": "test",
     "type": "image",
-    "filename": "1752417553587-automation.png",
-    "url": "/uploads/1752417553587-automation.png",
+    "filename": "1753955626889-automation.png",
+    "url": "/uploads/1753955626889-automation.png",
     "fileSize": 625715,
-    "uploadDate": "2025-07-13T14:39:13.617Z",
+    "uploadDate": "2025-07-31T09:53:46.897Z",
     "originalName": "automation.png"
-  },
-  {
-    "id": "mdq63qa9nx0vbsaesn",
-    "username": "mahesh",
-    "name": "adp-photo1",
-    "type": "image",
-    "filename": "1753892152776-adp_logo.jpg",
-    "url": "/uploads/1753892152776-adp_logo.jpg",
-    "fileSize": 4390,
-    "uploadDate": "2025-07-30T16:15:52.783Z",
-    "originalName": "adp_logo.jpg"
   }
 ]

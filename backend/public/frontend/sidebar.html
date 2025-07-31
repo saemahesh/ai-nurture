@@ -1,6 +1,6 @@
 <div>
 <!-- Modern Desktop Sidebar -->
-<div class="hidden lg:flex w-80 h-screen flex-col shadow-2xl overflow-hidden border-r border-gray-700" style="background: #1a202c;">
+<div class="desktop-sidebar-container hidden lg:flex w-80 h-screen flex-col shadow-2xl overflow-hidden border-r border-gray-700" style="background: #1a202c;">
   
   <!-- Brand Header with Glass Effect -->
   <div class="px-8 py-3 bg-teal-800 border-b border-gray-600">
@@ -23,61 +23,61 @@
         <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Workspace</p>
         <a href="#/dashboard" class="nav-item group relative" ng-class="{'active': isActive('/dashboard')}">
           <div class="nav-item-bg"></div>
-          <i class="fas fa-chart-line nav-icon"></i>
+          <i class="fas fa-chart-line nav-icon" style="color: #3b82f6 !important;"></i>
           <span class="nav-text">Dashboard</span>
           <div class="nav-indicator" ng-if="isActive('/dashboard')"></div>
         </a>
-        <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}">
+        <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}" plan-expired-check>
           <div class="nav-item-bg"></div>
-          <i class="fas fa-users nav-icon"></i>
+          <i class="fas fa-users nav-icon" style="color: #10b981 !important;"></i>
           <span class="nav-text">Groups</span>
           <div class="nav-indicator" ng-if="isActive('/groups')"></div>
         </a>
-        <a href="#/events" class="nav-item group relative" ng-class="{'active': isActive('/events')}">
+        <a href="#/events" class="nav-item group relative" ng-class="{'active': isActive('/events')}" plan-expired-check>
           <div class="nav-item-bg"></div>
-          <i class="fas fa-calendar-alt nav-icon"></i>
+          <i class="fas fa-calendar-alt nav-icon" style="color: #f59e0b !important;"></i>
           <span class="nav-text">Events</span>
           <div class="nav-indicator" ng-if="isActive('/events')"></div>
         </a>
-        <a href="#/media" class="nav-item group relative" ng-class="{'active': isActive('/media')}">
+        <a href="#/media" class="nav-item group relative" ng-class="{'active': isActive('/media')}" plan-expired-check>
           <div class="nav-item-bg"></div>
-          <i class="fas fa-photo-film nav-icon"></i>
+          <i class="fas fa-images nav-icon" style="color: #ec4899 !important;"></i>
           <span class="nav-text">Media Library</span>
           <div class="nav-indicator" ng-if="isActive('/media')"></div>
         </a>
       </div>
 
-      <!-- Automation & Scheduling Section -->
+      <!-- Automation Section -->
       <div class="mb-6">
         <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Automation</p>
-        <a href="#/sequences" class="nav-item group relative" ng-class="{'active': isActive('/sequences')}">
+        <a href="#/sequences" class="nav-item group relative" ng-class="{'active': isActive('/sequences')}" plan-expired-check>
           <div class="nav-item-bg"></div>
-          <i class="fas fa-robot nav-icon"></i>
+          <i class="fas fa-robot nav-icon" style="color: #8b5cf6 !important;"></i>
           <span class="nav-text">Drip Campaigns</span>
           <div class="nav-indicator" ng-if="isActive('/sequences')"></div>
         </a>
        
-        <a href="#/event-reminders" class="nav-item group relative" ng-class="{'active': isActive('/event-reminders')}">
+        <a href="#/event-reminders" class="nav-item group relative" ng-class="{'active': isActive('/event-reminders')}" plan-expired-check>
           <div class="nav-item-bg"></div>
-          <i class="fas fa-bell nav-icon"></i>
+          <i class="fas fa-bell nav-icon" style="color: #ef4444 !important;"></i>
           <span class="nav-text">Event Reminders</span>
           <div class="nav-indicator" ng-if="isActive('/event-reminders')"></div>
         </a>
-        <a href="#/schedules" class="nav-item group relative" ng-class="{'active': isActive('/schedules')}">
+        <a href="#/schedules" class="nav-item group relative" ng-class="{'active': isActive('/schedules')}" plan-expired-check>
           <div class="nav-item-bg"></div>
-          <i class="far fa-clock nav-icon"></i>
+          <i class="far fa-clock nav-icon" style="color: #06b6d4 !important;"></i>
           <span class="nav-text">Group Schedules</span>
           <div class="nav-indicator" ng-if="isActive('/schedules')"></div>
         </a>
-        <a href="#/direct-schedule" class="nav-item group relative" ng-class="{'active': isActive('/direct-schedule')}">
+        <a href="#/direct-schedule" class="nav-item group relative" ng-class="{'active': isActive('/direct-schedule')}" plan-expired-check>
           <div class="nav-item-bg"></div>
-          <i class="fas fa-paper-plane nav-icon"></i>
+          <i class="fas fa-paper-plane nav-icon" style="color: #22c55e !important;"></i>
           <span class="nav-text">Message Schedule</span>
           <div class="nav-indicator" ng-if="isActive('/direct-schedule')"></div>
         </a>
-        <a href="#/status" class="nav-item group relative" ng-class="{'active': isActive('/status')}">
+        <a href="#/status" class="nav-item group relative" ng-class="{'active': isActive('/status')}" plan-expired-check>
           <div class="nav-item-bg"></div>
-          <i class="fas fa-server nav-icon"></i>
+          <i class="fas fa-server nav-icon" style="color: #64748b !important;"></i>
           <span class="nav-text">Status</span>
           <div class="nav-indicator" ng-if="isActive('/status')"></div>
         </a>
@@ -86,16 +86,16 @@
       <!-- System & Admin Section -->
       <div>
         <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Admin</p>
-        <a href="#/users" class="nav-item group relative" ng-class="{'active': isActive('/users')}" ng-if="user.role === 'admin'">
+        <a href="#/users" class="nav-item group relative" ng-class="{'active': isActive('/users')}" ng-if="user.role === 'admin'" plan-expired-check>
           <div class="nav-item-bg"></div>
-          <i class="fas fa-user-shield nav-icon"></i>
+          <i class="fas fa-user-shield nav-icon" style="color: #dc2626 !important;"></i>
           <span class="nav-text">Users</span>
           <div class="nav-indicator" ng-if="isActive('/users')"></div>
         </a>
 
-        <a href="#/settings" class="nav-item group relative" ng-class="{'active': isActive('/settings')}">
+        <a href="#/settings" class="nav-item group relative" ng-class="{'active': isActive('/settings')}" plan-expired-check>
           <div class="nav-item-bg"></div>
-          <i class="fas fa-sliders nav-icon"></i>
+          <i class="fas fa-sliders nav-icon" style="color: #64748b !important;"></i>
           <span class="nav-text">Settings</span>
           <div class="nav-indicator" ng-if="isActive('/settings')"></div>
         </a>
@@ -192,23 +192,30 @@
           <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Workspace</p>
           <a href="#/dashboard" class="nav-item group relative" ng-class="{'active': isActive('/dashboard')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
-            <i class="fas fa-chart-line nav-icon"></i>
+            <i class="fas fa-chart-line nav-icon" style="color: #3b82f6 !important;"></i>
             <span class="nav-text">Dashboard</span>
             <div class="nav-indicator" ng-if="isActive('/dashboard')"></div>
           </a>
           
           <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
-            <i class="fas fa-users nav-icon"></i>
+            <i class="fas fa-users nav-icon" style="color: #10b981 !important;"></i>
             <span class="nav-text">Groups</span>
             <div class="nav-indicator" ng-if="isActive('/groups')"></div>
           </a>
           
           <a href="#/events" class="nav-item group relative" ng-class="{'active': isActive('/events')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
-            <i class="fas fa-calendar-alt nav-icon"></i>
+            <i class="fas fa-calendar-alt nav-icon" style="color: #f59e0b !important;"></i>
             <span class="nav-text">Events</span>
             <div class="nav-indicator" ng-if="isActive('/events')"></div>
+          </a>
+          
+          <a href="#/media" class="nav-item group relative" ng-class="{'active': isActive('/media')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-photo-film nav-icon" style="color: #8b5cf6 !important;"></i>
+            <span class="nav-text">Media Library</span>
+            <div class="nav-indicator" ng-if="isActive('/media')"></div>
           </a>
         </div>
 
@@ -217,7 +224,7 @@
           <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Automation</p>
           <a href="#/sequences" class="nav-item group relative" ng-class="{'active': isActive('/sequences')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
-            <i class="fas fa-robot nav-icon"></i>
+            <i class="fas fa-robot nav-icon" style="color: #ef4444 !important;"></i>
             <span class="nav-text">Drip Campaigns</span>
             <div class="nav-indicator" ng-if="isActive('/sequences')"></div>
           </a>
@@ -225,28 +232,28 @@
           
           <a href="#/event-reminders" class="nav-item group relative" ng-class="{'active': isActive('/event-reminders')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
-            <i class="fas fa-bell nav-icon"></i>
+            <i class="fas fa-bell nav-icon" style="color: #f97316 !important;"></i>
             <span class="nav-text">Event Reminders</span>
             <div class="nav-indicator" ng-if="isActive('/event-reminders')"></div>
           </a>
           
           <a href="#/schedules" class="nav-item group relative" ng-class="{'active': isActive('/schedules')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
-            <i class="far fa-clock nav-icon"></i>
+            <i class="far fa-clock nav-icon" style="color: #06b6d4 !important;"></i>
             <span class="nav-text">Group Schedules</span>
             <div class="nav-indicator" ng-if="isActive('/schedules')"></div>
           </a>
           
           <a href="#/direct-schedule" class="nav-item group relative" ng-class="{'active': isActive('/direct-schedule')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
-            <i class="fas fa-paper-plane nav-icon"></i>
+            <i class="fas fa-paper-plane nav-icon" style="color: #8b5cf6 !important;"></i>
             <span class="nav-text">Message Schedule</span>
             <div class="nav-indicator" ng-if="isActive('/direct-schedule')"></div>
           </a>
 
           <a href="#/status" class="nav-item group relative" ng-class="{'active': isActive('/status')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
-            <i class="fas fa-server nav-icon"></i>
+            <i class="fas fa-server nav-icon" style="color: #64748b !important;"></i>
             <span class="nav-text">Status</span>
             <div class="nav-indicator" ng-if="isActive('/status')"></div>
           </a>
@@ -259,7 +266,7 @@
           <p class="text-base font-bold text-white uppercase tracking-wider mb-3 px-4 bg-teal-700/50 py-2 rounded-lg">Admin</p>
           <a href="#/users" class="nav-item group relative" ng-class="{'active': isActive('/users')}" ng-click="closeSidebar()" ng-if="user.role === 'admin'">
             <div class="nav-item-bg"></div>
-            <i class="fas fa-user-shield nav-icon"></i>
+            <i class="fas fa-user-shield nav-icon" style="color: #dc2626 !important;"></i>
             <span class="nav-text">Users</span>
             <div class="nav-indicator" ng-if="isActive('/users')"></div>
           </a>
@@ -267,7 +274,7 @@
 
           <a href="#/settings" class="nav-item group relative" ng-class="{'active': isActive('/settings')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
-            <i class="fas fa-sliders nav-icon"></i>
+            <i class="fas fa-sliders nav-icon" style="color: #64748b !important;"></i>
             <span class="nav-text">Settings</span>
             <div class="nav-indicator" ng-if="isActive('/settings')"></div>
           </a>
@@ -451,24 +458,40 @@
     transform: none !important;
   }
 
-  /* Custom scrollbar */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+  /* Enhanced Custom scrollbar for All Users - Universal Application */
+  .custom-scrollbar::-webkit-scrollbar,
+  #desktop-nav::-webkit-scrollbar,
+  #mobile-nav::-webkit-scrollbar {
+    width: 6px !important;
   }
   
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 3px;
+  .custom-scrollbar::-webkit-scrollbar-track,
+  #desktop-nav::-webkit-scrollbar-track,
+  #mobile-nav::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 3px !important;
   }
   
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #14b8a6, #0ea5e9);
-    border-radius: 3px;
-    transition: all 0.3s ease;
+  .custom-scrollbar::-webkit-scrollbar-thumb,
+  #desktop-nav::-webkit-scrollbar-thumb,
+  #mobile-nav::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #14b8a6, #0ea5e9) !important;
+    border-radius: 3px !important;
+    transition: all 0.3s ease !important;
   }
   
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover,
+  #desktop-nav::-webkit-scrollbar-thumb:hover,
+  #mobile-nav::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #0ea5e9, #6366f1) !important;
+  }
+
+  /* Firefox Scrollbar Support */
+  .custom-scrollbar,
+  #desktop-nav,
+  #mobile-nav {
+    scrollbar-width: thin !important;
+    scrollbar-color: #14b8a6 rgba(255, 255, 255, 0.05) !important;
   }
 
   /* Animations */
@@ -494,13 +517,17 @@
   }
 
   /* Mobile specific fixes */
+  /* Enhanced Desktop Sidebar Visibility */
   @media (max-width: 1023px) {
-    .lg\\:flex {
+    .desktop-sidebar-container {
       display: none !important;
     }
   }
   
   @media (min-width: 1024px) {
+    .desktop-sidebar-container {
+      display: flex !important;
+    }
     .md\\:hidden {
       display: none !important;
     }
@@ -883,25 +910,41 @@
   
   /* Remove all mobile-specific classes and gradients - use desktop theme only */
   
-  /* ===== CUSTOM SCROLLBAR ===== */
+  /* ===== ENHANCED CUSTOM SCROLLBAR FOR ALL USERS ===== */
   
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+  .custom-scrollbar::-webkit-scrollbar,
+  #desktop-nav::-webkit-scrollbar,
+  #mobile-nav::-webkit-scrollbar {
+    width: 6px !important;
   }
   
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 3px;
+  .custom-scrollbar::-webkit-scrollbar-track,
+  #desktop-nav::-webkit-scrollbar-track,
+  #mobile-nav::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 3px !important;
   }
   
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #14b8a6, #0ea5e9);
-    border-radius: 3px;
-    transition: all 0.3s ease;
+  .custom-scrollbar::-webkit-scrollbar-thumb,
+  #desktop-nav::-webkit-scrollbar-thumb,
+  #mobile-nav::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #14b8a6, #0ea5e9) !important;
+    border-radius: 3px !important;
+    transition: all 0.3s ease !important;
   }
   
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover,
+  #desktop-nav::-webkit-scrollbar-thumb:hover,
+  #mobile-nav::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #0ea5e9, #6366f1) !important;
+  }
+
+  /* Firefox Scrollbar Support */
+  .custom-scrollbar,
+  #desktop-nav,
+  #mobile-nav {
+    scrollbar-width: thin !important;
+    scrollbar-color: #14b8a6 rgba(255, 255, 255, 0.05) !important;
   }
   
   /* ===== ANIMATIONS ===== */
@@ -990,6 +1033,26 @@
   
   .fas.fa-bars::before {
     content: "\f0c9" !important;
+  }
+  
+  /* Desktop sidebar visibility fix */
+  @media (min-width: 1024px) {
+    .desktop-sidebar-container {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+  }
+  
+  /* Ensure desktop sidebar is always visible on large screens */
+  .desktop-sidebar-container.hidden {
+    display: none !important;
+  }
+  
+  @media (min-width: 1024px) {
+    .desktop-sidebar-container.hidden {
+      display: flex !important;
+    }
   }
 </style>
 </div>

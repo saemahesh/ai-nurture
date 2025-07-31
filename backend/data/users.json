@@ -4,7 +4,7 @@
     "password": "123",
     "status": "active",
     "registrationDate": "2025-05-02",
-    "expirationDate": "2025-07-30T18:30:00.000Z",
+    "expirationDate": "2025-09-05T18:30:00.000Z",
     "settings": {
       "access_token": "668d650c1df10",
       "instance_id": "6782310EA48EE",
@@ -60,5 +60,19 @@
       "timezone": "",
       "test_mobile": ""
     }
+  },
+  {
+    "username": "farzana",
+    "password": "123",
+    "status": "active",
+    "registrationDate": "2025-07-31",
+    "expirationDate": "2025-08-30"
+  },
+  {
+    "username": "chinni",
+    "password": "123",
+    "status": "pending",
+    "registrationDate": "2025-07-31",
+    "expirationDate": "2025-08-30"
   }
 ]

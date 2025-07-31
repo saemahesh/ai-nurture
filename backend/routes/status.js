@@ -18,6 +18,19 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// Middleware to check if user is authenticated
+function authRequired(req, res, next) {
+  if (!req.session || !req.session.user || !req.session.user.username) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+}
+
+// Helper to filter statuses by user
+function filterByUser(statuses, username) {
+  return statuses.filter(s => s.username === username);
+}
+
 function readStatuses() {
   if (!fs.existsSync(STATUS_FILE)) return [];
   return JSON.parse(fs.readFileSync(STATUS_FILE));
@@ -30,10 +43,30 @@ function readUsers() {
   return JSON.parse(fs.readFileSync(USERS_FILE));
 }
 
-async function postWhatsAppStatus(status, token) {
-  if (status.media.startsWith("/")) {
-    status.media = "https://whatspro.robomate.in" + status.media;
+// Function to get correct media URL for sending (like other cron jobs)
+function getMediaUrl(mediaUrl) {
+  // If in production environment
+  if (process.env.NODE_ENV === 'production') {
+    if (!mediaUrl.includes('http')) {
+      console.log(`🔗 [PRODUCTION] Converting local media URL "${mediaUrl}" to production URL`);
+      return `https://whatspro.robomate.in${mediaUrl.startsWith('/') ? '' : '/'}${mediaUrl}`;
+    }
+    return mediaUrl;
   }
+  
+  // For development/test environments
+  if (!mediaUrl.includes('http')) {
+    console.log(`🧪 [TESTING] Converting local media URL "${mediaUrl}" to test image for development`);
+    return 'https://ezofis.com/wp-content/uploads/2025/03/blog-workflowAutomation-featured-1560x740-copy-1.jpg';
+  }
+  
+  return mediaUrl;
+}
+
+async function postWhatsAppStatus(status, token) {
+  // Get the correct media URL for sending (handles test URL replacement)
+  const mediaUrl = getMediaUrl(status.media);
+  
   const options = {
     method: "POST",
     url: "https://gate.whapi.cloud/stories",
@@ -45,20 +78,23 @@ async function postWhatsAppStatus(status, token) {
     data: {
       background_color: status.bgColor,
       caption_color: status.textColor,
-      media: status.media,
+      media: mediaUrl,
       caption: status.caption,
     },
   };
 
   try {
+    console.log(`📤 [STATUS] Posting status with media: ${mediaUrl}`);
     const response = await axios.request(options);
-    console.log("WhatsApp status posted successfully:", response.data);
+    console.log("✅ [STATUS] WhatsApp status posted successfully:", response.data);
     return response.data;
   } catch (error) {
-    console.error(
-      "Error posting WhatsApp status:",
-      error.response ? error.response.data : error.message
-    );
+    console.error("❌ [STATUS] Error posting WhatsApp status:");
+    console.error("- Error message:", error.message);
+    if (error.response) {
+      console.error("- Response status:", error.response.status);
+      console.error("- Response data:", error.response.data);
+    }
     throw error;
   }
 }
@@ -72,11 +108,13 @@ cron.schedule("* * * * *", async () => {
     now.getDay()
   ];
 
+  console.log(`⏰ [STATUS-CRON] Checking scheduled statuses at ${now.toLocaleString('en-IN', {timeZone: 'Asia/Kolkata'})}`);
+
   for (const status of statuses) {
     const user = users.find((u) => u.username === status.username);
     if (!user || !user.settings || !user.settings.whapi_token) {
       console.error(
-        `Could not find user or WHAPI token for status ${status.id}`
+        `❌ [STATUS-CRON] Could not find user or WHAPI token for status ${status.id}`
       );
       continue;
     }
@@ -89,51 +127,76 @@ cron.schedule("* * * * *", async () => {
       d1.getMonth() === d2.getMonth() &&
       d1.getDate() === d2.getDate();
 
+    const isSameMinute = (d1, d2) =>
+      d1.getHours() === d2.getHours() &&
+      d1.getMinutes() === d2.getMinutes();
+
+    console.log(`🔍 [STATUS-CRON] Checking status ${status.id} (${status.repeat})`);
+    console.log(`   Scheduled: ${scheduledTime.toLocaleString('en-IN', {timeZone: 'Asia/Kolkata'})}`);
+    console.log(`   Current: ${now.toLocaleString('en-IN', {timeZone: 'Asia/Kolkata'})}`);
+
     switch (status.repeat) {
       case "once":
+        // For once type: post if scheduled time has passed and not yet posted
         if (!status.posted && scheduledTime <= now) {
           shouldPost = true;
+          console.log(`✅ [STATUS-CRON] Status ${status.id} ready to post (once, time passed)`);
+        } else if (status.posted) {
+          console.log(`⏭️ [STATUS-CRON] Status ${status.id} already posted (once)`);
+        } else {
+          console.log(`⏳ [STATUS-CRON] Status ${status.id} waiting for scheduled time`);
         }
         break;
       case "daily":
-        if (
-          scheduledTime.getHours() === now.getHours() &&
-          scheduledTime.getMinutes() === now.getMinutes()
-        ) {
+        // For daily type: post if current time matches scheduled time and not posted today
+        if (isSameMinute(scheduledTime, now)) {
           if (
             !status.lastPosted ||
             !isSameDay(new Date(status.lastPosted), now)
           ) {
             shouldPost = true;
+            console.log(`✅ [STATUS-CRON] Status ${status.id} ready to post (daily, time match)`);
+          } else {
+            console.log(`⏭️ [STATUS-CRON] Status ${status.id} already posted today`);
           }
+        } else {
+          console.log(`⏳ [STATUS-CRON] Status ${status.id} waiting for daily time slot`);
         }
         break;
       case "custom":
-        if (
-          status.days[dayOfWeek] &&
-          scheduledTime.getHours() === now.getHours() &&
-          scheduledTime.getMinutes() === now.getMinutes()
-        ) {
-          if (
-            !status.lastPosted ||
-            !isSameDay(new Date(status.lastPosted), now)
-          ) {
-            shouldPost = true;
+        // For custom type: post if today is selected day, time matches, and not posted today
+        if (status.days[dayOfWeek]) {
+          if (isSameMinute(scheduledTime, now)) {
+            if (
+              !status.lastPosted ||
+              !isSameDay(new Date(status.lastPosted), now)
+            ) {
+              shouldPost = true;
+              console.log(`✅ [STATUS-CRON] Status ${status.id} ready to post (custom, ${dayOfWeek} match)`);
+            } else {
+              console.log(`⏭️ [STATUS-CRON] Status ${status.id} already posted today`);
+            }
+          } else {
+            console.log(`⏳ [STATUS-CRON] Status ${status.id} waiting for custom time slot on ${dayOfWeek}`);
           }
+        } else {
+          console.log(`📅 [STATUS-CRON] Status ${status.id} not scheduled for ${dayOfWeek}`);
         }
         break;
     }
 
     if (shouldPost) {
       try {
+        console.log(`📤 [STATUS-CRON] Posting status ${status.id}...`);
         await postWhatsAppStatus(status, user.settings.whapi_token);
         if (status.repeat === "once") {
           status.posted = true;
-        } else {
-          status.lastPosted = now.toISOString();
+          console.log(`✅ [STATUS-CRON] Status ${status.id} marked as posted (once)`);
         }
+        status.lastPosted = now.toISOString();
+        console.log(`✅ [STATUS-CRON] Status ${status.id} posted successfully`);
       } catch (error) {
-        console.error(`Failed to post status ${status.id}:`, error);
+        console.error(`❌ [STATUS-CRON] Failed to post status ${status.id}:`, error.message);
       }
     }
   }
@@ -141,13 +204,20 @@ cron.schedule("* * * * *", async () => {
   writeStatuses(statuses);
 });
 
-// List scheduled statuses
-router.get("/", (req, res) => {
-  res.json(readStatuses());
+// List scheduled statuses (filtered by current user)
+router.get("/", authRequired, (req, res) => {
+  try {
+    const statuses = readStatuses();
+    const userStatuses = filterByUser(statuses, req.session.user.username);
+    res.json(userStatuses);
+  } catch (err) {
+    console.error("Error reading statuses:", err);
+    res.status(500).json({ error: 'Failed to read statuses' });
+  }
 });
 
 // Schedule a new status (mediaUrl from library)
-router.post("/", (req, res) => {
+router.post("/", authRequired, (req, res) => {
   const { caption, textColor, bgColor, time, repeat, days, mediaUrl } =
     req.body;
   if (!mediaUrl || !time)
@@ -170,8 +240,8 @@ router.post("/", (req, res) => {
   res.json({ success: true, id: status.id });
 });
 
-// Update a scheduled status
-router.put("/:id", (req, res) => {
+// Update a scheduled status (only if user owns it)
+router.put("/:id", authRequired, (req, res) => {
   const { caption, textColor, bgColor, time, repeat, days, mediaUrl } =
     req.body;
   if (!mediaUrl || !time)
@@ -184,8 +254,18 @@ router.put("/:id", (req, res) => {
     return res.status(404).json({ error: "Status not found" });
   }
 
+  const existingStatus = statuses[index];
+  
+  // Check if user owns this status
+  if (existingStatus.username !== req.session.user.username) {
+    return res.status(403).json({ error: "Access denied: You can only edit your own statuses" });
+  }
+  
+  console.log(`📝 [STATUS-EDIT] Editing status ${req.params.id} - Type: ${repeat}`);
+  console.log(`📝 [STATUS-EDIT] Previous posted state: ${existingStatus.posted}`);
+  
   statuses[index] = {
-    ...statuses[index],
+    ...existingStatus,
     media: mediaUrl,
     caption,
     textColor,
@@ -195,13 +275,33 @@ router.put("/:id", (req, res) => {
     days: days || {},
   };
 
+  // If editing a "once" type status, reset posted to false so it can be sent again
+  if (repeat === "once") {
+    statuses[index].posted = false;
+    // Remove lastPosted as well since it's a new schedule
+    delete statuses[index].lastPosted;
+    console.log(`🔄 [STATUS-EDIT] Reset "once" type status ${req.params.id} to unsent state`);
+  }
+
   writeStatuses(statuses);
+  console.log(`✅ [STATUS-EDIT] Status ${req.params.id} updated successfully`);
   res.json({ success: true, id: req.params.id });
 });
 
-// Delete a scheduled status
-router.delete("/:id", (req, res) => {
+// Delete a scheduled status (only if user owns it)
+router.delete("/:id", authRequired, (req, res) => {
   let statuses = readStatuses();
+  const statusToDelete = statuses.find((s) => s.id === req.params.id);
+  
+  if (!statusToDelete) {
+    return res.status(404).json({ error: "Status not found" });
+  }
+  
+  // Check if user owns this status
+  if (statusToDelete.username !== req.session.user.username) {
+    return res.status(403).json({ error: "Access denied: You can only delete your own statuses" });
+  }
+  
   const before = statuses.length;
   statuses = statuses.filter((s) => s.id !== req.params.id);
   writeStatuses(statuses);

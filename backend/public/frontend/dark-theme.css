@@ -255,28 +255,110 @@ input[type="color"]:hover {
   color: var(--text-primary);
 }
 
-/* Scrollbar Styles */
-.dark-scrollbar::-webkit-scrollbar {
-  width: 6px;
+/* Universal Scrollbar Styles for All Users */
+.dark-scrollbar::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar,
+#desktop-nav::-webkit-scrollbar,
+#mobile-nav::-webkit-scrollbar,
+nav::-webkit-scrollbar {
+  width: 6px !important;
 }
 
-.dark-scrollbar::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+.dark-scrollbar::-webkit-scrollbar-track,
+.custom-scrollbar::-webkit-scrollbar-track,
+#desktop-nav::-webkit-scrollbar-track,
+#mobile-nav::-webkit-scrollbar-track,
+nav::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 3px !important;
 }
 
-.dark-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--bg-teal);
-  border-radius: 3px;
+.dark-scrollbar::-webkit-scrollbar-thumb,
+.custom-scrollbar::-webkit-scrollbar-thumb,
+#desktop-nav::-webkit-scrollbar-thumb,
+#mobile-nav::-webkit-scrollbar-thumb,
+nav::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #14b8a6, #0ea5e9) !important;
+  border-radius: 3px !important;
+  transition: all 0.3s ease !important;
 }
 
-.dark-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--bg-teal-dark);
+.dark-scrollbar::-webkit-scrollbar-thumb:hover,
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
+#desktop-nav::-webkit-scrollbar-thumb:hover,
+#mobile-nav::-webkit-scrollbar-thumb:hover,
+nav::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #0ea5e9, #6366f1) !important;
+}
+
+/* Firefox Scrollbar Support */
+.dark-scrollbar,
+.custom-scrollbar,
+#desktop-nav,
+#mobile-nav,
+nav {
+  scrollbar-width: thin !important;
+  scrollbar-color: #14b8a6 rgba(255, 255, 255, 0.05) !important;
 }
 
 /* Navigation and scroll fixes */
 html, body {
   scroll-behavior: smooth;
   overflow-x: hidden;
+}
+
+/* Ensure sidebar navigation has proper overflow and scrollbar visibility */
+nav.overflow-y-auto,
+.overflow-y-auto,
+.flex-1.overflow-y-auto {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Force scrollbar visibility when content overflows */
+nav[id*="nav"] {
+  overflow-y: auto !important;
+  max-height: 100% !important;
+}
+
+/* Additional scrollbar targeting for sidebar containers */
+.desktop-sidebar nav,
+.mobile-sidebar-container nav,
+.sidebar nav,
+[class*="sidebar"] nav {
+  scrollbar-width: thin !important;
+  scrollbar-color: #14b8a6 rgba(255, 255, 255, 0.05) !important;
+}
+
+.desktop-sidebar nav::-webkit-scrollbar,
+.mobile-sidebar-container nav::-webkit-scrollbar,
+.sidebar nav::-webkit-scrollbar,
+[class*="sidebar"] nav::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.desktop-sidebar nav::-webkit-scrollbar-track,
+.mobile-sidebar-container nav::-webkit-scrollbar-track,
+.sidebar nav::-webkit-scrollbar-track,
+[class*="sidebar"] nav::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 3px !important;
+}
+
+.desktop-sidebar nav::-webkit-scrollbar-thumb,
+.mobile-sidebar-container nav::-webkit-scrollbar-thumb,
+.sidebar nav::-webkit-scrollbar-thumb,
+[class*="sidebar"] nav::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #14b8a6, #0ea5e9) !important;
+  border-radius: 3px !important;
+  transition: all 0.3s ease !important;
+}
+
+.desktop-sidebar nav::-webkit-scrollbar-thumb:hover,
+.mobile-sidebar-container nav::-webkit-scrollbar-thumb:hover,
+.sidebar nav::-webkit-scrollbar-thumb:hover,
+[class*="sidebar"] nav::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #0ea5e9, #6366f1) !important;
 }
 
 /* Ensure main content doesn't interfere with navigation */
@@ -1230,35 +1312,38 @@ body.status-page form,
     z-index: 10 !important;
   }
   
-  /* Ensure modal is above everything on mobile */
+  /* Ensure modal is positioned below header on mobile */
   .status-page [ng-if="createStatusModalVisible"] {
+    top: 60px !important;
     z-index: 99999 !important;
     position: fixed !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    padding: 1rem !important;
   }
   
-  /* Force modal to top of viewport */
-  .status-page .fixed.inset-0 {
-    top: 0 !important;
+  /* Modal content responsive sizing */
+  .status-page .fixed > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: calc(100vh - 100px) !important;
+    margin: 0 !important;
+    margin-top: 1rem !important;
+  }
+}
+
+/* Desktop modal positioning fix */
+@media (min-width: 769px) {
+  .status-page [ng-if="createStatusModalVisible"] {
+    top: 80px !important;
     z-index: 99999 !important;
-    padding-top: 80px !important;
-  }
-  
-  /* Add aggressive spacing for status form on mobile */
-  .status-page .status-form {
-    margin-top: 50px !important;
-    padding-top: 30px !important;
-  }
-  
-  /* Ensure form container has proper spacing */
-  .status-page form[name="statusForm"] {
-    margin-top: 40px !important;
-    padding-top: 25px !important;
-  }
-  
-  /* Adjust modal content positioning */
-  .status-page .rounded-xl.shadow-2xl {
-    margin-top: 120px !important;
-    padding-top: 30px !important;
+    position: fixed !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    padding: 2rem !important;
+    padding-top: 1rem !important;
   }
 }
 
@@ -1268,6 +1353,23 @@ body.status-page form,
 .btn-with-border,
 .action-button {
   border: 1px solid white !important;
+}
+
+/* Cancel buttons should always have white borders */
+button:contains("Cancel"),
+button[ng-click*="cancel"],
+button[ng-click*="Cancel"],
+button[ng-click*="close"],
+button[ng-click*="hide"] {
+  border: 2px solid white !important;
+}
+
+/* Specific targeting for status page cancel buttons */
+.status-page button:contains("Cancel"),
+.status-page button[ng-click*="Cancel"],
+.status-page button[ng-click*="hideCreateStatusModal"],
+.status-page button[ng-click*="closeMediaSelector"] {
+  border: 2px solid white !important;
 }
 
 /* Action buttons in headers that need white borders */

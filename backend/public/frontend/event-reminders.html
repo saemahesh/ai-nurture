@@ -449,11 +449,11 @@
               <div class="event-card" ng-repeat="event in events" ng-click="selectEvent(event.id)">
                 <div class="flex flex-col h-full">
                   <!-- Event Title -->
-                  <div class="mb-4">
+                  <div class="">
                     <h3 class="event-title line-clamp-2">{{event.name}}</h3>
                   </div>
                   <!-- Event Date -->
-                  <div class="event-date-container flex items-center mb-4">
+                  <div class="event-date-container flex items-center">
                     <i class="far fa-calendar-alt text-cyan-400 mr-3 text-lg"></i>
                     <div class="flex flex-col">
                       <p class="text-sm font-medium text-cyan-200">{{event.time | date:'MMM d, yyyy'}}</p>
@@ -461,10 +461,10 @@
                     </div>
                   </div>
                   <!-- Event Description -->
-                  <div class="flex-1 mb-4" ng-if="event.description">
+                  <div class="flex-1" ng-if="event.description">
                     <p class="text-sm text-gray-200 line-clamp-3 leading-relaxed">{{event.description}}</p>
                   </div>
-                  <div class="flex-1 mb-4" ng-if="!event.description">
+                  <div class="flex-1" ng-if="!event.description">
                     <p class="text-sm text-gray-400 italic">No description available</p>
                   </div>
                   <!-- Status Badge -->

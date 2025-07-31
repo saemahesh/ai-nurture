@@ -4,6 +4,11 @@
   <title>WhatsPro - Login</title>
   <link rel="stylesheet" href="dark-theme.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Cache-busting meta tags -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="cache-bust" content="{{Date.now()}}">
   <style>
     @keyframes float {
       0%, 100% { transform: translateY(0px); }
@@ -108,7 +113,8 @@
 
         <!-- Submit Button -->
         <button type="submit" 
-          class="w-full py-3 sm:py-4 px-6 bg-gradient-to-r from-blue-600 via-blue-600 to-blue-700 hover:from-blue-500 hover:via-blue-500 hover:to-blue-600 text-white font-bold rounded-xl transition duration-300 shadow-xl transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-900">
+          class="w-full py-3 sm:py-4 px-6 bg-gradient-to-r from-blue-600 via-blue-600 to-blue-700 hover:from-blue-500 hover:via-blue-500 hover:to-blue-600 text-white font-bold rounded-xl transition duration-300 shadow-xl transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-900 border-2 border-white"
+          style="border: 2px solid white !important;">
           <i class="fas fa-sign-in-alt mr-2 glow-message"></i>Sign in
         </button>
       </form>

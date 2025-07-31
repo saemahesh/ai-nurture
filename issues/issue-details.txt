@@ -34,9 +34,11 @@ Instructions for Issue Resolution:
 --------------------------------------------------------
 **** Issue List ****
 
-- Sidebar updates are not reflecting in production, likely due to a caching problem.
-- Investigate and resolve all caching issues across the application to ensure that the latest changes are always visible in production.
-i do not run any scripts to update version numbers, so do not use the update-version.sh script to update version numbers.
-make code changes accordingly, is the update-version.sh script is needed ?? 
+add border for add schedule button in group schedule page form
+for event reminders, if there are no reminders to set for expired event, 
+show a message "No reminders to set for this event"
 
-delete unnecessary files, such as update-version.sh, if they are not needed anymore.
+add border for create button in status form 
+
+not getting sign in button border in log in page due to caching issue
+not getting create now button border in register page due to caching issue

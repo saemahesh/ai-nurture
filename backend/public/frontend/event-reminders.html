@@ -621,6 +621,24 @@
                   </form>
                 </div>
               </div>
+              
+              <!-- Message for expired events with no reminders to set -->
+              <div ng-if="getUpcomingReminderTypes('days').length === 0 && getUpcomingReminderTypes('hours').length === 0" class="text-center py-8">
+                <div class="bg-gradient-to-r from-orange-900/40 to-red-900/40 border border-orange-600/60 rounded-xl p-6 shadow-lg">
+                  <div class="flex items-center justify-center mb-4">
+                    <div class="bg-orange-700/30 rounded-full h-16 w-16 flex items-center justify-center">
+                      <i class="fas fa-clock text-orange-300 text-2xl"></i>
+                    </div>
+                  </div>
+                  <h3 class="text-xl font-semibold text-orange-200 mb-2">No Reminders to Set</h3>
+                  <p class="text-orange-300 text-base">
+                    No reminders to set for this event as it has already expired or all reminder times have passed.
+                  </p>
+                  <div class="mt-4 text-sm text-orange-400">
+                    Event Date: {{currentEvent.time | date:'MMM d, yyyy h:mm a'}}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

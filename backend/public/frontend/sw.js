@@ -2,7 +2,7 @@
 // This ensures sidebar and other dynamic content always loads fresh from server
 
 // Use dynamic cache name to force cache invalidation (but we won't actually cache anything critical)
-const CACHE_NAME = 'whatspro-app-v1753982448' + Date.now();
+const CACHE_NAME = 'whatspro-app-v1753984271' + Date.now();
 
 // Do NOT cache any dynamic content - empty cache list
 const urlsToCache = [

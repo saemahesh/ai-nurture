@@ -224,7 +224,8 @@
                     Cancel
                   </button>
                   <button type="submit" 
-                          class="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-xl text-white font-semibold transition-all duration-200 shadow-lg disabled:opacity-50 text-sm sm:text-base"
+                          class="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-xl text-white font-semibold transition-all duration-200 shadow-lg disabled:opacity-50 text-sm sm:text-base border-2 border-white"
+                          style="border: 2px solid white !important;"
                           ng-disabled="saving">
                     <i class="fas fa-spinner fa-spin mr-2" ng-if="saving"></i>
                     <i class="fas fa-calendar-plus mr-2" ng-if="!saving && !editingStatus"></i>

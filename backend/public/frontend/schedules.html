@@ -205,7 +205,8 @@
           
           <div class="flex items-center justify-between">
             <button type="submit" 
-                    class="px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:from-emerald-500 hover:to-teal-500 transition-all duration-300 shadow-md disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed"
+                    class="px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:from-emerald-500 hover:to-teal-500 transition-all duration-300 shadow-md disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed border-2 border-white"
+                    style="border: 2px solid white !important;"
                     ng-disabled="(scheduleForm.message.$invalid || scheduleForm.scheduleTime.$invalid) || !hasSelectedGroups()">
               Add Schedule
             </button>

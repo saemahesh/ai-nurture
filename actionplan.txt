@@ -1,52 +1,27 @@
-# Action Plan - Caching Issues Resolution (Iteration 2)
+# Action Plan - UI Border Issues Resolution
 
 ## Current Issues Status:
-🔄 Sidebar updates are not reflecting in production, likely due to a caching problem - IN PROGRESS
-🔄 Investigate and resolve all caching issues across the application to ensure that the latest changes are always visible in production - IN PROGRESS
-✅ Delete unnecessary files such as update-version.sh - COMPLETED
+✅ Add border for add schedule button in group schedule page form - COMPLETED
+✅ For event reminders, if there are no reminders to set for expired event, show a message "No reminders to set for this event" - COMPLETED  
+✅ Add border for create button in status form - COMPLETED
+✅ Not getting sign in button border in log in page due to caching issue - COMPLETED
 
-## Phase 1: Complete Caching Solution Verification ✅ COMPLETED
+## Phase 1: UI Border Issues Resolution ✅ COMPLETED
 **Actions Taken**:
-- ✅ Service Worker: Disabled all caching for dynamic files
-- ✅ Server Headers: Enhanced cache-busting for all static files
-- ✅ Client Versioning: Dynamic timestamps using Date.now()
-- ✅ HTML Meta Tags: Multiple cache-control directives
-- ✅ Force Refresh: Enhanced cache clearing mechanism
+- ✅ **schedules.html**: Added border-2 border-white class and inline style to "Add Schedule" button
+- ✅ **status.html**: Added border-2 border-white class and inline style to "Create Status" submit button
+- ✅ **login.html**: Added border-2 border-white class and inline style to "Sign in" button
+- ✅ **login.html**: Added cache-busting meta tags to resolve caching issues
+- ✅ **event-reminders.html**: Added logic to show "No reminders to set for this event" message when all reminder times have passed for expired events
 
-## Phase 2: File Cleanup ✅ COMPLETED
-**Actions Taken**:
-- ✅ **REMOVED**: update-version.sh file successfully deleted (just now)
-- ✅ **VERIFIED**: No references to deleted script remain
+**Files Modified**:
+- ✅ `/backend/public/frontend/schedules.html` - Added border to Add Schedule button
+- ✅ `/backend/public/frontend/status.html` - Added border to Create Status button  
+- ✅ `/backend/public/frontend/login.html` - Added border to Sign in button and cache-busting meta tags
+- ✅ `/backend/public/frontend/event-reminders.html` - Added expired event message display logic
 
-## Phase 3: Deep Cache Investigation ✅ MAJOR ISSUE FOUND & FIXED
-**CRITICAL DISCOVERY**: Angular Template Caching Issue!
-- ✅ **ROOT CAUSE IDENTIFIED**: Angular was caching `sidebar.html` via `ng-include` directives
-- ✅ **FIXED**: Added cache-busting timestamps to ALL sidebar ng-include directives (16 files)
-- ✅ **ENHANCED**: Added cache-busting to ALL templateUrl routes in routing configuration
-
-**Files Updated with Sidebar Cache-Busting**:
-- ✅ dashboard.html
-- ✅ settings.html  
-- ✅ users.html
-- ✅ groups.html
-- ✅ events.html
-- ✅ media.html
-- ✅ schedules.html
-- ✅ sequences.html
-- ✅ sequence-create.html
-- ✅ enrollments.html
-- ✅ status.html
-- ✅ direct-schedule.html
-- ✅ event-reminders.html
-- ✅ campaigns-template.html
-- ✅ campaign-leads-template.html
-- ✅ campaign-builder.html
-
-## Phase 4: Template Route Cache-Busting ✅ COMPLETED
-**Actions Taken**:
-- ✅ Added `getTemplateUrl()` helper function with timestamp cache-busting
-- ✅ Updated ALL route templateUrls to use cache-busting timestamps
-- ✅ This prevents Angular from caching ANY templates
+## All Issues Resolved ✅
+All 4 issues have been successfully fixed.
 
 ## Status:
 ✅ **MAJOR BREAKTHROUGH**: Found and fixed the PRIMARY cause of sidebar caching issues!

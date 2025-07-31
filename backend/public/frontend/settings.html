@@ -3,9 +3,33 @@
 <head>
   <title>WhatsPro - Settings</title>
   <link rel="stylesheet" href="dark-theme.css">
+  <style>
+    @keyframes slideInRight {
+      0% {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+  </style>
 </head>
 <body>
 <div class="flex h-screen dark-theme" ng-controller="SettingsController">
+  <!-- Test Connection Success Toast - Simplified version -->
+  <div ng-if="testSuccess" style="position: fixed; top: 20px; right: 20px; z-index: 9999; background: #10b981; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: slideInRight 0.5s ease-out;">
+    <div style="display: flex; align-items: center;">
+      <div style="margin-right: 10px;">✓</div>
+      <div>
+        <div style="font-weight: bold;">Connection test successful!</div>
+        <div style="font-size: 12px; opacity: 0.9;">Your WhatsApp API connection is working.</div>
+      </div>
+      <button ng-click="testSuccess = false" style="margin-left: 15px; background: none; border: none; color: white; cursor: pointer; font-size: 18px;">×</button>
+    </div>
+  </div>
+  
   <!-- Sidebar -->
   <div ng-include="'sidebar.html?v=' + Date.now()" ng-controller="SidebarController"></div>
   <!-- Main Content Area -->
@@ -64,16 +88,18 @@
                     <i class="fas fa-plug mr-2" ng-if="!testing"></i>
                     Test Connection
                   </button>
-                  <button type="submit" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-md" ng-disabled="saving">
+                  <button type="submit" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-md border-2 border-white" style="border: 2px solid white !important;" ng-disabled="saving">
                     <i class="fas fa-spinner fa-spin mr-2" ng-if="saving"></i>
                     <i class="fas fa-save mr-2" ng-if="!saving"></i>
                     Save Settings
                   </button>
                 </div>
                 <div class="mt-3 text-center">
-                  <span ng-if="testSuccess" class="text-blue-300 font-medium">
+                  <!-- Debug: Show testSuccess status -->
+                  <div ng-if="testSuccess" class="text-green-300 font-medium mb-2">
                     <i class="fas fa-check mr-1"></i>Connection test successful!
-                  </span>
+                  </div>
+                  <!-- Test connection error messages -->
                   <span ng-if="testError" class="text-red-300 font-medium">
                     <i class="fas fa-exclamation-triangle mr-1"></i>{{testError}}
                   </span>

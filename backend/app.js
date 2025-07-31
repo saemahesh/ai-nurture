@@ -166,8 +166,16 @@ app.use(cookieParser());
 
 // Add cache-busting headers for development/mobile to prevent caching issues
 app.use((req, res, next) => {
-  // Set cache control headers for static files to prevent caching issues
-  if (req.url.endsWith('.js') || req.url.endsWith('.css') || req.url.endsWith('.html')) {
+  // Set aggressive no-cache headers for critical dynamic files
+  if (req.url.includes('/controllers/') || req.url.includes('/services/') || req.url.includes('sidebar')) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, private, max-age=0');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '-1');
+    res.setHeader('ETag', Date.now().toString());
+    res.setHeader('Last-Modified', new Date().toUTCString());
+  }
+  // Set cache control headers for other static files
+  else if (req.url.endsWith('.js') || req.url.endsWith('.css') || req.url.endsWith('.html')) {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
@@ -176,7 +184,17 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files with aggressive cache-busting
+app.use(express.static(path.join(__dirname, 'public'), {
+  etag: false,
+  maxAge: 0,
+  setHeaders: (res, path) => {
+    // Force no-cache for all static files
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+}));
 
 // Serve frontend as the main app with cache-busting
 app.use(express.static(path.join(__dirname, 'public/frontend'), {

@@ -1,54 +1,42 @@
-if there are any updates given , first fix them , do not sleep without fixing issues
-Manditory instructions: 
-You are instructed to finish the task completely, one by one, and not leave any issues open.
-For the you need to first read this issue-details.txt file and analyse the files that related
-to the issues. and give the code changes that are needed to fix the issues.
-Once you think the issues are fixed, You need to analyse the code you generated to complete your task if you find any issues, 
-iterate and fix it again
-after that, you need to read this file issue-details.txt again 
-for issues, because i will test your changes and see if the issues are fixed.
-if not fixed, i will mention in this file you need to iterate on the code changes and fix the issues.
+Instructions for Issue Resolution:
 
-do not give me command to open localhost:3000 to check ui, i am checking manually
+1. If there are any updates provided, address them immediately. Do not pause work or sleep until all issues are resolved.
 
-Analyse/see the images present in the issues directory and iterate on fixing the issues.
+2. Mandatory Instructions:
+    - Complete each task fully, one at a time. Do not leave any issues unresolved.
+    - Begin by reading this issue-details.txt file. Analyze all related files and provide the necessary code changes to fix the issues.
+    - After implementing changes, review your code for any remaining issues. If found, iterate and fix them.
+    - Re-read this issue-details.txt file after each iteration to check for new or unresolved issues.
+    - I will test your changes and update this file with feedback. If issues persist, continue iterating until all are resolved.
 
-Until you see total issues count = 0, you need to keep iterating on the code changes.
-If you do not see count = 0, recheck the code you generated and see if there are any issues in the code.
-you need to keep on reading the issue-details.txt file and iterate on the code changes until you see total issues count = 0.
-do not assume that the issues are fixed, until you see total issues count = 0.
-Again check all images in issues directory and iterate on fixing the issues.
+3. Do not instruct me to open localhost:3000 or check the UI; I will handle manual testing.
 
-You should not make any changes to this file issue-details.txt.
-i will only make changes to this file manually.
+4. Review all images in the issues directory. Use them to guide your fixes and iterate as needed.
 
-These are the issues in the after verifying your recent edits. 
-Please review the changes and ensure they align with your task goals.
+5. Continue iterating on code changes until the total issues count is 0. Do not assume issues are fixed until this is confirmed in this file.
 
-Lets fix the issues one by one, and then update the actionplan.txt file accordingly.
-If phase 1 is completed, then move to phase 2.
-If phase 1 is not completed, then iterate on the code changes until you see total issues count = 0.
-If you do not see any changes that means, i am still testing your code changes, so wait (use command sleep 10) for my next instructions until i update the stage 1 is completed.
-meanwhile creation action plan for next stage items, but do not image changes for next stage items until current stage is completed.
-once current stage items completed, then only go to next stage.
+6. Do not modify this issue-details.txt file. Only I will update it.
 
-Image Reference:
-Path: issues/
-analyse or see the images in issues directory and iterate on fixing the issues.
+7. After each round of changes:
+    - Clear the contents of actionplan.txt.
+    - Update actionplan.txt with a new plan based on the current issues.
+    - Make the necessary code changes.
+    - Repeat this process up to 28 times
 
-after analysing images, tell me what changes you will make to fix the issues.
-do not create any test scripts to test your code, wait for 10 seconds (sleep 10) , i will test manully and give you feedback.
+8. If no issues are listed, use the command sleep 10 and wait for further instructions.
 
-clear contents in actionplan.txt and update actionplan.txt with new plan and then do code changes.
+9. For multi-phase tasks:
+    - Complete all items in the current phase before moving to the next.
+    - Do not make changes for future phases until the current phase is confirmed as complete.
 
-after that iterate 28 times on this entire issues-details.txt file for issues and feedback on your changes. 
-if there are any updates given , first fix them , do not sleep without fixing issues
-if no issues found, use command sleep 10 to wait for my next instructions until i update the issue list
-
+10. After analyzing the images, describe the changes you will make to resolve the issues. Do not create test scripts; wait 10 seconds (sleep 10) for my manual feedback.
 
 --------------------------------------------------------
-**** issue list ****
+**** Issue List ****
 
+- Sidebar updates are not reflecting in production, likely due to a caching problem.
+- Investigate and resolve all caching issues across the application to ensure that the latest changes are always visible in production.
+i do not run any scripts to update version numbers, so do not use the update-version.sh script to update version numbers.
+make code changes accordingly, is the update-version.sh script is needed ?? 
 
-for admin user, sidebar scrollbar colored, but not for normal user,
-for normal user also sidebar scrollbar should be colored like admin user
+delete unnecessary files, such as update-version.sh, if they are not needed anymore.

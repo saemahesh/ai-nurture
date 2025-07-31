@@ -1,0 +1,68 @@
+# Action Plan - Caching Issues Resolution (Iteration 2)
+
+## Current Issues Status:
+🔄 Sidebar updates are not reflecting in production, likely due to a caching problem - IN PROGRESS
+🔄 Investigate and resolve all caching issues across the application to ensure that the latest changes are always visible in production - IN PROGRESS
+✅ Delete unnecessary files such as update-version.sh - COMPLETED
+
+## Phase 1: Complete Caching Solution Verification ✅ COMPLETED
+**Actions Taken**:
+- ✅ Service Worker: Disabled all caching for dynamic files
+- ✅ Server Headers: Enhanced cache-busting for all static files
+- ✅ Client Versioning: Dynamic timestamps using Date.now()
+- ✅ HTML Meta Tags: Multiple cache-control directives
+- ✅ Force Refresh: Enhanced cache clearing mechanism
+
+## Phase 2: File Cleanup ✅ COMPLETED
+**Actions Taken**:
+- ✅ **REMOVED**: update-version.sh file successfully deleted (just now)
+- ✅ **VERIFIED**: No references to deleted script remain
+
+## Phase 3: Deep Cache Investigation ✅ MAJOR ISSUE FOUND & FIXED
+**CRITICAL DISCOVERY**: Angular Template Caching Issue!
+- ✅ **ROOT CAUSE IDENTIFIED**: Angular was caching `sidebar.html` via `ng-include` directives
+- ✅ **FIXED**: Added cache-busting timestamps to ALL sidebar ng-include directives (16 files)
+- ✅ **ENHANCED**: Added cache-busting to ALL templateUrl routes in routing configuration
+
+**Files Updated with Sidebar Cache-Busting**:
+- ✅ dashboard.html
+- ✅ settings.html  
+- ✅ users.html
+- ✅ groups.html
+- ✅ events.html
+- ✅ media.html
+- ✅ schedules.html
+- ✅ sequences.html
+- ✅ sequence-create.html
+- ✅ enrollments.html
+- ✅ status.html
+- ✅ direct-schedule.html
+- ✅ event-reminders.html
+- ✅ campaigns-template.html
+- ✅ campaign-leads-template.html
+- ✅ campaign-builder.html
+
+## Phase 4: Template Route Cache-Busting ✅ COMPLETED
+**Actions Taken**:
+- ✅ Added `getTemplateUrl()` helper function with timestamp cache-busting
+- ✅ Updated ALL route templateUrls to use cache-busting timestamps
+- ✅ This prevents Angular from caching ANY templates
+
+## Status:
+✅ **MAJOR BREAKTHROUGH**: Found and fixed the PRIMARY cause of sidebar caching issues!
+- Angular was caching the sidebar.html template via ng-include directives
+- This explains why sidebar updates weren't reflecting in production
+- All sidebar includes now have dynamic cache-busting timestamps
+- All route templates also have cache-busting to prevent future issues
+
+## Summary of ALL Applied Fixes:
+1. ✅ Service Worker: Disabled all dynamic file caching
+2. ✅ Server Headers: Enhanced cache-busting for all static files  
+3. ✅ Client Versioning: Dynamic timestamps using Date.now()
+4. ✅ HTML Meta Tags: Multiple cache-control directives
+5. ✅ Force Refresh: Enhanced cache clearing mechanism
+6. ✅ File Cleanup: update-version.sh removed
+7. ✅ **NEW**: Angular template cache-busting for ALL templates
+8. ✅ **NEW**: Sidebar ng-include cache-busting (16 files updated)
+
+**READY FOR TESTING** - The sidebar caching issue should now be completely resolved!

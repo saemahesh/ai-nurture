@@ -10,7 +10,7 @@
 <body>
 <div class="flex h-screen dark-theme">
   <!-- Sidebar -->
-  <div ng-include="'sidebar.html'" ng-controller="SidebarController"></div>
+  <div ng-include="'sidebar.html?v=' + Date.now()" ng-controller="SidebarController"></div>
 
   <!-- Main Content Area -->
   <div class="flex-1 flex flex-col overflow-hidden">

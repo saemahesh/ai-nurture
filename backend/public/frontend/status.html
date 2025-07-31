@@ -6,7 +6,7 @@
 </head>
 <body class="status-page">
 <div class="flex dark-theme min-h-screen">
-  <div ng-include="'sidebar.html'" ng-controller="SidebarController"></div>
+  <div ng-include="'sidebar.html?v=' + Date.now()" ng-controller="SidebarController"></div>
   <div class="flex-1 flex flex-col overflow-hidden">
     <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6" style="position: relative; z-index: 1 !important;">
       <div class="flex justify-between items-center">

@@ -32,48 +32,89 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
     });
   };
   
-  // Force refresh function for mobile cache issues
+  // Enhanced force refresh function for production cache issues
   $scope.forceRefresh = function() {
     $scope.refreshing = true;
     
-    console.log('Force refresh initiated...');
+    console.log('Force refresh initiated - clearing all caches...');
     
-    // Clear service worker caches
+    // Step 1: Clear service worker caches
     if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
       navigator.serviceWorker.controller.postMessage({type: 'CLEAR_CACHE'});
     }
     
-    // Clear browser caches
+    // Step 2: Clear all browser caches
     if ('caches' in window) {
       caches.keys().then(function(names) {
         names.forEach(function(name) {
           caches.delete(name);
+          console.log('Cleared cache:', name);
         });
       });
     }
     
-    // Clear localStorage and sessionStorage
-    localStorage.clear();
-    sessionStorage.clear();
+    // Step 3: Clear all storage
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+      console.log('Cleared localStorage and sessionStorage');
+    } catch (e) {
+      console.warn('Could not clear storage:', e);
+    }
     
-    // Unregister service workers and force reload
+    // Step 4: Unregister all service workers
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         registrations.forEach(function(registration) {
           registration.unregister();
+          console.log('Unregistered service worker');
         });
-        // Force hard reload after unregistering
+        
+        // Step 5: Force reload with aggressive cache busting
         setTimeout(function() {
-          window.location.reload(true);
-        }, 500);
+          const cacheBuster = Date.now();
+          const currentUrl = window.location.href.split('?')[0]; // Remove existing params
+          window.location.href = currentUrl + '?v=' + cacheBuster + '&refresh=' + cacheBuster;
+        }, 1000);
       });
     } else {
-      // Force hard reload
+      // No service worker - just do aggressive reload
       setTimeout(function() {
-        window.location.reload(true);
-      }, 500);
+        const cacheBuster = Date.now();
+        const currentUrl = window.location.href.split('?')[0];
+        window.location.href = currentUrl + '?v=' + cacheBuster + '&refresh=' + cacheBuster;
+      }, 1000);
     }
   };
+  
+  // Production auto-refresh mechanism - more conservative approach
+  $scope.setupAutoRefresh = function() {
+    // Only enable in production and if there are no console errors
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      console.log('Production environment detected - enabling cache monitoring');
+      
+      // Check every 60 seconds if critical resources are fresh
+      const monitorInterval = setInterval(function() {
+        // Simple health check by trying to fetch a controller file with cache busting
+        const testUrl = '/controllers/sidebar.controller.js?check=' + Date.now();
+        fetch(testUrl, { cache: 'no-cache' })
+          .then(response => {
+            if (!response.ok) {
+              console.warn('Health check failed for sidebar controller');
+            }
+          })
+          .catch(error => {
+            console.warn('Health check network error:', error);
+          });
+      }, 60000); // Every 60 seconds
+      
+      // Store interval ID for cleanup if needed
+      window.healthCheckInterval = monitorInterval;
+    }
+  };
+  
+  // Initialize monitoring on controller load
+  $scope.setupAutoRefresh();
   
   $scope.sidebarOpen = false;
   $scope.openSidebar = function() {

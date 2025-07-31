@@ -1,9 +1,10 @@
 // Core application module
 angular.module('autopostWaApp.core', []);
 
-// Add app version - ONLY change this when you deploy new code
-var APP_VERSION = 'v1753958800'; // Static version - increment manually when deploying
+// Simple app version for cache busting - no complex synchronization needed
+var APP_VERSION = 'v' + Date.now(); // Always fresh version for cache busting
 window.APP_VERSION = APP_VERSION;
+console.log('App Version (cache busting):', APP_VERSION);
 
 // Features modules
 angular.module('autopostWaApp.auth', ['autopostWaApp.core']);
@@ -31,88 +32,94 @@ var app = angular.module('autopostWaApp', [
 
 // Main routing configuration
 app.config(function($routeProvider, $locationProvider, $httpProvider) {
+  
+  // Cache-busting helper function for templates
+  function getTemplateUrl(templateName) {
+    return templateName + '?v=' + Date.now();
+  }
+  
   $routeProvider
     .when('/login', {
-      templateUrl: 'login.html',
+      templateUrl: getTemplateUrl('login.html'),
       controller: 'AuthController'
     })
     .when('/register', {
-      templateUrl: 'register.html',
+      templateUrl: getTemplateUrl('register.html'),
       controller: 'AuthController'
     })
     .when('/dashboard', {
-      templateUrl: 'dashboard.html',
+      templateUrl: getTemplateUrl('dashboard.html'),
       controller: 'DashboardController'
     })
     .when('/groups/create', {
-      templateUrl: 'group-create.html',
+      templateUrl: getTemplateUrl('group-create.html'),
       controller: 'GroupCreateController'
     })
     .when('/automation/schedule', {
-      templateUrl: 'automation-schedule.html',
+      templateUrl: getTemplateUrl('automation-schedule.html'),
       controller: 'AutomationScheduleController'
     })
     .when('/groups', {
-      templateUrl: 'groups.html',
+      templateUrl: getTemplateUrl('groups.html'),
       controller: 'GroupsController'  // Fixed from GroupsPageController
     })
     .when('/schedules', {
-      templateUrl: 'schedules.html',
+      templateUrl: getTemplateUrl('schedules.html'),
       controller: 'ScheduleController'  // Fixed from SchedulesPageController
     })
     .when('/events', {
-      templateUrl: 'events.html',
+      templateUrl: getTemplateUrl('events.html'),
       controller: 'EventsController'  // Fixed from EventsPageController
     })
     .when('/event-reminders', {
-      templateUrl: 'event-reminders.html',
+      templateUrl: getTemplateUrl('event-reminders.html'),
       controller: 'EventRemindersController'
     })
     .when('/event-reminders/:id', {
-      templateUrl: 'event-reminders.html',
+      templateUrl: getTemplateUrl('event-reminders.html'),
       controller: 'EventRemindersController'
     })
     .when('/media', {
-      templateUrl: 'media.html',
+      templateUrl: getTemplateUrl('media.html'),
       controller: 'MediaPageController'
     })
     .when('/users', {
-      templateUrl: 'users.html',
+      templateUrl: getTemplateUrl('users.html'),
       controller: 'DashboardController'
     })
     .when('/settings', {
-      templateUrl: 'settings.html',
+      templateUrl: getTemplateUrl('settings.html'),
       controller: 'SettingsController'
     })
     .when('/direct-schedule', {
-      templateUrl: 'direct-schedule.html',
+      templateUrl: getTemplateUrl('direct-schedule.html'),
       controller: 'DirectScheduleController'
     })
     .when('/sequences', {
-      templateUrl: 'sequences.html',
+      templateUrl: getTemplateUrl('sequences.html'),
       controller: 'SequencesController'
     })
     .when('/sequences/create', {
-      templateUrl: 'sequence-create.html',
+      templateUrl: getTemplateUrl('sequence-create.html'),
       controller: 'SequenceCreateController'
     })
     .when('/sequence-create', {
-      templateUrl: 'sequence-create.html',
+      templateUrl: getTemplateUrl('sequence-create.html'),
       controller: 'SequenceCreateController'
     })
     .when('/sequence-create/:id', {
-      templateUrl: 'sequence-create.html',
+      templateUrl: getTemplateUrl('sequence-create.html'),
       controller: 'SequenceCreateController'
     })
     .when('/enrollments/:sequenceId', {
-      templateUrl: 'enrollments.html',
+      templateUrl: getTemplateUrl('enrollments.html'),
       controller: 'EnrollmentsController'
     })
     .when('/campaigns', {
       redirectTo: '/sequences'
     })
     .when('/status', {
-      templateUrl: 'status.html',
+      templateUrl: getTemplateUrl('status.html'),
       controller: 'StatusController'
     })
 
@@ -273,13 +280,29 @@ app.run(function($rootScope, $location, $timeout, PlanExpiryService) {
     var currentVersion = window.APP_VERSION;
     var storedVersion = localStorage.getItem('app_version');
     
-    // Only force refresh if stored version exists and is different (not on first load)
+    // Clear all caches and force refresh for version changes
     if (storedVersion && storedVersion !== currentVersion && storedVersion !== 'undefined') {
-      console.log('App version changed from', storedVersion, 'to', currentVersion, '- forcing refresh...');
+      console.log('App version changed from', storedVersion, 'to', currentVersion, '- clearing all caches...');
       localStorage.setItem('app_version', currentVersion);
+      
+      // Clear service worker caches
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({type: 'CLEAR_CACHE'});
+      }
+      
+      // Clear browser caches
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          names.forEach(function(name) {
+            caches.delete(name);
+          });
+        });
+      }
+      
       // Add a flag to prevent infinite reload loops
       if (!sessionStorage.getItem('version_refresh_done')) {
         sessionStorage.setItem('version_refresh_done', 'true');
+        // Force hard reload
         window.location.reload(true);
         return;
       }

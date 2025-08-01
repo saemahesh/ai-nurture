@@ -128,44 +128,107 @@
       </div>
 
       <!-- Events List -->
-      <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-2 max-w-2xl mx-auto border-2 border-slate-600 custom-event-bg">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold text-white">Your Events</h3>
+      <div style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;" class="rounded-xl shadow-2xl p-4 sm:p-6 mb-6 w-full mx-auto border-2 border-slate-600 custom-event-bg">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <h2 class="text-xl font-semibold text-white">Your Events</h2>
+            <span ng-if="searchQuery" class="text-sm text-gray-400 bg-gray-700 px-2 py-1 rounded-full">
+              {{filteredEvents.length}} of {{events.length}} results
+            </span>
+            <span ng-if="!searchQuery && events.length > 0" class="text-sm text-gray-400">
+              {{events.length}} total event{{events.length === 1 ? '' : 's'}}
+            </span>
+          </div>
+          <!-- Search Box -->
+          <div class="relative w-full sm:w-80" role="search">
+            <label for="search-events" class="sr-only">Search events by name or description</label>
+            <input type="text" id="search-events" ng-model="searchQuery" 
+                   placeholder="Search by event name or description... (Ctrl+K)" 
+                   class="w-full px-4 py-2 pl-10 pr-10 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-gray-600 focus:to-gray-700 transition-all duration-300 text-sm"
+                   ng-keydown="$event.keyCode === 27 && clearEventSearch()"
+                   aria-describedby="search-help"
+                   autocomplete="off">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 transition-colors duration-300" 
+               ng-class="{'text-cyan-400': searchQuery}" aria-hidden="true"></i>
+            <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <i ng-if="isSearching" class="fas fa-spinner fa-spin text-gray-400" aria-label="Searching..." aria-hidden="true"></i>
+              <button ng-if="searchQuery && !isSearching" ng-click="clearEventSearch()" 
+                      class="text-gray-400 hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded p-1"
+                      aria-label="Clear search" title="Clear search (Esc)">
+                <i class="fas fa-times" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div id="search-help" class="sr-only">Search through your events by typing an event name or part of the description</div>
+          </div>
         </div>
-        <div ng-if="events.length === 0" class="text-center text-gray-300 py-4">
-          No events added yet.
-        </div>
-        <div class="space-y-3">
-          <div ng-repeat="event in events | orderBy:'-time'" 
-               class="flex items-center justify-between p-3 bg-gradient-to-r from-slate-600 to-slate-700 rounded-lg border border-slate-500 hover:from-slate-500 hover:to-slate-600 transition-all duration-300">
-            <div class="flex-1">
-              <div class="font-medium text-white">{{event.name}}</div>
-              <div class="text-sm text-gray-300 mt-1">
-                <span>{{event.time | date:'medium'}}</span>
-                <span ng-if="event.description" class="block mt-1 text-gray-400">{{event.description}}</span>
+
+        <!-- Cards Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div ng-repeat="event in events | filter:searchEvents | orderBy:'-time':true" 
+               class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl border-2 border-white/10 shadow-xl p-4 transition-all duration-300 hover:shadow-2xl hover:border-white/20 event-card">
+            <!-- Mobile Header: Event Name and Status -->
+            <div class="flex justify-between items-start mb-3">
+              <div class="flex-1">
+                <h3 class="font-bold text-lg text-white tracking-wide break-words">{{ event.name }}</h3>
+                <p class="text-xs text-gray-400 mt-1">
+                  <i class="fas fa-calendar mr-1"></i>
+                  {{ event.time | date:'MMM dd, yyyy HH:mm' }}
+                </p>
               </div>
-              <div class="mt-1 flex flex-wrap gap-1">
+              <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full ml-2 flex-shrink-0 bg-blue-600 text-blue-100">
+                Event
+              </span>
+            </div>
+            
+            <!-- Event Description -->
+            <div class="mb-4" ng-if="event.description">
+              <p class="text-sm text-gray-300 leading-relaxed" 
+                 ng-class="{'line-clamp-3': !event.showFullDescription}" 
+                 title="{{event.description}}">{{ event.description }}</p>
+              <button ng-if="event.description.length > 100" 
+                      ng-click="event.showFullDescription = !event.showFullDescription"
+                      class="text-cyan-400 hover:text-cyan-300 text-xs mt-1 transition-colors">
+                {{ event.showFullDescription ? 'Show less' : 'Show more' }}
+              </button>
+            </div>
+            
+            <!-- Groups Information -->
+            <div class="mb-4">
+              <div class="flex flex-wrap gap-1">
                 <span 
                   ng-repeat="groupId in event.groups"
                   class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gradient-to-r from-blue-600 to-blue-700 text-blue-100">
                   {{ getGroupName(groupId) }}
                 </span>
+                <span ng-if="event.groups.length === 0" class="text-gray-500 text-xs">No groups assigned</span>
               </div>
             </div>
-            <div class="flex items-center space-x-2">
+            
+            <!-- Action Buttons -->
+            <div class="flex gap-2 pt-2 border-t border-white/10">
               <a ng-href="#/event-reminders/{{event.id}}" 
-                 class="px-3 py-1 text-sm text-cyan-300 hover:bg-slate-600 rounded-lg transition-colors white-border-btn">
-                Configure Reminders
+                 class="flex-1 px-3 py-2 text-sm text-white bg-cyan-600 hover:bg-cyan-500 rounded-lg font-medium shadow border border-cyan-400 transition-all duration-300 text-center">
+                <i class="fas fa-bell mr-1"></i>Reminders
               </a>
               <button ng-click="editEvent(event)" 
-                      class="px-3 py-1 text-sm text-emerald-300 hover:bg-slate-600 rounded-lg transition-colors white-border-btn">
-                Edit
+                      class="flex-1 px-3 py-2 text-sm text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg font-medium shadow border border-emerald-400 transition-all duration-300">
+                <i class="fas fa-edit mr-1"></i>Edit
               </button>
               <button ng-click="deleteEvent(event.id)" 
-                      class="px-3 py-1 text-sm text-red-400 hover:bg-slate-600 rounded-lg transition-colors white-border-btn">
-                Delete
+                      class="flex-1 px-3 py-2 text-sm text-white bg-red-600 hover:bg-red-500 rounded-lg font-medium shadow border border-red-400 transition-all duration-300">
+                <i class="fas fa-trash mr-1"></i>Delete
               </button>
             </div>
+          </div>
+          <div ng-if="(events | filter:searchEvents).length === 0 && events.length > 0" class="col-span-full text-center text-gray-300 py-8">
+            <i class="fas fa-search text-4xl text-gray-500 mb-4"></i>
+            <p class="text-lg">No events match your search.</p>
+            <p class="text-sm text-gray-400">Try searching with a different event name or description.</p>
+          </div>
+          <div ng-if="events.length === 0" class="col-span-full text-center text-gray-300 py-8">
+            <i class="fas fa-calendar-plus text-4xl text-gray-500 mb-4"></i>
+            <p class="text-lg">No events created yet.</p>
+            <p class="text-sm text-gray-400">Click the Create button to create your first event.</p>
           </div>
         </div>
       </div>
@@ -249,6 +312,41 @@
     }
   .custom-event-bg {
     background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+  }
+
+  /* Event card specific styles */
+  .event-card {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .event-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Grid responsive adjustments */
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr !important;
+    }
+    
+    .event-card {
+      margin-bottom: 1rem;
+    }
+    
+    .flex.gap-2.pt-2 button,
+    .flex.gap-2.pt-2 a {
+      font-size: 0.8rem !important;
+      padding: 0.4rem 0.6rem !important;
+    }
   }
 </style>
 

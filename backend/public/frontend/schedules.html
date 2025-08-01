@@ -3,8 +3,111 @@
 <head>
   <title>WhatsPro - Schedules</title>
   <link rel="stylesheet" href="dark-theme.css">
+  <style>
+    .white-border-btn { border: 2px solid #fff !important; }
+  </style>
 </head>
-<body class="schedules-page">
+<body class="schedules-page overflow-hidden" ng-class="{'overflow-hidden': createScheduleModalVisible}">
+
+<!-- Create Schedule Modal (direct child of body, perfectly centered) -->
+<div ng-if="createScheduleModalVisible" class="fixed inset-0 z-50 flex items-start justify-center min-h-screen overflow-y-auto" style="background: rgba(15,23,42,0.7); z-index: 99999 !important;" ng-click="hideCreateScheduleModal()">
+  <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative custom-event-bg mt-24" ng-click="$event.stopPropagation()">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-white">{{isEditMode ? 'Edit Schedule' : 'Create New Schedule'}}</h3>
+      <button class="text-gray-400 hover:text-white transition-colors close-x-button" style="border: none !important; outline: none !important; background: transparent !important;" ng-click="hideCreateScheduleModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <form name="scheduleForm" ng-submit="saveSchedule();" class="space-y-4" novalidate>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-cyan-300">Short Name (Optional)</label>
+        <input type="text" ng-model="formData.name" class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-gray-600 focus:to-gray-700 transition-all duration-300" placeholder="Enter a short name for this schedule (optional)">
+        <small class="text-gray-300">If not provided, the first 30 characters of the message will be used</small>
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-cyan-300">Message</label>
+        <textarea ng-model="formData.message" class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-gray-600 focus:to-gray-700 transition-all duration-300" placeholder="Enter message" required rows="4"></textarea>
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-cyan-300">Date & Time</label>
+        <input type="datetime-local" ng-model="formData.time" class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-gray-600 focus:to-gray-700 transition-all duration-300" required>
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-cyan-300">Select Groups</label>
+        <div class="border-2 border-gray-600 bg-gradient-to-r from-gray-700 to-gray-800 rounded-lg p-2 max-h-40 overflow-y-auto">
+          <div ng-repeat="g in groups" class="flex items-center p-1 hover:bg-gray-600 rounded transition-colors">
+            <input type="checkbox" id="group-{{g.groupId}}" ng-model="g.selected" class="h-4 w-4 text-cyan-400 bg-gray-600 border-gray-500 rounded focus:ring-cyan-300">
+            <label for="group-{{g.groupId}}" class="ml-2 text-sm text-gray-200">{{g.name}}</label>
+          </div>
+          <div ng-if="groups.length === 0" class="text-gray-400 text-sm p-2">No groups available. Please add groups first.</div>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-cyan-300">Media (Optional)</label>
+        <div class="space-y-3">
+          <!-- Media Method Selection -->
+          <div class="flex space-x-4">
+            <label class="flex items-center">
+              <input type="radio" ng-model="formData.imageMethod" value="library" name="imageMethod" class="h-4 w-4 text-cyan-400 bg-gray-600 border-gray-500 focus:ring-cyan-300">
+              <span class="ml-2 text-sm text-gray-200">From Media Library</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" ng-model="formData.imageMethod" value="url" name="imageMethod" class="h-4 w-4 text-cyan-400 bg-gray-600 border-gray-500 focus:ring-cyan-300">
+              <span class="ml-2 text-sm text-gray-200">External URL</span>
+            </label>
+          </div>
+          
+          <!-- Media Library Selection -->
+          <div ng-if="formData.imageMethod === 'library'">
+            <button type="button" ng-click="openMediaSelector()" class="w-full px-4 py-2 bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Select from Media Library
+            </button>
+            <!-- Show selected media -->
+            <div ng-if="formData.selectedMedia" class="mt-2 p-3 bg-gradient-to-r from-blue-700 to-blue-800 rounded-lg border border-blue-600">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <img ng-src="{{getImageUrl(formData.selectedMedia.url)}}" alt="Selected media" class="h-12 w-12 object-cover rounded border border-blue-500">
+                  <span class="text-sm text-blue-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Selected: {{ formData.selectedMedia.name }}
+                  </span>
+                </div>
+                <button type="button" ng-click="clearSelectedMedia()" class="text-red-400 hover:text-red-300 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- URL Input Option -->
+          <div ng-if="formData.imageMethod === 'url'">
+            <input type="url" ng-model="formData.imageUrl" name="scheduleImageUrl" class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-gray-600 focus:to-gray-700 transition-all duration-300" placeholder="Enter image URL (e.g., https://example.com/image.jpg)">
+          </div>
+          
+          <!-- Image Preview -->
+          <div ng-if="formData.imageUrl && formData.imageMethod === 'url'" class="mt-2">
+            <img ng-src="{{formData.imageUrl}}" alt="Image Preview" class="h-20 w-20 object-cover rounded-md border-2 border-gray-600" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="text-red-400 text-sm mt-1" style="display: none;">Failed to load image from URL</div>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-between">
+        <div class="flex space-x-3">
+          <button type="submit" class="px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg border-2 border-emerald-400 shadow-md hover:from-emerald-500 hover:to-teal-500 hover:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all duration-300 white-border-btn" ng-disabled="scheduleForm.$invalid || !hasSelectedGroups()">{{isEditMode ? 'Update Schedule' : 'Create Schedule'}}</button>
+          <button type="button" ng-click="hideCreateScheduleModal()" class="px-6 py-2 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-lg hover:from-gray-400 hover:to-gray-500 transition-all duration-300 shadow-md border-2 border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 white-border-btn">Cancel</button>
+        </div>
+        <span class="text-red-400" ng-if="scheduleError">{{scheduleError}}</span>
+      </div>
+    </form>
+  </div>
+</div>
 <div class="flex h-screen dark-theme">
   <!-- Sidebar -->
   <div ng-include="'sidebar.html?v=' + Date.now()" ng-controller="SidebarController"></div>
@@ -14,7 +117,11 @@
     <!-- Top Header -->
     <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
       <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">Group Schedules</h2>
+        <h2 class="font-semibold text-white" style="padding-left:50px;">Group Schedules</h2>
+        <button ng-click="showCreateScheduleModal()" class="ml-4 p-2 rounded-full bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-500 hover:to-teal-600 text-white shadow-lg transition border-2 border-teal-400 hover:border-teal-300" title="Create Schedule">
+          <i class="fas fa-plus"></i>
+          <span class="ml-2">Create</span>
+        </button>
       </div>
     </header>
 
@@ -68,216 +175,135 @@
     </style>
 
     <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto dark-theme-content p-6" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
-      <!-- Schedule Form -->
-      <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-2 mb-6 max-w-2xl mx-auto border-2 border-slate-600" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
-        <h3 class="text-xl font-semibold text-white mb-6">Create New Schedule</h3>
-        <form name="scheduleForm" ng-submit="addSchedule()" class="space-y-4" novalidate>
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-cyan-300">Short Name (Optional)</label>
-            <input type="text" ng-model="newSchedule.name"
-                   name="name"
-                   class="dark-theme-input w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-gray-600 focus:to-gray-700 transition-all duration-300"
-                   placeholder="Enter a short name for this schedule (optional)">
-            <small class="text-gray-300">If not provided, the first 30 characters of the message will be used</small>
-          </div>
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-cyan-300">Message</label>
-            <textarea ng-model="newSchedule.message"
-                      name="message"
-                      class="dark-theme-input w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-gray-600 focus:to-gray-700 transition-all duration-300"
-                      placeholder="Enter message" required rows="4"></textarea>
-            <div ng-if="(scheduleForm.message.$touched || scheduleForm.$submitted) && scheduleForm.message.$invalid" class="text-red-400 text-sm">
-              Message is required
-            </div>
-          </div>
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-cyan-300">Date & Time</label>
-            <input type="datetime-local" ng-model="newSchedule.time" 
-                   name="scheduleTime"
-                   class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-gray-600 focus:to-gray-700 transition-all duration-300" 
-                   required>
-            <div ng-if="(scheduleForm.scheduleTime.$touched || scheduleForm.$submitted) && scheduleForm.scheduleTime.$invalid" class="text-red-400 text-sm">
-              Date & Time is required
-            </div>
-          </div>            <div class="space-y-2">
-            <label class="block text-sm font-medium text-cyan-300">Select Groups</label>
-            <div class="border-2 border-gray-600 bg-gradient-to-r from-gray-700 to-gray-800 rounded-lg p-2 max-h-40 overflow-y-auto">
-              <div ng-repeat="g in groups" class="flex items-center p-1 hover:bg-gray-600 rounded transition-colors">
-                <input type="checkbox" 
-                       id="group-{{g.groupId}}" 
-                       ng-model="g.selected" 
-                       class="h-4 w-4 text-cyan-400 bg-gray-600 border-gray-500 rounded focus:ring-cyan-300">
-                <label for="group-{{g.groupId}}" class="ml-2 text-sm text-gray-200">
-                  {{g.name}}
-                </label>
-              </div>
-              <div ng-if="groups.length === 0" class="text-gray-400 text-sm p-2">
-                No groups available. Please add groups first.
-              </div>
-            </div>
-            <div ng-if="!hasSelectedGroups() && scheduleForm.$submitted" class="text-red-400 text-sm">
-              Please select at least one group
-            </div>
-          </div>
-          <div class="space-y-2">
-            <label class="block text-sm font-medium text-cyan-300">Media (Optional)</label>
-            <div class="space-y-3">
-              <!-- Media Method Selection -->
-              <div class="flex space-x-4">
-                <label class="flex items-center">
-                  <input type="radio" ng-model="newSchedule.imageMethod" value="library" 
-                         name="imageMethod" class="h-4 w-4 text-cyan-400 bg-gray-600 border-gray-500 focus:ring-cyan-300">
-                  <span class="ml-2 text-sm text-gray-200">From Media Library</span>
-                </label>
-                <label class="flex items-center">
-                  <input type="radio" ng-model="newSchedule.imageMethod" value="url" 
-                         name="imageMethod" class="h-4 w-4 text-cyan-400 bg-gray-600 border-gray-500 focus:ring-cyan-300">
-                  <span class="ml-2 text-sm text-gray-200">External URL</span>
-                </label>
-              </div>
-              
-              <!-- Media Library Selection -->
-              <div ng-if="newSchedule.imageMethod === 'library'">
-                <button type="button" ng-click="openMediaSelector()" 
-                        class="w-full px-4 py-2 bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all duration-300">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  Select from Media Library
-                </button>
-                <!-- Show selected media -->
-                <div ng-if="newSchedule.selectedMedia" class="mt-2 p-3 bg-gradient-to-r from-blue-700 to-blue-800 rounded-lg border border-blue-600">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                      <img ng-src="{{getImageUrl(newSchedule.selectedMedia.url)}}" 
-                           alt="Selected media" 
-                           class="h-12 w-12 object-cover rounded border border-blue-500">                    <span class="text-sm text-blue-200">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                      </svg>
-                      Selected: {{ newSchedule.selectedMedia.name }}
-                    </span>
-                    </div>
-                    <button type="button" ng-click="clearSelectedMedia()" 
-                            class="text-red-400 hover:text-red-300 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- URL Input Option -->
-              <div ng-if="newSchedule.imageMethod === 'url'">
-                <input type="url" ng-model="newSchedule.imageUrl" 
-                       name="scheduleImageUrl"
-                       class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-gray-600 focus:to-gray-700 transition-all duration-300"
-                       placeholder="Enter image URL (e.g., https://example.com/image.jpg)">
-              </div>
-              
-              <!-- Image Preview -->
-              <div ng-if="newSchedule.imageUrl && newSchedule.imageMethod === 'url'" class="mt-2">
-                <img ng-src="{{newSchedule.imageUrl}}" 
-                     alt="Image Preview" 
-                     class="h-20 w-20 object-cover rounded-md border-2 border-gray-600"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div class="text-red-400 text-sm mt-1" style="display: none;">
-                  Failed to load image from URL
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Error message display -->
-          <div class="mb-4" ng-if="scheduleError">
-            <div class="bg-gradient-to-r from-red-700 to-red-800 border border-red-400 text-red-200 px-4 py-3 rounded-lg">
-              {{scheduleError}}
-            </div>
-          </div>
-          
-          <!-- Success message display -->
-          <div class="mb-4" ng-if="success">
-            <div class="bg-gradient-to-r from-emerald-700 to-emerald-800 border border-emerald-400 text-emerald-200 px-4 py-3 rounded-lg">
-              {{success}}
-            </div>
-          </div>
-          
-          <div class="flex items-center justify-between">
-            <button type="submit" 
-                    class="px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg hover:from-emerald-500 hover:to-teal-500 transition-all duration-300 shadow-md disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed border-2 border-white"
-                    style="border: 2px solid white !important;"
-                    ng-disabled="(scheduleForm.message.$invalid || scheduleForm.scheduleTime.$invalid) || !hasSelectedGroups()">
-              Add Schedule
-            </button>
-          </div>
-        </form>
-      </div>
-
+    <main class="flex-1 overflow-y-auto p-2 custom-event-bg">
+      <div class="max-w-7xl mx-auto">
       <!-- Schedules List -->
-      <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-2 max-w-2xl mx-auto border-2 border-slate-600" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
-        <div ng-if="schedules.length === 0" class="text-center text-gray-300 py-4">
-          No schedules added yet.
+      <div style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;" class="rounded-xl shadow-2xl p-4 sm:p-6 mb-6 w-full mx-auto border-2 border-slate-600 custom-event-bg">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <h2 class="text-xl font-semibold text-white">Group Schedules</h2>
+            <span ng-if="searchQuery" class="text-sm text-gray-400 bg-gray-700 px-2 py-1 rounded-full">
+              {{filteredSchedules.length}} of {{schedules.length}} results
+            </span>
+            <span ng-if="!searchQuery && schedules.length > 0" class="text-sm text-gray-400">
+              {{schedules.length}} total schedule{{schedules.length === 1 ? '' : 's'}}
+            </span>
+          </div>
+          <!-- Search Box -->
+          <div class="relative w-full sm:w-80" role="search">
+            <label for="search-group-schedules" class="sr-only">Search schedules by name, message or group</label>
+            <input type="text" id="search-group-schedules" ng-model="searchQuery" 
+                   placeholder="Search by name, message or group... (Ctrl+K)" 
+                   class="w-full px-4 py-2 pl-10 pr-10 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-gray-600 focus:to-gray-700 transition-all duration-300 text-sm"
+                   ng-keydown="$event.keyCode === 27 && clearSearch()"
+                   aria-describedby="search-help"
+                   autocomplete="off">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 transition-colors duration-300" 
+               ng-class="{'text-cyan-400': searchQuery}" aria-hidden="true"></i>
+            <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <i ng-if="isSearching" class="fas fa-spinner fa-spin text-gray-400" aria-label="Searching..." aria-hidden="true"></i>
+              <button ng-if="searchQuery && !isSearching" ng-click="clearSearch()" 
+                      class="text-gray-400 hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded p-1"
+                      aria-label="Clear search" title="Clear search (Esc)">
+                <i class="fas fa-times" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div id="search-help" class="sr-only">Search through your group schedules by typing a schedule name, message content or group name</div>
+          </div>
         </div>
-        <div class="space-y-3">
-          <div ng-repeat="s in schedules | orderBy:'-time'" 
-               class="p-3 bg-gradient-to-r from-slate-600 to-slate-700 rounded-lg border border-slate-500 hover:from-slate-500 hover:to-slate-600 transition-all duration-300 schedule-item">
-            <!-- Mobile Layout: Stack content vertically -->
-            <div class="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-              <!-- Main Content -->
-              <div class="flex-grow schedule-content">
-                <span class="font-medium text-white block">{{s.name || (s.message.substring(0, 30) + (s.message.length > 30 ? '...' : ''))}}</span>
-                <div class="text-sm text-gray-300 mt-1">
-                  <div>{{s.time | date:'MMM dd, yyyy h:mm:ss a'}}</div>
-                  <div>Group: {{getGroupName(s.groupId)}}</div>
-                </div>
-                <div ng-if="s.name && s.message.length > 30" class="text-xs text-gray-400 mt-1" title="{{s.message}}">
-                  {{s.message.substring(0, 50) + (s.message.length > 50 ? '...' : '')}}
-                </div>
+        <!-- Cards Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div ng-repeat="s in schedules | filter:searchSchedules | orderBy:'-time'" 
+               class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl border-2 border-white/10 shadow-xl p-4 transition-all duration-300 hover:shadow-2xl hover:border-white/20 schedule-card">
+            <!-- Mobile Header: Schedule Name and Status -->
+            <div class="flex justify-between items-start mb-3">
+              <div class="flex-1">
+                <h3 class="font-bold text-lg text-white tracking-wide break-words">
+                  {{s.name || (s.message.substring(0, 30) + (s.message.length > 30 ? '...' : ''))}}
+                </h3>
+                <p class="text-xs text-gray-400 mt-1">
+                  <i class="fas fa-clock mr-1"></i>
+                  {{ s.time | date:'MMM dd, yyyy HH:mm' }}
+                </p>
+                <p class="text-xs text-cyan-300 mt-1">
+                  <i class="fas fa-users mr-1"></i>
+                  Group: {{getGroupName(s.groupId)}}
+                </p>
               </div>
-              
-              <!-- Right side: Image + Actions -->
-              <div class="flex items-center justify-between sm:flex-col sm:items-end sm:space-y-2 schedule-actions">
-                <!-- Image and Status in mobile horizontal layout -->
-                <div class="flex items-center space-x-3">
-                  <!-- Thumbnail Image -->
-                  <div ng-if="s.media" class="schedule-image-container">
-                    <img ng-src="{{getImageUrl(s.media)}}" 
-                         alt="Schedule Image" 
-                         class="schedule-image cursor-pointer"
-                         ng-click="showImagePopup(getImageUrl(s.media))"
-                         onerror="angular.element(this).scope().onImageError(event)"
-                         onload="angular.element(this).scope().onImageLoad(event)">
-                    <div class="schedule-image-placeholder bg-gray-200 rounded-md flex items-center justify-center border border-gray-300 text-xs text-gray-500">
-                      📷
-                    </div>
-                  </div>
-                  
-                  <!-- Status Badge -->
-                  <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full flex-shrink-0"
-                        ng-class="{'bg-green-100 text-green-800': !s.sent, 'bg-gray-100 text-gray-800': s.sent}">
-                    {{s.sent ? 'Sent' : 'Scheduled'}}
-                  </span>
-                </div>
-                
-                <!-- Action Buttons -->
-                <div class="flex space-x-2 flex-shrink-0">
-                  <!-- Edit Button -->
-                  <button ng-click="showEditModal(s)" 
-                          ng-if="!s.sent"
-                          class="px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition">
-                    Edit
-                  </button>
-                  <!-- Delete Button -->
-                  <button ng-click="deleteSchedule(s.id)" 
-                          class="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded-lg transition">
-                    Delete
-                  </button>
+              <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full ml-2 flex-shrink-0"
+                ng-class="{'bg-yellow-600 text-yellow-100': !s.sent, 'bg-teal-600 text-teal-100': s.sent}">
+                {{ s.sent ? 'Sent' : 'Scheduled' }}
+              </span>
+            </div>
+            
+            <!-- Media Preview (if available) -->
+            <div ng-if="s.media" class="mb-3">
+              <div class="relative w-full h-32 bg-slate-700 rounded-lg border border-white/20 overflow-hidden cursor-pointer" 
+                   ng-click="showImagePopup(getImageUrl(s.media))">
+                <img ng-src="{{getImageUrl(s.media)}}" alt="Media Preview" 
+                     class="w-full h-full object-cover" 
+                     onerror="angular.element(this).scope().onImageError(event)"
+                     onload="angular.element(this).scope().onImageLoad(event)">
+                <div class="absolute inset-0 bg-slate-700 flex items-center justify-center" style="display: none;">
+                  <i class="fas fa-image text-gray-400 text-2xl"></i>
                 </div>
               </div>
             </div>
+            
+            <!-- Message Content -->
+            <div class="mb-4">
+              <p class="text-sm text-gray-300 leading-relaxed" 
+                 ng-class="{'line-clamp-3': !s.showFullMessage}" 
+                 title="{{s.message}}">{{ s.message }}</p>
+              <button ng-if="s.message.length > 100" 
+                      ng-click="s.showFullMessage = !s.showFullMessage"
+                      class="text-cyan-400 hover:text-cyan-300 text-xs mt-1 transition-colors">
+                {{ s.showFullMessage ? 'Show less' : 'Show more' }}
+              </button>
+            </div>
+            
+            <!-- Media Indicator -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <span ng-if="s.media" class="text-teal-300 flex items-center text-xs font-medium">
+                  <i class="fas fa-paperclip mr-1"></i>Media attached
+                </span>
+                <span ng-if="!s.media" class="text-gray-500 text-xs">Text only</span>
+              </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex gap-2 pt-2 border-t border-white/10" ng-if="!s.sent">
+              <button ng-click="showEditScheduleModal(s)" 
+                      class="flex-1 px-3 py-2 text-sm text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg font-medium shadow border border-emerald-400 transition-all duration-300">
+                <i class="fas fa-edit mr-1"></i>Edit
+              </button>
+              <button ng-click="deleteSchedule(s.id)" 
+                      class="flex-1 px-3 py-2 text-sm text-white bg-red-600 hover:bg-red-500 rounded-lg font-medium shadow border border-red-400 transition-all duration-300">
+                <i class="fas fa-trash mr-1"></i>Delete
+              </button>
+            </div>
+            
+            <!-- Sent Status Actions -->
+            <div class="flex gap-2 pt-2 border-t border-white/10" ng-if="s.sent">
+              <button ng-click="deleteSchedule(s.id)" 
+                      class="w-full px-3 py-2 text-sm text-white bg-red-600 hover:bg-red-500 rounded-lg font-medium shadow border border-red-400 transition-all duration-300">
+                <i class="fas fa-trash mr-1"></i>Delete
+              </button>
+            </div>
+          </div>
+          <div ng-if="filteredSchedules.length === 0 && schedules.length > 0" class="col-span-full text-center text-gray-300 py-8">
+            <i class="fas fa-search text-4xl text-gray-500 mb-4"></i>
+            <p class="text-lg">No schedules match your search.</p>
+            <p class="text-sm text-gray-400">Try searching with a different schedule name, message content or group name.</p>
+          </div>
+          <div ng-if="schedules.length === 0" class="col-span-full text-center text-gray-300 py-8">
+            <i class="fas fa-calendar-plus text-4xl text-gray-500 mb-4"></i>
+            <p class="text-lg">No schedules created yet.</p>
+            <p class="text-sm text-gray-400">Click the Create button to schedule your first group message.</p>
           </div>
         </div>
+      </div>
       </div>
     </main>
   </div>
@@ -299,7 +325,7 @@
 </div>
 
 <!-- Media Selector Modal -->
-<div ng-if="showMediaSelector" class="fixed" style="top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.5) !important; display: flex !important; align-items: center !important; justify-content: center !important; z-index: 9999 !important;" ng-click="closeMediaSelector()">
+<div ng-if="showMediaSelector" class="fixed" style="top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.5) !important; display: flex !important; align-items: center !important; justify-content: center !important; z-index: 999999 !important;" ng-click="closeMediaSelector()">
   <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700" style="width: 90% !important; max-width: 600px !important; max-height: 80vh !important; overflow-y: auto !important; background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;" ng-click="$event.stopPropagation()">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-xl font-semibold text-white">Select Media from Library</h2>
@@ -344,3 +370,74 @@
     </div>
   </div>
 </div>
+
+<!-- Toast Notification -->
+<div ng-if="toast.show" class="fixed top-4 right-4 z-50 transition-all duration-300 ease-in-out">
+    <div class="rounded-lg shadow-lg px-6 py-4 max-w-sm" 
+         ng-class="{
+             'bg-green-600 text-white': toast.type === 'success',
+             'bg-red-600 text-white': toast.type === 'error',
+             'bg-yellow-600 text-white': toast.type === 'warning',
+             'bg-blue-600 text-white': toast.type === 'info'
+         }">
+        <div class="flex items-center">
+            <i class="fas mr-3" 
+               ng-class="{
+                   'fa-check-circle': toast.type === 'success',
+                   'fa-exclamation-circle': toast.type === 'error',
+                   'fa-exclamation-triangle': toast.type === 'warning',
+                   'fa-info-circle': toast.type === 'info'
+               }"></i>
+            <span>{{toast.message}}</span>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div ng-if="showConfirmModal" class="fixed inset-0 z-50 flex items-center justify-center min-h-screen overflow-y-auto" style="background: rgba(15,23,42,0.7); z-index: 99999 !important;" ng-click="handleCancel()">
+    <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important; min-height: 0; margin-top: 4rem; margin-bottom: 2rem;" ng-click="$event.stopPropagation()">
+      <!-- Close X button at top -->
+      <button type="button" class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl font-bold close-x-button" style="border: none !important; outline: none !important; background: transparent !important;" ng-click="handleCancel()">✕</button>
+      
+      <div class="pt-4">
+        <div class="flex items-center mb-4">
+          <div class="flex-shrink-0 mr-3">
+            <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-white">{{confirmModal.title}}</h3>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <p class="text-gray-300">{{confirmModal.message}}</p>
+          <p class="text-sm text-gray-400 mt-2">This action cannot be undone.</p>
+        </div>
+        
+        <div class="flex justify-end space-x-3">
+          <button 
+            ng-click="handleCancel()"
+            class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg text-gray-200 font-semibold transition border border-gray-400">
+            {{confirmModal.cancelText}}
+          </button>
+          <button 
+            ng-click="handleConfirm()"
+            class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold transition">
+            {{confirmModal.confirmText}}
+          </button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<style>
+  /* Custom event background styling - matching events page */
+  .custom-event-bg {
+    background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+  }
+</style>
+
+</body>
+</html>

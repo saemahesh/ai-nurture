@@ -3,6 +3,42 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
   NotificationService.initToast($scope);
   NotificationService.initConfirmModal($scope);
 
+  // Sidebar scroll management - ensure status item is visible
+  $scope.ensureSidebarScroll = function() {
+    setTimeout(function() {
+      var statusNavItem = document.querySelector('a[href="#/status"]');
+      var sidebarNav = document.getElementById('desktop-nav');
+      
+      if (statusNavItem && sidebarNav) {
+        var itemOffsetTop = statusNavItem.offsetTop;
+        var sidebarHeight = sidebarNav.clientHeight;
+        var itemHeight = statusNavItem.offsetHeight;
+        
+        // Calculate scroll position to show the status item
+        var scrollPosition = itemOffsetTop - sidebarHeight + itemHeight + 20;
+        
+        // Ensure we don't scroll beyond bounds
+        scrollPosition = Math.max(0, scrollPosition);
+        
+        sidebarNav.scrollTo({
+          top: scrollPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  };
+
+  // Auto-scroll sidebar when status page loads
+  $scope.$on('$viewContentLoaded', function() {
+    $scope.ensureSidebarScroll();
+  });
+
+  $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+    if (current && current.controller === 'StatusController') {
+      $scope.ensureSidebarScroll();
+    }
+  });
+
   $scope.status = {
     caption: '',
     textColor: '#000000',

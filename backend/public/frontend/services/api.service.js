@@ -119,6 +119,9 @@ angular.module('autopostWaApp.core').factory('ApiService', function($http) {
     saveUserSettings: function(settings) {
       return $http.post(API_BASE + '/users/settings', settings, { withCredentials: true });
     },
+    testConnection: function(settings) {
+      return $http.post(API_BASE + '/users/test-connection', settings, { withCredentials: true });
+    },
 
     // Status Scheduler
     getStatuses: function() {

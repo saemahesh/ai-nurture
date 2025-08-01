@@ -9,8 +9,146 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
   $scope.desktopScrollDirection = 'down'; // Track scroll direction for desktop
   $scope.mobileScrollDirection = 'down';  // Track scroll direction for mobile
   
+  // Sidebar scroll position management
+  $scope.sidebarScrollPosition = 0;
+  $scope.scrollRetryCount = 0;
+  $scope.maxScrollRetries = 3;
+  
   // Initialize notification service
   NotificationService.initToast($scope);
+  
+  // Pages that are below direct-schedule in sidebar
+  var pagesRequiringSidebarScroll = ['/status', '/users', '/settings'];
+  
+  // Function to scroll sidebar to show active item with retry mechanism
+  $scope.scrollToActiveItem = function(retryCount) {
+    retryCount = retryCount || 0;
+    
+    setTimeout(function() {
+      var currentPath = $location.path();
+      
+      // Check if current page requires sidebar scroll management
+      var requiresScroll = pagesRequiringSidebarScroll.some(function(page) {
+        return currentPath.indexOf(page) === 0;
+      });
+      
+      if (requiresScroll || currentPath.indexOf('/direct-schedule') === 0) {
+        // Handle both desktop and mobile sidebars
+        var activeItem = document.querySelector('.nav-item.active');
+        var desktopSidebar = document.getElementById('desktop-nav');
+        var mobileSidebar = document.getElementById('mobile-nav');
+        
+        if (activeItem) {
+          var scrollSuccess = false;
+          
+          // Scroll desktop sidebar
+          if (desktopSidebar) {
+            scrollSuccess = $scope.scrollSidebarToItem(activeItem, desktopSidebar) || scrollSuccess;
+          }
+          
+          // Scroll mobile sidebar
+          if (mobileSidebar) {
+            scrollSuccess = $scope.scrollSidebarToItem(activeItem, mobileSidebar) || scrollSuccess;
+          }
+          
+          // Retry if scroll failed and we haven't exceeded max retries
+          if (!scrollSuccess && retryCount < $scope.maxScrollRetries) {
+            setTimeout(function() {
+              $scope.scrollToActiveItem(retryCount + 1);
+            }, 200);
+          }
+        } else if (retryCount < $scope.maxScrollRetries) {
+          // If no active item found, retry
+          setTimeout(function() {
+            $scope.scrollToActiveItem(retryCount + 1);
+          }, 200);
+        }
+      }
+    }, retryCount === 0 ? 100 : 0);
+  };
+  
+  // Helper function to scroll a specific sidebar container with validation
+  $scope.scrollSidebarToItem = function(activeItem, sidebarContainer) {
+    if (!activeItem || !sidebarContainer) {
+      return false;
+    }
+    
+    try {
+      var itemOffsetTop = activeItem.offsetTop;
+      var sidebarHeight = sidebarContainer.clientHeight;
+      var itemHeight = activeItem.offsetHeight;
+      var sidebarScrollHeight = sidebarContainer.scrollHeight;
+      
+      // Validate measurements
+      if (sidebarHeight === 0 || sidebarScrollHeight === 0) {
+        return false;
+      }
+      
+      // For pages below direct-schedule, scroll to bottom area
+      var currentPath = $location.path();
+      var isPageBelowDirectSchedule = pagesRequiringSidebarScroll.some(function(page) {
+        return currentPath.indexOf(page) === 0;
+      });
+      
+      var scrollPosition;
+      if (isPageBelowDirectSchedule) {
+        // Scroll towards bottom to show status and other items below direct-schedule  
+        scrollPosition = Math.max(0, sidebarScrollHeight - sidebarHeight + 50);
+      } else {
+        // Center the active item
+        scrollPosition = Math.max(0, itemOffsetTop - (sidebarHeight / 2) + (itemHeight / 2));
+      }
+      
+      // Ensure we don't scroll beyond bounds
+      scrollPosition = Math.max(0, Math.min(scrollPosition, sidebarScrollHeight - sidebarHeight));
+      
+      sidebarContainer.scrollTo({
+        top: scrollPosition,
+        behavior: 'smooth'
+      });
+      
+      $scope.sidebarScrollPosition = scrollPosition;
+      return true;
+    } catch (error) {
+      console.warn('Sidebar scroll error:', error);
+      return false;
+    }
+  };
+  
+  // Debounce helper function
+  $scope.debounce = function(func, wait) {
+    var timeout;
+    return function() {
+      var context = this, args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(function() {
+        func.apply(context, args);
+      }, wait);
+    };
+  };
+
+  // Debounced scroll function for performance
+  $scope.debouncedScrollToActive = $scope.debounce($scope.scrollToActiveItem, 150);
+  
+  // Watch for route changes to manage sidebar scroll
+  $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+    $scope.debouncedScrollToActive();
+  });
+  
+  // Initial scroll on load
+  $scope.$on('$viewContentLoaded', function() {
+    $scope.scrollToActiveItem();
+  });
+  
+  // Handle window resize to recalculate scroll positions
+  angular.element(window).on('resize', function() {
+    $scope.debouncedScrollToActive();
+  });
+  
+  // Cleanup event listeners on destroy
+  $scope.$on('$destroy', function() {
+    angular.element(window).off('resize');
+  });
   
   // Get user info from the auth service
   AuthService.me().then(function(response) {
@@ -127,6 +265,8 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
       if (btn) btn.blur();
       // Check scroll indicators after sidebar opens
       $scope.checkScrollIndicators();
+      // Auto-scroll to active item in mobile sidebar
+      $scope.scrollToActiveItem();
     }, 200);
   };
   $scope.closeSidebar = function() {
@@ -276,6 +416,10 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
   $scope.$watch('sidebarOpen', function(isOpen) {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      // Auto-scroll to active item when mobile sidebar opens
+      setTimeout(function() {
+        $scope.scrollToActiveItem();
+      }, 300);
     } else {
       document.body.style.overflow = '';
     }

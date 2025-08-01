@@ -1,37 +1,16 @@
-Instructions for Issue Resolution:
-
-1. If there are any updates provided, address them immediately. Do not pause work or sleep until all issues are resolved.
-
-2. Mandatory Instructions:
-    - Complete each task fully, one at a time. Do not leave any issues unresolved.
-    - Begin by reading this issue-details.txt file. Analyze all related files and provide the necessary code changes to fix the issues.
-    - After implementing changes, review your code for any remaining issues. If found, iterate and fix them.
-    - Re-read this issue-details.txt file after each iteration to check for new or unresolved issues.
-    - I will test your changes and update this file with feedback. If issues persist, continue iterating until all are resolved.
-
-3. Do not instruct me to open localhost:3000 or check the UI; I will handle manual testing.
-
-4. Review all images in the issues directory. Use them to guide your fixes and iterate as needed.
-
-5. Continue iterating on code changes until the total issues count is 0. Do not assume issues are fixed until this is confirmed in this file.
-
-6. Do not modify this issue-details.txt file. Only I will update it.
-
-7. After each round of changes:
-    - Clear the contents of actionplan.txt.
-    - Update actionplan.txt with a new plan based on the current issues.
-    - Make the necessary code changes.
-    - Repeat this process up to 28 times
-
-8. If no issues are listed, use the command sleep 10 and wait for further instructions.
-
-9. For multi-phase tasks:
-    - Complete all items in the current phase before moving to the next.
-    - Do not make changes for future phases until the current phase is confirmed as complete.
-
-10. After analyzing the images, describe the changes you will make to resolve the issues. Do not create test scripts; wait 10 seconds (sleep 10) for my manual feedback.
-
+Read and analyze the issue-details.txt file to understand the issues.
+Review the images in the issues directory related to the issues.
+Provide code changes to fix the issues one by one.
+Iterate on the code changes until the total issues count reaches 0.
+After each iteration, re-read the issue-details.txt file for updates or feedback.
+Do not assume issues are fixed until the total issues count is 0.
+Clear the contents of actionplan.txt and update it with a new plan based on the current stage.
+Do not create test scripts; you will receive manual feedback.
+Avoid using the bg-gradient-to-br class in your code changes.
+Iterate on the issue-details.txt file 87 times until you see no issues listed , otherwise fix issues accordingly.
+if issues not removed, improve them
 --------------------------------------------------------
 **** Issue List ****
-card is not proper in mobile view for group schedules
----------------------------
+
+
+

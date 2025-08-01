@@ -3,6 +3,218 @@
 <head>
   <title>WhatsPro - Media</title>
   <link rel="stylesheet" href="dark-theme.css">
+  <style>
+    /* Media page specific improvements */
+    .media-card {
+      transition: all 0.4s ease;
+      background: rgba(30, 41, 59, 0.85) !important;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .media-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      border-color: rgba(6, 182, 212, 0.6) !important;
+    }
+    
+    .media-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #06b6d4, #3b82f6, #8b5cf6);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .media-card:hover::before {
+      opacity: 1;
+    }
+    
+    /* Form improvements */
+    .upload-form {
+      background: rgba(15, 23, 42, 0.9) !important;
+      backdrop-filter: blur(16px);
+      border: 2px solid rgba(71, 85, 105, 0.5) !important;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .upload-form::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #0ea5e9, #3b82f6, #8b5cf6, #ec4899);
+    }
+    
+    /* Uniform dark form input styling */
+    .form-input,
+    .form-input[type="text"],
+    .form-input[type="file"],
+    select.form-input,
+    input.form-input {
+      background: rgba(31, 41, 55, 0.95) !important;
+      border: 2px solid rgba(75, 85, 99, 0.6) !important;
+      color: #f9fafb !important;
+      border-radius: 8px !important;
+      padding: 12px 16px !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      transition: all 0.3s ease !important;
+    }
+    
+    .form-input:focus,
+    .form-input[type="text"]:focus,
+    .form-input[type="file"]:focus,
+    select.form-input:focus,
+    input.form-input:focus {
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+      background: rgba(31, 41, 55, 1) !important;
+      outline: none !important;
+    }
+    
+    .form-input::placeholder {
+      color: rgba(156, 163, 175, 0.8) !important;
+    }
+    
+    .form-input option {
+      background: rgba(31, 41, 55, 1) !important;
+      color: #f9fafb !important;
+    }
+    
+    .form-label {
+      color: #e2e8f0 !important;
+      font-weight: 600 !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      font-size: 0.9rem !important;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Button improvements */
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #06b6d4, #22d3ee) !important;
+      border: 2px solid #0ea5e9 !important;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      color: white !important;
+      font-weight: 600 !important;
+    }
+    
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9, #06b6d4) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(14, 165, 233, 0.4);
+      border-color: #0284c7 !important;
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, #64748b, #475569) !important;
+      border: 2px solid #64748b !important;
+      color: white !important;
+      transition: all 0.4s ease;
+      font-weight: 600 !important;
+    }
+    
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, #475569, #334155) !important;
+      border-color: #475569 !important;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(100, 116, 139, 0.3);
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .media-grid {
+        grid-template-columns: repeat(1, 1fr) !important;
+        gap: 1.5rem !important;
+        padding: 0 0.5rem;
+      }
+      
+      .media-card {
+        margin: 0 auto;
+        max-width: 400px;
+        width: 100%;
+      }
+      
+      .upload-form {
+        padding: 1.5rem !important;
+        margin: 0.5rem !important;
+      }
+      
+      .header-title {
+        padding-left: 60px !important;
+        font-size: 1.1rem !important;
+      }
+      
+      .form-input {
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+      }
+      
+      .btn-primary,
+      .btn-secondary {
+        padding: 12px 20px !important;
+        font-size: 14px !important;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .media-grid {
+        gap: 1rem !important;
+        padding: 0 0.25rem;
+      }
+      
+      .upload-form {
+        padding: 1rem !important;
+        margin: 0.25rem !important;
+      }
+      
+      .header-title {
+        padding-left: 50px !important;
+        font-size: 1rem !important;
+      }
+    }
+    
+    /* Preview improvements */
+    .preview-container {
+      border: 3px solid rgba(14, 165, 233, 0.4);
+      background: rgba(30, 41, 59, 0.7);
+      border-radius: 16px;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+    
+    /* Media type badge */
+    .media-type-badge {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+      color: white !important;
+      font-weight: 600 !important;
+    }
+  </style>
 </head>
 <body>
 <div class="flex h-screen dark-theme">
@@ -12,17 +224,35 @@
   <div class="flex-1 flex flex-col overflow-hidden">
     <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
       <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">Media Library</h2>
-        <!-- ...existing header actions/buttons... -->
+        <h2 class="text-xl font-semibold text-white header-title" style="padding-left: 100px;">Media Library</h2>
+        <div class="flex items-center space-x-4">
+          <button ng-click="toggleCreateForm()" 
+                  class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 shadow-lg">
+            <i class="fas fa-plus"></i>
+            <span ng-if="!showCreateForm">Create</span>
+            <span ng-if="showCreateForm">Hide</span>
+          </button>
+        </div>
       </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-4" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
+    <main class="flex-1 overflow-y-auto p-4" style="background: linear-gradient(135deg, #0c1624 0%, #051733 25%, #091426 50%, #0f172a 75%, #1e293b 100%), radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%) !important;">
       <div class="max-w-7xl mx-auto">
         <!-- Upload Form -->
-        <div style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;" class="shadow-lg rounded-lg mb-6 border border-gray-700">
+        <div ng-if="showCreateForm" class="upload-form shadow-2xl rounded-xl mb-6 border-2 border-slate-600">
           <div class="p-6">
-            <h3 class="text-lg font-medium text-white mb-4">Upload New Media</h3>
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center">
+                <div class="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-cloud-upload-alt text-white text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white">Upload New Media</h3>
+              </div>
+              <button ng-click="toggleCreateForm()" 
+                      class="text-gray-400 hover:text-white transition-colors duration-200 p-2 rounded-lg hover:bg-gray-700">
+                <i class="fas fa-times text-xl"></i>
+              </button>
+            </div>
             
             <!-- Alerts -->
             <div ng-show="error" class="mb-4 bg-red-900/20 border-l-4 border-red-400 p-4 rounded-lg">
@@ -55,52 +285,55 @@
             <form ng-submit="uploadMedia()" class="space-y-6" name="uploadForm">
               <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" for="mediaName">
-                    Media Name <span class="text-red-500">*</span>
+                  <label class="form-label block text-sm font-medium mb-2" for="mediaName">
+                    <i class="fas fa-tag mr-2"></i>Media Name <span class="text-red-400">*</span>
                   </label>
                   <input type="text" 
                          id="mediaName"
                          ng-model="newMedia.name" 
                          required
-                         class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                         class="form-input block w-full transition-all duration-300"
                          placeholder="Enter a descriptive name">
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" for="mediaType">
-                    Media Type <span class="text-red-500">*</span>
+                  <label class="form-label block text-sm font-medium mb-2" for="mediaType">
+                    <i class="fas fa-file-alt mr-2"></i>Media Type <span class="text-red-400">*</span>
                   </label>
                   <select id="mediaType"
                           ng-model="newMedia.type" 
-                          class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    <option value="image">Image</option>
-                    <option value="video">Video</option>
+                          class="form-input block w-full transition-all duration-300">
+                    <option value="image">📷 Image</option>
+                    <option value="video">🎥 Video</option>
+                    <option value="document">📄 Document</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1" for="mediaFile">
-                  File <span class="text-red-500">*</span>
+                <label class="form-label block text-sm font-medium mb-2" for="mediaFile">
+                  <i class="fas fa-file-upload mr-2"></i>File <span class="text-red-400">*</span>
                 </label>
                 <input type="file" 
                        id="mediaFile"
                        accept="{{getAcceptedFileTypes()}}"
                        onchange="angular.element(this).scope().handleFileSelect(event)"
                        required
-                       class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                <p class="mt-1 text-sm text-gray-500">
-                  {{getFileTypeHelper()}}
+                       class="form-input block w-full transition-all duration-300">
+                <p class="mt-2 text-sm text-sky-200">
+                  <i class="fas fa-info-circle mr-1"></i>{{getFileTypeHelper()}}
                 </p>
-                <p ng-show="submitted && !newMedia.file" class="mt-1 text-sm text-red-600">
-                  File is required
+                <p ng-show="submitted && !newMedia.file" class="mt-2 text-sm text-red-400 flex items-center">
+                  <i class="fas fa-exclamation-triangle mr-2"></i>File is required
                 </p>
               </div>
 
               <!-- Preview -->
-              <div ng-if="previewUrl" class="mt-4">
-                <h4 class="text-sm font-medium text-gray-700 mb-2">Preview:</h4>
-                <div class="relative w-40 h-40 border rounded-lg overflow-hidden">
+              <div ng-if="previewUrl" class="mt-6">
+                <h4 class="form-label text-sm font-medium mb-3">
+                  <i class="fas fa-eye mr-2"></i>Preview:
+                </h4>
+                <div class="preview-container relative w-48 h-48">
                   <img ng-if="newMedia.type === 'image'" 
                        ng-src="{{previewUrl}}" 
                        class="w-full h-full object-cover"
@@ -111,21 +344,24 @@
                          controls
                          poster="/images/video-placeholder.png">
                   </video>
+                  <div class="absolute inset-0 ring-2 ring-cyan-400/30 rounded-xl"></div>
                 </div>
               </div>
 
-              <div class="flex justify-end">
+              <div class="flex justify-end space-x-3 pt-6 border-t border-slate-600">
                 <button type="button" 
                         ng-click="resetForm()" 
-                        class="mr-3 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                  Reset
+                        class="btn-secondary px-6 py-3 rounded-lg shadow-sm text-sm font-semibold transition-all duration-300">
+                  <i class="fas fa-undo mr-2"></i>Reset
                 </button>
                 <button type="submit" 
-                        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        class="btn-primary px-6 py-3 rounded-lg shadow-sm text-sm font-semibold text-white transition-all duration-300"
                         ng-disabled="uploading">
-                  <span ng-if="!uploading">Upload Media</span>
-                  <span ng-if="uploading">
-                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <span ng-if="!uploading">
+                    <i class="fas fa-cloud-upload-alt mr-2"></i>Upload Media
+                  </span>
+                  <span ng-if="uploading" class="flex items-center">
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
@@ -137,66 +373,90 @@
           </div>
         </div>
 
-        <!-- Media List -->
-        <div style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;" class="shadow-lg rounded-lg border border-gray-700">
+        <!-- Media Library -->
+        <div class="upload-form shadow-2xl rounded-xl border-2 border-slate-600">
           <div class="p-6">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-lg font-medium text-white">Media Library</h3>
+            <div class="flex justify-between items-center mb-6">
               <div class="flex items-center">
-                <span ng-if="loading" class="text-sm text-gray-400 flex items-center">
-                  <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-images text-white text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white">Media Library</h3>
+              </div>
+              <div class="flex items-center">
+                <span ng-if="loading" class="text-sm text-cyan-300 flex items-center">
+                  <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-cyan-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Loading...
+                  Loading media...
                 </span>
               </div>
             </div>
             
-            <div ng-if="!loading && (!mediaFiles || mediaFiles.length === 0)" class="text-center py-6 text-gray-400">
-              No media files uploaded yet
+            <div ng-if="!loading && (!mediaFiles || mediaFiles.length === 0)" class="text-center py-12">
+              <div class="w-16 h-16 bg-gradient-to-r from-gray-600 to-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-folder-open text-gray-300 text-2xl"></i>
+              </div>
+              <p class="text-gray-300 text-lg font-medium">No media files uploaded yet</p>
+              <p class="text-gray-400 text-sm mt-2">Upload your first media file to get started</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="media-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               <div ng-repeat="media in mediaFiles" 
-                   class="relative group bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg border border-gray-700 overflow-hidden hover:shadow-md transition-shadow">
+                   class="media-card relative group rounded-2xl border-2 border-slate-600 overflow-hidden shadow-2xl">
                 <!-- Media content -->
-                <div class="cursor-pointer h-48 relative bg-gray-900" ng-click="openImageModal(media)">
+                <div class="cursor-pointer h-52 relative bg-gray-900" ng-click="openImageModal(media)">
                   <img ng-if="media.type === 'image'" 
                        ng-src="{{media._trustedUrl}}" 
-                       class="w-full h-full object-cover"
+                       class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                        alt="{{media.name}}"
                        onerror="this.onerror=null; this.src='/images/image-placeholder.png';">
                   <video ng-if="media.type === 'video'" 
                          ng-src="{{media._trustedUrl}}"
-                         class="w-full h-full object-cover"
+                         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                          poster="/images/video-placeholder.png"
                          preload="metadata">
                   </video>
+                  <!-- Document preview -->
+                  <div ng-if="media.type === 'document'" 
+                       class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 transition-transform duration-300 group-hover:scale-105">
+                    <i class="fas fa-file-pdf text-red-400 text-6xl mb-4"></i>
+                    <p class="text-white text-sm font-medium text-center px-2">{{media.name}}</p>
+                    <p class="text-gray-400 text-xs mt-1">{{media.filename.split('.').pop().toUpperCase()}} Document</p>
+                  </div>
                   <!-- Floating information badge -->
-                  <div class="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
-                    {{media.formattedSize || 'Unknown size'}}
+                  <div class="absolute top-3 right-3 bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full font-medium">
+                    {{media.formattedSize || 'Unknown'}}
+                  </div>
+                  <!-- Media type indicator -->
+                  <div class="absolute top-3 left-3">
+                    <i ng-if="media.type === 'image'" class="fas fa-image text-cyan-400 text-lg drop-shadow-lg"></i>
+                    <i ng-if="media.type === 'video'" class="fas fa-video text-purple-400 text-lg drop-shadow-lg"></i>
+                    <i ng-if="media.type === 'document'" class="fas fa-file-pdf text-red-400 text-lg drop-shadow-lg"></i>
                   </div>
                   <!-- Loading indicator overlay -->
-                  <div ng-if="!media.checked" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
-                    <svg class="animate-spin h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <div ng-if="!media.checked" class="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                    <svg class="animate-spin h-8 w-8 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                   </div>
+                  <!-- Hover overlay -->
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
                 <!-- Media info -->
-                <div class="p-4">
+                <div class="p-4 bg-slate-800/50 backdrop-blur-sm">
                   <!-- Normal display mode (not editing) -->
                   <div ng-if="editingMedia.id !== media.id">
-                    <div class="flex justify-between items-start">
-                      <h4 class="text-sm font-medium text-white truncate flex-grow">{{media.name || 'Unnamed Media'}}</h4>
+                    <div class="flex justify-between items-start mb-3">
+                      <h4 class="text-sm font-semibold text-white truncate flex-grow">{{media.name || 'Unnamed Media'}}</h4>
                       <div class="flex space-x-1 ml-2">
                         <!-- Edit button -->
                         <button 
                           ng-click="startEditing(media)"
                           title="Edit name"
-                          class="text-gray-400 hover:text-blue-400 focus:outline-none p-1">
+                          class="text-gray-400 hover:text-cyan-400 focus:outline-none p-1 rounded transition-colors">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                           </svg>
@@ -205,45 +465,49 @@
                         <button 
                           ng-click="confirmDelete(media)"
                           title="Delete media"
-                          class="text-gray-400 hover:text-red-400 focus:outline-none p-1">
+                          class="text-gray-400 hover:text-red-400 focus:outline-none p-1 rounded transition-colors">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                         </button>
                       </div>
                     </div>
-                    <p class="text-xs text-gray-400 mt-1">{{media.formattedDate || 'Unknown date'}}</p>
+                    <p class="text-xs text-gray-400 mb-3 flex items-center">
+                      <i class="fas fa-calendar-alt mr-1"></i>{{media.formattedDate || 'Unknown date'}}
+                    </p>
                     <!-- Action buttons -->
-                    <div class="mt-4 flex justify-between items-center">
-                      <span class="text-xs px-2 py-1 bg-gray-800 text-gray-200 rounded-full">{{media.type}}</span>
+                    <div class="flex justify-between items-center">
+                      <span class="media-type-badge text-xs px-3 py-1 rounded-full font-medium">
+                        {{media.type === 'image' ? '📷 Image' : media.type === 'video' ? '🎥 Video' : '📄 Document'}}
+                      </span>
                       <button 
                         ng-click="selectForEventReminder(media)"
-                        class="text-xs text-blue-400 hover:text-blue-200 px-2 py-1 rounded hover:bg-blue-900 transition"
+                        class="text-xs text-cyan-400 hover:text-cyan-300 px-3 py-1 rounded-md hover:bg-cyan-900/30 transition-all duration-200 font-medium"
                         title="Use this media in event reminders">
-                        Use in Reminders
+                        <i class="fas fa-paper-plane mr-1"></i>Use in Reminders
                       </button>
                     </div>
                   </div>
                   <!-- Edit mode -->
-                  <div ng-if="editingMedia.id === media.id" class="space-y-2">
+                  <div ng-if="editingMedia.id === media.id" class="space-y-3">
                     <div class="w-full">
                       <input type="text" 
                              ng-model="editingMedia.name" 
-                             class="w-full text-sm py-2 px-3 border border-gray-600 rounded-lg bg-gray-900 text-white focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                             class="w-full text-sm py-2 px-3 border-2 border-cyan-500 rounded-lg bg-gray-900 text-white focus:ring-2 focus:ring-cyan-300 focus:border-cyan-400 focus:outline-none transition-all duration-200"
                              placeholder="Enter media name">
                     </div>
                     <div class="flex justify-end space-x-2">
                       <button 
                         ng-click="cancelEditing()"
                         title="Cancel"
-                        class="text-white bg-gray-600 hover:bg-gray-700 rounded-lg px-3 py-1.5 text-xs font-medium transition">
-                        Cancel
+                        class="text-white bg-gray-600 hover:bg-gray-700 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors">
+                        <i class="fas fa-times mr-1"></i>Cancel
                       </button>
                       <button 
                         ng-click="saveMediaName(media)"
                         title="Save changes"
-                        class="text-white bg-blue-600 hover:bg-blue-700 rounded-lg px-3 py-1.5 text-xs font-medium transition">
-                        Save
+                        class="text-white bg-cyan-600 hover:bg-cyan-700 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors">
+                        <i class="fas fa-check mr-1"></i>Save
                       </button>
                     </div>
                   </div>
@@ -257,8 +521,8 @@
   </div>
   
   <!-- Delete Confirmation Modal -->
-  <div ng-if="confirmingDelete" class="fixed inset-0 z-50 flex items-center justify-center min-h-screen overflow-y-auto" style="background: rgba(15,23,42,0.7); z-index: 99999 !important;" ng-click="cancelDelete()">
-    <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important; min-height: 0; margin-top: 4rem; margin-bottom: 2rem;" ng-click="$event.stopPropagation()">
+  <div ng-if="confirmingDelete" class="fixed inset-0 z-50 flex items-center justify-center min-h-screen overflow-y-auto" style="background: rgba(15,23,42,0.8); z-index: 99999 !important;" ng-click="cancelDelete()">
+    <div class="bg-slate-800 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important; min-height: 0; margin-top: 4rem; margin-bottom: 2rem;" ng-click="$event.stopPropagation()">
       <!-- Close X button at top -->
       <button type="button" class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl font-bold close-x-button" style="border: none !important; outline: none !important; background: transparent !important;" ng-click="cancelDelete()">✕</button>
       
@@ -321,6 +585,18 @@
                class="max-w-full max-h-[60vh] rounded-lg"
                poster="/images/video-placeholder.png">
         </video>
+        <!-- Document preview -->
+        <div ng-if="selectedImage.type === 'document'" 
+             class="flex flex-col items-center justify-center p-8 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg max-w-md">
+          <i class="fas fa-file-pdf text-red-400 text-8xl mb-6"></i>
+          <h3 class="text-white text-xl font-semibold mb-2 text-center">{{selectedImage.name}}</h3>
+          <p class="text-gray-400 text-sm mb-4">{{selectedImage.filename.split('.').pop().toUpperCase()}} Document</p>
+          <a ng-href="{{selectedImage._trustedUrl}}" 
+             target="_blank" 
+             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition">
+            <i class="fas fa-external-link-alt mr-2"></i>Open Document
+          </a>
+        </div>
       </div>
       <div class="p-4 border-t border-gray-600">
         <div class="grid grid-cols-2 gap-4 text-sm">

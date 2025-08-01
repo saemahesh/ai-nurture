@@ -27,6 +27,26 @@ angular.module('autopostWaApp.events').controller('EventsController', function($
   $scope.newEvent = {};
   $scope.eventError = '';
   
+  // Search functionality
+  $scope.searchQuery = '';
+  $scope.isSearching = false;
+  $scope.filteredEvents = [];
+  
+  // Search function for events
+  $scope.searchEvents = function(event) {
+    if (!$scope.searchQuery) {
+      return true;
+    }
+    var query = $scope.searchQuery.toLowerCase();
+    return (event.name && event.name.toLowerCase().includes(query)) ||
+           (event.description && event.description.toLowerCase().includes(query));
+  };
+  
+  // Clear search
+  $scope.clearEventSearch = function() {
+    $scope.searchQuery = '';
+  };
+  
   // Edit event functionality
   $scope.editingEvent = null;
   $scope.editEventData = {};
@@ -134,6 +154,14 @@ angular.module('autopostWaApp.events').controller('EventsController', function($
     $scope.groups.forEach(function(g) {
       g.selected = event.groups.includes(g.groupId);
     });
+  };
+  
+  // Helper function to get group name by ID
+  $scope.getGroupName = function(groupId) {
+    var group = $scope.groups.find(function(g) {
+      return g.groupId === groupId;
+    });
+    return group ? group.name : 'Unknown Group';
   };
   
   $scope.cancelEdit = function() {

@@ -154,7 +154,18 @@ router.get('/fix-media-records', authRequired, (req, res) => {
         ...media,
         id: media.id || generateUniqueId(),
         name: media.name || path.basename(media.filename, path.extname(media.filename)),
-        type: media.type || (path.extname(media.filename).toLowerCase().match(/\.(jpg|jpeg|png|gif)$/) ? 'image' : 'video'),
+        type: media.type || (() => {
+          const ext = path.extname(media.filename).toLowerCase();
+          if (ext.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/)) {
+            return 'image';
+          } else if (ext.match(/\.(mp4|avi|mov|wmv|flv|webm|mkv)$/)) {
+            return 'video';
+          } else if (ext.match(/\.(pdf|doc|docx|txt|rtf)$/)) {
+            return 'document';
+          } else {
+            return 'document'; // Default to document for unknown types
+          }
+        })(),
         fileSize: media.fileSize || fileSize,
         uploadDate: media.uploadDate || new Date().toISOString()
       };
@@ -181,7 +192,18 @@ router.get('/list', authRequired, (req, res) => {
         // Ensure all media records have required fields
         if (!media.id) media.id = generateUniqueId();
         if (!media.name) media.name = path.basename(media.filename, path.extname(media.filename));
-        if (!media.type) media.type = path.extname(media.filename).toLowerCase().match(/\.(jpg|jpeg|png|gif)$/) ? 'image' : 'video';
+        if (!media.type) {
+          const ext = path.extname(media.filename).toLowerCase();
+          if (ext.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/)) {
+            media.type = 'image';
+          } else if (ext.match(/\.(mp4|avi|mov|wmv|flv|webm|mkv)$/)) {
+            media.type = 'video';
+          } else if (ext.match(/\.(pdf|doc|docx|txt|rtf)$/)) {
+            media.type = 'document';
+          } else {
+            media.type = 'document'; // Default to document for unknown types
+          }
+        }
         if (!media.fileSize) {
           const filePath = path.join(uploadDir, media.filename);
           media.fileSize = getFileSize(filePath);

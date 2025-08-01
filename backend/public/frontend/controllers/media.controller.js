@@ -16,8 +16,18 @@ angular.module('autopostWaApp.media').controller('MediaPageController', function
   $scope.fileDetails = {};
   $scope.showImageModal = false;
   $scope.selectedImage = null;
+  $scope.showCreateForm = false; // Hide create form by default
   
   console.log("Media controller initialized");
+
+  // Toggle create form visibility
+  $scope.toggleCreateForm = function() {
+    $scope.showCreateForm = !$scope.showCreateForm;
+    if (!$scope.showCreateForm) {
+      // Reset form when hiding
+      $scope.resetForm();
+    }
+  };
 
   // Precompute and cache trusted URLs for all media files
   function computeTrustedUrl(media) {
@@ -62,7 +72,15 @@ angular.module('autopostWaApp.media').controller('MediaPageController', function
         // Make sure type is set
         if (!media.type) {
           const ext = media.filename ? media.filename.split('.').pop().toLowerCase() : '';
-          media.type = ['jpg', 'jpeg', 'png', 'gif'].includes(ext) ? 'image' : 'video';
+          if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext)) {
+            media.type = 'image';
+          } else if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mkv'].includes(ext)) {
+            media.type = 'video';
+          } else if (['pdf', 'doc', 'docx', 'txt', 'rtf'].includes(ext)) {
+            media.type = 'document';
+          } else {
+            media.type = 'document'; // Default to document for unknown types
+          }
         }
         // Make sure name is set
         if (!media.name) {
@@ -103,14 +121,25 @@ angular.module('autopostWaApp.media').controller('MediaPageController', function
   }
 
   $scope.getAcceptedFileTypes = function() {
-    return $scope.newMedia.type === 'image' ? 'image/*' : 'video/*';
+    if ($scope.newMedia.type === 'image') {
+      return 'image/*';
+    } else if ($scope.newMedia.type === 'video') {
+      return 'video/*';
+    } else if ($scope.newMedia.type === 'document') {
+      return '.pdf,.doc,.docx,.txt,.rtf';
+    }
+    return '*/*';
   };
 
   $scope.getFileTypeHelper = function() {
     if ($scope.newMedia.type === 'image') {
       return 'Accepted formats: JPG, PNG, GIF (max 5MB)';
+    } else if ($scope.newMedia.type === 'video') {
+      return 'Accepted formats: MP4, WebM (max 20MB)';
+    } else if ($scope.newMedia.type === 'document') {
+      return 'Accepted formats: PDF, DOC, DOCX, TXT (max 10MB)';
     }
-    return 'Accepted formats: MP4, WebM (max 20MB)';
+    return 'All file types accepted';
   };
 
   // Fixed file selection handler to prevent digest issues
@@ -132,9 +161,23 @@ angular.module('autopostWaApp.media').controller('MediaPageController', function
       event.target.value = '';
       return;
     }
+    if ($scope.newMedia.type === 'document' && !file.type.match('application.*') && !file.type.match('text.*')) {
+      $scope.error = 'Please select a document file (PDF, DOC, DOCX, TXT)';
+      event.target.value = '';
+      return;
+    }
 
     // Validate file size
-    const maxSize = $scope.newMedia.type === 'image' ? 5 * 1024 * 1024 : 20 * 1024 * 1024;
+    let maxSize;
+    if ($scope.newMedia.type === 'image') {
+      maxSize = 5 * 1024 * 1024; // 5MB for images
+    } else if ($scope.newMedia.type === 'video') {
+      maxSize = 20 * 1024 * 1024; // 20MB for videos
+    } else if ($scope.newMedia.type === 'document') {
+      maxSize = 10 * 1024 * 1024; // 10MB for documents
+    } else {
+      maxSize = 5 * 1024 * 1024; // Default 5MB
+    }
     if (file.size > maxSize) {
       $scope.error = `File size exceeds ${maxSize / (1024 * 1024)}MB limit`;
       event.target.value = '';

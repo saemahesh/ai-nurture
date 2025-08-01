@@ -1,4 +1,8 @@
-angular.module('autopostWaApp.schedules').controller('ScheduleController', function($scope, $location, AuthService, ApiService) {
+angular.module('autopostWaApp.schedules').controller('ScheduleController', function($scope, $location, AuthService, ApiService, NotificationService) {
+  // Initialize notifications
+  NotificationService.initToast($scope);
+  NotificationService.initConfirmModal($scope);
+  
   // Authentication and navigation
   $scope.isActive = function(path) {
     return $location.path().indexOf(path) === 0;
@@ -17,7 +21,88 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
   $scope.groups = [];
   $scope.loading = true;
   $scope.error = '';
-  $scope.success = '';
+  $scope.searchQuery = '';
+  $scope.isSearching = false;
+  $scope.searchTimeout = null;
+
+  // Enhanced search function with debouncing
+  $scope.searchSchedules = function(schedule) {
+    if (!$scope.searchQuery) return true;
+    
+    var query = $scope.searchQuery.toLowerCase();
+    var name = (schedule.name || '').toLowerCase();
+    var message = (schedule.message || '').toLowerCase();
+    var groupName = ($scope.getGroupName(schedule.groupId) || '').toLowerCase();
+    
+    return name.includes(query) || message.includes(query) || groupName.includes(query);
+  };
+
+  // Keyboard navigation support
+  $scope.handleKeyboardNavigation = function(event) {
+    // Ctrl/Cmd + K to focus search
+    if ((event.ctrlKey || event.metaKey) && event.keyCode === 75) {
+      event.preventDefault();
+      var searchInput = document.querySelector('input[ng-model="searchQuery"]');
+      if (searchInput) searchInput.focus();
+    }
+    
+    // Escape to clear search when search input is focused
+    if (event.keyCode === 27 && document.activeElement.getAttribute('ng-model') === 'searchQuery') {
+      $scope.clearSearch();
+      $scope.$apply();
+    }
+  };
+
+  // Debounced search to improve performance
+  $scope.handleSearchInput = function() {
+    $scope.isSearching = true;
+    
+    if ($scope.searchTimeout) {
+      clearTimeout($scope.searchTimeout);
+    }
+    
+    $scope.searchTimeout = setTimeout(function() {
+      $scope.$apply(function() {
+        $scope.isSearching = false;
+        $scope.filteredSchedules = $scope.getFilteredSchedules();
+      });
+    }, 300);
+  };
+
+  // Get filtered schedules count for UI
+  $scope.getFilteredSchedules = function() {
+    if (!$scope.searchQuery) return $scope.schedules;
+    return $scope.schedules.filter($scope.searchSchedules);
+  };
+
+  // Clear search functionality
+  $scope.clearSearch = function() {
+    $scope.searchQuery = '';
+    $scope.isSearching = false;
+    $scope.filteredSchedules = $scope.schedules;
+  };
+
+  // Watch for search changes to update filtered count
+  $scope.$watch('searchQuery', function(newVal, oldVal) {
+    if (newVal !== oldVal) {
+      $scope.handleSearchInput();
+    }
+  });
+
+  $scope.$watch('schedules', function() {
+    $scope.filteredSchedules = $scope.getFilteredSchedules();
+  });
+
+  // Bind keyboard events
+  document.addEventListener('keydown', $scope.handleKeyboardNavigation);
+  
+  // Cleanup on scope destroy
+  $scope.$on('$destroy', function() {
+    document.removeEventListener('keydown', $scope.handleKeyboardNavigation);
+    if ($scope.searchTimeout) {
+      clearTimeout($scope.searchTimeout);
+    }
+  });
 
   // Load groups for group selection in schedule form
   function loadGroups() {
@@ -68,13 +153,15 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
   // Load media library
   $scope.loadMediaLibrary = function() {
     $scope.loadingMedia = true;
-    ApiService.getMedia().then(function(response) {
+    return ApiService.getMedia().then(function(response) {
       $scope.mediaLibrary = response.data;
       console.log('Loaded media library:', response.data);
       $scope.loadingMedia = false;
+      return response.data;
     }).catch(function(error) {
       console.error('Error loading media library:', error);
       $scope.loadingMedia = false;
+      throw error;
     });
   };
 
@@ -203,7 +290,7 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
         
         // Reload schedules
         loadSchedules();
-        $scope.success = 'Schedule(s) added successfully';
+        NotificationService.showToast($scope, 'Schedule(s) added successfully!', 'success');
       })
       .catch(function(error) {
         console.error('Error adding schedule:', error);
@@ -212,17 +299,26 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
   };
   
   $scope.deleteSchedule = function(id) {
-    if (confirm('Are you sure you want to delete this schedule?')) {
-      ApiService.deleteSchedule(id)
-        .then(function() {
-          loadSchedules();
-          $scope.success = 'Schedule deleted successfully';
-        })
-        .catch(function(error) {
-          console.error('Error deleting schedule:', error);
-          $scope.error = 'Failed to delete schedule';
-        });
-    }
+    NotificationService.showConfirmation(
+      $scope,
+      'Delete Schedule',
+      'Are you sure you want to delete this schedule?',
+      function() {
+        // On confirm
+        ApiService.deleteSchedule(id)
+          .then(function() {
+            loadSchedules();
+            NotificationService.showToast($scope, 'Schedule deleted successfully!', 'success');
+          })
+          .catch(function(error) {
+            console.error('Error deleting schedule:', error);
+            NotificationService.showToast($scope, 'Failed to delete schedule', 'error');
+          });
+      },
+      null, // On cancel - do nothing
+      'Delete',
+      'Cancel'
+    );
   };
 
   // Logout functionality
@@ -255,6 +351,168 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
   $scope.editScheduleError = '';
   $scope.editingForMedia = false;
   
+  // Modal functionality (unified create/edit modal)
+  $scope.createScheduleModalVisible = false;
+  $scope.isEditMode = false;
+  $scope.formData = {};
+  
+  // Show create schedule modal
+  $scope.showCreateScheduleModal = function() {
+    $scope.isEditMode = false;
+    $scope.formData = {
+      name: '',
+      message: '',
+      time: '',
+      imageMethod: 'library',
+      selectedMedia: null,
+      imageUrl: ''
+    };
+    // Reset group selections
+    $scope.groups.forEach(function(group) {
+      group.selected = false;
+    });
+    $scope.scheduleError = '';
+    $scope.createScheduleModalVisible = true;
+  };
+
+  // Show edit schedule modal  
+  $scope.showEditScheduleModal = function(schedule) {
+    $scope.isEditMode = true;
+    $scope.formData = {
+      id: schedule.id,
+      name: schedule.name,
+      message: schedule.message,
+      time: new Date(schedule.time).toISOString().slice(0, 16), // Format for datetime-local input
+      groupId: schedule.groupId,
+      currentMediaUrl: schedule.media,
+      imageMethod: schedule.media ? 'library' : 'library', // Set method based on existing media
+      selectedMedia: null,
+      imageUrl: schedule.media && (schedule.media.startsWith('http://') || schedule.media.startsWith('https://')) ? schedule.media : ''
+    };
+    
+    // If there's existing media and it's from library, try to find it in media library
+    if (schedule.media && !schedule.media.startsWith('http://') && !schedule.media.startsWith('https://')) {
+      // Load media library to find the selected media
+      $scope.loadMediaLibrary().then(function() {
+        var foundMedia = $scope.mediaLibrary.find(function(media) {
+          return media.url === schedule.media || $scope.getImageUrl(media.url) === $scope.getImageUrl(schedule.media);
+        });
+        if (foundMedia) {
+          $scope.formData.selectedMedia = foundMedia;
+          $scope.formData.imageMethod = 'library';
+        } else {
+          // If not found in library, treat as URL
+          $scope.formData.imageMethod = 'url';
+          $scope.formData.imageUrl = $scope.getImageUrl(schedule.media);
+        }
+      });
+    } else if (schedule.media && (schedule.media.startsWith('http://') || schedule.media.startsWith('https://'))) {
+      // External URL
+      $scope.formData.imageMethod = 'url';
+      $scope.formData.imageUrl = schedule.media;
+    }
+    
+    // Set the selected group for editing
+    $scope.groups.forEach(function(group) {
+      group.selected = (group.groupId === schedule.groupId);
+    });
+    
+    $scope.scheduleError = '';
+    $scope.createScheduleModalVisible = true;
+  };
+  
+  // Hide schedule modal
+  $scope.hideCreateScheduleModal = function() {
+    $scope.createScheduleModalVisible = false;
+    $scope.isEditMode = false;
+    $scope.formData = {};
+    $scope.scheduleError = '';
+  };
+  
+  // Save schedule (unified create/edit)
+  $scope.saveSchedule = function() {
+    $scope.scheduleError = '';
+    
+    // Validate form
+    if (!$scope.formData.message || !$scope.formData.time) {
+      $scope.scheduleError = 'Please fill in all required fields';
+      return;
+    }
+    
+    if (!$scope.hasSelectedGroups()) {
+      $scope.scheduleError = 'Please select at least one group';
+      return;
+    }
+    
+    // Get selected groups
+    var selectedGroups = $scope.groups.filter(function(group) {
+      return group.selected;
+    });
+    
+    // Prepare form data
+    var formData = new FormData();
+    if ($scope.formData.name) {
+      formData.append('name', $scope.formData.name);
+    }
+    formData.append('message', $scope.formData.message);
+    formData.append('time', $scope.formData.time);
+    
+    // Handle media - either library selection or URL
+    if ($scope.formData.imageMethod === 'library' && $scope.formData.selectedMedia) {
+      formData.append('imageUrl', $scope.formData.selectedMedia.url);
+    } else if ($scope.formData.imageMethod === 'url' && $scope.formData.imageUrl) {
+      formData.append('imageUrl', $scope.formData.imageUrl);
+    }
+    
+    if ($scope.isEditMode) {
+      // Edit mode: use single group ID
+      var groupId = selectedGroups[0].groupId; // Take first selected group
+      formData.append('groupId', groupId);
+      
+      ApiService.editSchedule($scope.formData.id, formData)
+        .then(function() {
+          $scope.hideCreateScheduleModal();
+          loadSchedules();
+          NotificationService.showToast($scope, 'Schedule updated successfully!', 'success');
+        })
+        .catch(function(error) {
+          console.error('Error updating schedule:', error);
+          $scope.scheduleError = 'Failed to update schedule. Please try again.';
+        });
+    } else {
+      // Create mode: use array of group IDs  
+      var groupIds = selectedGroups.map(function(group) {
+        return group.groupId;
+      });
+      formData.append('groupIds', JSON.stringify(groupIds));
+      
+      ApiService.addSchedule(formData)
+        .then(function() {
+          $scope.hideCreateScheduleModal();
+          loadSchedules();
+          NotificationService.showToast($scope, 'Schedule(s) added successfully!', 'success');
+        })
+        .catch(function(error) {
+          console.error('Error adding schedule:', error);
+          $scope.scheduleError = 'Failed to add schedule. Please try again.';
+        });
+    }
+  };
+  
+  // Update media selection for formData
+  $scope.selectMediaForSchedule = function(media) {
+    console.log('Selected media:', media);
+    $scope.formData.selectedMedia = media;
+    $scope.formData.imageUrl = ''; // Clear URL field when selecting from library
+    $scope.closeMediaSelector();
+  };
+
+  // Clear selected media for formData
+  $scope.clearSelectedMedia = function() {
+    $scope.formData.selectedMedia = null;
+  };
+
+  // Legacy edit modal functions (keeping for compatibility)
   $scope.showEditModal = function(schedule) {
     $scope.editingSchedule = true;
     $scope.editScheduleData = {
@@ -304,7 +562,7 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
       .then(function() {
         $scope.hideEditModal();
         loadSchedules();
-        $scope.success = 'Schedule updated successfully';
+        NotificationService.showToast($scope, 'Schedule updated successfully!', 'success');
       })
       .catch(function(error) {
         console.error('Error updating schedule:', error);

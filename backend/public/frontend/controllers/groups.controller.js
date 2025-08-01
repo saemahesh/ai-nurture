@@ -20,6 +20,7 @@ angular.module('autopostWaApp.groups').controller('GroupsController', function($
   $scope.newGroup = {};
   $scope.groupError = '';
   $scope.createGroupModalVisible = false;
+  $scope.syncingGroups = false; // Loading state for sync operation
   
   function loadGroups() {
     ApiService.getGroups()
@@ -85,6 +86,8 @@ angular.module('autopostWaApp.groups').controller('GroupsController', function($
 
   $scope.syncGroups = function() {
     $scope.groupError = '';
+    $scope.syncingGroups = true; // Start loading
+    
     ApiService.syncGroups()
       .then(function(response) {
         loadGroups();
@@ -94,6 +97,9 @@ angular.module('autopostWaApp.groups').controller('GroupsController', function($
         console.error('Error syncing groups:', error);
         $scope.groupError = error.data?.error || 'Failed to sync groups';
         NotificationService.showToast($scope, 'Failed to sync groups: ' + $scope.groupError, 'error');
+      })
+      .finally(function() {
+        $scope.syncingGroups = false; // Stop loading
       });
   };
 });

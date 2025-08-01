@@ -1,4 +1,4 @@
-angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', '$location', 'AuthService', function($scope, $location, AuthService) {
+angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', '$location', 'AuthService', 'NotificationService', function($scope, $location, AuthService, NotificationService) {
   $scope.isActive = function(route) {
     return $location.path().indexOf(route) === 0;
   };
@@ -8,6 +8,9 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
   $scope.userError = false;
   $scope.desktopScrollDirection = 'down'; // Track scroll direction for desktop
   $scope.mobileScrollDirection = 'down';  // Track scroll direction for mobile
+  
+  // Initialize notification service
+  NotificationService.initToast($scope);
   
   // Get user info from the auth service
   AuthService.me().then(function(response) {
@@ -26,7 +29,7 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
       $location.path('/login');
     }).catch(function(error) {
       console.error('Error during logout:', error);
-      alert('Logout failed. Please try again.');
+      NotificationService.showToast($scope, 'Logout failed. Please try again.', 'error');
     }).finally(function() {
       $scope.loggingOut = false;
     });

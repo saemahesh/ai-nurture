@@ -1,8 +1,12 @@
-angular.module('autopostWaApp.events').controller('EventsController', function($scope, $location, AuthService, ApiService) {
+angular.module('autopostWaApp.events').controller('EventsController', function($scope, $location, AuthService, ApiService, NotificationService) {
   // Authentication and navigation
   $scope.isActive = function(path) {
     return $location.path().indexOf(path) === 0;
   };
+
+  // Initialize notification service
+  NotificationService.initToast($scope);
+  NotificationService.initConfirmModal($scope);
 
   AuthService.me().then(function(res) {
     $scope.user = res.data.user;
@@ -141,14 +145,19 @@ angular.module('autopostWaApp.events').controller('EventsController', function($
   };
   
   $scope.deleteEvent = function(id) {
-    if (confirm('Are you sure you want to delete this event? All associated reminders will also be deleted.')) {
-      ApiService.deleteEvent(id)
-        .then(function() {
-          loadData();
-        })
-        .catch(function(err) {
-          alert('Failed to delete event: ' + (err.data && err.data.error ? err.data.error : 'Unknown error'));
-        });
-    }
+    NotificationService.showConfirmation($scope,
+      'Confirm Delete',
+      'Are you sure you want to delete this event? All associated reminders will also be deleted.',
+      function() {
+        ApiService.deleteEvent(id)
+          .then(function() {
+            loadData();
+            NotificationService.showToast($scope, 'Event deleted successfully!', 'success');
+          })
+          .catch(function(err) {
+            NotificationService.showToast($scope, 'Failed to delete event: ' + (err.data && err.data.error ? err.data.error : 'Unknown error'), 'error');
+          });
+      }
+    );
   };
 });

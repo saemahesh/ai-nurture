@@ -1,4 +1,4 @@
-angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams) {
+angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope', '$http', '$location', '$routeParams', 'NotificationService', function($scope, $http, $location, $routeParams, NotificationService) {
     $scope.sequence = {
         name: '',
         description: '',
@@ -11,6 +11,10 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
     $scope.saving = false;
     $scope.errors = {};
     $scope.sequenceId = $routeParams.id;
+
+    // Initialize notification service
+    NotificationService.initToast($scope);
+    NotificationService.initConfirmModal($scope);
 
     // Initialize
     $scope.init = function() {
@@ -61,7 +65,7 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
             })
             .catch(function(error) {
                 console.error('Error loading sequence:', error);
-                alert('Error loading sequence. Redirecting to sequences list.');
+                NotificationService.showToast($scope, 'Error loading sequence. Redirecting to sequences list.', 'error');
                 $location.path('/sequences');
             });
     };
@@ -145,9 +149,13 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
 
     // Remove message
     $scope.removeMessage = function(index) {
-        if (confirm('Are you sure you want to remove this message?')) {
-            $scope.sequence.messages.splice(index, 1);
-        }
+        NotificationService.showConfirmation($scope,
+            'Confirm Remove',
+            'Are you sure you want to remove this message?',
+            function() {
+                $scope.sequence.messages.splice(index, 1);
+            }
+        );
     };
 
     // Move message up
@@ -183,7 +191,7 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
     // Save and activate
     $scope.saveAndActivate = function() {
         if (!$scope.validateSequence()) {
-            alert('Please fix the errors before saving.');
+            NotificationService.showToast($scope, 'Please fix the errors before saving.', 'error');
             return;
         }
         $scope.sequence.status = 'active';
@@ -212,12 +220,12 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
 
             request
                 .then(function(response) {
-                    alert($scope.isEditMode ? 'Sequence updated successfully!' : 'Sequence created successfully!');
+                    NotificationService.showToast($scope, $scope.isEditMode ? 'Sequence updated successfully!' : 'Sequence created successfully!', 'success');
                     $location.path('/sequences');
                 })
                 .catch(function(error) {
                     console.error('Error saving sequence:', error);
-                    alert('Error saving sequence. Please try again.');
+                    NotificationService.showToast($scope, 'Error saving sequence. Please try again.', 'error');
                 })
                 .finally(function() {
                     $scope.saving = false;
@@ -265,9 +273,13 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
 
     // Go back to sequences list
     $scope.goBack = function() {
-        if (confirm('Are you sure you want to leave? Any unsaved changes will be lost.')) {
-            $location.path('/sequences');
-        }
+        NotificationService.showConfirmation($scope,
+            'Confirm Leave',
+            'Are you sure you want to leave? Any unsaved changes will be lost.',
+            function() {
+                $location.path('/sequences');
+            }
+        );
     };
 
     // Media library functionality
@@ -292,7 +304,7 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
             })
             .catch(function(error) {
                 console.error('Error loading media library:', error);
-                alert('Error loading media library. Please try again.');
+                NotificationService.showToast($scope, 'Error loading media library. Please try again.', 'error');
             })
             .finally(function() {
                 $scope.loadingMedia = false;

@@ -1,5 +1,5 @@
 angular.module('autopostApp')
-.controller('CampaignLeadsController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+.controller('CampaignLeadsController', ['$scope', '$http', '$routeParams', 'NotificationService', function($scope, $http, $routeParams, NotificationService) {
     // Get campaign ID from route params
     $scope.campaignId = $routeParams.campaignId;
     
@@ -12,7 +12,10 @@ angular.module('autopostApp')
     $scope.importStatus = null;
     $scope.showAddModal = false;
     $scope.showImportModalFlag = false;
-    $scope.toast = { show: false };
+    
+    // Initialize notification service
+    NotificationService.initToast($scope);
+    NotificationService.initConfirmModal($scope);
     
     // Filters
     $scope.filterStatus = '';
@@ -22,7 +25,7 @@ angular.module('autopostApp')
     // Load campaign details
     $scope.loadCampaign = function() {
         if (!$scope.campaignId) {
-            showToast('No campaign ID provided', 'error');
+            NotificationService.showToast($scope, 'No campaign ID provided', 'error');
             return;
         }
         
@@ -32,7 +35,7 @@ angular.module('autopostApp')
             })
             .catch(function(error) {
                 console.error('Error loading campaign:', error);
-                showToast('Failed to load campaign details', 'error');
+                NotificationService.showToast($scope, 'Failed to load campaign details', 'error');
             });
     };
     
@@ -47,7 +50,7 @@ angular.module('autopostApp')
             })
             .catch(function(error) {
                 console.error('Error loading leads:', error);
-                showToast('Failed to load leads', 'error');
+                NotificationService.showToast($scope, 'Failed to load leads', 'error');
             });
     };
     
@@ -96,13 +99,13 @@ angular.module('autopostApp')
     // Add lead
     $scope.addLead = function() {
         if (!$scope.newLead.phone) {
-            showToast('Phone number is required', 'error');
+            NotificationService.showToast($scope, 'Phone number is required', 'error');
             return;
         }
         
         $http.post('/api/campaign-leads/' + $scope.campaignId + '/add', $scope.newLead)
             .then(function(response) {
-                showToast('Lead added successfully', 'success');
+                NotificationService.showToast($scope, 'Lead added successfully', 'success');
                 $scope.newLead = {};
                 $scope.showAddModal = false;
                 $scope.loadLeads();
@@ -111,7 +114,7 @@ angular.module('autopostApp')
             .catch(function(error) {
                 console.error('Error adding lead:', error);
                 const message = error.data && error.data.error ? error.data.error : 'Failed to add lead';
-                showToast(message, 'error');
+                NotificationService.showToast($scope, message, 'error');
             });
     };
     
@@ -127,28 +130,13 @@ angular.module('autopostApp')
         $scope.showImportModalFlag = true;
     };
     
-    // Show toast message
-    function showToast(message, type) {
-        $scope.toast = {
-            show: true,
-            message: message,
-            type: type || 'success'
-        };
-        
-        setTimeout(function() {
-            $scope.$apply(function() {
-                $scope.toast.show = false;
-            });
-        }, 3000);
-    }
-    
     // Handle file selection
     $scope.handleFileSelect = function(input) {
         const file = input.files[0];
         if (!file) return;
         
         if (!file.name.endsWith('.csv')) {
-            showToast('Please select a CSV file', 'error');
+            NotificationService.showToast($scope, 'Please select a CSV file', 'error');
             return;
         }
         
@@ -172,7 +160,7 @@ angular.module('autopostApp')
             
             $scope.loadLeads();
             $scope.loadStats();
-            showToast('CSV imported successfully', 'success');
+            NotificationService.showToast($scope, 'CSV imported successfully', 'success');
         })
         .catch(function(error) {
             console.error('Error importing CSV:', error);
@@ -180,7 +168,7 @@ angular.module('autopostApp')
                 success: false,
                 message: error.data && error.data.error ? error.data.error : 'Failed to import CSV'
             };
-            showToast('Failed to import CSV', 'error');
+            NotificationService.showToast($scope, 'Failed to import CSV', 'error');
         });
     };
     
@@ -200,13 +188,13 @@ angular.module('autopostApp')
     // View lead details
     $scope.viewLead = function(lead) {
         // TODO: Implement lead detail modal
-        showToast('Lead detail view coming soon', 'info');
+        NotificationService.showToast($scope, 'Lead detail view coming soon', 'info');
     };
     
     // Edit lead
     $scope.editLead = function(lead) {
         // TODO: Implement lead edit modal
-        showToast('Lead editing coming soon', 'info');
+        NotificationService.showToast($scope, 'Lead editing coming soon', 'info');
     };
     
     // Toggle opt out
@@ -218,40 +206,43 @@ angular.module('autopostApp')
         })
         .then(function(response) {
             lead.isOptedOut = newStatus;
-            showToast(newStatus ? 'Lead opted out' : 'Lead opted in', 'success');
+            NotificationService.showToast($scope, newStatus ? 'Lead opted out' : 'Lead opted in', 'success');
             $scope.loadStats();
         })
         .catch(function(error) {
             console.error('Error updating lead:', error);
-            showToast('Failed to update lead', 'error');
+            NotificationService.showToast($scope, 'Failed to update lead', 'error');
         });
     };
     
     // Delete lead
     $scope.deleteLead = function(lead) {
-        if (!confirm('Are you sure you want to delete this lead?')) {
-            return;
-        }
-        $http.delete('/api/campaign-leads/' + $scope.campaignId + '/leads/' + lead.id)
-            .then(function(response) {
-                showToast('Lead deleted successfully', 'success');
-                $scope.loadLeads();
-                $scope.loadStats();
-                // --- NEW: Also remove from campaign_leads.json globally (if not already) ---
-                $http.delete('/api/global-campaign-leads/' + lead.id)
-                    .then(function() {
-                        // Optionally, show a toast or log
-                        console.log('Lead also removed from global campaign_leads.json');
+        NotificationService.showConfirmation($scope,
+            'Confirm Delete',
+            'Are you sure you want to delete this lead?',
+            function() {
+                $http.delete('/api/campaign-leads/' + $scope.campaignId + '/leads/' + lead.id)
+                    .then(function(response) {
+                        NotificationService.showToast($scope, 'Lead deleted successfully', 'success');
+                        $scope.loadLeads();
+                        $scope.loadStats();
+                        // --- NEW: Also remove from campaign_leads.json globally (if not already) ---
+                        $http.delete('/api/global-campaign-leads/' + lead.id)
+                            .then(function() {
+                                // Optionally, show a toast or log
+                                console.log('Lead also removed from global campaign_leads.json');
+                            })
+                            .catch(function(error) {
+                                console.error('Error deleting lead from global campaign_leads.json:', error);
+                            });
+                        // --- END NEW ---
                     })
                     .catch(function(error) {
-                        console.error('Error deleting lead from global campaign_leads.json:', error);
+                        console.error('Error deleting lead:', error);
+                        NotificationService.showToast($scope, 'Failed to delete lead', 'error');
                     });
-                // --- END NEW ---
-            })
-            .catch(function(error) {
-                console.error('Error deleting lead:', error);
-                showToast('Failed to delete lead', 'error');
-            });
+            }
+        );
     };
     
     // Get progress percentage

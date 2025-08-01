@@ -33,12 +33,5 @@ Instructions for Issue Resolution:
 
 --------------------------------------------------------
 **** Issue List ****
-
-add border for add schedule button in group schedule page form
-for event reminders, if there are no reminders to set for expired event, 
-show a message "No reminders to set for this event"
-
-add border for create button in status form 
-
-not getting sign in button border in log in page due to caching issue
-not getting create now button border in register page due to caching issue
+card is not proper in mobile view for group schedules
+---------------------------

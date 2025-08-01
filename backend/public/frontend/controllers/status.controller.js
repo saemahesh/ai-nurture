@@ -1,4 +1,8 @@
-angular.module('autopostWaApp.status').controller('StatusController', function($scope, ApiService) {
+angular.module('autopostWaApp.status').controller('StatusController', function($scope, ApiService, NotificationService) {
+  // Initialize notification service
+  NotificationService.initToast($scope);
+  NotificationService.initConfirmModal($scope);
+
   $scope.status = {
     caption: '',
     textColor: '#000000',
@@ -152,7 +156,21 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
   };
 
   $scope.deleteStatus = function(id) {
-    ApiService.deleteStatus(id).then(loadStatuses);
+    NotificationService.showConfirmation($scope,
+      'Confirm Delete',
+      'Are you sure you want to delete this status?',
+      function() {
+        ApiService.deleteStatus(id)
+          .then(function() {
+            loadStatuses();
+            NotificationService.showToast($scope, 'Status deleted successfully!', 'success');
+          })
+          .catch(function(error) {
+            console.error('Error deleting status:', error);
+            NotificationService.showToast($scope, 'Failed to delete status', 'error');
+          });
+      }
+    );
   };
 
   $scope.getSelectedDays = function(daysObj) {

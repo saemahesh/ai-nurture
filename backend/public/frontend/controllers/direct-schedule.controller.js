@@ -1,9 +1,13 @@
 angular.module('autopostWaApp.schedules')
-    .controller('DirectScheduleController', ['$scope', '$http', function($scope, $http) {
+    .controller('DirectScheduleController', ['$scope', '$http', 'NotificationService', function($scope, $http, NotificationService) {
         $scope.schedules = [];
         $scope.mediaLibrary = [];
         $scope.showMediaSelector = false;
         $scope.loadingMedia = false;
+        
+        // Initialize notification service
+        NotificationService.initToast($scope);
+        NotificationService.initConfirmModal($scope);
         
         $scope.newSchedule = {
             number: '',
@@ -19,7 +23,7 @@ angular.module('autopostWaApp.schedules')
                 console.log('Loaded schedules:', response.data);
             }).catch(function(error) {
                 console.error('Error loading direct schedules:', error);
-                alert((error.data && error.data.message) || 'Failed to load schedules.');
+                NotificationService.showToast($scope, (error.data && error.data.message) || 'Failed to load schedules.', 'error');
             });
         };
 
@@ -91,29 +95,33 @@ angular.module('autopostWaApp.schedules')
                         selectedMedia: null,
                         scheduledAt: '' 
                     }; // Reset form
-                    alert('Message scheduled successfully!');
+                    NotificationService.showToast($scope, 'Message scheduled successfully!', 'success');
                     console.log('Schedule created:', response.data);
                 }).catch(function(error) {
                     console.error('Error creating schedule:', error);
-                    alert((error.data && error.data.message) || 'Failed to schedule message.');
+                    NotificationService.showToast($scope, (error.data && error.data.message) || 'Failed to schedule message.', 'error');
                 });
             } catch (error) {
                 console.error('Error preparing schedule data:', error);
-                alert('Error preparing schedule data. Please check the form.');
+                NotificationService.showToast($scope, 'Error preparing schedule data. Please check the form.', 'error');
             }
         };
 
         $scope.deleteSchedule = function(id) {
-            if (confirm('Are you sure you want to delete this scheduled message?')) {
-                $http.delete('/direct-schedule/' + id).then(function() {
-                    $scope.schedules = $scope.schedules.filter(function(s) { return s.id !== id; });
-                    alert('Schedule deleted successfully.');
-                    console.log('Schedule deleted:', id);
-                }).catch(function(error) {
-                    console.error('Error deleting schedule:', error);
-                    alert((error.data && error.data.message) || 'Failed to delete schedule.');
-                });
-            }
+            NotificationService.showConfirmation($scope,
+                'Confirm Delete',
+                'Are you sure you want to delete this scheduled message?',
+                function() {
+                    $http.delete('/direct-schedule/' + id).then(function() {
+                        $scope.schedules = $scope.schedules.filter(function(s) { return s.id !== id; });
+                        NotificationService.showToast($scope, 'Schedule deleted successfully.', 'success');
+                        console.log('Schedule deleted:', id);
+                    }).catch(function(error) {
+                        console.error('Error deleting schedule:', error);
+                        NotificationService.showToast($scope, (error.data && error.data.message) || 'Failed to delete schedule.', 'error');
+                    });
+                }
+            );
         };
 
         // Load initial data

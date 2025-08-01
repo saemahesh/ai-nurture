@@ -12,7 +12,12 @@
       "notification_enabled": true,
       "timezone": "Asia/Kolkata",
       "test_mobile": "919573713873",
-      "whapi_token": "UcYJY2xxMnKf3l06PXSoCg7s4tBDWmre"
+      "whapi_token": "UcYJY2xxMnKf3l06PXSoCg7s4tBDWmre",
+      "default_language": "en",
+      "autosave_interval": "60",
+      "log_messages": false,
+      "auto_delete": false,
+      "session_timeout": "60"
     }
   },
   {

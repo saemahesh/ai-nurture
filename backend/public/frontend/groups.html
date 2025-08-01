@@ -114,6 +114,67 @@
       </div>
     </div>
   </div>
+
+  <!-- Toast Notification -->
+  <div ng-if="toast.show" class="fixed top-4 right-4 z-50 transition-all duration-300 ease-in-out">
+      <div class="rounded-lg shadow-lg px-6 py-4 max-w-sm" 
+           ng-class="{
+               'bg-green-600 text-white': toast.type === 'success',
+               'bg-red-600 text-white': toast.type === 'error',
+               'bg-yellow-600 text-white': toast.type === 'warning',
+               'bg-blue-600 text-white': toast.type === 'info'
+           }">
+          <div class="flex items-center">
+              <i class="fas mr-3" 
+                 ng-class="{
+                     'fa-check-circle': toast.type === 'success',
+                     'fa-exclamation-circle': toast.type === 'error',
+                     'fa-exclamation-triangle': toast.type === 'warning',
+                     'fa-info-circle': toast.type === 'info'
+                 }"></i>
+              <span>{{toast.message}}</span>
+          </div>
+      </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div ng-if="showConfirmModal" class="fixed inset-0 z-50 flex items-center justify-center min-h-screen overflow-y-auto" style="background: rgba(15,23,42,0.7); z-index: 99999 !important;" ng-click="handleCancel()">
+    <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important; min-height: 0; margin-top: 4rem; margin-bottom: 2rem;" ng-click="$event.stopPropagation()">
+      <!-- Close X button at top -->
+      <button type="button" class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl font-bold close-x-button" style="border: none !important; outline: none !important; background: transparent !important;" ng-click="handleCancel()">✕</button>
+      
+      <div class="pt-4">
+        <div class="flex items-center mb-4">
+          <div class="flex-shrink-0 mr-3">
+            <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-white">{{confirmModal.title}}</h3>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <p class="text-gray-300">{{confirmModal.message}}</p>
+          <p class="text-sm text-gray-400 mt-2">This action cannot be undone.</p>
+        </div>
+        
+        <div class="flex justify-end space-x-3">
+          <button 
+            ng-click="handleCancel()"
+            class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg text-gray-200 font-semibold transition border border-gray-400">
+            {{confirmModal.cancelText}}
+          </button>
+          <button 
+            ng-click="handleConfirm()"
+            class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold transition">
+            {{confirmModal.confirmText}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
 </html>

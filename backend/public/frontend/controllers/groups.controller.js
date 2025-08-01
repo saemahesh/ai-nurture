@@ -1,8 +1,12 @@
-angular.module('autopostWaApp.groups').controller('GroupsController', function($scope, $location, AuthService, ApiService) {
+angular.module('autopostWaApp.groups').controller('GroupsController', function($scope, $location, AuthService, ApiService, NotificationService) {
   // Authentication and navigation
   $scope.isActive = function(path) {
     return $location.path().indexOf(path) === 0;
   };
+
+  // Initialize notification service
+  NotificationService.initToast($scope);
+  NotificationService.initConfirmModal($scope);
 
   AuthService.me().then(function(res) {
     $scope.user = res.data.user;
@@ -49,17 +53,23 @@ angular.module('autopostWaApp.groups').controller('GroupsController', function($
   };
   
   $scope.deleteGroup = function(id) {
-    if (confirm('Are you sure you want to delete this group?')) {
-      ApiService.deleteGroup(id)
-        .then(function() {
-          console.log('Group deleted successfully');
-          loadGroups();
-        })
-        .catch(function(error) {
-          console.error('Error deleting group:', error);
-          $scope.groupError = 'Failed to delete group';
-        });
-    }
+    NotificationService.showConfirmation($scope, 
+      'Confirm Delete',
+      'Are you sure you want to delete this group?',
+      function() {
+        ApiService.deleteGroup(id)
+          .then(function() {
+            console.log('Group deleted successfully');
+            loadGroups();
+            NotificationService.showToast($scope, 'Group deleted successfully!', 'success');
+          })
+          .catch(function(error) {
+            console.error('Error deleting group:', error);
+            $scope.groupError = 'Failed to delete group';
+            NotificationService.showToast($scope, 'Failed to delete group', 'error');
+          });
+      }
+    );
   };
 
   $scope.showCreateGroupModal = function() {
@@ -78,12 +88,12 @@ angular.module('autopostWaApp.groups').controller('GroupsController', function($
     ApiService.syncGroups()
       .then(function(response) {
         loadGroups();
-        alert('Groups synced successfully!');
+        NotificationService.showToast($scope, 'Groups synced successfully!', 'success');
       })
       .catch(function(error) {
         console.error('Error syncing groups:', error);
         $scope.groupError = error.data?.error || 'Failed to sync groups';
-        alert('Failed to sync groups: ' + $scope.groupError);
+        NotificationService.showToast($scope, 'Failed to sync groups: ' + $scope.groupError, 'error');
       });
   };
 });

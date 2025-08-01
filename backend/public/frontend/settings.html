@@ -3,7 +3,39 @@
 <head>
   <title>WhatsPro - Settings</title>
   <link rel="stylesheet" href="dark-theme.css">
-  <style>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div ng-if="toast.show" class="fixed top-4 right-4 z-50 transition-all duration-300 ease-in-out">
+  <div class="rounded-lg px-4 py-3 shadow-lg border"
+       ng-class="{
+         'bg-green-600 text-white': toast.type === 'success',
+         'bg-red-600 text-white': toast.type === 'error',
+         'bg-yellow-600 text-white': toast.type === 'warning',
+         'bg-blue-600 text-white': toast.type === 'info'
+       }">
+    <div class="flex items-center">
+      <i class="fas mr-2"
+         ng-class="{
+           'fa-check-circle': toast.type === 'success',
+           'fa-exclamation-circle': toast.type === 'error',
+           'fa-exclamation-triangle': toast.type === 'warning',
+           'fa-info-circle': toast.type === 'info'
+         }"></i>
+      <span>{{toast.message}}</span>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script src="services/auth.service.js"></script>
+<script src="controllers/sidebar.controller.js"></script>
+
+<style>
     @keyframes slideInRight {
       0% {
         transform: translateX(100%);

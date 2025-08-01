@@ -1,10 +1,14 @@
-angular.module('autopostWaApp').controller('SequencesController', ['$scope', '$http', '$location', function($scope, $http, $location) {
+angular.module('autopostWaApp').controller('SequencesController', ['$scope', '$http', '$location', 'NotificationService', function($scope, $http, $location, NotificationService) {
     $scope.sequences = [];
     $scope.enrollmentCounts = {};
     $scope.loading = true;
     $scope.dropdownOpen = null;
     $scope.showDeleteModal = false;
     $scope.sequenceToDelete = null;
+
+    // Initialize notification service
+    NotificationService.initToast($scope);
+    NotificationService.initConfirmModal($scope);
 
     // Load sequences
     $scope.loadSequences = function() {
@@ -16,7 +20,7 @@ angular.module('autopostWaApp').controller('SequencesController', ['$scope', '$h
             })
             .catch(function(error) {
                 console.error('Error loading sequences:', error);
-                alert('Error loading sequences. Please try again.');
+                NotificationService.showToast($scope, 'Error loading sequences. Please try again.', 'error');
             })
             .finally(function() {
                 $scope.loading = false;
@@ -99,11 +103,11 @@ angular.module('autopostWaApp').controller('SequencesController', ['$scope', '$h
         $http.post('/api/sequences', duplicatedSequence)
             .then(function(response) {
                 $scope.loadSequences();
-                alert('Sequence duplicated successfully!');
+                NotificationService.showToast($scope, 'Sequence duplicated successfully!', 'success');
             })
             .catch(function(error) {
                 console.error('Error duplicating sequence:', error);
-                alert('Error duplicating sequence. Please try again.');
+                NotificationService.showToast($scope, 'Error duplicating sequence. Please try again.', 'error');
             });
     };
 
@@ -126,7 +130,7 @@ angular.module('autopostWaApp').controller('SequencesController', ['$scope', '$h
             })
             .catch(function(error) {
                 console.error('Error updating sequence status:', error);
-                alert('Error updating sequence status. Please try again.');
+                NotificationService.showToast($scope, 'Error updating sequence status. Please try again.', 'error');
             });
     };
 
@@ -157,7 +161,7 @@ angular.module('autopostWaApp').controller('SequencesController', ['$scope', '$h
                 $scope.loadSequences();
                 $scope.showDeleteModal = false;
                 $scope.sequenceToDelete = null;
-                alert('Sequence deleted successfully!');
+                NotificationService.showToast($scope, 'Sequence deleted successfully!', 'success');
             })
             .catch(function(error) {
                 console.error('Error deleting sequence:', error);
@@ -165,16 +169,18 @@ angular.module('autopostWaApp').controller('SequencesController', ['$scope', '$h
                 
                 if (errorMessage.includes('active enrollments')) {
                     // Show specific error for active enrollments with option to stop them
-                    const confirmStop = confirm(
-                        'Cannot delete sequence with active enrollments.\n\n' +
-                        'Would you like to stop all active enrollments for this sequence and then delete it?'
+                    NotificationService.showConfirmation($scope, 
+                        'Active Enrollments Found',
+                        'Cannot delete sequence with active enrollments.\n\nWould you like to stop all active enrollments for this sequence and then delete it?',
+                        function() {
+                            $scope.stopEnrollmentsAndDelete();
+                        },
+                        null,
+                        'Yes, Stop & Delete',
+                        'Cancel'
                     );
-                    
-                    if (confirmStop) {
-                        $scope.stopEnrollmentsAndDelete();
-                    }
                 } else {
-                    alert('Error deleting sequence: ' + errorMessage);
+                    NotificationService.showToast($scope, 'Error deleting sequence: ' + errorMessage, 'error');
                 }
             });
     };
@@ -194,12 +200,12 @@ angular.module('autopostWaApp').controller('SequencesController', ['$scope', '$h
                 $scope.loadSequences();
                 $scope.showDeleteModal = false;
                 $scope.sequenceToDelete = null;
-                alert('All enrollments stopped and sequence deleted successfully!');
+                NotificationService.showToast($scope, 'All enrollments stopped and sequence deleted successfully!', 'success');
             })
             .catch(function(error) {
                 console.error('Error stopping enrollments or deleting sequence:', error);
                 const errorMessage = error.data?.message || error.data?.error || 'Unknown error occurred';
-                alert('Error: ' + errorMessage);
+                NotificationService.showToast($scope, 'Error: ' + errorMessage, 'error');
             });
     };
 

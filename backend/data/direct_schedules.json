@@ -88,25 +88,24 @@
     "sentAt": "2025-07-17T13:01:06.298Z"
   },
   {
-    "id": "a577668c-69a4-4d72-a4f9-a7f2bcbe651a",
+    "id": "d7a3ad07-a101-43c1-94b1-de341c4876aa",
     "username": "mahesh",
     "number": "919573713873",
-    "message": "hey 919573713873, testing",
-    "mediaUrl": "/uploads/1752417553587-automation.png",
-    "scheduledAt": "2025-07-30T16:25:00.000Z",
+    "message": "919573713873 hweyrheuw",
+    "mediaUrl": "/uploads/1753955626889-automation.png",
+    "scheduledAt": "2025-07-31T19:47:00.000Z",
     "status": "Sent",
-    "createdAt": "2025-07-30T16:24:46.866Z",
-    "sentAt": "2025-07-30T16:25:05.852Z"
+    "createdAt": "2025-07-31T19:45:32.110Z",
+    "sentAt": "2025-07-31T19:47:05.019Z"
   },
   {
-    "id": "7df1b476-cf86-4637-88f8-31c52cac6567",
+    "id": "3a2aef0a-86fd-46b2-a25c-33bf6befa46a",
     "username": "mahesh",
-    "number": "919573713873",
-    "message": "hey ,testing now",
+    "number": "919554363463",
+    "message": "kjsnfksjgn",
     "mediaUrl": "/uploads/1753955626889-automation.png",
-    "scheduledAt": "2025-07-31T09:57:00.000Z",
-    "status": "Sent",
-    "createdAt": "2025-07-31T09:56:12.005Z",
-    "sentAt": "2025-07-31T09:57:05.989Z"
+    "scheduledAt": "2025-08-29T07:23:00.000Z",
+    "status": "Scheduled",
+    "createdAt": "2025-08-01T07:23:12.554Z"
   }
 ]

@@ -1,18 +1,10 @@
 {
   "1753892353855cknc2gv": {
-    "live": {
+    "1day": {
       "enabled": true,
-      "text": "Heyyy,,,,,\n\nWe are LIVE now! {{eventName}} has started!",
-      "mediaId": "md1s5yai5ukt2e71h7d",
-      "mediaUrl": "/uploads/1752417553587-automation.png"
-    }
-  },
-  "1753948639393zhmaxgg": {
-    "live": {
-      "enabled": true,
-      "text": "We are LIVE now! {{eventName}} has started!",
-      "mediaId": "md1s5yai5ukt2e71h7d",
-      "mediaUrl": "/uploads/1752417553587-automation.png"
+      "text": "Only 1 day to go until {{eventName}}!",
+      "mediaId": "mdr7w7821trk3kkqphm",
+      "mediaUrl": "/uploads/1753955626889-automation.png"
     }
   }
 }

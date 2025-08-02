@@ -37,19 +37,21 @@
         "type": "media",
         "message": "Hey {name} , drip media first, congratzzzz\n\nIts time to {rock|party|explode}",
         "time": "09:00",
-        "mediaUrl": "https://cdn.prod.website-files.com/5d249063a5dbec3c6f57a8d4/6658a1f50a87b53a0e467f00_Ettv7FFQGtZu40rMOqSCDN8GgvnPkv0JtJ50q_FkifpoG1ubtWJiJ3qQDIrS3pfUAlvLgbz-Hk3Bz3TMcQmlE6AMpfL7lp9svVW1P-jYl_dm_RLmRtFxv7hV8k3aEqfqdS5qRvP9spywz3cBKTUewPQ.jpeg",
+        "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
         "mediaType": "image"
       },
       {
         "day": 2,
-        "type": "text",
+        "type": "media",
         "message": "Hey , day 2 drip msg",
-        "time": "09:00"
+        "time": "09:00",
+        "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
+        "mediaType": "image"
       }
     ],
     "total_days": 2,
     "created_at": "2025-07-11T08:09:20.754Z",
-    "updated_at": "2025-08-02T07:19:50.547Z"
+    "updated_at": "2025-08-02T11:11:44.549Z"
   },
   {
     "id": "seq_1752247551668",

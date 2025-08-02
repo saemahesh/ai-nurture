@@ -1,5 +1,5 @@
 angular.module('autopostWaApp.schedules')
-    .controller('DirectScheduleController', ['$scope', '$http', 'NotificationService', function($scope, $http, NotificationService) {
+    .controller('DirectScheduleController', ['$scope', '$http', '$timeout', 'NotificationService', function($scope, $http, $timeout, NotificationService) {
         $scope.schedules = [];
         $scope.mediaLibrary = [];
         $scope.showMediaSelector = false;
@@ -99,43 +99,78 @@ angular.module('autopostWaApp.schedules')
         $scope.loadSchedules = function() {
             $http.get('/direct-schedule').then(function(response) {
                 $scope.schedules = response.data;
-                
-                // Auto-scroll to bottom after schedules are loaded
-                setTimeout(function() {
-                    $scope.scrollToBottom();
-                }, 100);
             }).catch(function(error) {
                 NotificationService.showToast($scope, (error.data && error.data.message) || 'Failed to load schedules.', 'error');
             });
         };
-
-
-
-
-
-
-
-
-
 
         $scope.showCreateEditModal = function(schedule) {
             $scope.createEditModalVisible = true;
             $scope.isEditMode = !!schedule;
             if (schedule) {
                 // Edit mode: pre-fill form
-                // Convert ISO date to datetime-local format
-                var scheduledDate = new Date(schedule.scheduledAt);
-                var localISOTime = new Date(scheduledDate.getTime() - scheduledDate.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+                // Helper function to safely convert date string to Date object for Angular ng-model
+                function parseToDateObject(dateString) {
+                  if (!dateString) return null;
+                  try {
+                    console.log('Processing date string for Date object:', dateString);
+                    
+                    // Handle URL-encoded dates (decode first)
+                    var decodedDateString = decodeURIComponent(dateString);
+                    console.log('Decoded date string:', decodedDateString);
+                    
+                    var date = new Date(decodedDateString);
+                    if (isNaN(date.getTime())) {
+                      // Try original string if decoding fails
+                      console.log('Decoding failed, trying original string');
+                      date = new Date(dateString);
+                      if (isNaN(date.getTime())) {
+                        console.error('Invalid date:', dateString);
+                        return null;
+                      }
+                    }
+                    
+                    console.log('Direct Schedule - Original date string:', dateString, '-> Date object:', date);
+                    return date;
+                  } catch (e) {
+                    console.error('Error parsing date to object:', dateString, e);
+                    return null;
+                  }
+                }
                 
                 $scope.formData = {
                     id: schedule.id,
                     number: schedule.number,
                     message: schedule.message,
-                    scheduledAt: localISOTime,
+                    scheduledAt: null, // Initialize as null first
                     mediaMethod: schedule.mediaUrl ? 'url' : 'library',
                     mediaUrl: schedule.mediaUrl || '',
                     selectedMedia: null // Will be populated if media library is used
                 };
+                
+                console.log('Edit direct schedule formData after setup:', $scope.formData);
+                console.log('Original schedule scheduledAt:', schedule.scheduledAt);
+                
+                // Set the Date object after a brief delay to force Angular refresh
+                $timeout(function() {
+                    $scope.formData.scheduledAt = parseToDateObject(schedule.scheduledAt);
+                    console.log('Direct Schedule - Date object set to:', $scope.formData.scheduledAt);
+                }, 50);
+                
+                // Use timeout to ensure proper form binding
+                $timeout(function() {
+                    // Ensure Angular detects the changes
+                    $scope.$evalAsync(function() {
+                        console.log('Direct Schedule - Final formData.scheduledAt (Date object):', $scope.formData.scheduledAt);
+                        console.log('Direct Schedule - Is Date object?', $scope.formData.scheduledAt instanceof Date);
+                        // Reset form validation state after data is populated
+                        if ($scope.directScheduleForm) {
+                            $scope.directScheduleForm.$setPristine();
+                            $scope.directScheduleForm.$setUntouched();
+                            console.log('Direct Schedule - Form reset completed. Form valid:', !$scope.directScheduleForm.$invalid);
+                        }
+                    });
+                }, 300);
                 
                 // If media URL exists, try to find matching media in library
                 if (schedule.mediaUrl) {

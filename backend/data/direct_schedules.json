@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "id": "2c7aa89e-d6e1-4b0c-a965-b522e59fd8ca",
+    "username": "mahesh",
+    "number": "946436346436",
+    "message": "jkmgkem",
+    "mediaUrl": "/uploads/1754130827025-automation.png",
+    "scheduledAt": "2025-08-19T10:47:00.000Z",
+    "status": "Scheduled",
+    "createdAt": "2025-08-02T09:56:13.158Z",
+    "updatedAt": "2025-08-02T11:05:08.503Z"
+  }
+]

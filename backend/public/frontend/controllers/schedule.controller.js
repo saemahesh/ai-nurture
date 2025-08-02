@@ -1,4 +1,4 @@
-angular.module('autopostWaApp.schedules').controller('ScheduleController', function($scope, $location, AuthService, ApiService, NotificationService) {
+angular.module('autopostWaApp.schedules').controller('ScheduleController', function($scope, $location, $timeout, AuthService, ApiService, NotificationService) {
   // Initialize notifications
   NotificationService.initToast($scope);
   NotificationService.initConfirmModal($scope);
@@ -165,15 +165,8 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
     });
   };
 
-  // Open media selector
+  // Open media selector (unified for both create and edit)
   $scope.openMediaSelector = function() {
-    $scope.showMediaSelector = true;
-    $scope.loadMediaLibrary();
-  };
-
-  // Open media selector for edit mode
-  $scope.openMediaSelectorForEdit = function() {
-    $scope.editingForMedia = true;
     $scope.showMediaSelector = true;
     $scope.loadMediaLibrary();
   };
@@ -181,30 +174,31 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
   // Close media selector
   $scope.closeMediaSelector = function() {
     $scope.showMediaSelector = false;
-    $scope.editingForMedia = false;
   };
 
   // Select media for schedule
   $scope.selectMediaForSchedule = function(media) {
     console.log('Selected media:', media);
-    if ($scope.editingForMedia) {
-      $scope.editScheduleData.selectedMedia = media;
-      $scope.editScheduleData.imageUrl = ''; // Clear URL field when selecting from library
-    } else {
-      $scope.newSchedule.selectedMedia = media;
-      $scope.newSchedule.imageUrl = ''; // Clear URL field when selecting from library
-    }
+    console.log('Before media selection - formData:', $scope.formData);
+    // Use unified formData system for both create and edit modes
+    $scope.formData.selectedMedia = media;
+    $scope.formData.imageUrl = ''; // Clear URL field when selecting from library
+    $scope.formData.imageMethod = 'library'; // Set method when selecting from library
+    console.log('After media selection - formData:', $scope.formData);
     $scope.closeMediaSelector();
+    
+    // Force form validation update
+    setTimeout(function() {
+      $scope.$apply();
+      console.log('Form applied after media selection');
+    }, 10);
   };
 
-  // Clear selected media
+  // Clear selected media (unified for both create and edit)
   $scope.clearSelectedMedia = function() {
-    $scope.newSchedule.selectedMedia = null;
-  };
-
-  // Clear selected media for edit
-  $scope.clearSelectedMediaForEdit = function() {
-    $scope.editScheduleData.selectedMedia = null;
+    $scope.formData.selectedMedia = null;
+    $scope.formData.imageUrl = '';
+    $scope.formData.imageMethod = 'library';
   };
   
   // Check if any groups are selected
@@ -349,7 +343,6 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
   $scope.editingSchedule = false;
   $scope.editScheduleData = {};
   $scope.editScheduleError = '';
-  $scope.editingForMedia = false;
   
   // Modal functionality (unified create/edit modal)
   $scope.createScheduleModalVisible = false;
@@ -378,17 +371,56 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
   // Show edit schedule modal  
   $scope.showEditScheduleModal = function(schedule) {
     $scope.isEditMode = true;
+    
+    // Helper function to safely convert date string to Date object for Angular ng-model
+    function formatDateTimeLocal(dateString) {
+      if (!dateString) return null;
+      try {
+        console.log('Group Schedule - Processing date string for Date object:', dateString);
+        
+        // Handle URL-encoded dates (decode first)
+        var decodedDateString = decodeURIComponent(dateString);
+        console.log('Group Schedule - Decoded date string:', decodedDateString);
+        
+        var date = new Date(decodedDateString);
+        if (isNaN(date.getTime())) {
+          // Try original string if decoding fails
+          console.log('Group Schedule - Decoding failed, trying original string');
+          date = new Date(dateString);
+          if (isNaN(date.getTime())) {
+            console.error('Group Schedule - Invalid date:', dateString);
+            return null;
+          }
+        }
+        
+        console.log('Group Schedule - Original date string:', dateString, '-> Date object:', date);
+        return date;
+      } catch (e) {
+        console.error('Group Schedule - Error parsing date to object:', dateString, e);
+        return null;
+      }
+    }
+    
     $scope.formData = {
       id: schedule.id,
       name: schedule.name,
       message: schedule.message,
-      time: new Date(schedule.time).toISOString().slice(0, 16), // Format for datetime-local input
+      time: null, // Initialize as null first
       groupId: schedule.groupId,
       currentMediaUrl: schedule.media,
       imageMethod: schedule.media ? 'library' : 'library', // Set method based on existing media
       selectedMedia: null,
       imageUrl: schedule.media && (schedule.media.startsWith('http://') || schedule.media.startsWith('https://')) ? schedule.media : ''
     };
+    
+    console.log('Edit schedule formData after setup:', $scope.formData);
+    console.log('Original schedule time:', schedule.time);
+    
+    // Set the Date object after a brief delay to force Angular refresh
+    $timeout(function() {
+      $scope.formData.time = formatDateTimeLocal(schedule.time);
+      console.log('Group Schedule - Date object set to:', $scope.formData.time);
+    }, 50);
     
     // If there's existing media and it's from library, try to find it in media library
     if (schedule.media && !schedule.media.startsWith('http://') && !schedule.media.startsWith('https://')) {
@@ -419,6 +451,21 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
     
     $scope.scheduleError = '';
     $scope.createScheduleModalVisible = true;
+    
+    // Reset form validation state after data is populated
+    $timeout(function() {
+      // Ensure Angular detects the changes
+      $scope.$evalAsync(function() {
+        console.log('Group Schedule - Final formData.time (Date object):', $scope.formData.time);
+        console.log('Group Schedule - Is Date object?', $scope.formData.time instanceof Date);
+        if ($scope.scheduleForm) {
+          $scope.scheduleForm.$setPristine();
+          $scope.scheduleForm.$setUntouched();
+          console.log('Group Schedule - Form reset completed. Form valid:', !$scope.scheduleForm.$invalid);
+          console.log('Group Schedule - Form data after reset:', $scope.formData);
+        }
+      });
+    }, 300);
   };
   
   // Hide schedule modal
@@ -433,13 +480,18 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
   $scope.saveSchedule = function() {
     $scope.scheduleError = '';
     
+    console.log('Save schedule called with formData:', $scope.formData);
+    console.log('Groups with selection:', $scope.groups.map(function(g) { return {id: g.groupId, name: g.name, selected: g.selected}; }));
+    
     // Validate form
     if (!$scope.formData.message || !$scope.formData.time) {
+      console.log('Form validation failed - missing message or time');
       $scope.scheduleError = 'Please fill in all required fields';
       return;
     }
     
     if (!$scope.hasSelectedGroups()) {
+      console.log('No groups selected');
       $scope.scheduleError = 'Please select at least one group';
       return;
     }
@@ -519,7 +571,7 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
       id: schedule.id,
       name: schedule.name,
       message: schedule.message,
-      time: new Date(schedule.time).toISOString().slice(0, 16), // Format for datetime-local input
+      time: formatDateTimeLocal(schedule.time), // Safely format for datetime-local input
       groupId: schedule.groupId,
       currentMediaUrl: schedule.media,
       imageMethod: 'library', // Default to media library

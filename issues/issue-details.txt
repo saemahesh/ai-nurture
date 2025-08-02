@@ -7,21 +7,11 @@ Do not assume issues are fixed until the total issues count is 0.
 Clear the contents of actionplan.txt and update it with a new plan based on the current stage.
 Do not create test scripts; you will receive manual feedback.
 Avoid using the bg-gradient-to-br class in your code changes.
+you should not modify the issue-details.txt file directly.
+Clear your previous iteration count to start fresh if reading this file first time
 Iterate on the issue-details.txt file 87 times until you see no issues listed , otherwise fix issues accordingly.
 if issues not removed, improve them
+until i clear the issues here, consider they are not fixed
 --------------------------------------------------------
 **** Issue List ****
-
-you made changes to backend app.js instead of frontend app.js and made some other mistakes like that
-i removed all your code changes, this time do it properly
-  <link rel="stylesheet" href="dark-theme.css?v={{Date.now()}}">
- why to load  in each file? instead load in single parent file??
-
- review all existing code and make sure no code repitition and modularized
- change in one main component should reflect in all other components
-
-still i can see css files used in individual files
-no css files should be used in individual files, only used in index.html
-
-main issue is caching issue, need to implement cache busting techniques with above details
-all js and css files should be loaded with cache busting techniques
+working

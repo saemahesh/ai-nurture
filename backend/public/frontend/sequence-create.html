@@ -181,73 +181,84 @@
                                     <div class="space-y-4">
                                         <!-- Media Selection Options -->
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-3">Select Media Source</label>
-                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                <!-- Upload New File -->
-                                                <div class="border border-gray-300 rounded-lg p-4">
-                                                    <h4 class="text-sm font-medium text-gray-700 mb-2">Upload File</h4>
-                                                    <input type="file" accept="image/*,video/*,audio/*,.pdf,.doc,.docx" 
-                                                           ng-model="message.mediaFile" file-model="message.mediaFile"
-                                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                                    <p class="text-xs text-gray-500 mt-1">Images, Videos, Audio, PDFs, Documents</p>
-                                                </div>
-
-                                                <!-- Media Library -->
-                                                <div class="border border-gray-300 rounded-lg p-4">
-                                                    <h4 class="text-sm font-medium text-gray-700 mb-2">From Media Library</h4>
+                                            <label class="block text-sm font-medium text-gray-300 mb-2">Select Media Source</label>
+                                            <div class="flex justify-center">
+                                                <!-- Media Library - Compact Dark Option -->
+                                                <div class="border-2 border-slate-500 bg-slate-700 rounded-lg p-3 w-full max-w-xs shadow-md">
+                                                    <h4 class="text-sm font-bold text-slate-200 mb-2 text-center">From Media Library</h4>
                                                     <button type="button" ng-click="openMediaLibrary(message)" 
-                                                            class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-md text-sm transition duration-200">
-                                                        <i class="fas fa-photo-video mr-2"></i>Browse Library
+                                                            class="w-full bg-slate-600 hover:bg-slate-500 text-white px-3 py-2 rounded-md text-xs font-semibold transition duration-200 flex items-center justify-center shadow-sm">
+                                                        <i class="fas fa-photo-video mr-2 text-xs"></i>Browse Library
                                                     </button>
-                                                    <p class="text-xs text-gray-500 mt-1">Select from uploaded files</p>
-                                                </div>
-
-                                                <!-- URL Input -->
-                                                <div class="border-2 border-white bg-gradient-to-r from-blue-900 to-indigo-900 rounded-lg p-4">
-                                                    <h4 class="text-sm font-medium text-cyan-300 mb-2">From URL</h4>
-                                                    <input type="url" ng-model="message.mediaUrl" 
-                                                           placeholder="https://example.com/image.jpg"
-                                                           class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300">
-                                                    <p class="text-xs text-gray-300 mt-1">Paste direct media URL</p>
+                                                    <p class="text-xs text-slate-300 mt-1 text-center">Select from uploaded files</p>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!-- Selected Media Preview -->
-                                        <div ng-if="message.mediaFile || message.mediaUrl || message.selectedMedia" class="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-lg p-4 border border-white">
-                                            <h4 class="text-sm font-medium text-cyan-300 mb-2">Selected Media:</h4>
-                                            <div class="flex items-center space-x-3">
-                                                <!-- Media thumbnail -->
-                                                <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
-                                                    <!-- Show actual image thumbnail -->
-                                                    <img ng-if="isSelectedMediaImage(message)" ng-src="{{getSelectedMediaUrl(message)}}" 
-                                                         alt="{{getSelectedMediaName(message)}}"
-                                                         class="w-full h-full object-cover"
-                                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <!-- Selected Media Preview - Desktop Row Layout -->
+                                        <div ng-if="message.selectedMedia" class="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-lg p-4 border border-white">
+                                            <div class="hidden md:flex md:items-center md:justify-between md:gap-4">
+                                                <!-- Media Library Label - Desktop -->
+                                                <div class="flex-shrink-0">
+                                                    <h4 class="text-lg font-bold text-cyan-300">From Media Library:</h4>
+                                                </div>
+                                                
+                                                <!-- Media Preview - Desktop -->
+                                                <div class="flex items-center flex-1 min-w-0 gap-3">
+                                                    <!-- Media thumbnail -->
+                                                    <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
+                                                        <img ng-if="isSelectedMediaImage(message)" ng-src="{{getSelectedMediaUrl(message)}}" 
+                                                             alt="{{getSelectedMediaName(message)}}"
+                                                             class="w-full h-full object-cover"
+                                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                        
+                                                        <div class="w-full h-full flex items-center justify-center" ng-style="{'display': isSelectedMediaImage(message) ? 'none' : 'flex'}">
+                                                            <i ng-if="isSelectedMediaVideo(message)" class="fas fa-play-circle text-gray-500 text-xl"></i>
+                                                            <i ng-if="message.selectedMedia && !isSelectedMediaImage(message) && !isSelectedMediaVideo(message)" class="fas fa-file text-gray-500"></i>
+                                                        </div>
+                                                    </div>
                                                     
-                                                    <!-- Fallback icons -->
-                                                    <div class="w-full h-full flex items-center justify-center" ng-style="{'display': isSelectedMediaImage(message) ? 'none' : 'flex'}">
-                                                        <i ng-if="isSelectedMediaVideo(message)" class="fas fa-play-circle text-gray-500 text-xl"></i>
-                                                        <i ng-if="message.mediaFile && !isSelectedMediaImage(message) && !isSelectedMediaVideo(message)" class="fas fa-file text-gray-500"></i>
-                                                        <i ng-if="message.mediaUrl && !isSelectedMediaImage(message) && !isSelectedMediaVideo(message)" class="fas fa-link text-gray-500"></i>
-                                                        <i ng-if="message.selectedMedia && !isSelectedMediaImage(message) && !isSelectedMediaVideo(message)" class="fas fa-file text-gray-500"></i>
+                                                    <!-- Media info -->
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-sm font-medium text-gray-100 truncate">{{getSelectedMediaName(message)}}</p>
+                                                        <p class="text-xs text-gray-300">{{getSelectedMediaType(message)}}</p>
                                                     </div>
                                                 </div>
                                                 
-                                                <!-- Media info -->
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="text-sm font-medium text-gray-100 truncate">{{getSelectedMediaName(message)}}</p>
-                                                    <p class="text-xs text-gray-300">
-                                                        <span ng-if="message.mediaFile">Size: {{formatFileSize(message.mediaFile.size)}}</span>
-                                                        <span ng-if="message.mediaUrl">External URL</span>
-                                                        <span ng-if="message.selectedMedia">From Library ({{getSelectedMediaType(message)}})</span>
-                                                    </p>
-                                                </div>
-                                                
-                                                <!-- Clear button -->
+                                                <!-- Clear button - Desktop -->
                                                 <button type="button" ng-click="clearMedia(message)" 
-                                                        class="text-red-500 hover:text-red-700 flex-shrink-0">
-                                                    <i class="fas fa-times"></i>
+                                                        class="text-red-400 hover:text-red-300 flex-shrink-0 p-2 rounded-md hover:bg-red-900/20 transition-colors">
+                                                    <i class="fas fa-times text-lg"></i>
+                                                </button>
+                                            </div>
+                                            
+                                            <!-- Mobile Layout (vertical) -->
+                                            <div class="md:hidden">
+                                                <h4 class="text-sm font-medium text-cyan-300 mb-2">Selected Media:</h4>
+                                                <div class="flex items-center space-x-3">
+                                                    <!-- Media thumbnail -->
+                                                    <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                                                        <img ng-if="isSelectedMediaImage(message)" ng-src="{{getSelectedMediaUrl(message)}}" 
+                                                             alt="{{getSelectedMediaName(message)}}"
+                                                             class="w-full h-full object-cover"
+                                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                        
+                                                        <div class="w-full h-full flex items-center justify-center" ng-style="{'display': isSelectedMediaImage(message) ? 'none' : 'flex'}">
+                                                            <i ng-if="isSelectedMediaVideo(message)" class="fas fa-play-circle text-gray-500 text-xl"></i>
+                                                            <i ng-if="message.selectedMedia && !isSelectedMediaImage(message) && !isSelectedMediaVideo(message)" class="fas fa-file text-gray-500"></i>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Media info -->
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-sm font-medium text-gray-100 truncate">{{getSelectedMediaName(message)}}</p>
+                                                        <p class="text-xs text-gray-300">From Library ({{getSelectedMediaType(message)}})</p>
+                                                    </div>
+                                                    
+                                                    <!-- Clear button -->
+                                                    <button type="button" ng-click="clearMedia(message)" 
+                                                            class="text-red-500 hover:text-red-700 flex-shrink-0">
+                                                        <i class="fas fa-times"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -285,59 +296,12 @@
     </div>
 
     <!-- Media Library Modal -->
-    <div ng-if="showMediaLibrary" class="fixed" style="top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.5) !important; display: flex !important; align-items: center !important; justify-content: center !important; z-index: 9999 !important;" ng-click="closeMediaLibrary()">
-        <div class="bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 rounded-xl p-6 border border-white" style="width: 90% !important; max-width: 600px !important; max-height: 80vh !important; overflow-y: auto !important;" ng-click="$event.stopPropagation()">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-semibold text-white">Select Media from Library</h2>
-                <button type="button" ng-click="closeMediaLibrary()" class="text-gray-400 hover:text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            
-            <!-- Loading State -->
-            <div ng-if="loadingMedia" class="text-center py-8">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto"></div>
-                <p class="mt-4 text-gray-300">Loading media library...</p>
-            </div>
-
-            <!-- Empty State -->
-            <div ng-if="!loadingMedia && mediaLibrary.length === 0" class="text-center py-12">
-                <div class="w-16 h-16 mx-auto mb-4 text-gray-400">
-                    <svg fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-medium text-white mb-2">No media files found</h3>
-                <p class="text-gray-300">Upload media files to the library first.</p>
-            </div>
-
-            <!-- Media Grid -->
-            <div ng-if="!loadingMedia && mediaLibrary.length > 0" style="display: grid !important; grid-template-columns: repeat(auto-fill, 60px) !important; gap: 8px !important; justify-content: start !important; max-height: 96rem; overflow-y: auto;">
-                <div ng-repeat="media in mediaLibrary" class="cursor-pointer transition-all duration-200 hover:opacity-80" ng-click="selectMediaFromLibrary(media)" style="width: 56px !important; text-align: center !important;">
-                    <div class="w-14 h-14 bg-blue-800 rounded border border-white overflow-hidden">
-                        <img ng-if="isImageFile(media)" ng-src="{{getMediaUrl(media)}}" alt="{{media.name}}" class="w-full h-full object-cover">
-                        <div ng-if="isVideoFile(media)" class="w-full h-full flex items-center justify-center text-blue-400">
-                            <i class="fas fa-play-circle text-lg"></i>
-                        </div>
-                        <div ng-if="!isImageFile(media) && !isVideoFile(media)" class="w-full h-full flex items-center justify-center text-blue-400">
-                            <i class="fas fa-file text-lg"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-300 truncate mt-1" style="font-size: 9px !important; max-width: 56px !important; line-height: 1.2 !important;">{{media.name}}</p>
-                </div>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="mt-6 text-right">
-                <button type="button" ng-click="closeMediaLibrary()"
-                        class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-all duration-300">
-                    Cancel
-                </button>
-            </div>
-        </div>
-    </div>
+    <media-library-modal 
+      show="showMediaLibrary" 
+      on-close="closeMediaLibrary()" 
+      on-select="selectMediaFromLibrary(media)"
+      title="Select Media for Sequence">
+    </media-library-modal>
 </div>
 
 <!-- Toast Notification -->

@@ -126,6 +126,8 @@ router.post('/:id/reminders', authRequired, (req, res) => {
     // No file processing needed, just save config
     event.remindersConfigured = true;
     writeEvents(events);
+    
+    // Replace with complete reminder configuration (frontend now sends all data)
     allReminders[eventId] = parsedConfig;
     writeReminders(allReminders);
     const scheduleInfo = generateRemindersSchedule(event, parsedConfig);

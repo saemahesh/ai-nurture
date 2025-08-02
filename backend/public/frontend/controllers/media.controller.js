@@ -1,4 +1,4 @@
-angular.module('autopostWaApp.media').controller('MediaPageController', function($scope, $timeout, ApiService, $sce) {
+angular.module('autopostWaApp.media').controller('MediaPageController', function($scope, $timeout, ApiService, $sce, $rootScope) {
   $scope.mediaFiles = [];
   $scope.newMedia = {
     name: '',
@@ -17,6 +17,13 @@ angular.module('autopostWaApp.media').controller('MediaPageController', function
   $scope.showImageModal = false;
   $scope.selectedImage = null;
   $scope.showCreateForm = false; // Hide create form by default
+  
+  // Desktop detection
+  $rootScope.isDesktop = window.innerWidth >= 768;
+  angular.element(window).on('resize', function() {
+    $rootScope.isDesktop = window.innerWidth >= 768;
+    $scope.$apply();
+  });
   
   console.log("Media controller initialized");
 
@@ -377,6 +384,38 @@ angular.module('autopostWaApp.media').controller('MediaPageController', function
   $scope.openImageModal = function(media) {
     $scope.selectedImage = media;
     $scope.showImageModal = true;
+    
+    // Force modal width to 300px on desktop after opening
+    if ($rootScope.isDesktop) {
+      // Multiple attempts to ensure width is set
+      $timeout(function() {
+        const modalElement = document.querySelector('.media-modal-desktop-width');
+        if (modalElement) {
+          modalElement.style.setProperty('width', '300px', 'important');
+          modalElement.style.setProperty('min-width', '300px', 'important');
+          modalElement.style.setProperty('max-width', '300px', 'important');
+          console.log('Applied inline width to media modal:', modalElement.style.width);
+        }
+      }, 10);
+      
+      $timeout(function() {
+        const modalElement = document.querySelector('.media-modal-desktop-width');
+        if (modalElement) {
+          modalElement.style.setProperty('width', '300px', 'important');
+          modalElement.style.setProperty('min-width', '300px', 'important');
+          modalElement.style.setProperty('max-width', '300px', 'important');
+        }
+      }, 100);
+      
+      $timeout(function() {
+        const modalElement = document.querySelector('.media-modal-desktop-width');
+        if (modalElement) {
+          modalElement.style.setProperty('width', '300px', 'important');
+          modalElement.style.setProperty('min-width', '300px', 'important');
+          modalElement.style.setProperty('max-width', '300px', 'important');
+        }
+      }, 200);
+    }
   };
 
   $scope.closeImageModal = function() {

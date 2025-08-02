@@ -772,11 +772,6 @@ main[style*="background: linear-gradient"] {
   display: block !important;
 }
 
-/* Ensure Angular conditionals work */
-[ng-if] {
-  display: block !important;
-}
-
 [ng-if].ng-hide {
   display: none !important;
 }

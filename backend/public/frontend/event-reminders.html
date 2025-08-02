@@ -1,26 +1,38 @@
 <!-- Event Reminders Page -->
-<!DOCTYPE html>
-<html>
+<!DOCTYPE h    @media (min-width: 768px) {
+      .event-card {
+        min-height: 350px;
+        padding: 1.5rem;
+      }
+      .event-card-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.5rem !important;
+      }
+    }>
 <head>
   <style>
     .event-card-grid {
       display: grid !important;
-      grid-template-columns: repeat(3, 1fr) !important;
-      gap: 2rem !important;
+      grid-template-columns: 1fr !important;
+      gap: 1.25rem !important;
+      align-items: start !important;
+      justify-content: center !important;
+      width: 100% !important;
+      max-width: 1000px !important;
+      margin: 0 auto !important;
     }
     .event-card {
       display: flex;
       flex-direction: column;
-      height: 100%;
-      min-height: 340px;
-      margin: 0.75rem 0.5rem 1.5rem 0.5rem;
-      padding: 1rem 0.75rem;
-      border-radius: 1.25rem;
+      height: auto;
+      min-height: 350px;
+      width: 100%;
+      margin: 0;
+      padding: 1.25rem;
+      border-radius: 1rem;
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-      box-shadow: 0 8px 32px rgba(15, 23, 42, 0.6), 0 4px 16px rgba(30, 41, 59, 0.4), inset 0 1px 0 rgba(148, 163, 184, 0.1);
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.4), 0 2px 8px rgba(30, 41, 59, 0.3), inset 0 1px 0 rgba(148, 163, 184, 0.1);
       border: 1px solid #475569;
-      min-width: 0;
-      max-width: 100%;
       box-sizing: border-box;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
@@ -37,26 +49,33 @@
     }
     @media (min-width: 640px) {
       .event-card {
-        min-height: 360px;
-        margin: 1rem 0.75rem 2rem 0.75rem;
-        padding: 1.5rem 1.25rem;
+        min-height: 370px;
+        padding: 1.5rem;
+      }
+      .event-card-grid {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+        gap: 1.5rem !important;
       }
     }
     @media (min-width: 1024px) {
       .event-card {
         min-height: 380px;
-        margin: 1.5rem 1rem 2.5rem 1rem;
-        padding: 2rem 1.5rem;
+        padding: 1.75rem;
       }
-    }
-    @media (max-width: 1024px) {
       .event-card-grid {
         grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.75rem !important;
+        max-width: 1000px !important;
       }
     }
     @media (max-width: 640px) {
+      .event-card {
+        min-height: 300px;
+        padding: 1rem;
+      }
       .event-card-grid {
         grid-template-columns: 1fr !important;
+        gap: 1rem !important;
       }
     }
     .status-badge {
@@ -92,6 +111,228 @@
     }
     .reminder-card {
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Complete redesign for hours before cards - Mobile and Desktop optimized */
+    .hours-before-card {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      border: 2px solid #475569;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.6), 0 4px 16px rgba(30, 41, 59, 0.4);
+      display: flex;
+      flex-direction: column;
+      min-height: 450px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hours-before-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #06b6d4, #3b82f6, #06b6d4);
+      border-radius: 16px 16px 0 0;
+    }
+    
+    .hours-before-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 20px 48px rgba(6, 182, 212, 0.5), 0 8px 24px rgba(15, 23, 42, 0.8);
+      border-color: #06b6d4;
+    }
+    
+    /* Mobile-first responsive design - Reduced padding and margins */
+    @media (max-width: 640px) {
+      .hours-before-card {
+        min-height: 320px;
+        padding: 0.75rem;
+        border-radius: 12px;
+        margin-bottom: 0.5rem;
+      }
+      
+      .hours-before-card .card-header {
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+      }
+      
+      .hours-before-card .card-icon {
+        width: 40px;
+        height: 40px;
+        margin-right: 0.75rem;
+      }
+      
+      .hours-before-card .card-title {
+        font-size: 1.125rem;
+      }
+      
+      .hours-before-card .form-content {
+        gap: 1rem;
+      }
+      
+      .hours-before-card .form-textarea {
+        padding: 0.75rem;
+        min-height: 80px;
+      }
+      
+      .hours-before-card .media-section {
+        padding: 0.75rem;
+      }
+      
+      .hours-before-card .save-button {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .hours-before-card {
+        min-height: 420px;
+        padding: 1.75rem;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .hours-before-card {
+        min-height: 450px;
+        padding: 2rem;
+      }
+    }
+    
+    /* Header section styling */
+    .hours-before-card .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(6, 182, 212, 0.3);
+    }
+    
+    .hours-before-card .card-icon {
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      border-radius: 12px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      box-shadow: 0 4px 16px rgba(6, 182, 212, 0.4);
+    }
+    
+    .hours-before-card .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Form content styling */
+    .hours-before-card .form-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    
+    .hours-before-card .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .hours-before-card .form-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #67e8f9;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+    
+    .hours-before-card .form-textarea {
+      background: linear-gradient(135deg, #1e293b, #334155);
+      border: 2px solid #475569;
+      border-radius: 12px;
+      color: #ffffff;
+      padding: 1rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      transition: all 0.3s ease;
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    .hours-before-card .form-textarea:focus {
+      outline: none;
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.2);
+      background: linear-gradient(135deg, #334155, #475569);
+    }
+    
+    .hours-before-card .form-textarea::placeholder {
+      color: #94a3b8;
+      opacity: 0.7;
+    }
+    
+    /* Media section styling */
+    .hours-before-card .media-section {
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid rgba(6, 182, 212, 0.2);
+    }
+    
+    .hours-before-card .media-button {
+      background: linear-gradient(135deg, #475569, #334155);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .hours-before-card .media-button:hover {
+      background: linear-gradient(135deg, #334155, #1e293b);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(71, 85, 105, 0.4);
+    }
+    
+    /* Save button styling */
+    .hours-before-card .save-button {
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: auto;
+      box-shadow: 0 4px 16px rgba(6, 182, 212, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+    
+    .hours-before-card .save-button:hover:not(:disabled) {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(6, 182, 212, 0.5);
+    }
+    
+    .hours-before-card .save-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
     }
     .reminder-card:hover,
     .event-card:hover,
@@ -510,111 +751,96 @@
           <div class="border-t border-slate-700 px-4 py-5 sm:p-6">
             <div class="space-y-6">
               <!-- Reminder Configuration Cards -->
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto px-2 md:px-4">
                 <!-- Days Before Reminders -->
-                <div class="reminder-card dark-theme-card flex flex-col h-full" ng-repeat="type in getUpcomingReminderTypes('days')">
-                  <div class="flex items-center mb-4">
+                <div class="reminder-card dark-theme-card flex flex-col min-h-[420px]" ng-repeat="type in getUpcomingReminderTypes('days')">
+                  <div class="flex items-center mb-3">
                     <div class="bg-cyan-800/40 rounded-full h-10 w-10 flex items-center justify-center mr-3">
-                      <i class="fas fa-calendar-week text-cyan-300 text-xl"></i>
+                      <i class="fas fa-calendar-week text-cyan-300 text-lg"></i>
                     </div>
-                    <h3 class="text-lg font-semibold">{{getReminderLabel(type)}}</h3>
+                    <h3 class="text-lg font-semibold text-white">{{getReminderLabel(type)}}</h3>
                   </div>
-                  <form name="reminderForm_{{type}}" ng-submit="saveReminder(type)" class="space-y-4 flex-1 flex flex-col justify-between">
-                    <div>
-                      <label class="block text-sm font-medium mb-2">Message</label>
+                  <form name="reminderForm_{{type}}" ng-submit="saveReminder(type)" class="flex-1 flex flex-col">
+                    <div class="mb-3">
+                      <label class="block text-sm font-medium mb-2 text-slate-200">Message</label>
                       <textarea ng-model="reminders[type].text"
-                        class="w-full px-4 py-2 rounded-lg border-2 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300"
-                        placeholder="Enter reminder message for {{getReminderLabel(type)}}" rows="3"></textarea>
+                        class="w-full px-3 py-2 rounded-lg border border-slate-500 bg-slate-700 text-white placeholder-slate-400 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-300 transition-all duration-300 resize-none"
+                        placeholder="Enter reminder message for {{getReminderLabel(type)}}" rows="4"></textarea>
                     </div>
-                    <div class="media-preview-container">
-                      <div>
-                        <label class="block text-sm font-medium mb-2">Media (Optional)</label>
+                    <div class="media-preview-container mb-4 flex-1">
+                      <div class="mb-2">
+                        <label class="block text-sm font-medium mb-2 text-slate-200">Media (Optional)</label>
                         <button type="button" ng-click="openMediaSelector(type)"
-                          class="px-3 py-2 rounded-lg shadow transition-all flex items-center gap-1">
+                          class="px-3 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg shadow transition-all flex items-center gap-2 text-sm">
                           <i class="fas fa-photo-video"></i> Media Library
                         </button>
                       </div>
-                      <div ng-if="reminders[type].mediaFromLibrary && reminders[type].mediaFromLibrary.url" class="media-preview-right flex items-center gap-3">
-                        <img ng-if="isImage(reminders[type].mediaFromLibrary.url)" ng-src="{{getImageUrl(reminders[type].mediaFromLibrary.url)}}" class="h-14 w-14 object-cover rounded border" />
-                        <video ng-if="isVideo(reminders[type].mediaFromLibrary.url)" ng-src="{{getImageUrl(reminders[type].mediaFromLibrary.url)}}" class="h-14 w-14 rounded border" controls></video>
-                        <button type="button" ng-click="reminders[type].mediaFromLibrary=null" class="text-red-400 hover:text-red-300 ml-2">
+                      <div ng-if="reminders[type].mediaFromLibrary && reminders[type].mediaFromLibrary.url" class="bg-slate-600 rounded-lg p-2 flex items-center gap-3">
+                        <img ng-if="isImage(reminders[type].mediaFromLibrary.url)" ng-src="{{getImageUrl(reminders[type].mediaFromLibrary.url)}}" class="h-12 w-12 object-cover rounded border" />
+                        <video ng-if="isVideo(reminders[type].mediaFromLibrary.url)" ng-src="{{getImageUrl(reminders[type].mediaFromLibrary.url)}}" class="h-12 w-12 rounded border" controls></video>
+                        <button type="button" ng-click="reminders[type].mediaFromLibrary=null" class="text-red-400 hover:text-red-300 ml-auto">
                           <i class="fas fa-times"></i> Remove
                         </button>
                       </div>
                     </div>
-                    <button type="submit" class="w-full py-2 rounded-lg transition-all duration-300 shadow-md" ng-disabled="reminderForm_{{type}}.$invalid">
+                    <button type="submit" class="w-full py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-all duration-300 shadow-md text-sm font-medium mt-auto" ng-disabled="reminderForm_{{type}}.$invalid">
                       <i class="fas fa-save mr-2"></i>Save Reminder
                     </button>
                   </form>
                 </div>
                 <!-- Hours/Minutes Before Reminders -->
-                <div class="reminder-card dark-theme-card flex flex-col h-full" ng-repeat="type in getUpcomingReminderTypes('hours')">
-                  <div class="flex items-center mb-4">
-                    <div class="bg-teal-800/40 rounded-full h-10 w-10 flex items-center justify-center mr-3">
-                      <i class="fas fa-clock text-teal-300 text-xl"></i>
+                                <!-- Hours Before Reminders - Completely Redesigned -->
+                <div class="hours-before-card" ng-repeat="type in getUpcomingReminderTypes('hours')">
+                  <!-- Card Header -->
+                  <div class="card-header">
+                    <div class="card-icon">
+                      <i class="fas fa-clock text-white text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-semibold">{{getReminderLabel(type)}}</h3>
+                    <h3 class="card-title">{{getReminderLabel(type)}}</h3>
                   </div>
-                  <form name="reminderForm_{{type}}" ng-submit="saveReminder(type)" class="space-y-4 flex-1 flex flex-col justify-between">
-                    <div>
-                      <label class="block text-sm font-medium mb-2">Message</label>
+                  
+                  <!-- Form Content -->
+                  <form name="reminderForm_{{type}}" ng-submit="saveReminder(type)" class="form-content">
+                    <!-- Message Input -->
+                    <div class="form-group">
+                      <label class="form-label">Reminder Message</label>
                       <textarea ng-model="reminders[type].text"
-                        class="w-full px-4 py-2 rounded-lg border-2 focus:border-teal-400 focus:ring-2 focus:ring-teal-300 transition-all duration-300"
-                        placeholder="Enter reminder message for {{getReminderLabel(type)}}" rows="3"></textarea>
+                        class="form-textarea"
+                        placeholder="Enter your reminder message for {{getReminderLabel(type)}}..."
+                        rows="4"></textarea>
                     </div>
-                    <div class="media-preview-container">
-                      <div>
-                        <label class="block text-sm font-medium mb-2">Media (Optional)</label>
-                        <button type="button" ng-click="openMediaSelector(type)"
-                          class="px-3 py-2 rounded-lg shadow transition-all flex items-center gap-1">
-                          <i class="fas fa-photo-video"></i> Media Library
+                    
+                    <!-- Media Section -->
+                    <div class="form-group">
+                      <label class="form-label">Media Attachment</label>
+                      <div class="media-section">
+                        <button type="button" ng-click="openMediaSelector(type)" class="media-button">
+                          <i class="fas fa-photo-video"></i>
+                          <span>Browse Media Library</span>
                         </button>
-                      </div>
-                      <div ng-if="reminders[type].mediaFromLibrary && reminders[type].mediaFromLibrary.url" class="media-preview-right flex items-center gap-3">
-                        <img ng-if="isImage(reminders[type].mediaFromLibrary.url)" ng-src="{{getImageUrl(reminders[type].mediaFromLibrary.url)}}" class="h-14 w-14 object-cover rounded border" />
-                        <video ng-if="isVideo(reminders[type].mediaFromLibrary.url)" ng-src="{{getImageUrl(reminders[type].mediaFromLibrary.url)}}" class="h-14 w-14 rounded border" controls></video>
-                        <button type="button" ng-click="reminders[type].mediaFromLibrary=null" class="text-red-400 hover:text-red-300 ml-2">
-                          <i class="fas fa-times"></i> Remove
-                        </button>
-                      </div>
-                    </div>
-                    <button type="submit" class="w-full py-2 rounded-lg transition-all duration-300 shadow-md" ng-disabled="reminderForm_{{type}}.$invalid">
-                      <i class="fas fa-save mr-2"></i>Save Reminder
-                    </button>
-                  </form>
-                </div>
-                <!-- At Event Start Reminder -->
-                <div class="reminder-card dark-theme-card flex flex-col h-full" ng-if="reminders.live && getUpcomingReminderTypes('hours').indexOf('live') !== -1">
-                  <div class="flex items-center mb-4">
-                    <div class="bg-blue-800/40 rounded-full h-10 w-10 flex items-center justify-center mr-3">
-                      <i class="fas fa-calendar-check text-blue-300 text-xl"></i>
-                    </div>
-                    <h3 class="text-lg font-semibold">At Event Start</h3>
-                  </div>
-                  <form name="reminderForm_live" ng-submit="saveReminder('live')" class="space-y-4 flex-1 flex flex-col justify-between">
-                    <div>
-                      <label class="block text-sm font-medium mb-2">Message</label>
-                      <textarea ng-model="reminders.live.text"
-                        class="w-full px-4 py-2 rounded-lg border-2 focus:border-blue-400 focus:ring-2 focus:ring-blue-300 transition-all duration-300"
-                        placeholder="Enter reminder message for event start" rows="3"></textarea>
-                    </div>
-                    <div class="media-preview-container">
-                      <div>
-                        <label class="block text-sm font-medium mb-2">Media (Optional)</label>
-                        <button type="button" ng-click="openMediaSelector('live')"
-                          class="px-3 py-2 rounded-lg shadow transition-all flex items-center gap-1">
-                          <i class="fas fa-photo-video"></i> Media Library
-                        </button>
-                      </div>
-                      <div ng-if="reminders.live.mediaFromLibrary && reminders.live.mediaFromLibrary.url" class="media-preview-right flex items-center gap-3">
-                        <img ng-if="isImage(reminders.live.mediaFromLibrary.url)" ng-src="{{getImageUrl(reminders.live.mediaFromLibrary.url)}}" class="h-14 w-14 object-cover rounded border" />
-                        <video ng-if="isVideo(reminders.live.mediaFromLibrary.url)" ng-src="{{getImageUrl(reminders.live.mediaFromLibrary.url)}}" class="h-14 w-14 rounded border" controls></video>
-                        <button type="button" ng-click="reminders.live.mediaFromLibrary=null" class="text-red-400 hover:text-red-300 ml-2">
-                          <i class="fas fa-times"></i> Remove
-                        </button>
+                        
+                        <!-- Media Preview -->
+                        <div ng-if="reminders[type].mediaFromLibrary && reminders[type].mediaFromLibrary.url" 
+                             class="mt-3 p-3 bg-slate-800/50 rounded-lg border border-slate-600/50">
+                          <div class="flex items-center gap-3">
+                            <img ng-if="isImage(reminders[type].mediaFromLibrary.url)" 
+                                 ng-src="{{getImageUrl(reminders[type].mediaFromLibrary.url)}}" 
+                                 class="h-12 w-12 object-cover rounded-lg border-2 border-cyan-400" />
+                            <video ng-if="isVideo(reminders[type].mediaFromLibrary.url)" 
+                                   ng-src="{{getImageUrl(reminders[type].mediaFromLibrary.url)}}" 
+                                   class="h-12 w-12 rounded-lg border-2 border-cyan-400" controls></video>
+                            <span class="text-cyan-200 text-sm flex-1">Media attached</span>
+                            <button type="button" ng-click="reminders[type].mediaFromLibrary=null" 
+                                    class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                              <i class="fas fa-times"></i>
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <button type="submit" class="w-full py-2 rounded-lg transition-all duration-300 shadow-md" ng-disabled="reminderForm_live.$invalid">
+                    
+                    <!-- Save Button -->
+                    <button type="submit" class="save-button" ng-disabled="reminderForm_{{type}}.$invalid">
                       <i class="fas fa-save mr-2"></i>Save Reminder
                     </button>
                   </form>
@@ -646,49 +872,13 @@
   </div>
 </div>
 
-<!-- Media Selector Modal -->
-<div ng-if="showMediaSelector" class="fixed" style="top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.5) !important; display: flex !important; align-items: center !important; justify-content: center !important; z-index: 9999 !important;" ng-click="closeMediaSelector()">
-  <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700" style="width: 90% !important; max-width: 600px !important; max-height: 80vh !important; overflow-y: auto !important;" ng-click="$event.stopPropagation()">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-xl font-semibold text-white">Select Media from Library</h2>
-      <button ng-click="closeMediaSelector()" class="text-gray-400 hover:text-gray-300 transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-    
-    <div ng-if="loadingMedia" class="text-center py-8">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-teal-400"></div>
-      <p class="mt-2 text-gray-300">Loading media...</p>
-    </div>
-    
-    <div ng-if="!loadingMedia && mediaLibrary.length === 0" class="text-center py-8">
-      <p class="text-gray-300">No media files found in your library.</p>
-      <a href="#/media" class="text-teal-400 hover:text-teal-300 transition-colors">Upload some media first</a>
-    </div>
-    
-    <div ng-if="!loadingMedia && mediaLibrary.length > 0" style="display: grid !important; grid-template-columns: repeat(auto-fill, 60px) !important; gap: 8px !important; justify-content: start !important;">
-      <div ng-repeat="media in mediaLibrary" class="cursor-pointer transition-all duration-200 hover:opacity-80" ng-click="selectMediaForReminder(media)" style="width: 56px !important; text-align: center !important;">
-        <div class="w-14 h-14 bg-gray-800 rounded border border-gray-600 overflow-hidden">
-          <img ng-if="media.type === 'image'" ng-src="{{ media.url }}" alt="{{ media.name }}" class="w-full h-full object-cover">
-          <div ng-if="media.type !== 'image'" class="w-full h-full flex items-center justify-center text-gray-400">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-        </div>
-        <p class="text-xs text-gray-400 truncate mt-1" style="font-size: 9px !important; max-width: 56px !important; line-height: 1.2 !important;">{{ media.name }}</p>
-      </div>
-    </div>
-    
-    <div class="mt-6 text-right">
-      <button ng-click="closeMediaSelector()" class="px-6 py-2 simple-dynamic-border text-white rounded-lg transition-all duration-300">
-        Cancel
-      </button>
-    </div>
-  </div>
-</div>
+<!-- Media Library Modal -->
+<media-library-modal 
+  show="showMediaSelector" 
+  on-close="closeMediaSelector()" 
+  on-select="selectMediaForReminder(media)"
+  title="Select Media for Event Reminder">
+</media-library-modal>
 
 </body>
 </html>

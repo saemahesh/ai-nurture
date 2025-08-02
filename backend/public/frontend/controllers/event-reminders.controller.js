@@ -336,21 +336,32 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
             return;
         }
         const eventId = $scope.currentEvent.id;
-        const reminder = $scope.reminders[reminderType];
-        const reminderData = {
-            enabled: reminder.enabled || false,
-            text: reminder.text || '',
-        };
-        if (reminder.mediaFromLibrary) {
-            reminderData.mediaId = reminder.mediaFromLibrary.id;
-            reminderData.mediaUrl = reminder.mediaFromLibrary.url;
-        }
-        if (reminder.removeMedia) {
-            reminderData.mediaId = null;
-            reminderData.mediaUrl = null;
-            reminder.removeMedia = false;
-        }
-        ApiService.saveEventReminders(eventId, { reminderConfig: { [reminderType]: reminderData } })
+        
+        // Prepare the complete reminder configuration including all cards
+        const completeReminderConfig = {};
+        
+        // Include all existing reminders to prevent reset
+        Object.keys($scope.reminders).forEach(key => {
+            const reminder = $scope.reminders[key];
+            completeReminderConfig[key] = {
+                enabled: reminder.enabled || false,
+                text: reminder.text || '',
+            };
+            
+            // Handle media for each reminder
+            if (reminder.mediaFromLibrary) {
+                completeReminderConfig[key].mediaId = reminder.mediaFromLibrary.id;
+                completeReminderConfig[key].mediaUrl = reminder.mediaFromLibrary.url;
+            }
+            if (reminder.removeMedia) {
+                completeReminderConfig[key].mediaId = null;
+                completeReminderConfig[key].mediaUrl = null;
+                reminder.removeMedia = false;
+            }
+        });
+        
+        // Send complete configuration to prevent other cards from resetting
+        ApiService.saveEventReminders(eventId, { reminderConfig: completeReminderConfig })
             .then(function(response) {
                 console.log('Reminder saved successfully for type:', reminderType);
                 console.log('Triggering save success popup...');
@@ -366,6 +377,7 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
                     $scope.showSaveSuccessPopup = false;
                 }, 4000);
                 
+                // Reload reminders to reflect the saved changes and ensure UI consistency
                 $scope.loadReminders(false);
                 
                 // Clear the success message after popup is shown

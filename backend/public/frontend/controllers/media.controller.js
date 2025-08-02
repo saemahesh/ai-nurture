@@ -26,6 +26,44 @@ angular.module('autopostWaApp.media').controller('MediaPageController', function
     if (!$scope.showCreateForm) {
       // Reset form when hiding
       $scope.resetForm();
+    } else {
+      // Auto-scroll to top when showing create form - Multi-method approach
+      console.log('Attempting auto-scroll to top');
+      
+      // Method 1: Immediate scroll
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+      window.scrollTo(0, 0);
+      
+      // Method 2: AngularJS digest cycle
+      $scope.$evalAsync(function() {
+        setTimeout(function() {
+          // Multiple scroll attempts for different scenarios
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.scrollTo({ top: 0, behavior: 'auto' });
+          window.scrollTo(0, 0);
+          
+          // Scroll main content areas
+          const mainElement = document.querySelector('main');
+          const bodyElement = document.querySelector('body');
+          const htmlElement = document.querySelector('html');
+          
+          if (mainElement) mainElement.scrollTop = 0;
+          if (bodyElement) bodyElement.scrollTop = 0;
+          if (htmlElement) htmlElement.scrollTop = 0;
+          
+          console.log('Auto-scroll executed');
+        }, 100);
+      });
+      
+      // Method 3: Delayed scroll for slower devices
+      setTimeout(function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 300);
     }
   };
 

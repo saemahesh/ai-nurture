@@ -59,9 +59,9 @@
     <!-- Top Header -->
     <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
       <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">👥 Users</h2>
+        <h2 class="text-xl font-semibold text-white responsive-header-title" style="padding-left:50px;">👥 Users</h2>
         <div class="relative" ng-controller="HeaderUserController">
-          <button class="w-9 h-9 rounded-full bg-blue-600/30 border border-blue-400/50 flex items-center justify-center hover:bg-blue-500/40 focus:outline-none transition-all" ng-click="showUserMenu = !showUserMenu">
+          <button class="w-9 h-9 rounded-full bg-blue-600/30 border-2 border-blue-400/50 flex items-center justify-center hover:bg-blue-500/40 focus:outline-none transition-all" ng-click="showUserMenu = !showUserMenu">
             <img src="https://cdn-icons-png.flaticon.com/512/9131/9131478.png" alt="User" class="w-7 h-7 rounded-full object-cover" />
           </button>
           <div ng-if="showUserMenu" class="absolute right-0 mt-2 w-40 bg-blue-800/90 border border-blue-600/50 rounded-lg shadow-xl z-50 backdrop-blur-sm">

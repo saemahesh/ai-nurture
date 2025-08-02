@@ -13,4 +13,15 @@ if issues not removed, improve them
 **** Issue List ****
 
 
+in status page:
+    make sure media selection is not Mandatory
+    giving error media and time required while editing without media selection
+    date is prefilled without issue , but after media selection only it is saving
+    still getting issue , unable to submit without media selection
 
+    i am removing already selected media, and trying to save, giving error media and time required
+    that error is coming from api
+
+
+    provide option to direct schedule like status , daily, once,  and specific days
+make necessary changes in backend also to support this feature

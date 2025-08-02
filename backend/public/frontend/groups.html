@@ -130,19 +130,19 @@
     <!-- Top Header -->
     <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
       <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-white" style="padding-left: 100px;">Manage Groups</h2>
+        <h2 class="text-xl font-semibold text-white responsive-header-title" style="padding-left: 50px;">Manage Groups</h2>
         <div class="flex items-center">
-          <button ng-click="showCreateGroupModal()" class="ml-4 p-2 rounded-full dark-theme-button-primary shadow transition white-border-btn" title="Create Group">
-            <i class="fas fa-plus"></i>
-            <span class="ml-2 hidden sm:inline">Add Group</span>
-          </button>
+          <!-- <button ng-click="showCreateGroupModal()" 
+                  class="header-create-btn" title="Create Group">
+            <i class="fas fa-plus mr-2"></i>Create
+          </button> -->
           <button ng-click="syncGroups()" 
                   ng-disabled="syncingGroups"
-                  class="ml-2 p-2 rounded-full dark-theme-button-secondary shadow transition white-border-btn" 
+                  class="header-create-btn ml-2" 
                   ng-class="{'opacity-75 cursor-not-allowed': syncingGroups}"
                   title="Sync Groups">
-            <i class="fas" ng-class="{'fa-spinner fa-spin': syncingGroups, 'fa-sync': !syncingGroups}"></i>
-            <span class="ml-2 hidden sm:inline">{{syncingGroups ? 'Syncing...' : 'Sync Groups'}}</span>
+            <i class="fas mr-2" ng-class="{'fa-spinner fa-spin': syncingGroups, 'fa-sync': !syncingGroups}"></i>
+            <span class=" sm:inline">{{syncingGroups ? 'Syncing...' : 'Sync'}}</span>
           </button>
         </div>
       </div>
@@ -168,7 +168,7 @@
           <i class="fas fa-users text-4xl text-gray-500 mb-4"></i>
           <p class="text-lg">No groups added yet.</p>
           <p class="text-sm text-gray-400 mb-6">Start by adding your first WhatsApp group to begin automated messaging.</p>
-          <button ng-click="showCreateGroupModal()" class="px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-lg border-2 border-teal-400 shadow-md hover:from-teal-500 hover:to-teal-600 hover:border-teal-300 focus:outline-none focus:ring-2 focus:ring-teal-300 transition-all duration-300 white-border-btn">
+          <button ng-click="showCreateGroupModal()" class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-md transition-all duration-300">
             <i class="fas fa-plus mr-2"></i>Add First Group
           </button>
         </div>
@@ -248,7 +248,7 @@
             <input type="text" ng-model="newGroup.groupId" class="dark-theme-input w-full px-4 py-2 rounded-lg" placeholder="Enter group ID for automation" required>
           </div>
           <div class="flex items-center justify-between pt-4">
-            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-lg hover:from-teal-500 hover:to-teal-600 transition white-border-btn">
+            <button type="submit" class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition">
               <i class="fas fa-plus mr-2"></i>Create Group
             </button>
             <span class="text-red-400" ng-if="groupError">{{groupError}}</span>
@@ -306,12 +306,12 @@
         <div class="flex justify-end space-x-3">
           <button 
             ng-click="handleCancel()"
-            class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg text-gray-200 font-semibold transition border border-gray-400">
+            class="px-4 py-2 bg-gray-500 hover:bg-gray-600 rounded-lg text-white font-semibold transition">
             {{confirmModal.cancelText}}
           </button>
           <button 
             ng-click="handleConfirm()"
-            class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold transition">
+            class="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg text-white font-semibold transition">
             {{confirmModal.confirmText}}
           </button>
         </div>

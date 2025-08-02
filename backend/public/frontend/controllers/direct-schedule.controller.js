@@ -109,32 +109,14 @@ angular.module('autopostWaApp.schedules')
             });
         };
 
-        // Auto-scroll to bottom function
-        $scope.scrollToBottom = function() {
-            var mainContent = document.querySelector('main');
-            if (mainContent) {
-                mainContent.scrollTo({
-                    top: mainContent.scrollHeight,
-                    behavior: 'smooth'
-                });
-            }
-        };
 
-        // Auto-scroll when page loads
-        $scope.$on('$viewContentLoaded', function() {
-            setTimeout(function() {
-                $scope.scrollToBottom();
-            }, 200);
-        });
 
-        // Auto-scroll when route changes to direct-schedule
-        $scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            if (current && current.controller === 'DirectScheduleController') {
-                setTimeout(function() {
-                    $scope.scrollToBottom();
-                }, 500);
-            }
-        });
+
+
+
+
+
+
 
         $scope.showCreateEditModal = function(schedule) {
             $scope.createEditModalVisible = true;
@@ -266,10 +248,7 @@ angular.module('autopostWaApp.schedules')
                         $scope.hideCreateEditModal();
                         NotificationService.showToast($scope, 'Message scheduled successfully!', 'success');
                         
-                        // Auto-scroll to bottom to show new schedule
-                        setTimeout(function() {
-                            $scope.scrollToBottom();
-                        }, 300);
+
                     }).catch(function(error) {
                         console.error('Create error:', error);
                         $scope.formError = (error.data && error.data.message) || 'Failed to schedule message.';
@@ -303,11 +282,6 @@ angular.module('autopostWaApp.schedules')
             $scope.showCreateEditModal(schedule);
         };
 
-        // Load initial data and scroll to bottom
+        // Load initial data (no auto-scroll)
         $scope.loadSchedules();
-        
-        // Also trigger scroll after a slight delay to ensure content is rendered
-        setTimeout(function() {
-            $scope.scrollToBottom();
-        }, 1000);
     }]);

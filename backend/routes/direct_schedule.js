@@ -27,7 +27,7 @@ const readSchedules = () => {
         const data = fs.readFileSync(directSchedulesFilePath, 'utf8');
         return JSON.parse(data);
     } catch (error) {
-        console.error('Error reading direct schedules:', error);
+        console.error('Error reading follow ups:', error);
         // Return empty array and create file if there's an error
         fs.writeFileSync(directSchedulesFilePath, '[]');
         return [];
@@ -39,7 +39,7 @@ const writeSchedules = (schedules) => {
     try {
         fs.writeFileSync(directSchedulesFilePath, JSON.stringify(schedules, null, 2));
     } catch (error) {
-        console.error('Error writing direct schedules:', error);
+        console.error('Error writing follow ups:', error);
         throw error;
     }
 };
@@ -51,8 +51,8 @@ router.get('/', isAuthenticated, (req, res) => {
         const userSchedules = schedules.filter(s => s.username === req.session.user.username);
         res.json(userSchedules);
     } catch (error) {
-        console.error('Error getting direct schedules:', error);
-        res.status(500).json({ message: 'Failed to load schedules' });
+        console.error('Error getting follow ups:', error);
+        res.status(500).json({ message: 'Failed to load follow ups' });
     }
 });
 
@@ -97,12 +97,12 @@ router.post('/', isAuthenticated, (req, res) => {
         writeSchedules(schedules);
         res.status(201).json(newSchedule);
     } catch (error) {
-        console.error('Error creating direct schedule:', error);
-        res.status(500).json({ message: 'Failed to create schedule. Please try again.' });
+        console.error('Error creating follow up:', error);
+        res.status(500).json({ message: 'Failed to create follow up. Please try again.' });
     }
 });
 
-// Delete a schedule
+// Delete a follow up
 router.delete('/:id', isAuthenticated, (req, res) => {
     try {
         let schedules = readSchedules();
@@ -116,13 +116,13 @@ router.delete('/:id', isAuthenticated, (req, res) => {
         writeSchedules(schedules);
         res.status(204).send();
     } catch (error) {
-        console.error('Error deleting direct schedule:', error);
-        res.status(500).json({ message: 'Failed to delete schedule' });
+        console.error('Error deleting follow up:', error);
+        res.status(500).json({ message: 'Failed to delete follow up' });
     }
 });
 
 
-// Update (edit) a schedule
+// Update (edit) a follow up
 router.put('/:id', isAuthenticated, (req, res) => {
     try {
         const { number, message, mediaUrl, scheduledAt } = req.body;
@@ -168,8 +168,8 @@ router.put('/:id', isAuthenticated, (req, res) => {
         writeSchedules(schedules);
         res.json(schedules[scheduleIndex]);
     } catch (error) {
-        console.error('Error updating direct schedule:', error);
-        res.status(500).json({ message: 'Failed to update schedule. Please try again.' });
+        console.error('Error updating follow up:', error);
+        res.status(500).json({ message: 'Failed to update follow up. Please try again.' });
     }
 });
 

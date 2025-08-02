@@ -7,5 +7,16 @@
     "time": "2025-08-14T14:44:00.000Z",
     "media": "/uploads/1753955626889-automation.png",
     "username": "mahesh"
+  },
+  {
+    "id": "1754119257662cnrw4zl",
+    "eventId": "1753892353855cknc2gv",
+    "reminderType": "12hours",
+    "groupId": "120363259609500535@g.us",
+    "message": "Just 12 hours to go until Whatsapp Automation Workshop!",
+    "time": "2025-08-02T19:17:00.000Z",
+    "media": "/uploads/1753955626889-automation.png",
+    "username": "mahesh",
+    "sent": false
   }
 ]

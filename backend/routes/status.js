@@ -45,6 +45,11 @@ function readUsers() {
 
 // Function to get correct media URL for sending (like other cron jobs)
 function getMediaUrl(mediaUrl) {
+  // If no media provided, return null
+  if (!mediaUrl) {
+    return null;
+  }
+  
   // If in production environment
   if (process.env.NODE_ENV === 'production') {
     if (!mediaUrl.includes('http')) {
@@ -67,6 +72,18 @@ async function postWhatsAppStatus(status, token) {
   // Get the correct media URL for sending (handles test URL replacement)
   const mediaUrl = getMediaUrl(status.media);
   
+  // Prepare the data object for WhatsApp API
+  const data = {
+    background_color: status.bgColor,
+    caption_color: status.textColor,
+    caption: status.caption,
+  };
+  
+  // Only include media if it exists
+  if (mediaUrl) {
+    data.media = mediaUrl;
+  }
+  
   const options = {
     method: "POST",
     url: "https://gate.whapi.cloud/stories",
@@ -75,16 +92,11 @@ async function postWhatsAppStatus(status, token) {
       "content-type": "application/json",
       authorization: `Bearer ${token}`,
     },
-    data: {
-      background_color: status.bgColor,
-      caption_color: status.textColor,
-      media: mediaUrl,
-      caption: status.caption,
-    },
+    data: data,
   };
 
   try {
-    console.log(`📤 [STATUS] Posting status with media: ${mediaUrl}`);
+    console.log(`📤 [STATUS] Posting status with media: ${mediaUrl || 'no media'}`);
     const response = await axios.request(options);
     console.log("✅ [STATUS] WhatsApp status posted successfully:", response.data);
     return response.data;
@@ -218,13 +230,23 @@ router.get("/", authRequired, (req, res) => {
 
 // Schedule a new status (mediaUrl from library)
 router.post("/", authRequired, (req, res) => {
+  console.log('📝 [STATUS-API-POST] Request received:', req.body);
   const { caption, textColor, bgColor, time, repeat, days, mediaUrl } =
     req.body;
-  if (!mediaUrl || !time)
-    return res.status(400).json({ error: "Media and time required" });
+  console.log('📝 [STATUS-API-POST] Extracted mediaUrl:', mediaUrl, typeof mediaUrl);
+  console.log('📝 [STATUS-API-POST] Extracted time:', time, typeof time);
+  
+  if (!time) {
+    console.log('📝 [STATUS-API-POST] Validation failed: Time is required');
+    return res.status(400).json({ error: "Time is required" });
+  }
+  
+  const processedMediaUrl = (mediaUrl && mediaUrl.trim()) || null;
+  console.log('📝 [STATUS-API-POST] Processed mediaUrl:', processedMediaUrl);
+  
   const status = {
     id: uuidv4(),
-    media: mediaUrl,
+    media: processedMediaUrl,
     caption,
     textColor,
     bgColor,
@@ -234,23 +256,37 @@ router.post("/", authRequired, (req, res) => {
     createdAt: new Date().toISOString(),
     username: req.session.user.username,
   };
+  
+  console.log('📝 [STATUS-API-POST] Final status object:', status);
+  
   const statuses = readStatuses();
   statuses.push(status);
   writeStatuses(statuses);
+  
+  console.log('📝 [STATUS-API-POST] Status saved successfully');
   res.json({ success: true, id: status.id });
 });
 
 // Update a scheduled status (only if user owns it)
 router.put("/:id", authRequired, (req, res) => {
+  console.log('📝 [STATUS-API-PUT] Request received for ID:', req.params.id);
+  console.log('📝 [STATUS-API-PUT] Request body:', req.body);
+  
   const { caption, textColor, bgColor, time, repeat, days, mediaUrl } =
     req.body;
-  if (!mediaUrl || !time)
-    return res.status(400).json({ error: "Media and time required" });
+  console.log('📝 [STATUS-API-PUT] Extracted mediaUrl:', mediaUrl, typeof mediaUrl);
+  console.log('📝 [STATUS-API-PUT] Extracted time:', time, typeof time);
+  
+  if (!time) {
+    console.log('📝 [STATUS-API-PUT] Validation failed: Time is required');
+    return res.status(400).json({ error: "Time is required" });
+  }
 
   let statuses = readStatuses();
   const index = statuses.findIndex((s) => s.id === req.params.id);
 
   if (index === -1) {
+    console.log('📝 [STATUS-API-PUT] Status not found:', req.params.id);
     return res.status(404).json({ error: "Status not found" });
   }
 
@@ -258,15 +294,19 @@ router.put("/:id", authRequired, (req, res) => {
   
   // Check if user owns this status
   if (existingStatus.username !== req.session.user.username) {
+    console.log('📝 [STATUS-API-PUT] Access denied for user:', req.session.user.username);
     return res.status(403).json({ error: "Access denied: You can only edit your own statuses" });
   }
   
   console.log(`📝 [STATUS-EDIT] Editing status ${req.params.id} - Type: ${repeat}`);
   console.log(`📝 [STATUS-EDIT] Previous posted state: ${existingStatus.posted}`);
   
+  const processedMediaUrl = (mediaUrl && mediaUrl.trim()) || null;
+  console.log('📝 [STATUS-API-PUT] Processed mediaUrl:', processedMediaUrl);
+  
   statuses[index] = {
     ...existingStatus,
-    media: mediaUrl,
+    media: processedMediaUrl,
     caption,
     textColor,
     bgColor,
@@ -274,6 +314,8 @@ router.put("/:id", authRequired, (req, res) => {
     repeat,
     days: days || {},
   };
+
+  console.log('📝 [STATUS-API-PUT] Updated status object:', statuses[index]);
 
   // If editing a "once" type status, reset posted to false so it can be sent again
   if (repeat === "once") {

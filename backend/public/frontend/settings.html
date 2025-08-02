@@ -106,27 +106,23 @@
 </head>
 <body>
 <div class="flex h-screen dark-theme" ng-controller="SettingsController">
-  <!-- Test Connection Success Toast -->
-  <div ng-if="testSuccess" style="position: fixed; top: 20px; right: 20px; z-index: 9999; background: #10b981; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: slideInRight 0.5s ease-out;">
-    <div style="display: flex; align-items: center;">
-      <div style="margin-right: 10px;">✓</div>
-      <div>
-        <div style="font-weight: bold;">Connection test successful!</div>
-        <div style="font-size: 12px; opacity: 0.9;">Your WhatsApp API connection is working.</div>
+  <!-- Test Connection Success Toast - Using standard toast design from other pages -->
+  <div ng-if="testSuccess" class="fixed top-4 right-4 z-50 transition-all duration-300 ease-in-out">
+    <div class="rounded-lg shadow-lg px-6 py-4 max-w-sm bg-green-600 text-white">
+      <div class="flex items-center">
+        <i class="fas fa-check-circle mr-3"></i>
+        <span>Connection successful!</span>
       </div>
-      <button ng-click="testSuccess = false" style="margin-left: 15px; background: none; border: none; color: white; cursor: pointer; font-size: 18px;">×</button>
     </div>
   </div>
 
-  <!-- Settings Save Success Toast - Same design as test connection -->
-  <div ng-if="saveSuccess" style="position: fixed; top: 80px; right: 20px; z-index: 9999; background: #10b981; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: slideInRight 0.5s ease-out;">
-    <div style="display: flex; align-items: center;">
-      <div style="margin-right: 10px;">✓</div>
-      <div>
-        <div style="font-weight: bold;">Settings saved successfully!</div>
-        <div style="font-size: 12px; opacity: 0.9;">Your WhatsApp configuration has been updated.</div>
+  <!-- Settings Save Success Toast - Using standard toast design from other pages -->
+  <div ng-if="saveSuccess" class="fixed top-4 right-4 z-50 transition-all duration-300 ease-in-out" style="top: 5rem;">
+    <div class="rounded-lg shadow-lg px-6 py-4 max-w-sm bg-green-600 text-white">
+      <div class="flex items-center">
+        <i class="fas fa-check-circle mr-3"></i>
+        <span>Settings saved!</span>
       </div>
-      <button ng-click="saveSuccess = false" style="margin-left: 15px; background: none; border: none; color: white; cursor: pointer; font-size: 18px;">×</button>
     </div>
   </div>
   
@@ -136,7 +132,7 @@
   <div class="flex-1 flex flex-col overflow-hidden">
     <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
       <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">Settings</h2>
+        <h2 class="text-xl font-semibold text-white responsive-header-title" style="padding-left:50px;">Settings</h2>
         <!-- ...existing header actions/buttons... -->
       </div>
     </header>
@@ -260,15 +256,15 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button type="button" ng-click="testConnection()" 
                         ng-disabled="testing"
-                        class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-lg font-semibold transition-all duration-300 shadow-md border-2 border-blue-400 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-75 disabled:cursor-not-allowed">
-                  <i class="fas" ng-class="{'fa-spinner fa-spin': testing, 'fa-plug': !testing}" class="mr-2"></i>
+                        class="flex items-center justify-center px-6 py-3 no-bg-dynamic-border text-white rounded-lg font-semibold transition-all duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-75 disabled:cursor-not-allowed">
+                  <i class="fas mr-3" ng-class="{'fa-spinner fa-spin': testing, 'fa-plug': !testing}"></i>
                   {{testing ? 'Testing...' : 'Test Connection'}}
                 </button>
                 <button type="submit" 
                         ng-disabled="saving"
-                        ng-class="{'bg-green-500 transform scale-95': buttonClicked}"
-                        class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-lg font-semibold transition-all duration-300 shadow-md border-2 border-emerald-400 hover:border-teal-300 focus:outline-none focus:ring-2 focus:ring-emerald-300 disabled:opacity-75 disabled:cursor-not-allowed">
-                  <i class="fas" ng-class="{'fa-spinner fa-spin': saving, 'fa-save': !saving}" class="mr-2"></i>
+                        ng-class="{'transform scale-95': buttonClicked}"
+                        class="flex items-center justify-center px-6 py-3 no-bg-dynamic-border text-white rounded-lg font-semibold transition-all duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-300 disabled:opacity-75 disabled:cursor-not-allowed">
+                  <i class="fas mr-3" ng-class="{'fa-spinner fa-spin': saving, 'fa-save': !saving}"></i>
                   {{saving ? 'Saving...' : 'Save Settings'}}
                 </button>
               </div>

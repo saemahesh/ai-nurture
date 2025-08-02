@@ -72,7 +72,7 @@
         <a href="#/direct-schedule" class="nav-item group relative" ng-class="{'active': isActive('/direct-schedule')}" plan-expired-check>
           <div class="nav-item-bg"></div>
           <i class="fas fa-paper-plane nav-icon" style="color: #22c55e !important;"></i>
-          <span class="nav-text">Message Schedule</span>
+          <span class="nav-text">Follow Ups</span>
           <div class="nav-indicator" ng-if="isActive('/direct-schedule')"></div>
         </a>
         <a href="#/status" class="nav-item group relative" ng-class="{'active': isActive('/status')}" plan-expired-check>
@@ -153,11 +153,50 @@
 <!-- Mobile Sidebar -->
 <div>
   <!-- Mobile hamburger button -->
-  <button aria-label="Open sidebar" class="md:hidden fixed top-4 left-4 z-50 p-3 rounded-lg bg-gray-800 text-white shadow-xl focus:outline-none focus:ring-2 focus:ring-teal-400 hover:bg-gray-700" ng-click="openSidebar()" type="button">
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <button aria-label="Open sidebar" class="fixed top-4 left-4 z-50 rounded-lg bg-gray-800 text-white shadow-xl focus:outline-none focus:ring-2 focus:ring-teal-400 hover:bg-gray-700 mobile-only-hamburger" ng-click="openSidebar()" type="button" style="width: 44px !important; height: 44px !important; padding: 10px !important; max-width: 44px !important; max-height: 44px !important; min-width: 44px !important; min-height: 44px !important; display: flex !important; align-items: center !important; justify-content: center !important;">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 20px !important; height: 20px !important;">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
     </svg>
   </button>
+  
+  <!-- Enhanced Desktop hide script -->
+  <script>
+    function hideHamburgerOnDesktop() {
+      const hamburger = document.querySelector('button[aria-label="Open sidebar"]');
+      const mobileHamburger = document.querySelector('.mobile-only-hamburger');
+      
+      const elements = [hamburger, mobileHamburger].filter(Boolean);
+      
+      elements.forEach(el => {
+        if (window.innerWidth >= 768) {
+          el.style.display = 'none !important';
+          el.style.visibility = 'hidden';
+          el.style.opacity = '0';
+          el.style.pointerEvents = 'none';
+          el.style.position = 'absolute';
+          el.style.left = '-9999px';
+          el.classList.add('hidden');
+        } else {
+          el.style.display = 'flex';
+          el.style.visibility = 'visible';
+          el.style.opacity = '1';
+          el.style.pointerEvents = 'auto';
+          el.style.position = 'fixed';
+          el.style.left = '1rem';
+          el.classList.remove('hidden');
+        }
+      });
+    }
+    
+    // Run on load
+    document.addEventListener('DOMContentLoaded', hideHamburgerOnDesktop);
+    
+    // Run on resize
+    window.addEventListener('resize', hideHamburgerOnDesktop);
+    
+    // Run immediately
+    hideHamburgerOnDesktop();
+  </script>
   
   <!-- Backdrop overlay -->
   <div ng-if="sidebarOpen" class="fixed inset-0 z-40 bg-black/40 md:hidden transition-opacity duration-200" ng-click="closeSidebar()" aria-hidden="true"></div>
@@ -166,8 +205,8 @@
   <div class="w-80 h-screen flex flex-col shadow-2xl overflow-hidden fixed z-50 top-0 left-0 transition-transform duration-300 md:hidden mobile-sidebar-container border-r border-gray-700" style="background: #1a202c;" ng-class="{'-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen}" tabindex="-1" aria-label="Sidebar navigation">
     
     <!-- Close button -->
-    <button ng-click="closeSidebar()" aria-label="Close sidebar" class="absolute top-4 right-4 z-60 p-2 rounded-lg bg-gray-900 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 hover:bg-gray-800">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <button ng-click="closeSidebar()" aria-label="Close sidebar" class="absolute top-4 right-4 z-60 rounded-lg bg-gray-900 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 hover:bg-gray-800" style="width: 36px !important; height: 36px !important; padding: 8px !important; display: flex !important; align-items: center !important; justify-content: center !important;">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 16px !important; height: 16px !important;">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
       </svg>
     </button>
@@ -247,7 +286,7 @@
           <a href="#/direct-schedule" class="nav-item group relative" ng-class="{'active': isActive('/direct-schedule')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
             <i class="fas fa-paper-plane nav-icon" style="color: #8b5cf6 !important;"></i>
-            <span class="nav-text">Message Schedule</span>
+            <span class="nav-text">Follow Ups</span>
             <div class="nav-indicator" ng-if="isActive('/direct-schedule')"></div>
           </a>
 

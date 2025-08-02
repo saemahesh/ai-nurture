@@ -13,9 +13,9 @@
         <!-- Header -->
         <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
           <div class="flex justify-between items-center">
-            <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">Sequences</h2>
+            <h2 class="text-xl font-semibold text-white responsive-header-title" style="padding-left:50px;">Sequences</h2>
             <button ng-click="createSequence()" 
-                    class="bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-500 hover:to-teal-600 text-white px-6 py-2 rounded-md transition duration-200 shadow-lg border-2 border-white">
+                    class="header-create-btn">
                 <i class="fas fa-plus mr-2"></i>Create
             </button>
           </div>
@@ -53,7 +53,6 @@
                              style="background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%); opacity: 1; min-width: 0;">
                             
                             <!-- Card Header with Colored Top Bar -->
-                            <div class="bg-gradient-to-r from-teal-500 to-blue-600 h-2"></div>
                             
                             <div class="p-6" style="background: rgba(30, 41, 59, 1);">
                                 <!-- Sequence Header -->
@@ -184,11 +183,11 @@
             </div>
             <div class="flex justify-center space-x-4">
                 <button ng-click="confirmDelete()" 
-                        class="px-6 py-2 bg-red-600 text-white text-base font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition duration-200">
+                        class="px-6 py-2 bg-red-500 text-white text-base font-medium rounded-md hover:bg-red-600 transition duration-200">
                     Delete
                 </button>
                 <button ng-click="cancelDelete()" 
-                        class="px-6 py-2 bg-gray-600 text-gray-200 text-base font-medium rounded-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition duration-200">
+                        class="px-6 py-2 bg-gray-500 text-white text-base font-medium rounded-md hover:bg-gray-600 transition duration-200">
                     Cancel
                 </button>
             </div>
@@ -244,12 +243,12 @@
         <div class="flex justify-end space-x-3">
           <button 
             ng-click="handleCancel()"
-            class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg text-gray-200 font-semibold transition border border-gray-400">
+            class="px-4 py-2 bg-gray-500 hover:bg-gray-600 rounded-lg text-white font-semibold transition">
             {{confirmModal.cancelText}}
           </button>
           <button 
             ng-click="handleConfirm()"
-            class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold transition">
+            class="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg text-white font-semibold transition">
             {{confirmModal.confirmText}}
           </button>
         </div>

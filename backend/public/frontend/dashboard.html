@@ -15,7 +15,7 @@
     <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-3">
-          <h2 class="text-2xl font-bold text-white" style="padding-left:50px;">Dashboard</h2>
+          <h2 class="text-xl font-semibold text-white responsive-header-title" style="padding-left:50px;">Dashboard</h2>
         </div>
         <div class="relative" ng-controller="HeaderUserController">
           <button class="w-9 h-9 rounded-full bg-gray-600 flex items-center justify-center hover:bg-gray-500 focus:outline-none" ng-click="showUserMenu = !showUserMenu">
@@ -153,7 +153,7 @@
               <i class="fa-solid fa-paper-plane text-white text-base sm:text-lg"></i>
             </div>
             <div class="ml-3 sm:ml-4">
-              <h3 class="text-xs sm:text-sm font-medium text-indigo-100">Direct Schedule</h3>
+              <h3 class="text-xs sm:text-sm font-medium text-indigo-100">Follow Up</h3>
               <p class="text-lg sm:text-2xl font-bold text-white">{{directSchedules.length || 0}}</p>
             </div>
           </div>

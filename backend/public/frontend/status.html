@@ -10,9 +10,10 @@
   <div class="flex-1 flex flex-col overflow-hidden">
     <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6" style="position: relative; z-index: 1 !important;">
       <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-white" style="padding-left:50px;">Status</h2>
-        <button class="px-4 py-2 bg-blue-900 text-white rounded-lg font-semibold shadow hover:bg-blue-800 transition" ng-click="showCreateStatusModal()">
-          <i class="fas fa-plus mr-2"></i> Create
+        <h2 class="text-xl font-semibold text-white responsive-header-title" style="padding-left:50px;">Status</h2>
+        <button ng-click="showCreateStatusModal()" 
+                class="header-create-btn">
+          <i class="fas fa-plus mr-2"></i>Create
         </button>
       </div>
     </header>
@@ -43,7 +44,7 @@
               
               <!-- Media Selection -->
               <div class="mb-4 sm:mb-6">
-                <label class="block text-sm font-medium text-cyan-300">Select Media <span class="text-red-400 ml-1">*</span></label>
+                <label class="block text-sm font-medium text-cyan-300">Select Media <span class="text-gray-400 ml-1">(optional)</span></label>
                 
                 <!-- Media Library Selection Button (like group schedule) -->
                 <button type="button" ng-click="openMediaSelector()" 
@@ -51,7 +52,7 @@
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  Select from Media Library
+                  Media Library
                 </button>
                 
                 <!-- Show selected media (like group schedule) -->
@@ -77,10 +78,7 @@
                   </div>
                 </div>
                 
-                <!-- Validation error -->
-                <div ng-if="!status.selectedMedia && statusForm.$submitted" class="text-red-400 text-sm mt-1">
-                  Please select media
-                </div>
+                <!-- Media is now optional, no validation error needed -->
               </div>
 
               <!-- Caption -->
@@ -218,14 +216,12 @@
                 
                 <div class="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto order-1 sm:order-2">
                   <button type="button" 
-                          class="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 bg-gray-600/50 hover:bg-gray-600 rounded-xl text-gray-300 font-semibold transition-all duration-200 border border-white text-sm sm:text-base" 
-                          style="border: 2px solid white !important;"
+                          class="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 bg-gray-500 hover:bg-gray-600 rounded-xl text-white font-semibold transition-all duration-200 text-sm sm:text-base" 
                           ng-click="hideCreateStatusModal()">
                     Cancel
                   </button>
                   <button type="submit" 
-                          class="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-xl text-white font-semibold transition-all duration-200 shadow-lg disabled:opacity-50 text-sm sm:text-base border-2 border-white"
-                          style="border: 2px solid white !important;"
+                          class="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 hover:bg-blue-600 rounded-xl text-white font-semibold transition-all duration-200 shadow-lg disabled:opacity-50 text-sm sm:text-base"
                           ng-disabled="saving">
                     <i class="fas fa-spinner fa-spin mr-2" ng-if="saving"></i>
                     <i class="fas fa-calendar-plus mr-2" ng-if="!saving && !editingStatus"></i>
@@ -259,8 +255,8 @@
             </div>
             <h4 class="text-base sm:text-lg font-semibold text-white mb-2">No Status Schedules</h4>
             <p class="text-gray-400 text-sm sm:text-base mb-4 sm:mb-6 px-4">Create your first status schedule to get started with automated WhatsApp status updates.</p>
-            <button class="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold shadow-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-300 text-sm sm:text-base border-2 border-blue-500 hover:border-blue-400" ng-click="showCreateStatusModal()">
-              <i class="fas fa-plus mr-2"></i> Create Your First Status
+                        <button class="header-create-btn" ng-click="showCreateStatusModal()">
+              <i class="fas fa-plus mr-2"></i>Create Status
             </button>
           </div>
           
@@ -325,12 +321,12 @@
                   
                   <!-- Action Buttons -->
                   <div class="flex items-center justify-end space-x-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
-                    <button class="p-1.5 sm:p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-all duration-200" 
+                    <button class="p-1.5 sm:p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all duration-200" 
                             ng-click="editStatus(s)"
                             title="Edit Status">
                       <i class="fas fa-edit text-sm"></i>
                     </button>
-                    <button class="p-1.5 sm:p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-200" 
+                    <button class="p-1.5 sm:p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all duration-200" 
                             ng-click="deleteStatus(s.id)"
                             title="Delete Status">
                       <i class="fas fa-trash-alt text-sm"></i>
@@ -383,7 +379,7 @@
     </div>
     
     <div class="mt-6 text-right">
-      <button ng-click="closeMediaSelector()" class="px-6 py-2 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg hover:from-gray-500 hover:to-gray-600 transition-all duration-300 border border-white" style="border: 2px solid white !important;">
+      <button ng-click="closeMediaSelector()" class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-all duration-300">
         Cancel
       </button>
     </div>
@@ -438,12 +434,12 @@
         <div class="flex justify-end space-x-3">
           <button 
             ng-click="handleCancel()"
-            class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg text-gray-200 font-semibold transition border border-gray-400">
+            class="px-4 py-2 bg-gray-500 hover:bg-gray-600 rounded-lg text-white font-semibold transition">
             {{confirmModal.cancelText}}
           </button>
           <button 
             ng-click="handleConfirm()"
-            class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold transition">
+            class="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg text-white font-semibold transition">
             {{confirmModal.confirmText}}
           </button>
         </div>

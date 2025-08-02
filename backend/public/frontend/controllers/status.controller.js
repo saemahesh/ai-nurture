@@ -47,7 +47,9 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
     minute: '00',
     ampm: 'AM',
     repeat: 'once',
-    days: {}
+    days: {},
+    mediaUrl: '',
+    selectedMedia: null
   };
   $scope.days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   $scope.hours = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -123,6 +125,11 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
   };
 
   $scope.scheduleStatus = function() {
+    console.log('📝 [STATUS-FORM] Form submission started');
+    console.log('📝 [STATUS-FORM] Current status object:', $scope.status);
+    console.log('📝 [STATUS-FORM] MediaUrl value:', $scope.status.mediaUrl);
+    console.log('📝 [STATUS-FORM] SelectedMedia value:', $scope.status.selectedMedia);
+    
     $scope.saving = true;
     $scope.saveSuccess = false;
     $scope.saveError = '';
@@ -135,6 +142,8 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
       mediaUrl: $scope.status.mediaUrl,
       days: $scope.status.days
     };
+
+    console.log('📝 [STATUS-FORM] Data being sent to backend:', data);
 
     var hour = parseInt($scope.status.hour, 10);
     if ($scope.status.ampm === 'PM' && hour < 12) {
@@ -154,6 +163,7 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
 
     console.log('Scheduling status for:', selectedTime.toLocaleString('en-IN'));
     console.log('ISO time:', data.time);
+    console.log('📝 [STATUS-FORM] Final data payload:', data);
 
     var promise;
     if ($scope.editingStatus) {
@@ -164,11 +174,13 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
     }
 
     promise.then(function() {
+      console.log('📝 [STATUS-FORM] Success response received');
       $scope.saving = false;
       $scope.saveSuccess = true;
       loadStatuses();
       $scope.hideCreateStatusModal();
     }).catch(function(err) {
+      console.log('📝 [STATUS-FORM] Error response received:', err);
       $scope.saving = false;
       $scope.saveError = err.data?.error || 'Failed to schedule status';
     });

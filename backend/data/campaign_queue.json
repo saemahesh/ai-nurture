@@ -229,9 +229,10 @@
       "day": 1
     },
     "scheduledAt": "2025-08-02T08:39:06.242Z",
-    "status": "pending",
+    "status": "processing",
     "createdAt": "2025-08-02T07:39:06.253Z",
-    "attempts": 0
+    "attempts": 0,
+    "processingId": "1754125500010-edzr7cgg6"
   },
   {
     "id": "seq_1752221360754-919573713873-1-1754120346253",

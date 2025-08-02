@@ -1714,7 +1714,6 @@ main {
   header .text-2xl {
     font-size: 1.125rem !important; /* 18px */
     line-height: 1.5 !important;
-    padding-left: 50px !important;
     font-weight: 600 !important;
   }
   

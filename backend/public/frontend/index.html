@@ -15,7 +15,9 @@
   <!-- Tailwind CSS from CDN (for testing/debugging) -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <!-- Local Tailwind CSS (keep this line for when you fix the local build) -->
-  <link href="tailwind.css" rel="stylesheet">
+  <link href="tailwind.css?v=" rel="stylesheet" id="tailwind-css">
+  <!-- Dark Theme CSS -->
+  <link rel="stylesheet" href="dark-theme.css?v=" id="dark-theme-css">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -82,6 +84,9 @@
   <!-- Core Libraries -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+  <!-- Moment.js for date/time handling -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
   
   <!-- Core modules -->
   <script src="modules/core/core.module.js"></script>
@@ -131,8 +136,37 @@
   <!-- Filters -->
   <script src="filters/capitalize.filter.js"></script>
   
-  <!-- Add cache busting for mobile -->
+  
+  <!-- Add cache busting for all local assets -->
   <script>
+    // Cache busting implementation
+    (function() {
+      var APP_VERSION = 'v' + Date.now();
+      window.APP_VERSION = APP_VERSION;
+      
+      // Update CSS files with cache busting
+      var cssFiles = document.querySelectorAll('link[href*=".css"]:not([href*="http"]):not([href*="cdn"])');
+      cssFiles.forEach(function(link) {
+        var href = link.getAttribute('href');
+        if (href && href.indexOf('?v=') !== -1) {
+          link.setAttribute('href', href.replace(/\?v=.*$/, '?v=' + APP_VERSION));
+        } else if (href && href.indexOf('?') === -1) {
+          link.setAttribute('href', href + '?v=' + APP_VERSION);
+        }
+      });
+      
+      // Update JS files with cache busting (except external CDN files)
+      var scriptTags = document.querySelectorAll('script[src]:not([src*="http"]):not([src*="cdn"])');
+      scriptTags.forEach(function(script) {
+        var src = script.getAttribute('src');
+        if (src && src.indexOf('?v=') === -1) {
+          script.setAttribute('src', src + '?v=' + APP_VERSION);
+        }
+      });
+      
+      console.log('Cache busting applied with version:', APP_VERSION);
+    })();
+    
     // Force page reload on mobile if cached version detected
     if (typeof window !== 'undefined' && window.navigator && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
       // Add timestamp to force cache refresh on mobile

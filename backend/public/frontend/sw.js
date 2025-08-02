@@ -1,18 +1,18 @@
-// Simple Service Worker for cache management - DISABLED CACHING FOR CRITICAL FILES
-// This ensures sidebar and other dynamic content always loads fresh from server
+// Enhanced Service Worker for aggressive cache management - NO CACHING FOR JS FILES
+// This ensures all JavaScript files always load fresh from server
 
-// Use dynamic cache name to force cache invalidation (but we won't actually cache anything critical)
-const CACHE_NAME = 'whatspro-app-v1753984271' + Date.now();
+// Use dynamic cache name to force cache invalidation with timestamp
+const CACHE_NAME = 'whatspro-app-v' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
-// Do NOT cache any dynamic content - empty cache list
+// Do NOT cache any JavaScript, HTML, or dynamic content - empty cache list
 const urlsToCache = [
   // All dynamic files removed to prevent staleness - ALWAYS fetch fresh
 ];
 
-// Install event - skip caching entirely for critical files
+// Install event - skip caching entirely and activate immediately
 self.addEventListener('install', function(event) {
-  console.log('Service Worker: Installing with NO caching for dynamic content');
-  // Skip waiting to activate immediately
+  console.log('Service Worker: Installing with AGGRESSIVE NO-CACHE policy for all JS files');
+  // Skip waiting to activate immediately and clear old caches
   self.skipWaiting();
 });
 
@@ -35,20 +35,22 @@ self.addEventListener('activate', function(event) {
   );
 });
 
-// Fetch event - NETWORK FIRST for all dynamic content, no caching of critical files
+// Fetch event - AGGRESSIVE NETWORK FIRST with enhanced cache headers for all JS files
 self.addEventListener('fetch', function(event) {
   const url = event.request.url;
   
-  // For ALL JavaScript files, controllers, services, and HTML - ALWAYS use network first
+  // For ALL JavaScript files, controllers, services, modules, and HTML - ALWAYS use network first with aggressive headers
   if (url.includes('.js') || url.includes('/controllers/') || url.includes('/services/') || 
+      url.includes('/modules/') || url.includes('/directives/') || url.includes('/filters/') ||
       url.includes('sidebar') || url.includes('.html') || url.includes('app.js')) {
     
     event.respondWith(
       fetch(event.request, {
         cache: 'no-cache', // Force fresh fetch
         headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache'
+          'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
       })
       .then(function(response) {

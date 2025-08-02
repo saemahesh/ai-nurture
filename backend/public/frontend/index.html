@@ -89,104 +89,160 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
   
   <!-- Core modules -->
-  <script src="modules/core/core.module.js"></script>
+  <script src="modules/core/core.module.js?v="></script>
   
   <!-- Feature modules -->
-  <script src="modules/auth/auth.module.js"></script>
-  <script src="modules/dashboard/dashboard.module.js"></script>
-  <script src="modules/groups/groups.module.js"></script>
-  <script src="modules/events/events.module.js"></script>
-  <script src="modules/media/media.module.js"></script>
-  <script src="modules/schedules/schedules.module.js"></script>
+  <script src="modules/auth/auth.module.js?v="></script>
+  <script src="modules/dashboard/dashboard.module.js?v="></script>
+  <script src="modules/groups/groups.module.js?v="></script>
+  <script src="modules/events/events.module.js?v="></script>
+  <script src="modules/media/media.module.js?v="></script>
+  <script src="modules/schedules/schedules.module.js?v="></script>
   
   <!-- Main application -->
-  <script src="app.js"></script>
+  <script src="app.js?v="></script>
   
   <!-- Services -->
-  <script src="services/auth.service.js"></script>
-  <script src="services/api.service.js"></script>
-  <script src="services/plan-expiry.service.js"></script>
+  <script src="services/auth.service.js?v="></script>
+  <script src="services/api.service.js?v="></script>
+  <script src="services/plan-expiry.service.js?v="></script>
   
   <!-- Directives -->
-  <script src="directives/plan-expired-check.directive.js"></script>
+  <script src="directives/plan-expired-check.directive.js?v="></script>
   
   <!-- Controllers -->
-  <script src="controllers/main.controller.js"></script>
-  <script src="controllers/auth.controller.js"></script>
-  <script src="controllers/dashboard.controller.js"></script>
-  <script src="controllers/groups.controller.js"></script>
-  <script src="controllers/media.controller.js"></script>
-  <script src="controllers/events.controller.js"></script>
-  <script src="controllers/event-reminders.controller.js"></script>
-  <script src="controllers/sidebar.controller.js"></script>
-  <script src="controllers/schedule.controller.js"></script>
-  <script src="controllers/direct-schedule.controller.js"></script>
-  <script src="controllers/sequences.controller.js"></script>
-  <script src="controllers/sequence-create.controller.js"></script>
-  <script src="controllers/enrollments.controller.js"></script>
-  <script src="controllers/status.controller.js"></script>
+  <script src="controllers/main.controller.js?v="></script>
+  <script src="controllers/auth.controller.js?v="></script>
+  <script src="controllers/dashboard.controller.js?v="></script>
+  <script src="controllers/groups.controller.js?v="></script>
+  <script src="controllers/media.controller.js?v="></script>
+  <script src="controllers/events.controller.js?v="></script>
+  <script src="controllers/event-reminders.controller.js?v="></script>
+  <script src="controllers/sidebar.controller.js?v="></script>
+  <script src="controllers/schedule.controller.js?v="></script>
+  <script src="controllers/direct-schedule.controller.js?v="></script>
+  <script src="controllers/sequences.controller.js?v="></script>
+  <script src="controllers/sequence-create.controller.js?v="></script>
+  <script src="controllers/enrollments.controller.js?v="></script>
+  <script src="controllers/status.controller.js?v="></script>
+  <script src="controllers/campaigns.controller.js?v="></script>
+  <script src="controllers/campaign-builder.controller.js?v="></script>
+  <script src="controllers/campaign-leads.controller.js?v="></script>
+  <script src="controllers/settings.controller.js?v="></script>
   
   <!-- Services -->
-  <script src="services/notification.service.js"></script>
+  <script src="services/notification.service.js?v="></script>
   
   <!-- Directives -->
-  <script src="directives/sidebar-nav.directive.js"></script>
-  <script src="directives/file-model.directive.js"></script>
-  <script src="directives/media-library-modal.directive.js"></script>
+  <script src="directives/sidebar-nav.directive.js?v="></script>
+  <script src="directives/file-model.directive.js?v="></script>
+  <script src="directives/media-library-modal.directive.js?v="></script>
   
   <!-- Filters -->
-  <script src="filters/capitalize.filter.js"></script>
+  <script src="filters/capitalize.filter.js?v="></script>
   
   
-  <!-- Add cache busting for all local assets -->
+  <!-- AUTOMATIC cache busting for all local assets - SERVER MANAGES VERSIONS -->
   <script>
-    // Cache busting implementation
+    // Automatic cache busting implementation - works with server-generated versions
     (function() {
-      var APP_VERSION = 'v' + Date.now();
-      window.APP_VERSION = APP_VERSION;
+      // Create a super-unique version for this session
+      var SESSION_VERSION = 'v' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      window.APP_VERSION = SESSION_VERSION;
+      console.log('🚀 Auto cache-busting initialized with session version:', SESSION_VERSION);
       
-      // Update CSS files with cache busting
-      var cssFiles = document.querySelectorAll('link[href*=".css"]:not([href*="http"]):not([href*="cdn"])');
-      cssFiles.forEach(function(link) {
-        var href = link.getAttribute('href');
-        if (href && href.indexOf('?v=') !== -1) {
-          link.setAttribute('href', href.replace(/\?v=.*$/, '?v=' + APP_VERSION));
-        } else if (href && href.indexOf('?') === -1) {
-          link.setAttribute('href', href + '?v=' + APP_VERSION);
+      // Function to enhance already-versioned resources with additional cache busting
+      function enhanceResourceCacheBusting(element, attribute) {
+        var src = element.getAttribute(attribute);
+        if (src && !src.includes('http') && !src.includes('cdn') && src.includes('?v=')) {
+          // Resource already has server-generated version, enhance it with session data
+          var enhancedSrc = src + '&session=' + SESSION_VERSION;
+          element.setAttribute(attribute, enhancedSrc);
+          console.log('✅ Enhanced cache-busting for:', src.split('?')[0], '->', enhancedSrc.split('?')[0] + '?...');
         }
+      }
+      
+      // Enhance all existing scripts and styles with additional cache busting
+      var allScripts = document.querySelectorAll('script[src]');
+      allScripts.forEach(function(script) {
+        enhanceResourceCacheBusting(script, 'src');
       });
       
-      // Update JS files with cache busting (except external CDN files)
-      var scriptTags = document.querySelectorAll('script[src]:not([src*="http"]):not([src*="cdn"])');
-      scriptTags.forEach(function(script) {
-        var src = script.getAttribute('src');
-        if (src && src.indexOf('?v=') === -1) {
-          script.setAttribute('src', src + '?v=' + APP_VERSION);
-        }
+      var allStyles = document.querySelectorAll('link[href*=".css"]');
+      allStyles.forEach(function(link) {
+        enhanceResourceCacheBusting(link, 'href');
       });
       
-      console.log('Cache busting applied with version:', APP_VERSION);
+      // Monitor for any dynamically added resources
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.tagName === 'SCRIPT' && node.src) {
+              enhanceResourceCacheBusting(node, 'src');
+            } else if (node.tagName === 'LINK' && node.href && node.href.includes('.css')) {
+              enhanceResourceCacheBusting(node, 'href');
+            }
+          });
+        });
+      });
+      
+      observer.observe(document.head, { childList: true, subtree: true });
+      observer.observe(document.body, { childList: true, subtree: true });
+      
+      console.log('🔄 Automatic cache-busting system active - server manages versions, client enhances');
     })();
     
-    // Force page reload on mobile if cached version detected
-    if (typeof window !== 'undefined' && window.navigator && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-      // Add timestamp to force cache refresh on mobile
-      var timestamp = new Date().getTime();
+    // Enhanced mobile cache clearing
+    if (typeof window !== 'undefined' && window.navigator) {
+      var timestamp = Date.now();
       sessionStorage.setItem('app_version', timestamp);
       
-      // Check if service worker exists and update it
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-          for(let registration of registrations) {
-            registration.update();
-          }
+      // Clear all possible caches
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          return Promise.all(
+            names.map(function(name) {
+              console.log('Clearing cache:', name);
+              return caches.delete(name);
+            })
+          );
         });
       }
       
-      // Force hard refresh if needed
-      if (sessionStorage.getItem('force_refresh') === 'true') {
-        sessionStorage.removeItem('force_refresh');
-        window.location.reload(true);
+      // Update service worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          registrations.forEach(function(registration) {
+            registration.update();
+            // Force service worker to skip waiting
+            if (registration.waiting) {
+              registration.waiting.postMessage({type: 'SKIP_WAITING'});
+            }
+          });
+        });
+      }
+      
+      // Set aggressive caching headers
+      if (window.fetch) {
+        var originalFetch = window.fetch;
+        window.fetch = function() {
+          var args = Array.prototype.slice.call(arguments);
+          if (args[1]) {
+            args[1].cache = 'no-cache';
+            args[1].headers = args[1].headers || {};
+            args[1].headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+            args[1].headers['Pragma'] = 'no-cache';
+          } else {
+            args[1] = {
+              cache: 'no-cache',
+              headers: {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache'
+              }
+            };
+          }
+          return originalFetch.apply(window, args);
+        };
       }
     }
   </script>

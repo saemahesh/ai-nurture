@@ -128,6 +128,24 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
 
   $httpProvider.interceptors.push(function($q, $location) {
     return {
+      'request': function(config) {
+        // Add cache-busting for all requests to local JavaScript and CSS files
+        if (config.url && !config.url.includes('http') && 
+            (config.url.includes('.js') || config.url.includes('.css') || config.url.includes('.html'))) {
+          
+          // Add cache-busting parameter if not already present
+          if (!config.url.includes('?v=')) {
+            config.url += (config.url.includes('?') ? '&' : '?') + 'v=' + Date.now() + '&cb=' + Math.random();
+          }
+          
+          // Add aggressive no-cache headers
+          config.headers = config.headers || {};
+          config.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+          config.headers['Pragma'] = 'no-cache';
+          config.headers['Expires'] = '0';
+        }
+        return config;
+      },
       responseError: function(rejection) {
         if (rejection.status === 401) {
           // Only redirect to login for critical endpoints, not for optional ones like media list

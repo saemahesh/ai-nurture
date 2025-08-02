@@ -164,49 +164,121 @@ app.use(express.json());
 
 app.use(cookieParser());
 
-// Add cache-busting headers for development/mobile to prevent caching issues
+// Enhanced cache-busting headers for development/mobile to prevent caching issues
 app.use((req, res, next) => {
-  // Set aggressive no-cache headers for critical dynamic files
-  if (req.url.includes('/controllers/') || req.url.includes('/services/') || req.url.includes('sidebar')) {
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, private, max-age=0');
+  // Set EXTREMELY aggressive no-cache headers for ALL JavaScript files
+  if (req.url.includes('.js') || req.url.includes('/controllers/') || req.url.includes('/services/') || 
+      req.url.includes('/modules/') || req.url.includes('/directives/') || req.url.includes('/filters/') ||
+      req.url.includes('sidebar') || req.url.includes('app.js')) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, private, max-age=0, s-maxage=0');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '-1');
-    res.setHeader('ETag', Date.now().toString());
+    res.setHeader('ETag', '"' + Date.now() + Math.random() + '"');
     res.setHeader('Last-Modified', new Date().toUTCString());
+    res.setHeader('X-Cache-Bust', Date.now().toString());
+    res.setHeader('Vary', 'User-Agent, Accept-Encoding');
   }
-  // Set cache control headers for other static files
-  else if (req.url.endsWith('.js') || req.url.endsWith('.css') || req.url.endsWith('.html')) {
+  // Set cache control headers for CSS and HTML files
+  else if (req.url.endsWith('.css') || req.url.endsWith('.html')) {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
-    res.setHeader('ETag', Date.now().toString()); // Dynamic ETag based on current time
+    res.setHeader('ETag', '"' + Date.now() + '"'); // Dynamic ETag based on current time
   }
   next();
 });
 
-// Serve static files with aggressive cache-busting
+// Serve static files with ENHANCED aggressive cache-busting
 app.use(express.static(path.join(__dirname, 'public'), {
   etag: false,
   maxAge: 0,
+  lastModified: false,
   setHeaders: (res, path) => {
-    // Force no-cache for all static files
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
+    // EXTREMELY aggressive no-cache for ALL JavaScript files
+    if (path.includes('.js')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, private, max-age=0, s-maxage=0');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '-1');
+      res.setHeader('X-Cache-Bust', Date.now().toString());
+      res.setHeader('Vary', 'User-Agent, Accept-Encoding');
+    } else {
+      // Force no-cache for other static files
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
   }
 }));
 
-// Serve frontend as the main app with cache-busting
+// Serve frontend as the main app with ENHANCED cache-busting
 app.use(express.static(path.join(__dirname, 'public/frontend'), {
   etag: false,
   maxAge: 0,
+  lastModified: false,
   setHeaders: (res, path) => {
-    // Force no-cache for all frontend files
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
+    // EXTREMELY aggressive no-cache for JavaScript files
+    if (path.includes('.js')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, private, max-age=0, s-maxage=0');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '-1');
+      res.setHeader('X-Cache-Bust', Date.now().toString());
+      res.setHeader('Vary', 'User-Agent, Accept-Encoding');
+    } else {
+      // Force no-cache for all other frontend files
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
   }
 }));
+
+// Add SPECIFIC route handler for JavaScript files with MAXIMUM cache prevention
+app.get('*.js', (req, res, next) => {
+  // Set the most aggressive anti-cache headers possible
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, private, max-age=0, s-maxage=0, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '-1');
+  res.setHeader('X-Cache-Bust', Date.now() + Math.random());
+  res.setHeader('Vary', 'User-Agent, Accept-Encoding, Accept');
+  res.setHeader('Last-Modified', new Date().toUTCString());
+  
+  // Continue to static file serving
+  next();
+});
+
+// Add dynamic index.html route with automatic cache-busting version generation
+app.get('/', (req, res) => {
+  const indexPath = path.join(__dirname, 'public/frontend/index.html');
+  
+  // Read the template index.html
+  fs.readFile(indexPath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading index.html:', err);
+      return res.status(500).send('Error loading page');
+    }
+    
+    try {
+      // Generate dynamic version number
+      const version = Date.now();
+      const randomId = Math.random().toString(36).substr(2, 9);
+      
+      // Replace all empty ?v= parameters with actual version numbers
+      const updatedHtml = data.replace(/\?v=/g, `?v=${version}&cb=${randomId}`);
+      
+      // Set aggressive no-cache headers for the HTML response
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('Content-Type', 'text/html');
+      
+      console.log(`📄 Served index.html with cache-busting version: ${version}`);
+      res.send(updatedHtml);
+    } catch (error) {
+      console.error('Error processing index.html:', error);
+      res.status(500).send('Error processing page');
+    }
+  });
+});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -862,6 +934,50 @@ app.post('/debug/process-enrollments', async (req, res) => {
     console.error('Error processing enrollments:', error);
     res.status(500).json({ error: 'Failed to process enrollments', details: error.message });
   }
+});
+
+// Catch-all route for SPA - serve dynamic index.html with cache-busting
+app.get('*', (req, res) => {
+  // Skip API routes and static file requests
+  if (req.path.startsWith('/api/') || req.path.startsWith('/auth/') || 
+      req.path.startsWith('/media/') || req.path.startsWith('/wa/') ||
+      req.path.includes('.js') || req.path.includes('.css') || req.path.includes('.html') ||
+      req.path.includes('.png') || req.path.includes('.jpg') || req.path.includes('.svg') ||
+      req.path.startsWith('/users') || req.path.startsWith('/groups') || req.path.startsWith('/schedule') ||
+      req.path.startsWith('/events') || req.path.startsWith('/direct-schedule') || req.path.startsWith('/status')) {
+    return res.status(404).send('Not Found');
+  }
+  
+  const indexPath = path.join(__dirname, 'public/frontend/index.html');
+  
+  // Read and serve dynamic version of index.html
+  fs.readFile(indexPath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading index.html for SPA route:', err);
+      return res.status(500).send('Error loading page');
+    }
+    
+    try {
+      // Generate fresh version numbers for cache busting
+      const version = Date.now();
+      const random = Math.random().toString(36).substr(2, 9);
+      
+      // Replace all empty ?v= parameters with dynamic version numbers
+      const updatedHtml = data.replace(/\?v=/g, `?v=${version}&cb=${random}`);
+      
+      // Set headers to prevent caching of the HTML
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('Content-Type', 'text/html');
+      
+      console.log(`📄 Served SPA route ${req.path} with cache-busting version: ${version}`);
+      res.send(updatedHtml);
+    } catch (error) {
+      console.error('Error processing SPA route:', error);
+      res.status(500).send('Error processing page');
+    }
+  });
 });
 
 module.exports = app;

@@ -14,4 +14,8 @@ if issues not removed, improve them
 until i clear the issues here, consider they are not fixed
 --------------------------------------------------------
 **** Issue List ****
-working
+
+recheck your generated code for any bugs and fix them if any found
+make sure no code duplicate found
+
+--------------------------------------------------------

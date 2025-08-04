@@ -67,7 +67,24 @@ function getCountdownSchedule(baseDate) {
 router.get('/', authRequired, (req, res) => {
   try {
     const schedule = readSchedule();
-    res.json(filterByUser(schedule, req.session.user.username));
+    const userSchedule = filterByUser(schedule, req.session.user.username);
+    
+    // Data migration: Add missing fields for existing schedules
+    let migrationOccurred = false;
+    userSchedule.forEach(item => {
+      if (!item.repeat) {
+        item.repeat = 'once';
+        item.days = {};
+        migrationOccurred = true;
+      }
+    });
+    
+    // Save migration changes if any occurred
+    if (migrationOccurred) {
+      writeSchedule(schedule);
+    }
+    
+    res.json(userSchedule);
   } catch (err) {
     res.status(500).json({ error: 'Failed to read schedule' });
   }
@@ -84,15 +101,30 @@ router.post('/', authRequired, upload.single('image'), (req, res) => {
       size: req.file.size
     } : 'No file uploaded');
     
-    const { message, time } = req.body;
+    const { message, time, repeat } = req.body;
+    let { days } = req.body;
     let groupIds = req.body.groupIds;
     const name = req.body.name; // Add name field
     const providedImageUrl = req.body.imageUrl; // Add imageUrl field
+    
+    // Parse days JSON string back to object if it's a string
+    if (typeof days === 'string') {
+      try {
+        days = JSON.parse(days);
+        console.log('Successfully parsed days JSON string to object:', days);
+      } catch (e) {
+        console.log('Error parsing days JSON string:', e.message);
+        console.log('Raw days value:', days);
+        days = {}; // Default to empty object on parse error
+      }
+    }
     
     console.log('message:', message);
     console.log('time:', time);
     console.log('name:', name);
     console.log('providedImageUrl:', providedImageUrl);
+    console.log('repeat:', repeat);
+    console.log('days (parsed):', days);
     console.log('groupIds (raw):', groupIds);
     
     // Image is optional - log if present or not
@@ -158,6 +190,8 @@ router.post('/', authRequired, upload.single('image'), (req, res) => {
         message, 
         time: isoTime, 
         media: imageUrl, // Will be null if no image uploaded
+        repeat: repeat || 'once', // Default to 'once' for backward compatibility
+        days: days || {}, // Days selection for custom repeat
         username 
       });
       createdIds.push(id);
@@ -175,7 +209,7 @@ router.post('/', authRequired, upload.single('image'), (req, res) => {
 // Keep the old single-group API endpoint for backward compatibility
 router.post('/single', authRequired, (req, res) => {
   try {
-    const { groupId, message, time, media, name, imageUrl } = req.body;
+    const { groupId, message, time, media, name, imageUrl, repeat, days } = req.body;
     if (!groupId || !message || !time) return res.status(400).json({ error: 'Missing fields' });
     const schedule = readSchedule();
     const id = Date.now().toString();
@@ -189,7 +223,9 @@ router.post('/single', authRequired, (req, res) => {
       name: name || message.substring(0, 30) + (message.length > 30 ? '...' : ''),
       message, 
       time: isoTime, 
-      media: finalMedia, 
+      media: finalMedia,
+      repeat: repeat || 'once', // Default to 'once' for backward compatibility
+      days: days || {}, // Days selection for custom repeat
       username: req.session.user.username 
     });
     writeSchedule(schedule);
@@ -211,10 +247,22 @@ router.put('/:id', authRequired, upload.single('image'), (req, res) => {
     } : 'No new image uploaded');
 
     const { id } = req.params;
-    const { groupId, message, time, name } = req.body;
+    let { groupId, message, time, name, repeat, days } = req.body;
     const providedImageUrl = req.body.imageUrl;
     
-    if (!groupId && !message && !time && !name && !req.file && !providedImageUrl) {
+    // Parse days JSON string back to object if it's a string
+    if (typeof days === 'string') {
+      try {
+        days = JSON.parse(days);
+        console.log('Successfully parsed days JSON string to object:', days);
+      } catch (e) {
+        console.log('Error parsing days JSON string:', e.message);
+        console.log('Raw days value:', days);
+        days = {}; // Default to empty object on parse error
+      }
+    }
+    
+    if (!groupId && !message && !time && !name && !req.file && !providedImageUrl && !repeat && !days) {
       return res.status(400).json({ error: 'No changes provided' });
     }
     
@@ -233,6 +281,8 @@ router.put('/:id', authRequired, upload.single('image'), (req, res) => {
     if (name !== undefined) {
       item.name = name || message.substring(0, 30) + (message.length > 30 ? '...' : '');
     }
+    if (repeat !== undefined) item.repeat = repeat;
+    if (days !== undefined) item.days = days;
     
     // Handle image update - either file upload or URL
     if (req.file) {
@@ -255,6 +305,8 @@ router.put('/:id', authRequired, upload.single('image'), (req, res) => {
         message: item.message,
         time: item.time,
         media: item.media,
+        repeat: item.repeat,
+        days: item.days,
         sent: item.sent || false
       } 
     });
@@ -280,7 +332,7 @@ router.delete('/:id', authRequired, (req, res) => {
 
 router.post('/automation', authRequired, upload.single('image'), (req, res) => {
   try {
-    const { groupId, date, text } = req.body;
+    const { groupId, date, text, repeat, days } = req.body;
     if (!groupId || !date || !text || !req.file) return res.status(400).json({ error: 'Missing fields' });
     const schedule = readSchedule();
     const username = req.session.user.username;
@@ -296,6 +348,8 @@ router.post('/automation', authRequired, upload.single('image'), (req, res) => {
         message,
         time: c.time,
         media: imageUrl,
+        repeat: repeat || 'once', // Default to 'once' for backward compatibility
+        days: days || {}, // Days selection for custom repeat
         username
       });
     });

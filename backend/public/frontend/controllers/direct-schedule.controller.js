@@ -12,6 +12,16 @@ angular.module('autopostWaApp.schedules')
         $scope.isSearching = false;
         $scope.searchTimeout = null;
 
+        // Schedule type options (same as status module)
+        $scope.scheduleTypes = [
+            { value: 'once', label: 'Once Only' },
+            { value: 'daily', label: 'Daily' },
+            { value: 'custom', label: 'Specific Days' }
+        ];
+        $scope.days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        
+        console.log('📝 [DIRECT-SCHEDULE] Schedule types initialized:', $scope.scheduleTypes);
+
         // Enhanced search function with debouncing
         $scope.searchSchedules = function(schedule) {
             if (!$scope.searchQuery) return true;
@@ -145,8 +155,14 @@ angular.module('autopostWaApp.schedules')
                     scheduledAt: null, // Initialize as null first
                     mediaMethod: schedule.mediaUrl ? 'url' : 'library',
                     mediaUrl: schedule.mediaUrl || '',
+                    repeat: schedule.repeat || 'once', // Handle missing repeat field for backward compatibility
+                    days: angular.copy(schedule.days) || {}, // Handle missing days field for backward compatibility
                     selectedMedia: null // Will be populated if media library is used
                 };
+                
+                console.log('📝 [DIRECT-SCHEDULE] Edit mode - Original schedule:', schedule);
+                console.log('📝 [DIRECT-SCHEDULE] Edit mode - Schedule repeat value:', schedule.repeat);
+                console.log('📝 [DIRECT-SCHEDULE] Edit mode - Schedule days value:', schedule.days);
                 
                 console.log('Edit direct schedule formData after setup:', $scope.formData);
                 console.log('Original schedule scheduledAt:', schedule.scheduledAt);
@@ -195,6 +211,8 @@ angular.module('autopostWaApp.schedules')
                     scheduledAt: '',
                     mediaMethod: 'library',
                     mediaUrl: '',
+                    repeat: 'once', // Default to 'once'
+                    days: {}, // Empty days object
                     selectedMedia: null
                 };
             }
@@ -261,8 +279,14 @@ angular.module('autopostWaApp.schedules')
                     number: $scope.formData.number.trim(),
                     message: $scope.formData.message.trim(),
                     mediaUrl: mediaUrl,
-                    scheduledAt: scheduledAtISO
+                    scheduledAt: scheduledAtISO,
+                    repeat: $scope.formData.repeat || 'once',
+                    days: $scope.formData.days || {}
                 };
+                
+                console.log('🔍 [DIRECT-SCHEDULE] Saving schedule with data:', scheduleData);
+                console.log('🔍 [DIRECT-SCHEDULE] Form repeat value:', $scope.formData.repeat);
+                console.log('🔍 [DIRECT-SCHEDULE] Form days value:', $scope.formData.days);
                 
                 if ($scope.isEditMode && $scope.formData.id) {
                     // Update
@@ -316,6 +340,71 @@ angular.module('autopostWaApp.schedules')
         $scope.editSchedule = function(schedule) {
             $scope.showCreateEditModal(schedule);
         };
+
+        // Helper functions for schedule types (similar to status module)
+        $scope.getScheduleTypeDisplay = function(schedule) {
+            var repeat = schedule.repeat || 'once';
+            if (repeat === 'once') {
+                if (schedule.status === 'Sent') {
+                    return {
+                        text: 'Sent',
+                        class: 'bg-green-600 text-green-100',
+                        icon: 'fas fa-check-circle'
+                    };
+                } else if (schedule.status === 'Failed') {
+                    return {
+                        text: 'Failed',
+                        class: 'bg-red-600 text-red-100',
+                        icon: 'fas fa-exclamation-circle'
+                    };
+                } else {
+                    return {
+                        text: 'Once',
+                        class: 'bg-blue-600 text-blue-100',
+                        icon: 'fas fa-clock'
+                    };
+                }
+            } else if (repeat === 'daily') {
+                return {
+                    text: 'Daily',
+                    class: 'bg-purple-600 text-purple-100',
+                    icon: 'fas fa-repeat'
+                };
+            } else if (repeat === 'custom') {
+                return {
+                    text: 'Custom',
+                    class: 'bg-teal-600 text-teal-100',
+                    icon: 'fas fa-calendar-days'
+                };
+            }
+            // Default fallback
+            return {
+                text: 'Scheduled',
+                class: 'bg-yellow-600 text-yellow-100',
+                icon: 'fas fa-calendar-check'
+            };
+        };
+
+        $scope.getSelectedDays = function(days) {
+            if (!days) return '';
+            return Object.keys(days).filter(function(day) {
+                return days[day];
+            }).join(', ');
+        };
+
+        // Watch for changes to repeat field for debugging
+        $scope.$watch('formData.repeat', function(newVal, oldVal) {
+            if (newVal !== oldVal) {
+                console.log('📝 [DIRECT-SCHEDULE] Repeat field changed from', oldVal, 'to', newVal);
+            }
+        });
+
+        // Watch for changes to days field for debugging
+        $scope.$watch('formData.days', function(newVal, oldVal) {
+            if (newVal !== oldVal) {
+                console.log('📝 [DIRECT-SCHEDULE] Days field changed:', newVal);
+            }
+        }, true); // Deep watch for object changes
 
         // Load initial data (no auto-scroll)
         $scope.loadSchedules();

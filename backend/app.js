@@ -562,87 +562,143 @@ cron.schedule('* * * * *', async () => {
       }
     }
     
-    // Process regular scheduled messages (non-event reminders)
+    // Process regular scheduled messages (non-event reminders) with schedule types
+    const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][now.getDay()];
+    
+    // Helper functions for schedule type processing
+    const isSameDay = (d1, d2) =>
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate();
+
+    const isSameMinute = (d1, d2) =>
+      d1.getHours() === d2.getHours() &&
+      d1.getMinutes() === d2.getMinutes();
+    
     for (const item of regularSchedules) {
       const scheduledTime = new Date(item.time);
       const timeUntilSend = scheduledTime - now;
       
-      if (!item.sent) {
+      // Apply data migration for old schedules without repeat field
+      if (!item.repeat) {
+        item.repeat = 'once';
+        item.days = {};
+        changed = true;
+      }
+      
+      // Check if message should be sent based on schedule type
+      let shouldSend = false;
+      
+      switch (item.repeat) {
+        case 'once':
+          // Send only if it's the exact scheduled time and not already sent
+          if (!item.sent && scheduledTime <= now) {
+            shouldSend = true;
+          }
+          break;
+          
+        case 'daily':
+          // Send daily at the scheduled time
+          if (isSameMinute(scheduledTime, now)) {
+            shouldSend = true;
+          }
+          break;
+          
+        case 'custom':
+          // Send on specific days at scheduled time
+          if (item.days && item.days[dayOfWeek] && isSameMinute(scheduledTime, now)) {
+            shouldSend = true;
+          }
+          break;
+          
+        default:
+          // Fallback to 'once' behavior for unknown types
+          if (!item.sent && scheduledTime <= now) {
+            shouldSend = true;
+          }
+      }
+      
+      if (!shouldSend) {
         // Count pending messages and log those coming up soon (within 10 minutes)
-        pendingCount++;
-        if (timeUntilSend > 0 && timeUntilSend <= 10 * 60 * 1000) {
-          const minutesRemaining = Math.ceil(timeUntilSend / (60 * 1000));
-          console.log(`[CRON] Regular message to group ${item.groupId} due in ~${minutesRemaining} minute(s)`);
+        if (!item.sent || item.repeat !== 'once') {
+          pendingCount++;
+          if (timeUntilSend > 0 && timeUntilSend <= 10 * 60 * 1000) {
+            const minutesRemaining = Math.ceil(timeUntilSend / (60 * 1000));
+            console.log(`[CRON] Group message (${item.repeat}) to group ${item.groupId} due in ~${minutesRemaining} minute(s)`);
+          }
+        }
+        continue;
+      }
+      
+      console.log(`[CRON] Processing due group message (${item.repeat}) to group ${item.groupId}`);
+      console.log(`[CRON] Message content: "${item.message.substring(0, 50)}${item.message.length > 50 ? '...' : ''}"`);
+      
+      // Fetch user settings and group info
+      const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json')));
+      const groups = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/groups.json')));
+      const user = users.find(u => u.username === item.username);
+      if (!user || !user.settings || !user.settings.instance_id || !user.settings.access_token) {
+        console.error(`[WA API] Missing WhatsApp API credentials for user ${item.username}`);
+        continue;
+      }
+      // Find group for this user
+      const group = groups.find(g => g.groupId === item.groupId && g.username === item.username);
+      if (!group) {
+        console.error(`[WA API] Group ${item.groupId} not found for user ${item.username}`);
+        continue;
+      }
+      // Send text or media
+      let sendResult;
+      const mediaUrl = item.mediaUrl || item.media; // Support both keys
+      
+      if (mediaUrl) {
+        sendResult = await sendWhatsAppGroupMessage({
+          group_id: item.groupId,
+          type: 'media',
+          message: item.message,
+          media_url: mediaUrl,
+          instance_id: user.settings.instance_id,
+          access_token: user.settings.access_token
+        });
+      } else {
+        sendResult = await sendWhatsAppGroupMessage({
+          group_id: item.groupId,
+          type: 'text',
+          message: item.message,
+          instance_id: user.settings.instance_id,
+          access_token: user.settings.access_token
+        });
+      }
+      // Throttle to avoid rate limits
+      await sleep(500);
+      
+      if (sendResult && (sendResult.status === 'success' || sendResult.success === true)) {
+        // For 'once' schedules, mark as sent. For recurring schedules, update last sent time
+        if (item.repeat === 'once') {
+          item.sent = true;
+        }
+        item.sentAt = now.toISOString();
+        changed = true;
+        sentCount++;
+        console.log(`[CRON] ✅ Successfully sent group message (${item.repeat}) to group ${item.groupId}`);
+      } else {
+        if (item.repeat === 'once') {
+          item.sent = false;
+        }
+        item.sendFailed = true;
+        const errorMessage = sendResult?.error || sendResult?.message || 'Unknown error';
+        item.sendError = errorMessage;
+        
+        // Log specific error types for better debugging
+        if (errorMessage.includes('Instance ID Invalidated')) {
+          console.error(`[WA API] ❌ INSTANCE INVALIDATED for user ${item.username}! Need to reconnect WhatsApp.`);
+        } else if (errorMessage.includes('access_token')) {
+          console.error(`[WA API] ❌ ACCESS TOKEN ISSUE for user ${item.username}!`);
+        } else {
+          console.error(`[WA API] ❌ Failed to send group message for group ${item.groupId}:`, errorMessage);
         }
         
-        // Check if it's time to send
-        if (scheduledTime <= now) {
-          console.log(`[CRON] Processing due regular message to group ${item.groupId}`);
-          console.log(`[CRON] Message content: "${item.message.substring(0, 50)}${item.message.length > 50 ? '...' : ''}"`);
-          
-          // Fetch user settings and group info
-          const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json')));
-          const groups = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/groups.json')));
-          const user = users.find(u => u.username === item.username);
-          if (!user || !user.settings || !user.settings.instance_id || !user.settings.access_token) {
-            console.error(`[WA API] Missing WhatsApp API credentials for user ${item.username}`);
-            continue;
-          }
-          // Find group for this user
-          const group = groups.find(g => g.groupId === item.groupId && g.username === item.username);
-          if (!group) {
-            console.error(`[WA API] Group ${item.groupId} not found for user ${item.username}`);
-            continue;
-          }
-          // Send text or media
-          let sendResult;
-          const mediaUrl = item.mediaUrl || item.media; // Support both keys
-          
-          if (mediaUrl) {
-            sendResult = await sendWhatsAppGroupMessage({
-              group_id: item.groupId,
-              type: 'media',
-              message: item.message,
-              media_url: mediaUrl,
-              instance_id: user.settings.instance_id,
-              access_token: user.settings.access_token
-            });
-          } else {
-            sendResult = await sendWhatsAppGroupMessage({
-              group_id: item.groupId,
-              type: 'text',
-              message: item.message,
-              instance_id: user.settings.instance_id,
-              access_token: user.settings.access_token
-            });
-          }
-          // Throttle to avoid rate limits
-          await sleep(500);
-          
-          if (sendResult && (sendResult.status === 'success' || sendResult.success === true)) {
-            item.sent = true;
-            item.sentAt = now.toISOString();
-            changed = true;
-            sentCount++;
-            console.log(`[CRON] ✅ Successfully sent regular message to group ${item.groupId}`);
-          } else {
-            item.sent = false;
-            item.sendFailed = true;
-            const errorMessage = sendResult?.error || sendResult?.message || 'Unknown error';
-            item.sendError = errorMessage;
-            
-            // Log specific error types for better debugging
-            if (errorMessage.includes('Instance ID Invalidated')) {
-              console.error(`[WA API] ❌ INSTANCE INVALIDATED for user ${item.username}! Need to reconnect WhatsApp.`);
-            } else if (errorMessage.includes('access_token')) {
-              console.error(`[WA API] ❌ ACCESS TOKEN ISSUE for user ${item.username}!`);
-            } else {
-              console.error(`[WA API] ❌ Failed to send message for group ${item.groupId}:`, errorMessage);
-            }
-            
-            changed = true; // Mark as changed to save the error
-          }
-        }
+        changed = true; // Mark as changed to save the error
       }
     }
     
@@ -653,65 +709,135 @@ cron.schedule('* * * * *', async () => {
       console.log(`[CRON] No messages sent. ${pendingCount} messages pending.`);
     }
 
-    // Process direct schedules
+    // Process direct schedules with schedule types (once, daily, custom)
     const directSchedulePath = path.join(__dirname, 'data/direct_schedules.json');
     if (fs.existsSync(directSchedulePath)) {
       const directSchedules = JSON.parse(fs.readFileSync(directSchedulePath));
       console.log(`[CRON] Found ${directSchedules.length} total direct scheduled items`);
       
       let directChanged = false;
+      const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][now.getDay()];
+      
+      // Helper functions (same as status module)
+      const isSameDay = (d1, d2) =>
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate();
+
+      const isSameMinute = (d1, d2) =>
+        d1.getHours() === d2.getHours() &&
+        d1.getMinutes() === d2.getMinutes();
       
       for (const item of directSchedules) {
-        if (item.status === 'Scheduled') {
-          const scheduledTime = new Date(item.scheduledAt);
-          
-          if (scheduledTime <= now) {
-            console.log(`[CRON] Processing due direct message to number: ${item.number}`);
-            
-            const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json')));
-            const user = users.find(u => u.id === item.userId);
-            
-            if (!user || !user.settings || !user.settings.instance_id || !user.settings.access_token) {
-              console.error(`[WA API Direct] Missing WhatsApp API credentials for user ID ${item.userId}`);
-              item.status = 'Failed';
-              item.sendError = 'Missing API credentials';
-              directChanged = true;
-              continue;
-            }
-            
-            const type = item.mediaUrl ? 'media' : 'text';
-            
-            const sendResult = await sendWhatsAppDirectMessage({
-              number: item.number,
-              type: type,
-              message: item.message,
-              media_url: item.mediaUrl,
-              instance_id: user.settings.instance_id,
-              access_token: user.settings.access_token
-            });
-            
-            await sleep(500); // Throttle
-            
-            if (sendResult && (sendResult.status === 'success' || sendResult.success === true)) {
-              item.status = 'Sent';
-              item.sentAt = new Date().toISOString();
-              console.log(`[CRON] ✅ Successfully sent direct message to ${item.number}`);
+        // Skip items that are not for current user's active time slots
+        const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json')));
+        const user = users.find(u => u.username === item.username);
+        
+        if (!user || !user.settings || !user.settings.instance_id || !user.settings.access_token) {
+          console.error(`[WA API Direct] Missing WhatsApp API credentials for user ${item.username}`);
+          continue;
+        }
+
+        let shouldSend = false;
+        const scheduledTime = new Date(item.scheduledAt);
+        const repeat = item.repeat || 'once'; // Default to 'once' for backward compatibility
+
+        console.log(`🔍 [DIRECT-CRON] Checking direct schedule ${item.id} (${repeat}) to ${item.number}`);
+        console.log(`   Scheduled: ${scheduledTime.toLocaleString('en-IN', {timeZone: 'Asia/Kolkata'})}`);
+        console.log(`   Current: ${now.toLocaleString('en-IN', {timeZone: 'Asia/Kolkata'})}`);
+
+        switch (repeat) {
+          case "once":
+            // For once type: send if scheduled time has passed and not yet sent
+            if (item.status === 'Scheduled' && scheduledTime <= now) {
+              shouldSend = true;
+              console.log(`✅ [DIRECT-CRON] Direct schedule ${item.id} ready to send (once, time passed)`);
+            } else if (item.status === 'Sent') {
+              console.log(`⏭️ [DIRECT-CRON] Direct schedule ${item.id} already sent (once)`);
             } else {
-              item.status = 'Failed';
-              const errorMessage = sendResult?.error || sendResult?.message || 'Unknown error';
-              item.sendError = errorMessage;
-              
-              // Log specific error types for better debugging
-              if (errorMessage.includes('Instance ID Invalidated')) {
-                console.error(`[WA API Direct] ❌ INSTANCE INVALIDATED for user ID ${item.userId}! Need to reconnect WhatsApp.`);
-              } else if (errorMessage.includes('access_token')) {
-                console.error(`[WA API Direct] ❌ ACCESS TOKEN ISSUE for user ID ${item.userId}!`);
-              } else {
-                console.error(`[WA API Direct] ❌ Failed to send to ${item.number}:`, errorMessage);
-              }
+              console.log(`⏳ [DIRECT-CRON] Direct schedule ${item.id} waiting for scheduled time`);
             }
-            directChanged = true;
+            break;
+
+          case "daily":
+            // For daily type: send if current time matches scheduled time and not sent today
+            if (isSameMinute(scheduledTime, now)) {
+              if (
+                !item.lastSent ||
+                !isSameDay(new Date(item.lastSent), now)
+              ) {
+                shouldSend = true;
+                console.log(`✅ [DIRECT-CRON] Direct schedule ${item.id} ready to send (daily, time match)`);
+              } else {
+                console.log(`⏭️ [DIRECT-CRON] Direct schedule ${item.id} already sent today`);
+              }
+            } else {
+              console.log(`⏳ [DIRECT-CRON] Direct schedule ${item.id} waiting for daily time slot`);
+            }
+            break;
+
+          case "custom":
+            // For custom type: send if today is selected day, time matches, and not sent today
+            if (item.days && item.days[dayOfWeek]) {
+              if (isSameMinute(scheduledTime, now)) {
+                if (
+                  !item.lastSent ||
+                  !isSameDay(new Date(item.lastSent), now)
+                ) {
+                  shouldSend = true;
+                  console.log(`✅ [DIRECT-CRON] Direct schedule ${item.id} ready to send (custom, ${dayOfWeek} match)`);
+                } else {
+                  console.log(`⏭️ [DIRECT-CRON] Direct schedule ${item.id} already sent today`);
+                }
+              } else {
+                console.log(`⏳ [DIRECT-CRON] Direct schedule ${item.id} waiting for custom time slot on ${dayOfWeek}`);
+              }
+            } else {
+              console.log(`📅 [DIRECT-CRON] Direct schedule ${item.id} not scheduled for ${dayOfWeek}`);
+            }
+            break;
+        }
+
+        if (shouldSend) {
+          console.log(`📤 [DIRECT-CRON] Sending direct message ${item.id} to ${item.number}...`);
+          
+          const type = item.mediaUrl ? 'media' : 'text';
+          
+          const sendResult = await sendWhatsAppDirectMessage({
+            number: item.number,
+            type: type,
+            message: item.message,
+            media_url: item.mediaUrl,
+            instance_id: user.settings.instance_id,
+            access_token: user.settings.access_token
+          });
+          
+          await sleep(500); // Throttle
+          
+          if (sendResult && (sendResult.status === 'success' || sendResult.success === true)) {
+            if (repeat === "once") {
+              item.status = 'Sent';
+              console.log(`✅ [DIRECT-CRON] Direct schedule ${item.id} marked as sent (once)`);
+            }
+            item.lastSent = now.toISOString();
+            console.log(`✅ [DIRECT-CRON] Direct schedule ${item.id} sent successfully to ${item.number}`);
+          } else {
+            const errorMessage = sendResult?.error || sendResult?.message || 'Unknown error';
+            item.sendError = errorMessage;
+            if (repeat === "once") {
+              item.status = 'Failed';
+            }
+            
+            // Log specific error types for better debugging
+            if (errorMessage.includes('Instance ID Invalidated')) {
+              console.error(`[WA API Direct] ❌ INSTANCE INVALIDATED for user ${item.username}! Need to reconnect WhatsApp.`);
+            } else if (errorMessage.includes('access_token')) {
+              console.error(`[WA API Direct] ❌ ACCESS TOKEN ISSUE for user ${item.username}!`);
+            } else {
+              console.error(`[WA API Direct] ❌ Failed to send to ${item.number}:`, errorMessage);
+            }
           }
+          directChanged = true;
         }
       }
       

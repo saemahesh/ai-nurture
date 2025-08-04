@@ -1,0 +1,10 @@
+{
+  "watch": [
+    "backend/**/*.js"
+  ],
+  "ignore": [
+    "backend/data/*.json"
+  ],
+  "ext": "js,json",
+  "exec": "node ./bin/www"
+}

@@ -1,5 +1,5 @@
 {
-  "1753892353855cknc2gv": {
+  "1754322223465uxmltju": {
     "5days": {
       "enabled": true,
       "text": "5 days to go until {{eventName}}!"
@@ -14,7 +14,9 @@
     },
     "2days": {
       "enabled": true,
-      "text": "2 days to go until {{eventName}}!"
+      "text": "2 days to go until {{eventName}}!",
+      "mediaId": "mdshjxferbp5jpcjafg",
+      "mediaUrl": "/uploads/1754032316663-adp_logo.jpg"
     },
     "1day": {
       "enabled": true,
@@ -22,27 +24,19 @@
     },
     "12hours": {
       "enabled": true,
-      "text": "yes",
-      "mediaId": "mdu47usrlqttbkywzcc",
-      "mediaUrl": "/uploads/1754130850726-adp_logo.jpg"
+      "text": "Just 12 hours to go until {{eventName}}!"
     },
     "6hours": {
       "enabled": true,
-      "text": "ye23r43",
-      "mediaId": "mdu47cidu737n1vsmk",
-      "mediaUrl": "/uploads/1754130827025-automation.png"
+      "text": "6 hours to go until {{eventName}}!"
     },
     "3hours": {
       "enabled": true,
-      "text": "3 hours to go until {{eventName}}!\n\nfasdgs",
-      "mediaId": "mdshjxferbp5jpcjafg",
-      "mediaUrl": "/uploads/1754032316663-adp_logo.jpg"
+      "text": "3 hours to go until {{eventName}}!"
     },
     "1hour": {
       "enabled": true,
-      "text": "1 hour to go until {{eventName}}!\n\ngasg",
-      "mediaId": "mdshjxferbp5jpcjafg",
-      "mediaUrl": "/uploads/1754032316663-adp_logo.jpg"
+      "text": "1 hour to go until {{eventName}}!"
     },
     "30mins": {
       "enabled": true,

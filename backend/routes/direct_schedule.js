@@ -47,7 +47,28 @@ const writeSchedules = (schedules) => {
 // Get all schedules for the logged-in user
 router.get('/', isAuthenticated, (req, res) => {
     try {
-        const schedules = readSchedules();
+        let schedules = readSchedules();
+        let needsWrite = false;
+        
+        // Migrate old schedules that don't have repeat and days fields
+        schedules = schedules.map(schedule => {
+            if (!schedule.hasOwnProperty('repeat')) {
+                schedule.repeat = 'once'; // Default for old schedules
+                needsWrite = true;
+            }
+            if (!schedule.hasOwnProperty('days')) {
+                schedule.days = {}; // Default empty days
+                needsWrite = true;
+            }
+            return schedule;
+        });
+        
+        // Write back the migrated data if needed
+        if (needsWrite) {
+            writeSchedules(schedules);
+            console.log('📝 [DIRECT-SCHEDULE-API] Migrated old schedules with repeat and days fields');
+        }
+        
         const userSchedules = schedules.filter(s => s.username === req.session.user.username);
         res.json(userSchedules);
     } catch (error) {
@@ -59,7 +80,7 @@ router.get('/', isAuthenticated, (req, res) => {
 // Create a new schedule
 router.post('/', isAuthenticated, (req, res) => {
     try {
-        const { number, message, mediaUrl, scheduledAt } = req.body;
+        const { number, message, mediaUrl, scheduledAt, repeat, days } = req.body;
         
         // Validate required fields
         if (!number || !message || !scheduledAt) {
@@ -89,6 +110,8 @@ router.post('/', isAuthenticated, (req, res) => {
             message: message.trim(),
             mediaUrl: mediaUrl || null,
             scheduledAt: scheduledDate.toISOString(),
+            repeat: repeat || 'once', // Default to 'once' for backward compatibility
+            days: days || {}, // Days selection for custom repeat
             status: 'Scheduled',
             createdAt: new Date().toISOString()
         };
@@ -125,7 +148,9 @@ router.delete('/:id', isAuthenticated, (req, res) => {
 // Update (edit) a follow up
 router.put('/:id', isAuthenticated, (req, res) => {
     try {
-        const { number, message, mediaUrl, scheduledAt } = req.body;
+        const { number, message, mediaUrl, scheduledAt, repeat, days } = req.body;
+        
+        console.log('🔍 [DIRECT-SCHEDULE-API] PUT - Updating schedule with repeat:', repeat, 'days:', days);
         
         // Validate required fields
         if (!number || !message || !scheduledAt) {
@@ -161,9 +186,18 @@ router.put('/:id', isAuthenticated, (req, res) => {
             message: message.trim(),
             mediaUrl: mediaUrl || null,
             scheduledAt: scheduledDate.toISOString(),
+            repeat: repeat || 'once', // Default to 'once' for backward compatibility
+            days: days || {}, // Days selection for custom repeat
             updatedAt: new Date().toISOString()
             // status and createdAt remain unchanged
         };
+
+        // If editing a "once" type schedule, reset status to 'Scheduled' so it can be sent again
+        if ((repeat || 'once') === 'once') {
+            schedules[scheduleIndex].status = 'Scheduled';
+            // Remove lastSent field if it exists (similar to status module)
+            delete schedules[scheduleIndex].lastSent;
+        }
 
         writeSchedules(schedules);
         res.json(schedules[scheduleIndex]);

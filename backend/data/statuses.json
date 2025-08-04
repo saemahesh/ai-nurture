@@ -1,16 +1,1 @@
-[
-  {
-    "id": "4141a164-4271-4e3d-b2be-879f5f90cff7",
-    "media": "/uploads/1754130827025-automation.png",
-    "caption": "testing",
-    "textColor": "#000000",
-    "bgColor": "#ffffff",
-    "time": "2025-08-02T10:16:00.000Z",
-    "repeat": "custom",
-    "days": {
-      "Thu": true
-    },
-    "createdAt": "2025-08-02T10:16:20.810Z",
-    "username": "mahesh"
-  }
-]
+[]

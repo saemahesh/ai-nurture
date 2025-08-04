@@ -255,9 +255,11 @@
       "mediaUrl": null,
       "day": 2
     },
-    "scheduledAt": "2025-08-03T01:40:00.000Z",
-    "status": "pending",
+    "scheduledAt": "2025-08-03T02:28:00.726Z",
+    "status": "failed",
     "createdAt": "2025-08-02T07:39:06.253Z",
-    "attempts": 0
+    "attempts": 3,
+    "lastAttemptAt": "2025-08-03T02:40:00.840Z",
+    "apiError": "connect EBADF 213.210.36.149:443"
   }
 ]

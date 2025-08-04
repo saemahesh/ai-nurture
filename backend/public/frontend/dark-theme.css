@@ -1775,7 +1775,7 @@ main {
   .dark-theme-header {
     padding: 1rem 1.5rem !important; /* py-4 px-6 equivalent */
     min-height: 80px !important;
-    height: 80px !important;
+    height: 89px !important;
   }
   
   header .flex {

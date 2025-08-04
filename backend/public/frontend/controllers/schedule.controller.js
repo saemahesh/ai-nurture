@@ -121,7 +121,39 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
     ApiService.getSchedules()
       .then(function(response) {
         console.log('Schedules loaded:', response.data);
-        $scope.schedules = response.data;
+        // Process schedules to handle days parsing
+        $scope.schedules = response.data.map(function(schedule) {
+          // Fix days field if it's a string (over-escaped JSON)
+          if (typeof schedule.days === 'string') {
+            try {
+              // Try to parse the over-escaped JSON string
+              var parsed = schedule.days;
+              // Handle multiple levels of escaping
+              while (typeof parsed === 'string' && (parsed.startsWith('"') || parsed.includes('\\'))) {
+                try {
+                  parsed = JSON.parse(parsed);
+                } catch (e) {
+                  console.log('Could not parse further, breaking');
+                  break;
+                }
+              }
+              if (typeof parsed === 'object' && parsed !== null) {
+                schedule.days = parsed;
+                console.log('Successfully parsed days for schedule', schedule.id, ':', schedule.days);
+              } else {
+                console.log('Final parsed days is not an object, using empty object');
+                schedule.days = {};
+              }
+            } catch (e) {
+              console.log('Error parsing days for schedule', schedule.id, ':', e.message);
+              console.log('Raw days value:', schedule.days);
+              schedule.days = {}; // Default to empty object
+            }
+          } else if (!schedule.days) {
+            schedule.days = {}; // Ensure days is always an object
+          }
+          return schedule;
+        });
         $scope.loading = false;
       })
       .catch(function(error) {
@@ -141,9 +173,73 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
     time: '',
     imageMethod: 'library', // Default to media library
     selectedMedia: null,
-    imageUrl: ''
+    imageUrl: '',
+    repeat: 'once', // Default schedule type
+    days: {}
   };
   $scope.scheduleError = '';
+  
+  // Schedule types configuration
+  $scope.scheduleTypes = [
+    { value: 'once', label: 'Once' },
+    { value: 'daily', label: 'Daily' },
+    { value: 'custom', label: 'Custom Days' }
+  ];
+  
+  // Days array (same format as direct schedule module)
+  $scope.days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  
+  // Helper function to get schedule type display text
+  $scope.getScheduleTypeDisplay = function(schedule) {
+    var repeat = schedule.repeat || 'once';
+    if (repeat === 'once') {
+      if (schedule.sent) {
+        return {
+          text: 'Sent',
+          class: 'bg-green-600 text-green-100',
+          icon: 'fas fa-check-circle'
+        };
+      } else if (schedule.sendFailed) {
+        return {
+          text: 'Failed',
+          class: 'bg-red-600 text-red-100',
+          icon: 'fas fa-exclamation-circle'
+        };
+      } else {
+        return {
+          text: 'Once',
+          class: 'bg-blue-600 text-blue-100',
+          icon: 'fas fa-clock'
+        };
+      }
+    } else if (repeat === 'daily') {
+      return {
+        text: 'Daily',
+        class: 'bg-purple-600 text-purple-100',
+        icon: 'fas fa-repeat'
+      };
+    } else if (repeat === 'custom') {
+      return {
+        text: 'Custom',
+        class: 'bg-teal-600 text-teal-100',
+        icon: 'fas fa-calendar-days'
+      };
+    }
+    // Default fallback
+    return {
+      text: 'Scheduled',
+      class: 'bg-yellow-600 text-yellow-100',
+      icon: 'fas fa-calendar-check'
+    };
+  };
+  
+  // Helper function to get selected days text
+  $scope.getSelectedDays = function(days) {
+    if (!days) return '';
+    return Object.keys(days).filter(function(day) {
+      return days[day];
+    }).join(', ');
+  };
   
   // Media library functionality
   $scope.mediaLibrary = [];
@@ -358,7 +454,9 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
       time: '',
       imageMethod: 'library',
       selectedMedia: null,
-      imageUrl: ''
+      imageUrl: '',
+      repeat: 'once',
+      days: {}
     };
     // Reset group selections
     $scope.groups.forEach(function(group) {
@@ -401,6 +499,34 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
       }
     }
     
+    // Parse days field if it's a string (handle over-escaped JSON)
+    var parsedDays = schedule.days || {};
+    if (typeof schedule.days === 'string') {
+      try {
+        var parsed = schedule.days;
+        // Handle multiple levels of escaping
+        while (typeof parsed === 'string' && (parsed.startsWith('"') || parsed.includes('\\'))) {
+          try {
+            parsed = JSON.parse(parsed);
+          } catch (e) {
+            console.log('Could not parse further, breaking');
+            break;
+          }
+        }
+        if (typeof parsed === 'object' && parsed !== null) {
+          parsedDays = parsed;
+          console.log('Successfully parsed days for editing:', parsedDays);
+        } else {
+          console.log('Final parsed days is not an object, using empty object');
+          parsedDays = {};
+        }
+      } catch (e) {
+        console.log('Error parsing days for editing:', e.message);
+        console.log('Raw days value:', schedule.days);
+        parsedDays = {}; // Default to empty object
+      }
+    }
+    
     $scope.formData = {
       id: schedule.id,
       name: schedule.name,
@@ -410,7 +536,9 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
       currentMediaUrl: schedule.media,
       imageMethod: schedule.media ? 'library' : 'library', // Set method based on existing media
       selectedMedia: null,
-      imageUrl: schedule.media && (schedule.media.startsWith('http://') || schedule.media.startsWith('https://')) ? schedule.media : ''
+      imageUrl: schedule.media && (schedule.media.startsWith('http://') || schedule.media.startsWith('https://')) ? schedule.media : '',
+      repeat: schedule.repeat || 'once', // Default to 'once' if not set
+      days: parsedDays // Use parsed days object
     };
     
     console.log('Edit schedule formData after setup:', $scope.formData);
@@ -508,6 +636,8 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
     }
     formData.append('message', $scope.formData.message);
     formData.append('time', $scope.formData.time);
+    formData.append('repeat', $scope.formData.repeat || 'once');
+    formData.append('days', JSON.stringify($scope.formData.days || {}));
     
     // Handle media - either library selection or URL
     if ($scope.formData.imageMethod === 'library' && $scope.formData.selectedMedia) {

@@ -51,7 +51,7 @@ function getMediaUrl(mediaUrl) {
   }
   
   // If in production environment
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'prod') {
     if (!mediaUrl.includes('http')) {
       console.log(`🔗 [PRODUCTION] Converting local media URL "${mediaUrl}" to production URL`);
       return `https://whatspro.robomate.in${mediaUrl.startsWith('/') ? '' : '/'}${mediaUrl}`;

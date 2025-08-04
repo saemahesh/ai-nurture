@@ -487,4 +487,25 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
             return scheduled > now;
         });
     };
+
+    // Returns all upcoming reminder types (unified function)
+    $scope.getAllUpcomingReminderTypes = function() {
+        if (!$scope.currentEvent) return [];
+        const now = new Date();
+        const eventTime = new Date($scope.currentEvent.time);
+        return Object.keys(REMINDER_OFFSETS).filter(function(type) {
+            // Calculate scheduled time
+            const scheduled = new Date(eventTime.getTime() - REMINDER_OFFSETS[type]);
+            return scheduled > now;
+        });
+    };
+
+    // Returns appropriate icon for reminder type
+    $scope.getReminderIcon = function(type) {
+        if (type.endsWith('days') || type === '1day') {
+            return 'fa-calendar-week';
+        } else {
+            return 'fa-clock';
+        }
+    };
 });

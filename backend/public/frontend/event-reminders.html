@@ -750,51 +750,14 @@
           </div>
           <div class="border-t border-slate-700 px-4 py-5 sm:p-6">
             <div class="space-y-6">
-              <!-- Reminder Configuration Cards -->
+              <!-- Unified Reminder Configuration Cards -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto px-2 md:px-4">
-                <!-- Days Before Reminders -->
-                <div class="reminder-card dark-theme-card flex flex-col min-h-[420px]" ng-repeat="type in getUpcomingReminderTypes('days')">
-                  <div class="flex items-center mb-3">
-                    <div class="bg-cyan-800/40 rounded-full h-10 w-10 flex items-center justify-center mr-3">
-                      <i class="fas fa-calendar-week text-cyan-300 text-lg"></i>
-                    </div>
-                    <h3 class="text-lg font-semibold text-white">{{getReminderLabel(type)}}</h3>
-                  </div>
-                  <form name="reminderForm_{{type}}" ng-submit="saveReminder(type)" class="flex-1 flex flex-col">
-                    <div class="mb-3">
-                      <label class="block text-sm font-medium mb-2 text-slate-200">Message</label>
-                      <textarea ng-model="reminders[type].text"
-                        class="w-full px-3 py-2 rounded-lg border border-slate-500 bg-slate-700 text-white placeholder-slate-400 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-300 transition-all duration-300 resize-none"
-                        placeholder="Enter reminder message for {{getReminderLabel(type)}}" rows="4"></textarea>
-                    </div>
-                    <div class="media-preview-container mb-4 flex-1">
-                      <div class="mb-2">
-                        <label class="block text-sm font-medium mb-2 text-slate-200">Media (Optional)</label>
-                        <button type="button" ng-click="openMediaSelector(type)"
-                          class="px-3 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg shadow transition-all flex items-center gap-2 text-sm">
-                          <i class="fas fa-photo-video"></i> Media Library
-                        </button>
-                      </div>
-                      <div ng-if="reminders[type].mediaFromLibrary && reminders[type].mediaFromLibrary.url" class="bg-slate-600 rounded-lg p-2 flex items-center gap-3">
-                        <img ng-if="isImage(reminders[type].mediaFromLibrary.url)" ng-src="{{getImageUrl(reminders[type].mediaFromLibrary.url)}}" class="h-12 w-12 object-cover rounded border" />
-                        <video ng-if="isVideo(reminders[type].mediaFromLibrary.url)" ng-src="{{getImageUrl(reminders[type].mediaFromLibrary.url)}}" class="h-12 w-12 rounded border" controls></video>
-                        <button type="button" ng-click="reminders[type].mediaFromLibrary=null" class="text-red-400 hover:text-red-300 ml-auto">
-                          <i class="fas fa-times"></i> Remove
-                        </button>
-                      </div>
-                    </div>
-                    <button type="submit" class="w-full py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-all duration-300 shadow-md text-sm font-medium mt-auto" ng-disabled="reminderForm_{{type}}.$invalid">
-                      <i class="fas fa-save mr-2"></i>Save Reminder
-                    </button>
-                  </form>
-                </div>
-                <!-- Hours/Minutes Before Reminders -->
-                                <!-- Hours Before Reminders - Completely Redesigned -->
-                <div class="hours-before-card" ng-repeat="type in getUpcomingReminderTypes('hours')">
+                <!-- All Reminder Types using unified card design -->
+                <div class="hours-before-card" ng-repeat="type in getAllUpcomingReminderTypes()">
                   <!-- Card Header -->
                   <div class="card-header">
                     <div class="card-icon">
-                      <i class="fas fa-clock text-white text-xl"></i>
+                      <i class="fas text-white text-xl" ng-class="getReminderIcon(type)"></i>
                     </div>
                     <h3 class="card-title">{{getReminderLabel(type)}}</h3>
                   </div>

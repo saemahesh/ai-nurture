@@ -1,4 +1,5 @@
-[ {
+[
+  {
     "id": "enroll_1754120346242",
     "sequence_id": "seq_1752221360754",
     "username": "mahesh",
@@ -12,4 +13,20 @@
     "messages_sent": 0,
     "total_messages": 2,
     "custom_fields": {}
-  }]
+  },
+  {
+    "id": "enroll_1754652093897",
+    "sequence_id": "seq_1752221360754",
+    "username": "mahesh",
+    "phone": "911234567890",
+    "name": "Test Lead",
+    "enrolled_at": "2025-08-08T11:21:33.898Z",
+    "current_day": 0,
+    "status": "stopped",
+    "last_message_sent": null,
+    "next_message_due": "2025-08-08T12:21:33.898Z",
+    "messages_sent": 0,
+    "total_messages": 2,
+    "custom_fields": {}
+  }
+]

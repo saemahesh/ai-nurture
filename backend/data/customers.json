@@ -1,0 +1,14 @@
+[
+  {
+    "id": "cust_1754652093899",
+    "phone": "911234567890",
+    "name": "Test Lead",
+    "enrolled_at": "2025-08-08T11:21:33.898Z",
+    "status": "paid",
+    "tags": [
+      "hot lead",
+      "interested in product 1"
+    ],
+    "products_purchased": []
+  }
+]

@@ -261,5 +261,57 @@
     "attempts": 3,
     "lastAttemptAt": "2025-08-03T02:40:00.840Z",
     "apiError": "connect EBADF 213.210.36.149:443"
+  },
+  {
+    "id": "seq_1752221360754-911234567890-0-1754652093903",
+    "campaignId": "seq_1752221360754",
+    "username": "mahesh",
+    "phone": "911234567890",
+    "leadData": {
+      "id": "lead-1754652093901",
+      "campaignId": "seq_1752221360754",
+      "username": "mahesh",
+      "phone": "911234567890",
+      "name": "Test Lead",
+      "createdAt": "2025-08-08T11:21:33.901Z"
+    },
+    "messageIndex": 0,
+    "message": {
+      "id": "msg-0",
+      "type": "media",
+      "message": "Hey {name} , drip media first, congratzzzz\n\nIts time to {rock|party|explode}",
+      "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
+      "day": 1
+    },
+    "scheduledAt": "2025-08-08T12:21:33.898Z",
+    "status": "pending",
+    "createdAt": "2025-08-08T11:21:33.903Z",
+    "attempts": 0
+  },
+  {
+    "id": "seq_1752221360754-911234567890-1-1754652093903",
+    "campaignId": "seq_1752221360754",
+    "username": "mahesh",
+    "phone": "911234567890",
+    "leadData": {
+      "id": "lead-1754652093901",
+      "campaignId": "seq_1752221360754",
+      "username": "mahesh",
+      "phone": "911234567890",
+      "name": "Test Lead",
+      "createdAt": "2025-08-08T11:21:33.901Z"
+    },
+    "messageIndex": 1,
+    "message": {
+      "id": "msg-1",
+      "type": "media",
+      "message": "Hey , day 2 drip msg",
+      "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
+      "day": 2
+    },
+    "scheduledAt": "2025-08-09T12:52:00.000Z",
+    "status": "pending",
+    "createdAt": "2025-08-08T11:21:33.903Z",
+    "attempts": 0
   }
 ]

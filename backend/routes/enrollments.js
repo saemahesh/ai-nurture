@@ -18,6 +18,7 @@ const sequencesFile = path.join(__dirname, '../data/sequences.json');
 const messageQueueFile = path.join(__dirname, '../data/message_queue.json');
 const campaignQueueFile = path.join(__dirname, '../data/campaign_queue.json');
 const campaignLeadsFile = path.join(__dirname, '../data/campaign_leads.json');
+const customersFile = path.join(__dirname, '../data/customers.json');
 
 // Apply authentication middleware to all routes
 router.use(requireAuth);
@@ -97,6 +98,19 @@ function readCampaignLeads() {
 
 function writeCampaignLeads(leads) {
   fs.writeFileSync(campaignLeadsFile, JSON.stringify(leads, null, 2));
+}
+
+function readCustomers() {
+  try {
+    const data = fs.readFileSync(customersFile, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    return [];
+  }
+}
+
+function writeCustomers(customers) {
+  fs.writeFileSync(customersFile, JSON.stringify(customers, null, 2));
 }
 
 // Helper function to validate and normalize phone number
@@ -349,6 +363,23 @@ router.post('/:sequenceId/enroll', (req, res) => {
     enrollments.push(newEnrollment);
     console.log(`💾 [ENROLL_API] Saving enrollment to database...`);
     writeEnrollments(enrollments);
+
+    // Add to customers
+    const customers = readCustomers();
+    const existingCustomer = customers.find(c => c.phone === normalizedPhone);
+    if (!existingCustomer) {
+        const newCustomer = {
+            id: 'cust_' + Date.now(),
+            phone: normalizedPhone,
+            name: name ? name.trim() : '',
+            enrolled_at: newEnrollment.enrolled_at,
+            status: 'lead',
+            tags: [],
+            products_purchased: []
+        };
+        customers.push(newCustomer);
+        writeCustomers(customers);
+    }
     
     console.log(`🔄 [ENROLL_API] Scheduling messages for enrollment...`);
     // Schedule messages for this enrollment
@@ -445,6 +476,23 @@ router.post('/:sequenceId/enroll/bulk', (req, res) => {
       enrollments.push(newEnrollment);
       scheduleMessagesForEnrollment(newEnrollment, sequence);
       
+      // Add to customers
+      const customers = readCustomers();
+      const existingCustomer = customers.find(c => c.phone === normalizedPhone);
+      if (!existingCustomer) {
+          const newCustomer = {
+              id: 'cust_' + Date.now(),
+              phone: normalizedPhone,
+              name: name,
+              enrolled_at: newEnrollment.enrolled_at,
+              status: 'lead',
+              tags: [],
+              products_purchased: []
+          };
+          customers.push(newCustomer);
+          writeCustomers(customers);
+      }
+
       results.enrolled++;
       results.details.push({ phone, name, status: 'enrolled' });
     });
@@ -539,6 +587,23 @@ router.post('/:sequenceId/enroll/csv', upload.single('csvFile'), (req, res) => {
         enrollments.push(newEnrollment);
         scheduleMessagesForEnrollment(newEnrollment, sequence);
         
+        // Add to customers
+        const customers = readCustomers();
+        const existingCustomer = customers.find(c => c.phone === normalizedPhone);
+        if (!existingCustomer) {
+            const newCustomer = {
+                id: 'cust_' + Date.now(),
+                phone: normalizedPhone,
+                name: name,
+                enrolled_at: newEnrollment.enrolled_at,
+                status: 'lead',
+                tags: [],
+                products_purchased: []
+            };
+            customers.push(newCustomer);
+            writeCustomers(customers);
+        }
+
         results.enrolled++;
         results.details.push({ phone, name, status: 'enrolled' });
       })

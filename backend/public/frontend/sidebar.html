@@ -81,6 +81,12 @@
           <span class="nav-text">Status</span>
           <div class="nav-indicator" ng-if="isActive('/status')"></div>
         </a>
+        <a href="#/customers" class="nav-item group relative" ng-class="{'active': isActive('/customers')}" plan-expired-check>
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-user-friends nav-icon" style="color: #3b82f6 !important;"></i>
+            <span class="nav-text">Customers</span>
+            <div class="nav-indicator" ng-if="isActive('/customers')"></div>
+        </a>
       </div>
 
       <!-- System & Admin Section -->
@@ -295,6 +301,12 @@
             <i class="fas fa-server nav-icon" style="color: #64748b !important;"></i>
             <span class="nav-text">Status</span>
             <div class="nav-indicator" ng-if="isActive('/status')"></div>
+          </a>
+          <a href="#/customers" class="nav-item group relative" ng-class="{'active': isActive('/customers')}" ng-click="closeSidebar()">
+              <div class="nav-item-bg"></div>
+              <i class="fas fa-user-friends nav-icon" style="color: #3b82f6 !important;"></i>
+              <span class="nav-text">Customers</span>
+              <div class="nav-indicator" ng-if="isActive('/customers')"></div>
           </a>
           
 

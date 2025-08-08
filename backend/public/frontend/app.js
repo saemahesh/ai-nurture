@@ -122,6 +122,10 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
       templateUrl: getTemplateUrl('status.html'),
       controller: 'StatusController'
     })
+    .when('/customers', {
+        templateUrl: getTemplateUrl('customers.html'),
+        controller: 'CustomersController'
+    })
 
     .otherwise({ redirectTo: '/login' });
   $locationProvider.hashPrefix('');

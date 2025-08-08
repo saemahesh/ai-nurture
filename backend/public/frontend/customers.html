@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body class="customers-page">
+<div class="flex h-screen dark-theme customers-page" ng-controller="CustomersController">
+    <!-- Notifications -->
+    <div style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px;">
+        <div ng-repeat="notification in notifications"
+             ng-class="{
+                'bg-gradient-to-r from-emerald-800 to-emerald-900 border-emerald-600 text-emerald-200': notification.type === 'success',
+                'bg-gradient-to-r from-red-800 to-red-900 border-red-600 text-red-200': notification.type === 'error',
+                'bg-gradient-to-r from-yellow-800 to-yellow-900 border-yellow-600 text-yellow-200': notification.type === 'warning',
+                'bg-gradient-to-r from-blue-800 to-blue-900 border-blue-600 text-blue-200': notification.type === 'info'
+             }"
+             class="mb-3 px-4 py-3 border-2 rounded-md shadow-lg transition-all duration-300">
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-medium">{{notification.message}}</span>
+                <button ng-click="removeNotification(notification.id)"
+                        class="ml-3 text-gray-300 hover:text-white">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Sidebar -->
+    <div ng-include="'sidebar.html?v=' + Date.now()" ng-controller="SidebarController"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="dark-theme-header responsive-header customers-header z-50 px-3 py-3 min-h-[56px] border-b border-white shadow-lg md:px-8 md:py-6 md:min-h-[90px] relative bg-gray-900">
+            <div class="flex flex-row items-center justify-between gap-2 md:gap-4 w-full relative z-50">
+                <h1 class="text-lg md:text-3xl font-bold text-white tracking-tight truncate flex-1 min-w-0 relative z-50">Customers</h1>
+            </div>
+        </header>
+
+        <!-- Filters & Search -->
+        <div ng-if="!loading" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;" class="border-b border-gray-700 px-4 py-4 md:px-6">
+            <div class="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 filters-mobile">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:space-x-4">
+                    <div class="relative flex-1 sm:max-w-xs">
+                        <input type="text" ng-model="search.query" placeholder="Search by name, phone, or tag..."
+                               class="mobile-form-control pl-10 pr-4 py-3 w-full bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-base">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-sm text-gray-300 text-center sm:text-right">
+                    Showing {{filteredCustomers.length}} of {{customers.length}} customers
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <main class="flex-1 overflow-y-auto p-2" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
+            <!-- Loading State -->
+            <div ng-if="loading" class="text-center py-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto"></div>
+                <p class="mt-4 text-gray-300">Loading customers...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div ng-if="!loading && customers.length === 0" class="text-center py-16" style="background: linear-gradient(135deg, #1f2937 0%, #111827 50%, #0f172a 100%); border-radius: 16px; margin: 16px; border: 1px solid #374151;">
+                <h3 class="text-2xl font-bold text-white">No customers yet</h3>
+                <p class="text-gray-400 text-lg leading-relaxed">
+                    Enroll leads into sequences to see them here.
+                </p>
+            </div>
+
+            <!-- Customers Table -->
+            <div ng-if="!loading && customers.length > 0" class="customers-table-view bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-2xl overflow-hidden border border-gray-700">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead class="bg-gradient-to-r from-gray-700 to-gray-800">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                    Customer
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                    Tags
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                    Enrolled
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider sticky right-0 bg-gradient-to-r from-gray-700 to-gray-800">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-gradient-to-br from-gray-800 to-gray-900 divide-y divide-gray-700">
+                        <tr ng-repeat="customer in filteredCustomers | orderBy:'-enrolled_at'" class="hover:bg-gray-700 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-white">{{customer.name || 'No Name'}}</div>
+                                        <div class="text-sm text-gray-400">{{customer.phone}}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span ng-class="{
+                                    'bg-green-800 text-green-200 border border-green-600': customer.status === 'paid',
+                                    'bg-blue-800 text-blue-200 border border-blue-600': customer.status === 'lead'
+                                }" class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">
+                                    {{customer.status | uppercase}}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span ng-repeat="tag in customer.tags" class="px-2 py-1 mr-1 text-xs leading-5 font-semibold rounded-full bg-gray-700 text-gray-300">
+                                    {{tag}}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                                {{formatDate(customer.enrolled_at)}}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium sticky right-0 bg-gradient-to-br from-gray-800 to-gray-900">
+                                <button ng-click="openEditModal(customer)" class="text-cyan-400 hover:text-cyan-300 px-2 py-1 rounded text-xs bg-cyan-900 bg-opacity-20 hover:bg-opacity-30 border border-cyan-700">
+                                    Edit
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Customer Modal -->
+    <div ng-show="showEditModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15,23,42,0.7); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;" ng-click="closeEditModal()">
+        <div style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;" class="rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative mt-24" ng-click="$event.stopPropagation();">
+            <h2 class="text-xl font-semibold text-white mb-4">Edit Customer</h2>
+            <form ng-submit="updateCustomer()">
+                <div class="mb-4">
+                    <label class="block text-white text-sm font-semibold mb-2">Name</label>
+                    <input type="text" ng-model="currentCustomer.name" class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-white text-sm font-semibold mb-2">Status</label>
+                    <select ng-model="currentCustomer.status" class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                        <option value="lead">Lead</option>
+                        <option value="paid">Paid</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-white text-sm font-semibold mb-2">Tags (comma-separated)</label>
+                    <input type="text" ng-model="currentCustomer.tags" class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-white text-sm font-semibold mb-2">Designation</label>
+                    <input type="text" ng-model="currentCustomer.designation" class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-white text-sm font-semibold mb-2">Business</label>
+                    <input type="text" ng-model="currentCustomer.business" class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-white text-sm font-semibold mb-2">Services Needed</label>
+                    <input type="text" ng-model="currentCustomer.services_needed" class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" ng-click="closeEditModal()" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-all duration-300 font-medium border border-gray-500">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-all duration-300 font-medium shadow-md">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

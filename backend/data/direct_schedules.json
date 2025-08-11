@@ -1,1 +1,30 @@
-[]
+[
+  {
+    "id": "b235d4f4-ea47-4b79-b11f-b3b0e0b384d8",
+    "username": "sai",
+    "number": "919573713873",
+    "message": "hello",
+    "mediaUrl": null,
+    "scheduledAt": "2025-08-13T08:13:00.000Z",
+    "repeat": "once",
+    "days": {},
+    "status": "Scheduled",
+    "createdAt": "2025-08-08T08:13:16.962Z",
+    "paused": false
+  },
+  {
+    "id": "c0020e2c-1e9c-4c66-8afd-d74cd8441f3d",
+    "username": "robomate",
+    "number": "919573713873",
+    "message": "paused, Hi mahesh, followup msg",
+    "mediaUrl": "/uploads/1754923703688-automation.png",
+    "scheduledAt": "2025-08-11T15:06:00.000Z",
+    "repeat": "once",
+    "days": {},
+    "status": "Sent",
+    "createdAt": "2025-08-08T12:21:21.451Z",
+    "paused": true,
+    "updatedAt": "2025-08-11T15:05:26.862Z",
+    "lastSent": "2025-08-11T15:06:00.662Z"
+  }
+]

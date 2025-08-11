@@ -188,7 +188,8 @@
         <!-- Cards Grid Layout -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div ng-repeat="schedule in schedules | filter:searchSchedules | orderBy:'-updatedAt':true" 
-               class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl border-2 border-white/10 shadow-xl p-4 transition-all duration-300 hover:shadow-2xl hover:border-white/20 schedule-card">
+               class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl border-2 border-white/10 shadow-xl p-4 transition-all duration-300 hover:shadow-2xl hover:border-white/20 schedule-card"
+               ng-class="{'opacity-60 grayscale': schedule.paused}">
             <!-- Mobile Header: Phone Number and Status -->
             <div class="flex justify-between items-start mb-3">
               <div class="flex-1">
@@ -257,6 +258,17 @@
                       class="flex-1 px-3 py-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded-lg font-medium shadow transition-all duration-300">
                 <i class="fas fa-trash mr-1"></i>Delete
               </button>
+              <button ng-if="!schedule.paused" ng-click="pauseSchedule(schedule)" 
+                      class="flex-1 px-3 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-600 rounded-lg font-medium shadow transition-all duration-300">
+                <i class="fas fa-pause mr-1"></i>Pause
+              </button>
+              <button ng-if="schedule.paused" ng-click="resumeSchedule(schedule)" 
+                      class="flex-1 px-3 py-2 text-sm text-white bg-green-500 hover:bg-green-600 rounded-lg font-medium shadow transition-all duration-300">
+                <i class="fas fa-play mr-1"></i>Resume
+              </button>
+            </div>
+            <div ng-if="schedule.paused" class="mt-2">
+              <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-yellow-600 text-white">Paused</span>
             </div>
           </div>
           <div ng-if="filteredSchedules.length === 0 && schedules.length > 0" class="col-span-full text-center text-gray-300 py-8">

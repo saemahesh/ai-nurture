@@ -50,7 +50,7 @@ router.get('/', isAuthenticated, (req, res) => {
         let schedules = readSchedules();
         let needsWrite = false;
         
-        // Migrate old schedules that don't have repeat and days fields
+        // Migrate old schedules that don't have repeat, days, or paused fields
         schedules = schedules.map(schedule => {
             if (!schedule.hasOwnProperty('repeat')) {
                 schedule.repeat = 'once'; // Default for old schedules
@@ -58,6 +58,10 @@ router.get('/', isAuthenticated, (req, res) => {
             }
             if (!schedule.hasOwnProperty('days')) {
                 schedule.days = {}; // Default empty days
+                needsWrite = true;
+            }
+            if (!schedule.hasOwnProperty('paused')) {
+                schedule.paused = false;
                 needsWrite = true;
             }
             return schedule;
@@ -113,7 +117,8 @@ router.post('/', isAuthenticated, (req, res) => {
             repeat: repeat || 'once', // Default to 'once' for backward compatibility
             days: days || {}, // Days selection for custom repeat
             status: 'Scheduled',
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            paused: false
         };
 
         schedules.push(newSchedule);
@@ -188,8 +193,8 @@ router.put('/:id', isAuthenticated, (req, res) => {
             scheduledAt: scheduledDate.toISOString(),
             repeat: repeat || 'once', // Default to 'once' for backward compatibility
             days: days || {}, // Days selection for custom repeat
-            updatedAt: new Date().toISOString()
-            // status and createdAt remain unchanged
+            updatedAt: new Date().toISOString(),
+            // status, createdAt, and paused remain unchanged
         };
 
         // If editing a "once" type schedule, reset status to 'Scheduled' so it can be sent again
@@ -204,6 +209,40 @@ router.put('/:id', isAuthenticated, (req, res) => {
     } catch (error) {
         console.error('Error updating follow up:', error);
         res.status(500).json({ message: 'Failed to update follow up. Please try again.' });
+    }
+});
+
+// Pause a direct schedule
+router.put('/:id/pause', isAuthenticated, (req, res) => {
+    try {
+        let schedules = readSchedules();
+        const scheduleIndex = schedules.findIndex(s => s.id === req.params.id && s.username === req.session.user.username);
+        if (scheduleIndex === -1) {
+            return res.status(404).json({ message: 'Schedule not found or you do not have permission to pause it.' });
+        }
+        schedules[scheduleIndex].paused = true;
+        writeSchedules(schedules);
+        res.json(schedules[scheduleIndex]);
+    } catch (error) {
+        console.error('Error pausing schedule:', error);
+        res.status(500).json({ message: 'Failed to pause schedule.' });
+    }
+});
+
+// Resume a direct schedule
+router.put('/:id/resume', isAuthenticated, (req, res) => {
+    try {
+        let schedules = readSchedules();
+        const scheduleIndex = schedules.findIndex(s => s.id === req.params.id && s.username === req.session.user.username);
+        if (scheduleIndex === -1) {
+            return res.status(404).json({ message: 'Schedule not found or you do not have permission to resume it.' });
+        }
+        schedules[scheduleIndex].paused = false;
+        writeSchedules(schedules);
+        res.json(schedules[scheduleIndex]);
+    } catch (error) {
+        console.error('Error resuming schedule:', error);
+        res.status(500).json({ message: 'Failed to resume schedule.' });
     }
 });
 

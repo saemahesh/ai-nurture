@@ -1,5 +1,5 @@
 {
-  "1754322223465uxmltju": {
+  "17549235184681w742jj": {
     "5days": {
       "enabled": true,
       "text": "5 days to go until {{eventName}}!"
@@ -14,9 +14,9 @@
     },
     "2days": {
       "enabled": true,
-      "text": "2 days to go until {{eventName}}!",
-      "mediaId": "mdshjxferbp5jpcjafg",
-      "mediaUrl": "/uploads/1754032316663-adp_logo.jpg"
+      "text": "2 days to go until {{eventName}}!\n\nJoin now!!",
+      "mediaId": "mdr7w7821trk3kkqphm",
+      "mediaUrl": "/uploads/1753955626889-automation.png"
     },
     "1day": {
       "enabled": true,

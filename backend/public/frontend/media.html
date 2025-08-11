@@ -595,7 +595,7 @@
              ng-src="{{selectedImage._trustedUrl}}"
              class="max-w-full max-h-full object-contain rounded-lg"
              style="max-height: calc(80vh - 100px); max-width: 100%;"
-             onerror="this.onerror=null; this.src='/images/image-placeholder.png';">>
+             onerror="this.onerror=null; this.src='/images/image-placeholder.png';">
         <video ng-if="selectedImage.type === 'video'"
                ng-src="{{selectedImage._trustedUrl}}"
                controls

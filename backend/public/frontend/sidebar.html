@@ -45,6 +45,12 @@
           <span class="nav-text">Media Library</span>
           <div class="nav-indicator" ng-if="isActive('/media')"></div>
         </a>
+        <a href="#/customers" class="nav-item group relative" ng-class="{'active': isActive('/customers')}" plan-expired-check>
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-user-tag nav-icon" style="color: #fbbf24 !important;"></i>
+          <span class="nav-text">Customers</span>
+          <div class="nav-indicator" ng-if="isActive('/customers')"></div>
+        </a>
       </div>
 
       <!-- Automation Section -->

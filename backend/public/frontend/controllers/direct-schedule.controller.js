@@ -1,5 +1,5 @@
 angular.module('autopostWaApp.schedules')
-    .controller('DirectScheduleController', ['$scope', '$http', '$timeout', 'NotificationService', function($scope, $http, $timeout, NotificationService) {
+    .controller('DirectScheduleController', ['$scope', '$http', '$timeout', '$location', 'NotificationService', function($scope, $http, $timeout, $location, NotificationService) {
         $scope.schedules = [];
         $scope.mediaLibrary = [];
         $scope.showMediaSelector = false;
@@ -7,6 +7,33 @@ angular.module('autopostWaApp.schedules')
         $scope.createEditModalVisible = false;
         $scope.isEditMode = false;
         $scope.formData = {};
+
+        // Check for URL parameters (for follow-up from customers)
+        var urlParams = $location.search();
+        if (urlParams.phone) {
+            $scope.prefilledPhone = urlParams.phone;
+            $scope.prefilledName = urlParams.name || '';
+        }
+
+        // Pause a schedule
+        $scope.pauseSchedule = function(schedule) {
+            $http.put('/direct-schedule/' + schedule.id + '/pause').then(function(response) {
+                schedule.paused = true;
+                NotificationService.showToast($scope, 'Schedule paused.', 'info');
+            }).catch(function(error) {
+                NotificationService.showToast($scope, (error.data && error.data.message) || 'Failed to pause schedule.', 'error');
+            });
+        };
+
+        // Resume a schedule
+        $scope.resumeSchedule = function(schedule) {
+            $http.put('/direct-schedule/' + schedule.id + '/resume').then(function(response) {
+                schedule.paused = false;
+                NotificationService.showToast($scope, 'Schedule resumed.', 'success');
+            }).catch(function(error) {
+                NotificationService.showToast($scope, (error.data && error.data.message) || 'Failed to resume schedule.', 'error');
+            });
+        };
         $scope.formError = '';
         $scope.searchQuery = '';
         $scope.isSearching = false;
@@ -206,8 +233,8 @@ angular.module('autopostWaApp.schedules')
             } else {
                 // Create mode: reset form
                 $scope.formData = {
-                    number: '',
-                    message: '',
+                    number: $scope.prefilledPhone || '',
+                    message: $scope.prefilledName ? 'Hi ' + $scope.prefilledName + ', ' : '',
                     scheduledAt: '',
                     mediaMethod: 'library',
                     mediaUrl: '',
@@ -408,4 +435,11 @@ angular.module('autopostWaApp.schedules')
 
         // Load initial data (no auto-scroll)
         $scope.loadSchedules();
+        
+        // If prefilled data exists, show a notification
+        if ($scope.prefilledPhone) {
+            $timeout(function() {
+                NotificationService.showToast($scope, 'Follow-up message form prefilled with customer data. Click "New Message" to proceed.', 'info');
+            }, 1000);
+        }
     }]);

@@ -361,3 +361,37 @@ router.post('/automation', authRequired, upload.single('image'), (req, res) => {
 });
 
 module.exports = router;
+
+// Pause a group schedule
+router.put('/:id/pause', authRequired, (req, res) => {
+  try {
+    const schedule = readSchedule();
+    const item = schedule.find(s => s.id === req.params.id && s.username === req.session.user.username);
+    if (!item) {
+      return res.status(404).json({ error: 'Schedule not found or you do not have permission to pause it.' });
+    }
+    item.paused = true;
+    writeSchedule(schedule);
+    res.json({ success: true, schedule: item });
+  } catch (err) {
+    console.error('Error pausing schedule:', err);
+    res.status(500).json({ error: 'Failed to pause schedule.' });
+  }
+});
+
+// Resume a group schedule
+router.put('/:id/resume', authRequired, (req, res) => {
+  try {
+    const schedule = readSchedule();
+    const item = schedule.find(s => s.id === req.params.id && s.username === req.session.user.username);
+    if (!item) {
+      return res.status(404).json({ error: 'Schedule not found or you do not have permission to resume it.' });
+    }
+    item.paused = false;
+    writeSchedule(schedule);
+    res.json({ success: true, schedule: item });
+  } catch (err) {
+    console.error('Error resuming schedule:', err);
+    res.status(500).json({ error: 'Failed to resume schedule.' });
+  }
+});

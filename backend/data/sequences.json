@@ -27,7 +27,7 @@
     "name": "wa-test",
     "description": "test",
     "status": "active",
-    "username": "mahesh",
+    "username": "robomate",
     "keywords": [
       "sdfdsf"
     ],
@@ -86,7 +86,7 @@
     "name": "seq2",
     "description": "seq2",
     "status": "active",
-    "username": "mahesh",
+    "username": "robomate",
     "messages": [
       {
         "day": 1,

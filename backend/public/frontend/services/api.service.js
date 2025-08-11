@@ -4,6 +4,13 @@ angular.module('autopostWaApp.core').factory('ApiService', function($http) {
     : 'https://whatspro.robomate.in';
   
   return {
+  // Group Schedule Pause/Resume
+  pauseSchedule: function(id) {
+    return $http.put(API_BASE + '/schedule/' + id + '/pause', {}, { withCredentials: true });
+  },
+  resumeSchedule: function(id) {
+    return $http.put(API_BASE + '/schedule/' + id + '/resume', {}, { withCredentials: true });
+  },
     // Groups
     getGroups: function() { 
       return $http.get(API_BASE + '/groups', { withCredentials: true }); 

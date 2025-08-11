@@ -37,6 +37,31 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
     return name.includes(query) || message.includes(query) || groupName.includes(query);
   };
 
+    // Pause a schedule
+  $scope.pauseSchedule = function(schedule) {
+    if (!schedule || schedule.paused) return;
+    ApiService.pauseSchedule(schedule.id)
+      .then(function(res) {
+        schedule.paused = true;
+        NotificationService.showToast($scope, 'Schedule paused.', 'info');
+      })
+      .catch(function(err) {
+        NotificationService.showToast($scope, 'Failed to pause schedule.', 'error');
+      });
+  };
+
+  // Resume a schedule
+  $scope.resumeSchedule = function(schedule) {
+    if (!schedule || !schedule.paused) return;
+    ApiService.resumeSchedule(schedule.id)
+      .then(function(res) {
+        schedule.paused = false;
+        NotificationService.showToast($scope, 'Schedule resumed.', 'success');
+      })
+      .catch(function(err) {
+        NotificationService.showToast($scope, 'Failed to resume schedule.', 'error');
+      });
+  };
   // Keyboard navigation support
   $scope.handleKeyboardNavigation = function(event) {
     // Ctrl/Cmd + K to focus search

@@ -1,4 +1,4 @@
-angular.module('autopostApp')
+angular.module('autopostWaApp')
 .controller('CampaignLeadsController', ['$scope', '$http', '$routeParams', 'NotificationService', function($scope, $http, $routeParams, NotificationService) {
     // Get campaign ID from route params
     $scope.campaignId = $routeParams.campaignId;

@@ -1,0 +1,78 @@
+[
+  {
+    "id": "customer_1754655194518_prrfbegww",
+    "username": "robomate",
+    "phone": "919573713873",
+    "name": "mahesh",
+    "type": "paid_customer",
+    "designation": "ceo",
+    "business": "real estate",
+    "servicesNeeded": "wa",
+    "productsInterested": "",
+    "tags": [
+      "hot"
+    ],
+    "notes": "followup on next sunday",
+    "purchasedProducts": [
+      "wa"
+    ],
+    "enrolledSequences": [
+      "manual_entry",
+      "seq_1752221360754"
+    ],
+    "lastSequenceEnrollment": "seq_1752221360754",
+    "firstEnrolledAt": "2025-08-08T12:13:14.515Z",
+    "convertedAt": "2025-08-08T12:25:03.535Z",
+    "converted_by": "robomate",
+    "created_at": "2025-08-08T12:13:14.518Z",
+    "updated_at": "2025-08-10T15:47:09.630Z"
+  },
+  {
+    "id": "customer_1754655814837_o32wr3alj",
+    "username": "robomate",
+    "phone": "919032644589",
+    "name": "chinnni",
+    "type": "paid_customer",
+    "designation": "cto",
+    "business": "",
+    "servicesNeeded": "",
+    "productsInterested": "",
+    "tags": [],
+    "notes": "test note",
+    "purchasedProducts": [
+      "crm"
+    ],
+    "enrolledSequences": [
+      "seq_1752221360754"
+    ],
+    "lastSequenceEnrollment": "seq_1752221360754",
+    "firstEnrolledAt": "2025-08-08T12:23:34.800Z",
+    "convertedAt": "2025-08-08T14:18:34.114Z",
+    "converted_by": "robomate",
+    "created_at": "2025-08-08T12:23:34.837Z",
+    "updated_at": "2025-08-08T14:18:34.114Z"
+  },
+  {
+    "id": "customer_1754841110545_1cvweuqy7",
+    "username": "robomate",
+    "phone": "919879879877",
+    "name": "919878587",
+    "type": "lead",
+    "designation": "rety",
+    "business": "",
+    "servicesNeeded": "",
+    "productsInterested": "",
+    "tags": [],
+    "notes": "",
+    "purchasedProducts": [],
+    "enrolledSequences": [
+      "seq_1752221360754"
+    ],
+    "lastSequenceEnrollment": "seq_1752221360754",
+    "firstEnrolledAt": "2025-08-10T15:51:50.523Z",
+    "convertedAt": null,
+    "converted_by": null,
+    "created_at": "2025-08-10T15:51:50.545Z",
+    "updated_at": "2025-08-10T15:51:50.545Z"
+  }
+]

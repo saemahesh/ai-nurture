@@ -115,6 +115,10 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
       templateUrl: getTemplateUrl('enrollments.html'),
       controller: 'EnrollmentsController'
     })
+    .when('/customers', {
+      templateUrl: getTemplateUrl('customers.html'),
+      controller: 'CustomersController'
+    })
     .when('/campaigns', {
       redirectTo: '/sequences'
     })

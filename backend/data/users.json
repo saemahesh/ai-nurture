@@ -1,6 +1,6 @@
 [
   {
-    "username": "mahesh",
+    "username": "robomate",
     "password": "123",
     "status": "active",
     "registrationDate": "2025-05-02",
@@ -28,11 +28,17 @@
     "expirationDate": "2025-12-10T18:30:00.000Z",
     "settings": {
       "access_token": "668d650c1df10",
-      "instance_id": "6782310EA48ETest",
-      "wa_phone": "916302009818",
+      "instance_id": "686E92A347643",
+      "wa_phone": "919573713873",
       "notification_enabled": true,
       "timezone": "Asia/Kolkata",
-      "test_mobile": "919573713873"
+      "test_mobile": "916302009818",
+      "whapi_token": "sdfghjkl",
+      "default_language": "en",
+      "autosave_interval": "60",
+      "log_messages": false,
+      "auto_delete": false,
+      "session_timeout": "60"
     }
   },
   {

@@ -1,15 +1,1 @@
-[ {
-    "id": "enroll_1754120346242",
-    "sequence_id": "seq_1752221360754",
-    "username": "mahesh",
-    "phone": "919573713873",
-    "name": "mahesh",
-    "enrolled_at": "2025-08-02T07:39:06.242Z",
-    "current_day": 0,
-    "status": "active",
-    "last_message_sent": null,
-    "next_message_due": "2025-08-02T08:39:06.242Z",
-    "messages_sent": 0,
-    "total_messages": 2,
-    "custom_fields": {}
-  }]
+[]

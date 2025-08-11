@@ -94,7 +94,11 @@ angular.module('autopostWaApp').controller('EnrollmentsController', ['$scope', '
         $scope.singleLead = {
             name: '',
             phone: '',
-            additionalData: ''
+            designation: '',
+            business: '',
+            servicesNeeded: '',
+            productsInterested: '',
+            notes: ''
         };
         $scope.csvFile = null;
     };
@@ -107,7 +111,11 @@ angular.module('autopostWaApp').controller('EnrollmentsController', ['$scope', '
         $scope.singleLead = {
             name: '',
             phone: '',
-            additionalData: ''
+            designation: '',
+            business: '',
+            servicesNeeded: '',
+            productsInterested: '',
+            notes: ''
         };
         $scope.csvFile = null;
     };
@@ -116,7 +124,11 @@ angular.module('autopostWaApp').controller('EnrollmentsController', ['$scope', '
     $scope.singleLead = {
         name: '',
         phone: '',
-        additionalData: ''
+        designation: '',
+        business: '',
+        servicesNeeded: '',
+        productsInterested: '',
+        notes: ''
     };
     $scope.csvFile = null;
 
@@ -260,7 +272,14 @@ angular.module('autopostWaApp').controller('EnrollmentsController', ['$scope', '
 
         const leadData = {
             phone: $scope.singleLead.phone,
-            name: $scope.singleLead.name || ''
+            name: $scope.singleLead.name || '',
+            additionalData: JSON.stringify({
+                designation: $scope.singleLead.designation || '',
+                business: $scope.singleLead.business || '',
+                servicesNeeded: $scope.singleLead.servicesNeeded || '',
+                productsInterested: $scope.singleLead.productsInterested || '',
+                notes: $scope.singleLead.notes || ''
+            })
         };
 
         $http.post('/api/enrollments/' + $scope.sequenceId + '/enroll', leadData)
@@ -284,7 +303,11 @@ angular.module('autopostWaApp').controller('EnrollmentsController', ['$scope', '
         $scope.singleLead = {
             name: '',
             phone: '',
-            additionalData: ''
+            designation: '',
+            business: '',
+            servicesNeeded: '',
+            productsInterested: '',
+            notes: ''
         };
     };
 

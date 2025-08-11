@@ -162,7 +162,7 @@
                 </div>
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-cyan-300">WhatsApp Access Token <span class="text-red-400">*</span></label>
-                  <input type="password" ng-model="settings.access_token" 
+                  <input type="text" ng-model="settings.access_token" 
                          class="block w-full rounded-lg px-4 py-3 bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-gray-600 focus:to-gray-700 transition-all duration-300" 
                          placeholder="Enter your access token" required>
                   <div ng-show="settingsForm.$submitted && !settings.access_token" class="text-red-400 text-xs mt-1">

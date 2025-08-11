@@ -13,6 +13,10 @@ const { requireAuth } = require('../middleware/auth');
 const CampaignExecutor = require('../campaign-executor');
 const campaignExecutor = CampaignExecutor.getInstance();
 
+// Import customers service
+const CustomersService = require('../services/customers.service');
+const customersService = new CustomersService();
+
 const enrollmentsFile = path.join(__dirname, '../data/enrollments.json');
 const sequencesFile = path.join(__dirname, '../data/sequences.json');
 const messageQueueFile = path.join(__dirname, '../data/message_queue.json');
@@ -354,6 +358,17 @@ router.post('/:sequenceId/enroll', (req, res) => {
     // Schedule messages for this enrollment
     scheduleMessagesForEnrollment(newEnrollment, sequence);
     
+    console.log(`👤 [ENROLL_API] Creating customer record...`);
+    // Create customer record from enrollment
+    try {
+      const additionalData = req.body.additionalData ? JSON.parse(req.body.additionalData) : {};
+      customersService.createCustomerFromEnrollment(newEnrollment, additionalData);
+      console.log(`✅ [ENROLL_API] Customer record created successfully`);
+    } catch (customerError) {
+      console.error(`⚠️ [ENROLL_API] Error creating customer record:`, customerError);
+      // Don't fail the enrollment if customer creation fails
+    }
+    
     console.log(`✅ [ENROLL_API] Enrollment completed successfully`);
     res.json({ success: true, enrollment: newEnrollment });
   } catch (error) {
@@ -444,6 +459,14 @@ router.post('/:sequenceId/enroll/bulk', (req, res) => {
       
       enrollments.push(newEnrollment);
       scheduleMessagesForEnrollment(newEnrollment, sequence);
+      
+      // Create customer record from enrollment
+      try {
+        customersService.createCustomerFromEnrollment(newEnrollment);
+      } catch (customerError) {
+        console.error(`⚠️ Error creating customer record for ${phone}:`, customerError);
+        // Don't fail the enrollment if customer creation fails
+      }
       
       results.enrolled++;
       results.details.push({ phone, name, status: 'enrolled' });
@@ -538,6 +561,14 @@ router.post('/:sequenceId/enroll/csv', upload.single('csvFile'), (req, res) => {
         
         enrollments.push(newEnrollment);
         scheduleMessagesForEnrollment(newEnrollment, sequence);
+        
+        // Create customer record from enrollment
+        try {
+          customersService.createCustomerFromEnrollment(newEnrollment);
+        } catch (customerError) {
+          console.error(`⚠️ Error creating customer record for ${phone}:`, customerError);
+          // Don't fail the enrollment if customer creation fails
+        }
         
         results.enrolled++;
         results.details.push({ phone, name, status: 'enrolled' });

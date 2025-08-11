@@ -55,6 +55,7 @@ const campaignsRouter = require('./routes/campaigns');
 const campaignExecutionRouter = require('./routes/campaign-execution');
 const analyticsRouter = require('./routes/analytics');
 const statusRouter = require('./routes/status');
+const customersRouter = require('./routes/customers');
 
 // Initialize Campaign Executor for automatic message processing
 const CampaignExecutor = require('./campaign-executor');
@@ -297,6 +298,7 @@ app.use('/api/webhook', express.json(), webhookRouter);
 app.use('/api/campaigns', express.json(), campaignsRouter);
 app.use('/api/campaign-execution', express.json(), campaignExecutionRouter);
 app.use('/api/analytics', express.json(), analyticsRouter);
+app.use('/api/customers', express.json(), customersRouter);
 app.use('/status', statusRouter);
 
 // Centralized WhatsApp group message sender

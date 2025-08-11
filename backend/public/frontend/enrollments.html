@@ -1,9 +1,200 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <style>
+        /* Force modal above everything including header */
+        .enrollment-modal-overlay {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            z-index: 99999999 !important;
+            background: rgba(15,23,42,0.95) !important;
+            /* Remove !important so ng-hide can win */
+            display: flex; 
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 20px !important;
+            overflow-y: auto !important;
+        }
+        .enrollment-modal-container {
+            z-index: 99999999 !important;
+            position: relative !important;
+        }
+        .enrollment-modal-scrollable::-webkit-scrollbar {
+            width: 6px;
+        }
+        .enrollment-modal-scrollable::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        .enrollment-modal-scrollable::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 3px;
+        }
+        /* Ensure header doesn't override modal */
+        .enrollments-header {
+            z-index: 10 !important;
+        }
+        .enrollments-header * {
+            z-index: 10 !important;
+        }
+    </style>
 </head>
 <body class="enrollments-page">
-<div class="flex h-screen dark-theme enrollments-page" ng-controller="EnrollmentsController">
+
+<!-- Enrollment Modal - moved inside controller to bind scope properly -->
+<div class="flex h-screen dark-theme enrollments-page" ng-controller="EnrollmentsController" ng-init="showEnrollModal = false; enrollTab = 'single';">
+    <!-- Modal overlay now within controller scope -->
+    <div ng-show="showEnrollModal" 
+         class="enrollment-modal-overlay"
+         style="margin: 0;" 
+         ng-click="closeEnrollModal()">
+        <div class="enrollment-modal-container w-full max-w-lg mx-auto flex flex-col" 
+             style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important; max-height: calc(100vh - 40px) !important; height: auto !important; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); border: 2px solid #475569; position: relative !important;" 
+             ng-click="$event.stopPropagation();">
+            <!-- Fixed Header -->
+            <div class="flex-shrink-0 p-4 sm:p-6 border-b border-slate-600">
+                <h2 class="text-xl font-semibold text-white">Enroll Leads</h2>
+                
+                <!-- Tabs -->
+                <div class="border-b border-slate-600 mt-4 mb-0">
+                    <div class="flex gap-4">
+                        <button ng-click="enrollTab = 'single'" 
+                                ng-class="enrollTab === 'single' ? 'border-b-2 border-cyan-400 text-cyan-300' : 'text-gray-200'"
+                                class="pb-2 font-medium text-sm transition-all duration-300">
+                            Single Lead
+                        </button>
+                        <button ng-click="enrollTab = 'bulk'" 
+                                ng-class="enrollTab === 'bulk' ? 'border-b-2 border-cyan-400 text-cyan-300' : 'text-gray-200'"
+                                class="pb-2 font-medium text-sm transition-all duration-300">
+                            Bulk Upload
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scrollable Content Area -->
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6 enrollment-modal-scrollable" style="max-height: 400px !important; min-height: 200px;">
+                <!-- Single Lead Form -->
+                <div ng-if="enrollTab === 'single'">
+                    <form ng-submit="enrollSingleLead()">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-white text-sm font-semibold mb-2">Name</label>
+                                <input type="text" ng-model="singleLead.name" 
+                                       placeholder="Lead's name (optional)"
+                                       class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                            </div>
+                            <div>
+                                <label class="block text-white text-sm font-semibold mb-2">Phone Number *</label>
+                                <input type="tel" ng-model="singleLead.phone" required
+                                       placeholder="+1234567890"
+                                       class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                            </div>
+                            
+                            <!-- Enhanced Customer Fields -->
+                            <div>
+                                <label class="block text-white text-sm font-semibold mb-2">Designation</label>
+                                <input type="text" ng-model="singleLead.designation" 
+                                       placeholder="e.g., Marketing Manager, CEO, Director"
+                                       class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white text-sm font-semibold mb-2">Business/Company</label>
+                                <input type="text" ng-model="singleLead.business" 
+                                       placeholder="Company name or business type"
+                                       class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white text-sm font-semibold mb-2">Services Needed</label>
+                                <input type="text" ng-model="singleLead.servicesNeeded" 
+                                       placeholder="e.g., Web Development, Digital Marketing"
+                                       class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white text-sm font-semibold mb-2">Products Interested</label>
+                                <input type="text" ng-model="singleLead.productsInterested" 
+                                       placeholder="e.g., Premium Package, Basic Plan"
+                                       class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white text-sm font-semibold mb-2">Notes (Optional)</label>
+                                <textarea ng-model="singleLead.notes" 
+                                          placeholder="Any additional notes about this lead..."
+                                          rows="3"
+                                          class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 resize-vertical transition-all duration-300"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Bulk Upload Form -->
+                <div ng-if="enrollTab === 'bulk'">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-white text-sm font-semibold mb-2">CSV File</label>
+                            <input type="file" accept=".csv" file-model="csvFile" 
+                                   onchange="angular.element(this).scope().handleFileSelect(this)"
+                                   class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-cyan-600 file:text-white hover:file:bg-cyan-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
+                            <p class="mt-2 text-xs text-gray-300">
+                                CSV should have columns: name, phone. Additional columns will be stored as extra data.
+                            </p>
+                        </div>
+                        
+                        <div class="bg-gray-800 border border-gray-600 rounded-lg p-4">
+                            <h4 class="text-sm font-semibold text-white mb-3">CSV Format Example:</h4>
+                            <pre class="text-xs text-gray-300 font-mono">name,phone,email
+John Doe,+1234567890,john@example.com
+Jane Smith,+0987654321,jane@example.com</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fixed Footer -->
+            <div class="flex-shrink-0 p-4 sm:p-6 border-t border-slate-600">
+                <!-- Single Lead Buttons -->
+                <div ng-if="enrollTab === 'single'" class="flex justify-end gap-3">
+                    <button type="button" ng-click="closeEnrollModal()"
+                            class="px-6 py-3 text-white rounded-lg transition-all duration-300 font-bold border-2 shadow-lg transform hover:scale-105"
+                            style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%); border-color: #dc2626;">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </button>
+                    <button ng-click="enrollSingleLead()" ng-disabled="enrolling"
+                            ng-class="enrolling ? 'opacity-50 cursor-not-allowed' : ''"
+                            class="px-6 py-3 text-white rounded-lg transition-all duration-300 font-bold border-2 shadow-lg transform hover:scale-105 disabled:transform-none"
+                            style="background: linear-gradient(135deg, #16a34a 0%, #15803d 50%, #166534 100%); border-color: #16a34a;">
+                        <i class="fas fa-user-plus mr-2" ng-if="!enrolling"></i>
+                        <i class="fas fa-spinner fa-spin mr-2" ng-if="enrolling"></i>
+                        {{enrolling ? 'Enrolling...' : 'Enroll Lead'}}
+                    </button>
+                </div>
+                
+                <!-- Bulk Upload Buttons -->
+                <div ng-if="enrollTab === 'bulk'" class="flex justify-end gap-3">
+                    <button type="button" ng-click="closeEnrollModal()"
+                            class="px-6 py-3 text-white rounded-lg transition-all duration-300 font-bold border-2 shadow-lg transform hover:scale-105"
+                            style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%); border-color: #dc2626;">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </button>
+                    <button ng-click="uploadCSV()" ng-disabled="!csvFile || uploading"
+                            ng-class="(!csvFile || uploading) ? 'opacity-50 cursor-not-allowed' : ''"
+                            class="px-6 py-3 text-white rounded-lg transition-all duration-300 font-bold border-2 shadow-lg transform hover:scale-105 disabled:transform-none"
+                            style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #5b21b6 100%); border-color: #7c3aed;">
+                        <i class="fas fa-upload mr-2" ng-if="!uploading"></i>
+                        <i class="fas fa-spinner fa-spin mr-2" ng-if="uploading"></i>
+                        {{uploading ? 'Uploading...' : 'Upload & Enroll'}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Notifications -->
     <div style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px;">
         <div ng-repeat="notification in notifications" 
@@ -71,19 +262,19 @@
     <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-hidden">
             <!-- Header -->
-            <header class="dark-theme-header responsive-header enrollments-header z-50 px-3 py-3 min-h-[56px] border-b border-white shadow-lg md:px-8 md:py-6 md:min-h-[90px] relative bg-gray-900">
-                <div class="flex flex-row items-center justify-between gap-2 md:gap-4 w-full relative z-50">
+            <header class="dark-theme-header responsive-header enrollments-header z-10 px-3 py-3 min-h-[56px] border-b border-white shadow-lg md:px-8 md:py-6 md:min-h-[90px] relative bg-gray-900">
+                <div class="flex flex-row items-center justify-between gap-2 md:gap-4 w-full relative z-10">
                     <!-- Left side: Back button and title -->
                     <div class="flex items-center gap-2 md:gap-6 flex-1 min-w-0 overflow-hidden">
-                        <button ng-click="goBack()" class="text-cyan-300 hover:text-white transition-colors bg-gray-800 rounded-lg p-2.5 md:p-2 shadow-md flex-shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center relative z-50" style="border: none !important;">
+                        <button ng-click="goBack()" class="text-cyan-300 hover:text-white transition-colors bg-gray-800 rounded-lg p-2.5 md:p-2 shadow-md flex-shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center relative z-10" style="border: none !important;">
                             <svg class="w-6 h-6 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                             </svg>
                         </button>
-                        <h1 class="text-lg md:text-3xl font-bold text-white tracking-tight truncate flex-1 min-w-0 relative z-50">{{sequence.name}}</h1>
+                        <h1 class="text-lg md:text-3xl font-bold text-white tracking-tight truncate flex-1 min-w-0 relative z-10">{{sequence.name}}</h1>
                     </div>
                     <!-- Right side: Action buttons -->
-                    <div class="flex gap-1.5 md:gap-4 flex-shrink-0 overflow-x-auto max-w-[50%] relative z-50">
+                    <div class="flex gap-1.5 md:gap-4 flex-shrink-0 overflow-x-auto max-w-[50%] relative z-10">
                         <button ng-click="openEnrollModal()" 
                                 class="no-bg-dynamic-border text-white px-2.5 py-2.5 md:px-5 md:py-3 rounded-lg md:rounded-xl font-semibold transition-all duration-300 shadow-lg flex items-center whitespace-nowrap flex-shrink-0 min-w-[44px] min-h-[44px]">
                             <i class="fas fa-plus text-lg md:text-base"></i> <span class="hidden lg:inline ml-2">Enroll</span>
@@ -160,96 +351,6 @@
 
             <!-- Content -->
             <main class="flex-1 overflow-y-auto p-2" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
-                <!-- Enrollment Modal -->
-                <div ng-show="showEnrollModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15,23,42,0.7); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;" ng-click="closeEnrollModal()">
-                    <div style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;" class="rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative mt-24" ng-click="$event.stopPropagation();">
-                        <h2 class="text-xl font-semibold text-white mb-4">Enroll Leads</h2>
-                        
-                        <!-- Tabs -->
-                        <div class="border-b border-slate-600 mb-4">
-                            <div class="flex gap-4">
-                                <button ng-click="enrollTab = 'single'" 
-                                        ng-class="enrollTab === 'single' ? 'border-b-2 border-cyan-400 text-cyan-300' : 'text-gray-400'"
-                                        class="pb-2 font-medium text-sm transition-all duration-300">
-                                    Single Lead
-                                </button>
-                                <button ng-click="enrollTab = 'bulk'" 
-                                        ng-class="enrollTab === 'bulk' ? 'border-b-2 border-cyan-400 text-cyan-300' : 'text-gray-400'"
-                                        class="pb-2 font-medium text-sm transition-all duration-300">
-                                    Bulk Upload
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Single Lead Form -->
-                        <div ng-if="enrollTab === 'single'">
-                            <form ng-submit="enrollSingleLead()">
-                                <div class="mb-4">
-                                    <label class="block text-white text-sm font-semibold mb-2">Name</label>
-                                    <input type="text" ng-model="singleLead.name" 
-                                           placeholder="Lead's name (optional)"
-                                           class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
-                                </div>
-                                <div class="mb-4">
-                                    <label class="block text-white text-sm font-semibold mb-2">Phone Number *</label>
-                                    <input type="tel" ng-model="singleLead.phone" required
-                                           placeholder="+1234567890"
-                                           class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
-                                </div>
-                                <div class="mb-6">
-                                    <label class="block text-white text-sm font-semibold mb-2">Additional Data (Optional)</label>
-                                    <textarea ng-model="singleLead.additionalData" 
-                                              placeholder="Any additional information about this lead..."
-                                              rows="3"
-                                              class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 resize-vertical transition-all duration-300"></textarea>
-                                </div>
-                                <div class="flex justify-end gap-3">
-                                    <button type="button" ng-click="closeEnrollModal()"
-                                            class="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-all duration-300 font-medium border border-gray-500">
-                                        Cancel
-                                    </button>
-                                    <button type="submit" ng-disabled="enrolling"
-                                            ng-class="enrolling ? 'opacity-50 cursor-not-allowed' : ''"
-                                            class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-all duration-300 font-medium shadow-md">
-                                        {{enrolling ? 'Enrolling...' : 'Enroll Lead'}}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Bulk Upload Form -->
-                        <div ng-if="enrollTab === 'bulk'">
-                            <div class="mb-4">
-                                <label class="block text-white text-sm font-semibold mb-2">CSV File</label>
-                                <input type="file" accept=".csv" file-model="csvFile" 
-                                       onchange="angular.element(this).scope().handleFileSelect(this)"
-                                       class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-gray-700 to-gray-800 border-2 border-gray-600 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-cyan-600 file:text-white hover:file:bg-cyan-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 transition-all duration-300">
-                                <p class="mt-2 text-xs text-gray-300">
-                                    CSV should have columns: name, phone. Additional columns will be stored as extra data.
-                                </p>
-                            </div>
-                            
-                            <div class="bg-gray-800 border border-gray-600 rounded-lg p-4 mb-6">
-                                <h4 class="text-sm font-semibold text-white mb-3">CSV Format Example:</h4>
-                                <pre class="text-xs text-gray-300 font-mono">name,phone,email
-John Doe,+1234567890,john@example.com
-Jane Smith,+0987654321,jane@example.com</pre>
-                            </div>
-
-                            <div class="flex justify-end gap-3">
-                                <button type="button" ng-click="closeEnrollModal()"
-                                        class="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-all duration-300 font-medium border border-gray-500">
-                                    Cancel
-                                </button>
-                                <button ng-click="uploadCSV()" ng-disabled="!csvFile || uploading"
-                                        ng-class="(!csvFile || uploading) ? 'opacity-50 cursor-not-allowed' : ''"
-                                        class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-all duration-300 font-medium shadow-md">
-                                    {{uploading ? 'Uploading...' : 'Upload & Enroll'}}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 
                 <!-- Loading State -->
                 <div ng-if="loading" class="text-center py-8">

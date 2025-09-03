@@ -53,6 +53,10 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
   // Resume a schedule
   $scope.resumeSchedule = function(schedule) {
     if (!schedule || !schedule.paused) return;
+    if (schedule.repeat==='once' && $scope.isPastOnce(schedule)) {
+      NotificationService.showToast($scope, 'Past time – edit to reschedule', 'warning');
+      return;
+    }
     ApiService.resumeSchedule(schedule.id)
       .then(function(res) {
         schedule.paused = false;
@@ -822,5 +826,10 @@ angular.module('autopostWaApp.schedules').controller('ScheduleController', funct
     console.log('Image loaded successfully:', event.target.src);
     console.log('Image natural dimensions:', event.target.naturalWidth + 'x' + event.target.naturalHeight);
     console.log('Image display dimensions:', event.target.width + 'x' + event.target.height);
+  };
+  
+  $scope.isPastOnce = function(schedule){
+    if(!schedule || schedule.repeat !== 'once') return false;
+    try { return new Date(schedule.time || schedule.scheduledAt).getTime() < Date.now(); } catch(e){ return false; }
   };
 });

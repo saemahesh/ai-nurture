@@ -39,6 +39,12 @@
         .enrollments-header * {
             z-index: 10 !important;
         }
+        .enrollments-page { /* Match status page gradient */
+            background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;
+        }
+        /* Toast container above modal */
+        .enrollment-toast-container { position: fixed; top: 16px; right: 16px; z-index: 100000000 !important; max-width: 360px; width: 100%; pointer-events: none; }
+        .enrollment-toast-container .enrollment-toast { pointer-events: auto; }
     </style>
 </head>
 <body class="enrollments-page">
@@ -196,25 +202,26 @@ Jane Smith,+0987654321,jane@example.com</pre>
     </div>
 
     <!-- Notifications -->
-    <div style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px;">
-        <div ng-repeat="notification in notifications" 
-             ng-class="{
-                'bg-gradient-to-r from-emerald-800 to-emerald-900 border-emerald-600 text-emerald-200': notification.type === 'success',
-                'bg-gradient-to-r from-red-800 to-red-900 border-red-600 text-red-200': notification.type === 'error',
-                'bg-gradient-to-r from-yellow-800 to-yellow-900 border-yellow-600 text-yellow-200': notification.type === 'warning',
-                'bg-gradient-to-r from-blue-800 to-blue-900 border-blue-600 text-blue-200': notification.type === 'info'
-             }"
-             class="mb-3 px-4 py-3 border-2 rounded-md shadow-lg transition-all duration-300">
-            <div class="flex items-center justify-between">
-                <span class="text-sm font-medium">{{notification.message}}</span>
-                <button ng-click="removeNotification(notification.id)" 
-                        class="ml-3 text-gray-300 hover:text-white">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
+    <div class="fixed top-4 right-4 space-y-3 max-w-sm w-full" ng-if="notifications.length" style="z-index:1000000000 !important; pointer-events:none;" aria-live="assertive" aria-atomic="true">
+      <div ng-repeat="notification in notifications" class="px-5 py-4 rounded-xl shadow-2xl flex items-start gap-3 border-2 animate-fade-in" style="pointer-events:auto;"
+           ng-class="{
+             'bg-green-600 border-green-400 text-white': notification.type === 'success',
+             'bg-red-600 border-red-400 text-white': notification.type === 'error',
+             'bg-yellow-600 border-yellow-400 text-white': notification.type === 'warning',
+             'bg-blue-600 border-blue-400 text-white': notification.type === 'info'
+           }">
+        <i class="fas mt-0.5"
+           ng-class="{
+             'fa-check-circle': notification.type === 'success',
+             'fa-exclamation-circle': notification.type === 'error',
+             'fa-exclamation-triangle': notification.type === 'warning',
+             'fa-info-circle': notification.type === 'info'
+           }"></i>
+        <div class="flex-1 text-sm leading-snug font-medium">{{notification.message}}</div>
+        <button ng-click="removeNotification(notification.id)" class="text-white/80 hover:text-white transition-colors ml-2" style="background:transparent;border:none;">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
     </div>
 
     <!-- Confirmation Modal -->

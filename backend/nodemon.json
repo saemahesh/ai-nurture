@@ -1,10 +1,14 @@
 {
   "watch": [
-    "backend/**/*.js"
+    "**/*.js",
+    "**/*.json"
   ],
   "ignore": [
-    "backend/data/*.json"
+    "data/*.json",
+    "node_modules"
   ],
   "ext": "js,json",
+  "legacyWatch": true,
+  "delay": "150ms",
   "exec": "node ./bin/www"
 }

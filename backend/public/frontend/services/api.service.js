@@ -11,6 +11,13 @@ angular.module('autopostWaApp.core').factory('ApiService', function($http) {
   resumeSchedule: function(id) {
     return $http.put(API_BASE + '/schedule/' + id + '/resume', {}, { withCredentials: true });
   },
+    // Status pause/resume
+    pauseStatus: function(id) {
+      return $http.put(API_BASE + '/status/' + id + '/pause', {}, { withCredentials: true });
+    },
+    resumeStatus: function(id) {
+      return $http.put(API_BASE + '/status/' + id + '/resume', {}, { withCredentials: true });
+    },
     // Groups
     getGroups: function() { 
       return $http.get(API_BASE + '/groups', { withCredentials: true }); 

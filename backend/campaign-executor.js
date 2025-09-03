@@ -37,7 +37,7 @@ class CampaignExecutor {
       console.log('⚠️  [CAMPAIGN_EXECUTOR] Returning existing instance');
       return CampaignExecutor.instance;
     }
-    
+    console.log('\n\n\n server started.');
     console.log('🆕 [CAMPAIGN_EXECUTOR] Creating new instance');
     
     this.dataDir = path.join(__dirname, 'data');

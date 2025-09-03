@@ -1,21 +1,41 @@
-Read and analyze the issue-details.txt file to understand the issues.
-Review the images in the issues directory related to the issues.
-Provide code changes to fix the issues one by one.
-Iterate on the code changes until the total issues count reaches 0.
-After each iteration, re-read the issue-details.txt file for updates or feedback.
-Do not assume issues are fixed until the total issues count is 0.
-Clear the contents of actionplan.txt and update it with a new plan based on the current stage.
-Do not create test scripts; you will receive manual feedback.
-Avoid using the bg-gradient-to-br class in your code changes.
-you should not modify the issue-details.txt file directly.
-Clear your previous iteration count to start fresh if reading this file first time
-Iterate on the issue-details.txt file 87 times until you see no issues listed , otherwise fix issues accordingly.
-if issues not removed, improve them
-until i clear the issues here, consider they are not fixed
+Read Mandatory instructions to follow on every iteration:
+    Read and analyze the issue-details.txt file to understand the issues.
+    Review the images in the issues directory related to the issues.
+    Provide code changes to fix the issues one by one.
+    Iterate on the code changes until the total issues count reaches 0.
+    After each iteration, re-read the issue-details.txt file for updates or feedback.
+    Do not assume issues are fixed until the total issues count is 0.
+    Clear the contents of actionplan.txt and update it with a new plan based on the current stage.
+    Do not create test scripts; you will receive manual feedback.
+    Avoid using the bg-gradient-to-br class in your code changes.
+    you should not modify the issue-details.txt file directly.
+    do not run localhost:3000 or backend server commands, i am running it and TESTING to give you feedback
+    Clear your previous iteration count to start fresh if reading this file first time
+    Iterate on the issue-details.txt file 62 times until you see no issues listed , otherwise fix issues accordingly.
+    if issues not removed, improve them
+    until i clear the issues here, consider they are not fixed
 --------------------------------------------------------
 **** Issue List ****
 
-recheck your generated code for any bugs and fix them if any found
-make sure no code duplicate found
+curl 'http://localhost:3000/status/7bf02412-6bef-4f82-a2da-5c322a7e1468/pause' \
+  -X 'PUT' \
+  -H 'sec-ch-ua-platform: "Android"' \
+  -H 'Referer: http://localhost:3000/' \
+  -H 'User-Agent: Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Mobile Safari/537.36' \
+  -H 'Accept: application/json, text/plain, */*' \
+  -H 'sec-ch-ua: "Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"' \
+  -H 'Content-Type: application/json;charset=UTF-8' \
+  -H 'sec-ch-ua-mobile: ?1' \
+  --data-raw '{}'
 
---------------------------------------------------------
+  getting error when pausing status, it is not pausing
+
+even if group schedule  is paused, still message is sending by cron jobs - fix it
+
+ ---------------------------------------------------------
+
+ Do not stop for testing changes, i am testing as soon as you are 
+ making code changes, and updating feedback in this file it self.
+ iterate again on this file for issues and fix them
+---------------------------------------------------------
+

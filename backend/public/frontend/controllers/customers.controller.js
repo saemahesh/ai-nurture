@@ -357,19 +357,8 @@ angular.module('autopostWaApp').controller('CustomersController', ['$scope', '$h
 
     // Setup follow-up
     $scope.setupFollowUp = function(customer) {
-        $http.post('/api/customers/' + customer.id + '/follow-up')
-            .then(function(response) {
-                if (response.data.redirectUrl) {
-                    $location.path('/direct-schedule').search({
-                        phone: customer.phone,
-                        name: customer.name || ''
-                    });
-                }
-            })
-            .catch(function(error) {
-                console.error('Error setting up follow-up:', error);
-                $scope.showNotification('Error setting up follow-up. Please try again.', 'error');
-            });
+        // Directly navigate with query params and suppress notification later
+        $location.path('/direct-schedule').search({ phone: customer.phone, name: customer.name || '' , fromFollow:true});
     };
 
     // Delete customer

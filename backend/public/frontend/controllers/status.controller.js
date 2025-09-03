@@ -78,6 +78,13 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
 
   // Function to get status display text for UI
   $scope.getStatusDisplay = function(status) {
+    if (status.paused) {
+      return {
+        text: 'Paused',
+        class: 'bg-yellow-900/50 text-yellow-300 border-yellow-500/30',
+        icon: 'fas fa-pause'
+      };
+    }
     if (status.repeat === 'once') {
       if (status.posted) {
         return {
@@ -357,6 +364,41 @@ angular.module('autopostWaApp.status').controller('StatusController', function($
     return Object.keys(days).filter(function(day) {
       return days[day];
     }).join(', ');
+  };
+
+  // Pause a status
+  $scope.pauseStatus = function(s) {
+    if (s.paused) return;
+    ApiService.pauseStatus(s.id).then(function(res){
+      s.paused = true;
+      s.statusDisplay = $scope.getStatusDisplay(s);
+      NotificationService.showToast($scope, 'Status paused', 'info');
+    }).catch(function(){
+      NotificationService.showToast($scope, 'Failed to pause status', 'error');
+    });
+  };
+
+  // Resume a status
+  $scope.resumeStatus = function(s) {
+    if (!s.paused) return;
+    if (s.repeat === 'once' && $scope.isPastOnce(s)) {
+      NotificationService.showToast($scope, 'Past time – edit to reschedule', 'warning');
+      return;
+    }
+    ApiService.resumeStatus(s.id).then(function(res){
+      s.paused = false;
+      s.statusDisplay = $scope.getStatusDisplay(s);
+      NotificationService.showToast($scope, 'Status resumed', 'success');
+    }).catch(function(){
+      NotificationService.showToast($scope, 'Failed to resume status', 'error');
+    });
+  };
+
+  $scope.isPastOnce = function(s) {
+    if (!s || s.repeat !== 'once') return false;
+    try {
+      return new Date(s.time).getTime() < Date.now();
+    } catch(e) { return false; }
   };
 
   loadStatuses();

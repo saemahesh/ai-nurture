@@ -13,6 +13,9 @@ angular.module('autopostWaApp.schedules')
         if (urlParams.phone) {
             $scope.prefilledPhone = urlParams.phone;
             $scope.prefilledName = urlParams.name || '';
+            // Broaden detection: any presence of param triggers follow-up mode
+            $scope.fromFollow = (urlParams.fromFollow === true || urlParams.fromFollow === 'true' || typeof urlParams.fromFollow !== 'undefined');
+            console.log('[DirectSchedule] Query params detected:', urlParams, 'fromFollow computed =>', $scope.fromFollow);
         }
 
         // Pause a schedule
@@ -27,6 +30,10 @@ angular.module('autopostWaApp.schedules')
 
         // Resume a schedule
         $scope.resumeSchedule = function(schedule) {
+            if ($scope.isPastOnce(schedule)) {
+                NotificationService.showToast($scope, 'Past time – edit to reschedule', 'warning');
+                return;
+            }
             $http.put('/direct-schedule/' + schedule.id + '/resume').then(function(response) {
                 schedule.paused = false;
                 NotificationService.showToast($scope, 'Schedule resumed.', 'success');
@@ -136,6 +143,21 @@ angular.module('autopostWaApp.schedules')
         $scope.loadSchedules = function() {
             $http.get('/direct-schedule').then(function(response) {
                 $scope.schedules = response.data;
+                // Auto-open if phone param present (no longer require fromFollow flag)
+                if($scope.prefilledPhone){
+                  console.log('[DirectSchedule] Auto-opening modal (phone param detected)', $scope.prefilledPhone, 'fromFollow=', $scope.fromFollow);
+                  $timeout(function(){
+                    $scope.showCreateEditModal();
+                    $timeout(function(){
+                      var el = document.querySelector('textarea[name="message"]');
+                      if(el) { el.focus(); el.selectionStart = el.selectionEnd = el.value.length; }
+                    },50);
+                  },0);
+                  // Clean only fromFollow flag if present
+                  if($location.search().fromFollow){
+                    $location.search('fromFollow', null);
+                  }
+                }
             }).catch(function(error) {
                 NotificationService.showToast($scope, (error.data && error.data.message) || 'Failed to load schedules.', 'error');
             });
@@ -234,7 +256,7 @@ angular.module('autopostWaApp.schedules')
                 // Create mode: reset form
                 $scope.formData = {
                     number: $scope.prefilledPhone || '',
-                    message: $scope.prefilledName ? 'Hi ' + $scope.prefilledName + ', ' : '',
+                    message: $scope.prefilledName ? 'Hello ' + $scope.prefilledName + ', ' : ($scope.fromFollow ? 'Hello, ' : ''),
                     scheduledAt: '',
                     mediaMethod: 'library',
                     mediaUrl: '',
@@ -436,10 +458,8 @@ angular.module('autopostWaApp.schedules')
         // Load initial data (no auto-scroll)
         $scope.loadSchedules();
         
-        // If prefilled data exists, show a notification
-        if ($scope.prefilledPhone) {
-            $timeout(function() {
-                NotificationService.showToast($scope, 'Follow-up message form prefilled with customer data. Click "New Message" to proceed.', 'info');
-            }, 1000);
-        }
+        $scope.isPastOnce = function(schedule){
+            if(!schedule || schedule.repeat !== 'once') return false;
+            try { return new Date(schedule.scheduledAt||schedule.time||schedule.date).getTime() < Date.now(); } catch(e){ return false; }
+        };
     }]);

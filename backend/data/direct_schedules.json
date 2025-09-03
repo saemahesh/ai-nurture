@@ -8,23 +8,37 @@
     "scheduledAt": "2025-08-13T08:13:00.000Z",
     "repeat": "once",
     "days": {},
-    "status": "Scheduled",
+    "status": "Sent",
     "createdAt": "2025-08-08T08:13:16.962Z",
-    "paused": false
+    "paused": false,
+    "lastSent": "2025-08-13T15:21:00.148Z"
   },
   {
-    "id": "c0020e2c-1e9c-4c66-8afd-d74cd8441f3d",
+    "id": "702677fa-0383-438d-9060-c0cd40cd23ca",
+    "username": "robomate",
+    "number": "91534643634",
+    "message": "gmemgne",
+    "mediaUrl": null,
+    "scheduledAt": "2025-08-14T16:05:00.000Z",
+    "repeat": "once",
+    "days": {},
+    "status": "Scheduled",
+    "createdAt": "2025-08-13T16:04:08.794Z",
+    "paused": true,
+    "updatedAt": "2025-08-14T05:44:03.747Z"
+  },
+  {
+    "id": "c874af58-b4ff-4468-9583-eff008a394f4",
     "username": "robomate",
     "number": "919573713873",
-    "message": "paused, Hi mahesh, followup msg",
-    "mediaUrl": "/uploads/1754923703688-automation.png",
-    "scheduledAt": "2025-08-11T15:06:00.000Z",
+    "message": "Hello mahesh, \n\neyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzU2NzM0MjU2LCJqdGkiOiI2ZDVjZTIwNi1jNzcxLTQwNjEtYTcyZi1jOWIxYmM1ZDQ2Y2MiLCJ1c2VyX3V1aWQiOiJiMDQ2NDUyOC1mNjc3LTQ4ZTEtYjQ5Ny0wMTU0YjBkOWU3MjMifQ.TmoF42ECjtVkwuI3F_Ly7kI7-upohd7dbdApOuH__2HN2qD_aTTsCB5WmjhE77IqhnSttjgwXTt9szKrr6lKFA",
+    "mediaUrl": null,
+    "scheduledAt": "2025-09-01T15:27:00.000Z",
     "repeat": "once",
     "days": {},
     "status": "Sent",
-    "createdAt": "2025-08-08T12:21:21.451Z",
-    "paused": true,
-    "updatedAt": "2025-08-11T15:05:26.862Z",
-    "lastSent": "2025-08-11T15:06:00.662Z"
+    "createdAt": "2025-09-01T15:26:33.979Z",
+    "paused": false,
+    "lastSent": "2025-09-01T15:27:00.919Z"
   }
 ]

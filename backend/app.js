@@ -299,7 +299,7 @@ app.use('/api/campaigns', express.json(), campaignsRouter);
 app.use('/api/campaign-execution', express.json(), campaignExecutionRouter);
 app.use('/api/analytics', express.json(), analyticsRouter);
 app.use('/api/customers', express.json(), customersRouter);
-app.use('/status', statusRouter);
+app.use('/status', statusRouter); // status routes
 
 // Centralized WhatsApp group message sender
 async function sendWhatsAppGroupMessage({ group_id, type, message, media_url, instance_id, access_token }) {
@@ -485,14 +485,14 @@ cron.schedule('* * * * *', async () => {
         const timeUntilSend = scheduledTime - now;
         
         if (!item.sent) {
-          // Count pending messages and log those coming up soon (within 10 minutes)
+          // Count pending messages and log those coming up soon (within 10 minutes pre or post event window)
           pendingCount++;
           if (timeUntilSend > 0 && timeUntilSend <= 10 * 60 * 1000) {
             const minutesRemaining = Math.ceil(timeUntilSend / (60 * 1000));
             console.log(`[CRON] Event reminder "${item.reminderType}" for event ${eventId} to group ${item.groupId} due in ~${minutesRemaining} minute(s)`);
           }
           
-          // Check if it's time to send
+          // Check if it's time to send (supports post-event reminders with scheduledTime after event start)
           if (scheduledTime <= now) {
             console.log(`[CRON] Processing due event reminder: "${item.reminderType}" for event ${eventId} to group ${item.groupId}`);
             console.log(`[CRON] Message content: "${item.message.substring(0, 50)}${item.message.length > 50 ? '...' : ''}"`);
@@ -578,6 +578,11 @@ cron.schedule('* * * * *', async () => {
       d1.getMinutes() === d2.getMinutes();
     
     for (const item of regularSchedules) {
+      // Skip paused group schedule items
+      if (item.paused) {
+        console.log(`⏸️  [GROUP-CRON] Skipping paused group schedule ${item.id}`);
+        continue;
+      }
       const scheduledTime = new Date(item.time);
       const timeUntilSend = scheduledTime - now;
       
@@ -731,6 +736,11 @@ cron.schedule('* * * * *', async () => {
         d1.getMinutes() === d2.getMinutes();
       
       for (const item of directSchedules) {
+        // Skip paused direct schedules
+        if (item.paused) {
+          console.log(`⏸️  [DIRECT-CRON] Skipping paused direct schedule ${item.id}`);
+          continue;
+        }
         // Skip items that are not for current user's active time slots
         const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json')));
         const user = users.find(u => u.username === item.username);

@@ -27,6 +27,13 @@
           <span class="nav-text">Dashboard</span>
           <div class="nav-indicator" ng-if="isActive('/dashboard')"></div>
         </a>
+        <!-- Moved Customers link directly below Dashboard -->
+        <a href="#/customers" class="nav-item group relative" ng-class="{'active': isActive('/customers')}" plan-expired-check>
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-user-tag nav-icon" style="color: #fbbf24 !important;"></i>
+          <span class="nav-text">Customers</span>
+          <div class="nav-indicator" ng-if="isActive('/customers')"></div>
+        </a>
         <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}" plan-expired-check>
           <div class="nav-item-bg"></div>
           <i class="fas fa-users nav-icon" style="color: #10b981 !important;"></i>
@@ -44,12 +51,6 @@
           <i class="fas fa-images nav-icon" style="color: #ec4899 !important;"></i>
           <span class="nav-text">Media Library</span>
           <div class="nav-indicator" ng-if="isActive('/media')"></div>
-        </a>
-        <a href="#/customers" class="nav-item group relative" ng-class="{'active': isActive('/customers')}" plan-expired-check>
-          <div class="nav-item-bg"></div>
-          <i class="fas fa-user-tag nav-icon" style="color: #fbbf24 !important;"></i>
-          <span class="nav-text">Customers</span>
-          <div class="nav-indicator" ng-if="isActive('/customers')"></div>
         </a>
       </div>
 
@@ -241,21 +242,25 @@
             <span class="nav-text">Dashboard</span>
             <div class="nav-indicator" ng-if="isActive('/dashboard')"></div>
           </a>
-          
+          <!-- Added Customers link for mobile directly below Dashboard -->
+          <a href="#/customers" class="nav-item group relative" ng-class="{'active': isActive('/customers')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-user-tag nav-icon" style="color: #fbbf24 !important;"></i>
+            <span class="nav-text">Customers</span>
+            <div class="nav-indicator" ng-if="isActive('/customers')"></div>
+          </a>
           <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
             <i class="fas fa-users nav-icon" style="color: #10b981 !important;"></i>
             <span class="nav-text">Groups</span>
             <div class="nav-indicator" ng-if="isActive('/groups')"></div>
           </a>
-          
           <a href="#/events" class="nav-item group relative" ng-class="{'active': isActive('/events')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
             <i class="fas fa-calendar-alt nav-icon" style="color: #f59e0b !important;"></i>
             <span class="nav-text">Events</span>
             <div class="nav-indicator" ng-if="isActive('/events')"></div>
           </a>
-          
           <a href="#/media" class="nav-item group relative" ng-class="{'active': isActive('/media')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>
             <i class="fas fa-photo-film nav-icon" style="color: #8b5cf6 !important;"></i>

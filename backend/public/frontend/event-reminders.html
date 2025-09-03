@@ -589,6 +589,80 @@
       padding: 0 !important;
       border-radius: 0 !important;
     }
+
+    /* Custom Toggle Switch Styles */
+    .custom-toggle-switch {
+      position: relative;
+      width: 80px;
+      height: 40px;
+      background: #ccc;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .custom-toggle-switch.on {
+      background: #4CAF50;
+    }
+
+    .custom-toggle-switch.off {
+      background: #ccc;
+    }
+
+    .custom-toggle-slider {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 32px;
+      height: 32px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .custom-toggle-switch.on .custom-toggle-slider {
+      transform: translateX(40px);
+    }
+
+    .custom-toggle-switch.off .custom-toggle-slider {
+      transform: translateX(0);
+    }
+
+    .custom-toggle-text {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+      transition: opacity 0.3s ease;
+    }
+
+    .custom-toggle-on-text {
+      left: 12px;
+    }
+
+    .custom-toggle-off-text {
+      right: 12px;
+    }
+
+    .custom-toggle-switch.on .custom-toggle-on-text {
+      opacity: 1;
+    }
+
+    .custom-toggle-switch.on .custom-toggle-off-text {
+      opacity: 0;
+    }
+
+    .custom-toggle-switch.off .custom-toggle-on-text {
+      opacity: 0;
+    }
+
+    .custom-toggle-switch.off .custom-toggle-off-text {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -744,6 +818,7 @@
                   <span class="text-cyan-200 text-base font-medium">Set up automated reminders for:</span>
                   <span class="text-cyan-300 font-semibold truncate">{{currentEvent.name}}</span>
                   <span class="text-cyan-400 text-sm ml-2">({{currentEvent.time | date:'MMM d, yyyy h:mm a'}})</span>
+                  <span class="text-xs text-cyan-500 bg-cyan-900/40 px-2 py-1 rounded" ng-if="getAllUpcomingReminderTypes().some(t => t.startsWith('after'))">Post-event follow-ups included</span>
                 </div>
               </div>
             </div>
@@ -753,13 +828,32 @@
               <!-- Unified Reminder Configuration Cards -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto px-2 md:px-4">
                 <!-- All Reminder Types using unified card design -->
-                <div class="hours-before-card" ng-repeat="type in getAllUpcomingReminderTypes()">
+                <div class="hours-before-card" 
+                     ng-repeat="type in getAllUpcomingReminderTypes()"
+                     ng-class="{'opacity-60 border-slate-500': !reminders[type].enabled, 'border-cyan-500': reminders[type].enabled}">
                   <!-- Card Header -->
                   <div class="card-header">
                     <div class="card-icon">
                       <i class="fas text-white text-xl" ng-class="getReminderIcon(type)"></i>
                     </div>
-                    <h3 class="card-title">{{getReminderLabel(type)}}</h3>
+                    <div class="flex-1">
+                      <h3 class="card-title">{{getReminderLabel(type)}}</h3>
+                      <!-- Enable/Disable Toggle -->
+                      <div class="flex items-center justify-between mt-3 p-2 bg-slate-800/50 rounded-lg border border-slate-600/50">
+                        <span class="text-sm font-medium text-slate-300">Send Reminder</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox"
+                                 ng-model="reminders[type].enabled"
+                                 ng-init="reminders[type].enabled = reminders[type].enabled !== false"
+                                 class="sr-only peer">
+                          <div class="custom-toggle-switch" ng-class="reminders[type].enabled ? 'on' : 'off'">
+                            <div class="custom-toggle-slider"></div>
+                            <div class="custom-toggle-text custom-toggle-on-text">ON</div>
+                            <div class="custom-toggle-text custom-toggle-off-text">OFF</div>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
                   </div>
                   
                   <!-- Form Content -->
@@ -803,8 +897,12 @@
                     </div>
                     
                     <!-- Save Button -->
-                    <button type="submit" class="save-button" ng-disabled="reminderForm_{{type}}.$invalid">
-                      <i class="fas fa-save mr-2"></i>Save Reminder
+                    <button type="submit" 
+                            class="save-button" 
+                            ng-disabled="reminderForm_{{type}}.$invalid || !reminders[type].enabled"
+                            ng-class="{'opacity-50 cursor-not-allowed': !reminders[type].enabled}">
+                      <i class="fas fa-save mr-2"></i>
+                      {{reminders[type].enabled ? 'Save Reminder' : 'Reminder Disabled'}}
                     </button>
                   </form>
                 </div>

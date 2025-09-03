@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>WhatsPro - Direct Schedules</title>
 </head>
-<body>
+<body class="direct-schedule-page">
 <!-- Main Layout Container -->
 <div class="flex h-screen dark-theme">
   <!-- Sidebar -->
@@ -263,7 +264,9 @@
                 <i class="fas fa-pause mr-1"></i>Pause
               </button>
               <button ng-if="schedule.paused" ng-click="resumeSchedule(schedule)" 
-                      class="flex-1 px-3 py-2 text-sm text-white bg-green-500 hover:bg-green-600 rounded-lg font-medium shadow transition-all duration-300">
+                      title="{{ (schedule.repeat==='once' && isPastOnce(schedule)) ? 'Past time – edit to reschedule' : 'Resume' }}"
+                      class="flex-1 px-3 py-2 text-sm text-white rounded-lg font-medium shadow transition-all duration-300"
+                      ng-class="{'bg-green-500 hover:bg-green-600': !(schedule.repeat==='once' && isPastOnce(schedule)), 'bg-gray-700 hover:bg-gray-600': (schedule.repeat==='once' && isPastOnce(schedule))}">
                 <i class="fas fa-play mr-1"></i>Resume
               </button>
             </div>

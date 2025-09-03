@@ -1,1 +1,21 @@
-[]
+[
+  {
+    "id": "7bf02412-6bef-4f82-a2da-5c322a7e1468",
+    "media": "/uploads/1754032316663-adp_logo.jpg",
+    "caption": "dm us",
+    "textColor": "#000000",
+    "bgColor": "#ffffff",
+    "time": "2025-08-13T18:08:00.000Z",
+    "repeat": "once",
+    "days": {
+      "Mon": true
+    },
+    "createdAt": "2025-08-13T15:23:15.465Z",
+    "username": "robomate",
+    "paused": false,
+    "pausedAt": "2025-08-13T16:02:39.583Z",
+    "resumedAt": "2025-08-13T16:17:56.495Z",
+    "posted": true,
+    "lastPosted": "2025-08-14T05:34:00.906Z"
+  }
+]

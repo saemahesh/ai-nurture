@@ -174,6 +174,7 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
         $scope.reminders[reminderType].mediaFromLibrary = media;
         $scope.reminders[reminderType].mediaPreview = media.name;
         $scope.reminders[reminderType].hasNewMedia = false;
+        // Ensure enabled is set to true when media is selected
         $scope.reminders[reminderType].enabled = true;
         
         console.log('Media set for reminder:', $scope.reminders[reminderType]);
@@ -254,6 +255,10 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
                 upcomingDays.concat(upcomingHours).forEach(function(type) {
                     if (!$scope.reminders[type]) {
                         $scope.reminders[type] = { text: '', mediaUrl: '', enabled: true };
+                    }
+                    // Ensure enabled property exists
+                    if ($scope.reminders[type].enabled === undefined) {
+                        $scope.reminders[type].enabled = true;
                     }
                 });
                 // Clear any temporary flags
@@ -409,7 +414,17 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
             '3hours': '3 hours before',
             '1hour': '1 hour before',
             '30mins': '30 minutes before',
-            'live': 'At event start'
+            '15mins': '15 minutes before',
+            '5mins': '5 minutes before',
+            'live': 'At event start',
+            'after5mins': '5 minutes after start',
+            'after10mins': '10 minutes after start',
+            'after15mins': '15 minutes after start',
+            'after30mins': '30 minutes after start',
+            'after1hour': '1 hour after start',
+            'after2hours': '2 hours after start',
+            'after3hours': '3 hours after start',
+            'after4hours': '4 hours after start'
         };
         return labels[type] || type;
     };
@@ -443,7 +458,18 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
         '3hours': 3 * 60 * 60 * 1000,
         '1hour': 1 * 60 * 60 * 1000,
         '30mins': 30 * 60 * 1000,
-        'live': 0
+        '15mins': 15 * 60 * 1000,
+        '5mins': 5 * 60 * 1000,
+        'live': 0,
+        // Post-event offsets represented as negative (eventTime - (-offset) => eventTime + offset)
+        'after5mins': -5 * 60 * 1000,
+        'after10mins': -10 * 60 * 1000,
+        'after15mins': -15 * 60 * 1000,
+        'after30mins': -30 * 60 * 1000,
+        'after1hour': -1 * 60 * 60 * 1000,
+        'after2hours': -2 * 60 * 60 * 1000,
+        'after3hours': -3 * 60 * 60 * 1000,
+        'after4hours': -4 * 60 * 60 * 1000
     };
 
     // Helper functions for media type detection
@@ -479,12 +505,20 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
         const now = new Date();
         const eventTime = new Date($scope.currentEvent.time);
         return Object.keys(REMINDER_OFFSETS).filter(function(type) {
-            // Section filter: days or hours/minutes
-            if (section === 'days' && !type.endsWith('days') && type !== '1day') return false;
-            if (section === 'hours' && (type.endsWith('days') || type === '1day')) return false;
-            // Calculate scheduled time
-            const scheduled = new Date(eventTime.getTime() - REMINDER_OFFSETS[type]);
-            return scheduled > now;
+            const offset = REMINDER_OFFSETS[type];
+            const scheduled = new Date(eventTime.getTime() - offset);
+            if (offset >= 0) {
+                // Pre-event reminders: must be in future relative to now
+                if (scheduled <= now) return false;
+                if (section === 'days' && !(type.endsWith('days') || type === '1day')) return false;
+                if (section === 'hours' && (type.endsWith('days') || type === '1day')) return false;
+            } else {
+                // Post-event reminders: only show if event already started but this post time not yet passed
+                if (now < eventTime) return false; // event not started
+                if (scheduled <= now) return false; // already passed
+                if (section && section !== 'post') return false; // filter mismatch
+            }
+            return true;
         });
     };
 
@@ -494,16 +528,26 @@ angular.module('autopostWaApp.events').controller('EventRemindersController', fu
         const now = new Date();
         const eventTime = new Date($scope.currentEvent.time);
         return Object.keys(REMINDER_OFFSETS).filter(function(type) {
-            // Calculate scheduled time
-            const scheduled = new Date(eventTime.getTime() - REMINDER_OFFSETS[type]);
-            return scheduled > now;
+            const offset = REMINDER_OFFSETS[type];
+            const scheduled = new Date(eventTime.getTime() - offset);
+            if (offset >= 0) {
+                return scheduled > now; // pre-event upcoming
+            } else {
+                // post-event upcoming: scheduled time still ahead (always show if future)
+                return scheduled > now;
+            }
         });
     };
 
     // Returns appropriate icon for reminder type
     $scope.getReminderIcon = function(type) {
+        if (type.startsWith('after')) {
+            return 'fa-flag-checkered';
+        }
         if (type.endsWith('days') || type === '1day') {
             return 'fa-calendar-week';
+        } else if (type === 'live') {
+            return 'fa-broadcast-tower';
         } else {
             return 'fa-clock';
         }

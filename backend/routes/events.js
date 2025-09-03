@@ -291,7 +291,17 @@ function getDefaultReminders() {
     '3hours': { enabled: true, text: '3 hours to go until {{eventName}}!', media: null },
     '1hour': { enabled: true, text: '1 hour to go until {{eventName}}!', media: null },
     '30mins': { enabled: true, text: 'Only 30 minutes to go until {{eventName}}!', media: null },
-    'live': { enabled: true, text: 'We are LIVE now! {{eventName}} has started!', media: null }
+    '15mins': { enabled: true, text: '15 minutes to go until {{eventName}}!', media: null },
+    '5mins': { enabled: true, text: '5 minutes to go until {{eventName}}!', media: null },
+    'live': { enabled: true, text: 'We are LIVE now! {{eventName}} has started!', media: null },
+    'after5mins': { enabled: true, text: '{{eventName}} started 5 minutes ago – join us now!', media: null },
+    'after10mins': { enabled: true, text: '{{eventName}} started 10 minutes ago – not too late to join!', media: null },
+    'after15mins': { enabled: true, text: '{{eventName}} is underway – 15 minutes in!', media: null },
+    'after30mins': { enabled: true, text: '30 minutes into {{eventName}} – catch up live!', media: null },
+    'after1hour': { enabled: true, text: '{{eventName}} started 1 hour ago – join before it ends!', media: null },
+    'after2hours': { enabled: true, text: '{{eventName}} started 2 hours ago – still going!', media: null },
+    'after3hours': { enabled: true, text: '{{eventName}} started 3 hours ago – last chance to engage!', media: null },
+    'after4hours': { enabled: true, text: '{{eventName}} started 4 hours ago – wrapping up soon!', media: null }
   };
 }
 
@@ -333,7 +343,18 @@ function generateRemindersSchedule(event, reminderConfig) {
     '3hours': 3 * 60 * 60 * 1000,
     '1hour': 1 * 60 * 60 * 1000,
     '30mins': 30 * 60 * 1000,
-    'live': 0
+    '15mins': 15 * 60 * 1000,
+    '5mins': 5 * 60 * 1000,
+    'live': 0,
+    // Post-event (negative offset so eventTime - (-offset) => eventTime + offset)
+    'after5mins': -5 * 60 * 1000,
+    'after10mins': -10 * 60 * 1000,
+    'after15mins': -15 * 60 * 1000,
+    'after30mins': -30 * 60 * 1000,
+    'after1hour': -1 * 60 * 60 * 1000,
+    'after2hours': -2 * 60 * 60 * 1000,
+    'after3hours': -3 * 60 * 60 * 1000,
+    'after4hours': -4 * 60 * 60 * 1000
   };
   
   // Track skipped reminders

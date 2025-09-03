@@ -123,6 +123,11 @@ cron.schedule("* * * * *", async () => {
   console.log(`⏰ [STATUS-CRON] Checking scheduled statuses at ${now.toLocaleString('en-IN', {timeZone: 'Asia/Kolkata'})}`);
 
   for (const status of statuses) {
+    // Skip paused statuses
+    if (status.paused) {
+      console.log(`⏸️  [STATUS-CRON] Skipping paused status ${status.id}`);
+      continue;
+    }
     const user = users.find((u) => u.username === status.username);
     if (!user || !user.settings || !user.settings.whapi_token) {
       console.error(
@@ -219,7 +224,16 @@ cron.schedule("* * * * *", async () => {
 // List scheduled statuses (filtered by current user)
 router.get("/", authRequired, (req, res) => {
   try {
-    const statuses = readStatuses();
+    let statuses = readStatuses();
+    let needsWrite = false;
+    // migrate missing paused field
+    statuses = statuses.map(s => {
+      if (typeof s.paused === 'undefined') {
+        s.paused = false; needsWrite = true;
+      }
+      return s;
+    });
+    if (needsWrite) writeStatuses(statuses);
     const userStatuses = filterByUser(statuses, req.session.user.username);
     res.json(userStatuses);
   } catch (err) {
@@ -255,6 +269,7 @@ router.post("/", authRequired, (req, res) => {
     days: days || {},
     createdAt: new Date().toISOString(),
     username: req.session.user.username,
+    paused: false
   };
   
   console.log('📝 [STATUS-API-POST] Final status object:', status);
@@ -350,4 +365,40 @@ router.delete("/:id", authRequired, (req, res) => {
   res.json({ success: true, removed: before - statuses.length });
 });
 
+// Pause a status
+router.put('/:id/pause', authRequired, (req, res) => {
+  try {
+    const statuses = readStatuses();
+    const idx = statuses.findIndex(s => s.id === req.params.id && s.username === req.session.user.username);
+    if (idx === -1) return res.status(404).json({ error: 'Status not found or access denied' });
+    if (statuses[idx].paused) return res.json(statuses[idx]);
+    statuses[idx].paused = true;
+    statuses[idx].pausedAt = new Date().toISOString();
+    writeStatuses(statuses);
+    res.json(statuses[idx]);
+  } catch (e) {
+    console.error('Error pausing status:', e);
+    res.status(500).json({ error: 'Failed to pause status' });
+  }
+});
+
+// Resume a status
+router.put('/:id/resume', authRequired, (req, res) => {
+  try {
+    const statuses = readStatuses();
+    const idx = statuses.findIndex(s => s.id === req.params.id && s.username === req.session.user.username);
+    if (idx === -1) return res.status(404).json({ error: 'Status not found or access denied' });
+    if (!statuses[idx].paused) return res.json(statuses[idx]);
+    statuses[idx].paused = false;
+    statuses[idx].resumedAt = new Date().toISOString();
+    writeStatuses(statuses);
+    res.json(statuses[idx]);
+  } catch (e) {
+    console.error('Error resuming status:', e);
+    res.status(500).json({ error: 'Failed to resume status' });
+  }
+});
+
+// If this router is mounted at /status and also needs /api/status, export normally.
+// NOTE: Ensure app.js uses app.use('/api/status', statusRouter) for API style routes.
 module.exports = router;

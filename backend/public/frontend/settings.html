@@ -218,6 +218,168 @@
               </div>
             </div>
 
+            <!-- Calendly Integration Section -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-600" id="calendly">
+              <h4 class="text-lg font-semibold text-purple-300 mb-4 flex items-center">
+                <i class="fas fa-calendar-check mr-2"></i>Calendly Integration
+              </h4>
+              
+              <div class="space-y-4">
+                <!-- Calendly Token -->
+                <div class="input-group">
+                  <label for="calendly_token" class="block text-sm font-semibold text-purple-200 mb-2">
+                    Calendly Bearer Token
+                  </label>
+                  <input type="password" 
+                         id="calendly_token" 
+                         ng-model="settings.calendly_token" 
+                         placeholder="Enter your Calendly bearer token"
+                         class="w-full p-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300 transition-all duration-300">
+                  <div class="text-xs text-gray-400 mt-1">
+                    Get your token from <a href="https://developer.calendly.com/how-to-authenticate-with-personal-access-tokens" target="_blank" class="text-purple-300 hover:text-purple-200">Calendly Developer Settings</a>
+                  </div>
+                </div>
+
+                <!-- Information -->
+                <div class="p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                  <div class="text-sm text-gray-300">
+                    <i class="fas fa-info-circle text-purple-300 mr-2"></i>
+                    <strong>Auto Features:</strong> Once you save your token, meetings will sync every hour and automatic WhatsApp notifications will be sent to invitees. Customize notification templates from the Meetings page.
+                  </div>
+                </div>
+
+                <!-- Test Connection Button -->
+                <div class="pt-4 border-t border-slate-600">
+                  <button type="button" 
+                          ng-click="testCalendlySync()" 
+                          ng-disabled="testingCalendly || !settings.calendly_token"
+                          class="flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white rounded-lg font-medium transition-all duration-300">
+                    <i class="fas mr-2" ng-class="{'fa-spinner fa-spin': testingCalendly, 'fa-sync': !testingCalendly}"></i>
+                    {{testingCalendly ? 'Testing...' : 'Test Connection'}}
+                  </button>
+                  <div ng-if="calendlyTestResult" class="mt-2 text-sm" ng-class="{'text-green-300': calendlyTestResult.success, 'text-red-300': !calendlyTestResult.success}">
+                    <i class="fas" ng-class="{'fa-check': calendlyTestResult.success, 'fa-times': !calendlyTestResult.success}"></i>
+                    {{calendlyTestResult.message}}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Email Configuration Section -->
+            <div ng-if="false" class="bg-slate-800/50 rounded-xl p-6 border border-slate-600" id="email">
+              <h4 class="text-lg font-semibold text-orange-300 mb-4 flex items-center">
+                <i class="fas fa-envelope mr-2"></i>Email Configuration
+              </h4>
+              
+              <div class="space-y-4">
+                <!-- Email Provider Selection -->
+                <div class="input-group">
+                  <label for="email_provider" class="block text-sm font-semibold text-orange-200 mb-2">
+                    Email Provider
+                  </label>
+                  <select id="email_provider" 
+                          ng-model="emailSettings.provider" 
+                          ng-change="onProviderChange()"
+                          class="w-full p-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:border-orange-400 focus:ring-2 focus:ring-orange-300 transition-all duration-300">
+                    <option value="">Select Email Provider</option>
+                    <option value="gmail">Gmail</option>
+                    <option value="outlook">Outlook/Hotmail</option>
+                    <option value="yahoo">Yahoo Mail</option>
+                    <option value="godaddy">GoDaddy</option>
+                    <option value="custom">Custom SMTP</option>
+                  </select>
+                </div>
+
+                <!-- Provider Instructions -->
+                <div ng-if="selectedProvider.instructions" class="p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                  <div class="text-sm text-gray-300">
+                    <i class="fas fa-info-circle text-orange-300 mr-2"></i>
+                    <strong>Setup Instructions:</strong> {{selectedProvider.instructions}}
+                  </div>
+                </div>
+
+                <!-- Email Address -->
+                <div class="input-group">
+                  <label for="email_address" class="block text-sm font-semibold text-orange-200 mb-2">
+                    Email Address
+                  </label>
+                  <input type="email" 
+                         id="email_address" 
+                         ng-model="emailSettings.email" 
+                         placeholder="Enter your email address"
+                         class="w-full p-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-300 transition-all duration-300">
+                </div>
+
+                <!-- Email Password -->
+                <div class="input-group">
+                  <label for="email_password" class="block text-sm font-semibold text-orange-200 mb-2">
+                    Password / App Password
+                  </label>
+                  <input type="password" 
+                         id="email_password" 
+                         ng-model="emailSettings.password" 
+                         placeholder="Enter your password or app password"
+                         class="w-full p-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-300 transition-all duration-300">
+                </div>
+
+                <!-- SMTP Server -->
+                <div class="input-group">
+                  <label for="smtp_server" class="block text-sm font-semibold text-orange-200 mb-2">
+                    SMTP Server
+                  </label>
+                  <input type="text" 
+                         id="smtp_server" 
+                         ng-model="emailSettings.smtpServer" 
+                         placeholder="Enter SMTP server address"
+                         class="w-full p-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-300 transition-all duration-300">
+                </div>
+
+                <!-- SMTP Port -->
+                <div class="input-group">
+                  <label for="smtp_port" class="block text-sm font-semibold text-orange-200 mb-2">
+                    SMTP Port
+                  </label>
+                  <input type="number" 
+                         id="smtp_port" 
+                         ng-model="emailSettings.smtpPort" 
+                         placeholder="587"
+                         class="w-full p-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-300 transition-all duration-300">
+                </div>
+
+                <!-- Information -->
+                <div class="p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                  <div class="text-sm text-gray-300">
+                    <i class="fas fa-info-circle text-orange-300 mr-2"></i>
+                    <strong>Email Reminders:</strong> Once configured, the system will send email reminders along with WhatsApp messages for Calendly meetings and other events. Test your configuration below.
+                  </div>
+                </div>
+
+                <!-- Test Email Buttons -->
+                <div class="pt-4 border-t border-slate-600 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button type="button" 
+                          ng-click="testEmailConnection()" 
+                          ng-disabled="testingEmail || !emailSettings.email"
+                          class="flex items-center justify-center px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-600 text-white rounded-lg font-medium transition-all duration-300">
+                    <i class="fas mr-2" ng-class="{'fa-spinner fa-spin': testingEmail, 'fa-plug': !testingEmail}"></i>
+                    {{testingEmail ? 'Testing...' : 'Test Connection'}}
+                  </button>
+                  <button type="button" 
+                          ng-click="sendTestEmail()" 
+                          ng-disabled="sendingTest || !emailSettings.email"
+                          class="flex items-center justify-center px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-600 text-white rounded-lg font-medium transition-all duration-300">
+                    <i class="fas mr-2" ng-class="{'fa-spinner fa-spin': sendingTest, 'fa-paper-plane': !sendingTest}"></i>
+                    {{sendingTest ? 'Sending...' : 'Send Test Email'}}
+                  </button>
+                </div>
+                
+                <!-- Email Test Result -->
+                <div ng-if="emailTestResult" class="mt-2 text-sm" ng-class="{'text-green-300': emailTestResult.success, 'text-red-300': !emailTestResult.success}">
+                  <i class="fas" ng-class="{'fa-check': emailTestResult.success, 'fa-times': !emailTestResult.success}"></i>
+                  {{emailTestResult.message}}
+                </div>
+              </div>
+            </div>
+
             <!-- Notification Settings Section -->
             <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-600">
               <h4 class="text-lg font-semibold text-cyan-300 mb-4 flex items-center">

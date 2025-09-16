@@ -164,6 +164,40 @@ angular.module('autopostWaApp.core').factory('ApiService', function($http) {
     // Plan Expiry Management
     checkPlanExpiry: function() {
       return $http.get(API_BASE + '/auth/plan-status', { withCredentials: true });
+    },
+
+    // Calendly Meetings
+    calendlyGetMeetings: function() {
+      return $http.get(API_BASE + '/api/calendly', { withCredentials: true });
+    },
+    calendlySyncMeetings: function() {
+      return $http.post(API_BASE + '/api/calendly/sync', {}, { withCredentials: true });
+    },
+    calendlyGetSettings: function() {
+      return $http.get(API_BASE + '/api/calendly/settings', { withCredentials: true });
+    },
+    calendlyUpdateSettings: function(settings) {
+      return $http.put(API_BASE + '/api/calendly/settings', settings, { withCredentials: true });
+    },
+    calendlyGetNotifications: function() {
+      return $http.get(API_BASE + '/api/calendly/notifications', { withCredentials: true });
+    },
+    getCalendlyTemplates: function() {
+      return $http.get(API_BASE + '/api/calendly/templates', { withCredentials: true });
+    },
+    saveCalendlyTemplate: function(key, message) {
+      return $http.put(API_BASE + '/api/calendly/templates/' + key, { message: message }, { withCredentials: true });
+    },
+    resetCalendlyTemplate: function(key) {
+      return $http.post(API_BASE + '/api/calendly/templates/' + key + '/reset', {}, { withCredentials: true });
+    },
+    
+    // Template Settings (Generic)
+    getTemplateSettings: function(type) {
+      return $http.get(API_BASE + '/api/' + type + '/templates', { withCredentials: true });
+    },
+    saveTemplateSettings: function(type, settings) {
+      return $http.put(API_BASE + '/api/' + type + '/templates', { templates: settings }, { withCredentials: true });
     }
   };
 });

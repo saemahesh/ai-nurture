@@ -1,0 +1,155 @@
+[
+  {
+    "username": "default",
+    "templates": {
+      "booking_confirmation": {
+        "enabled": true,
+        "message": "🎉 Congratulations {{invitee_name}}! Your meeting '{{meeting_name}}' has been booked for {{meeting_date}} at {{meeting_time}}. We look forward to connecting with you!",
+        "mediaFromLibrary": null
+      },
+      "five_days_reminder": {
+        "enabled": true,
+        "message": "📅 Hi {{invitee_name}}, this is a friendly reminder that you have a meeting '{{meeting_name}}' scheduled in 5 days on {{meeting_date}} at {{meeting_time}}.",
+        "mediaFromLibrary": null
+      },
+      "four_days_reminder": {
+        "enabled": true,
+        "message": "📅 Hi {{invitee_name}}, this is a friendly reminder that you have a meeting '{{meeting_name}}' scheduled in 4 days on {{meeting_date}} at {{meeting_time}}.",
+        "mediaFromLibrary": null
+      },
+      "three_days_reminder": {
+        "enabled": true,
+        "message": "📅 Hi {{invitee_name}}, this is a friendly reminder that you have a meeting '{{meeting_name}}' scheduled in 3 days on {{meeting_date}} at {{meeting_time}}.",
+        "mediaFromLibrary": null
+      },
+      "two_days_reminder": {
+        "enabled": true,
+        "message": "📅 Hi {{invitee_name}}, this is a friendly reminder that you have a meeting '{{meeting_name}}' scheduled in 2 days on {{meeting_date}} at {{meeting_time}}.",
+        "mediaFromLibrary": null
+      },
+      "one_day_reminder": {
+        "enabled": true,
+        "message": "📅 Hi {{invitee_name}}, this is a friendly reminder that you have a meeting '{{meeting_name}}' scheduled tomorrow on {{meeting_date}} at {{meeting_time}}.",
+        "mediaFromLibrary": null
+      },
+      "twelve_hours_reminder": {
+        "enabled": true,
+        "message": "⏰ Hi {{invitee_name}}, your meeting '{{meeting_name}}' is in 12 hours! It's scheduled for {{meeting_date}} at {{meeting_time}}.",
+        "mediaFromLibrary": null
+      },
+      "six_hours_reminder": {
+        "enabled": true,
+        "message": "⏰ Hi {{invitee_name}}, your meeting '{{meeting_name}}' is in 6 hours! It's scheduled for {{meeting_date}} at {{meeting_time}}.",
+        "mediaFromLibrary": null
+      },
+      "three_hours_reminder": {
+        "enabled": true,
+        "message": "⏰ Hi {{invitee_name}}, your meeting '{{meeting_name}}' is in 3 hours! It's scheduled for {{meeting_date}} at {{meeting_time}}.",
+        "mediaFromLibrary": null
+      },
+      "one_hour_reminder": {
+        "enabled": true,
+        "message": "⏰ Hi {{invitee_name}}, your meeting '{{meeting_name}}' is in 1 hour! It's scheduled for {{meeting_date}} at {{meeting_time}}.",
+        "mediaFromLibrary": null
+      },
+      "five_minutes_reminder": {
+        "enabled": true,
+        "message": "🚨 Hi {{invitee_name}}, your meeting '{{meeting_name}}' is starting in 5 minutes! {{join_url}}",
+        "mediaFromLibrary": null
+      },
+      "meeting_live": {
+        "enabled": true,
+        "message": "🎥 Hi {{invitee_name}}, your meeting '{{meeting_name}}' is now live! Please join: {{join_url}}",
+        "mediaFromLibrary": null
+      },
+      "post_meeting_thanks": {
+        "enabled": true,
+        "message": "🙏 Thank you {{invitee_name}} for attending the meeting '{{meeting_name}}'! We hope it was valuable. Feel free to reach out if you have any questions.",
+        "mediaFromLibrary": null
+      }
+    }
+  },
+  {
+    "username": "robomate",
+    "templates": {
+      "booking_confirmation": {
+        "enabled": true,
+        "message": "🎉 Congratulationsss {{invitee_name}}! \nYour meeting '{{meeting_name}}' has been booked for {{meeting_date}} at {{meeting_time}}. \n\nWe look forward to connecting with you!",
+        "mediaFromLibrary": {
+          "id": "mdshjxferbp5jpcjafg",
+          "username": "robomate",
+          "name": "wertr",
+          "type": "image",
+          "filename": "1754032316663-adp_logo.jpg",
+          "url": "/uploads/1754032316663-adp_logo.jpg",
+          "fileSize": 4390,
+          "uploadDate": "2025-08-01T07:11:56.665Z",
+          "originalName": "adp_logo.jpg",
+          "fullUrl": "http://localhost:3000/uploads/1754032316663-adp_logo.jpg",
+          "originalUrl": "/uploads/1754032316663-adp_logo.jpg"
+        }
+      },
+      "five_days_reminder": {
+        "enabled": true,
+        "message": "📅 Hi {{invitee_name}}, this is a friendly reminder that you have a meeting '{{meeting_name}}' scheduled in 5 days on {{meeting_date}} at {{meeting_time}}."
+      },
+      "four_days_reminder": {
+        "enabled": true,
+        "message": "📅 Hi {{invitee_name}}, this is a friendly reminder that you have a meeting '{{meeting_name}}' scheduled in 4 days on {{meeting_date}} at {{meeting_time}}."
+      },
+      "three_days_reminder": {
+        "enabled": true,
+        "message": "📅 Hi {{invitee_name}}, this is a friendly reminder that you have a meeting '{{meeting_name}}' scheduled in 3 days on {{meeting_date}} at {{meeting_time}}."
+      },
+      "two_days_reminder": {
+        "enabled": true,
+        "message": "📅 Hi {{invitee_name}}, this is a friendly reminder that you have a meeting '{{meeting_name}}' scheduled in 2 days on {{meeting_date}} at {{meeting_time}}."
+      },
+      "one_day_reminder": {
+        "enabled": true,
+        "message": "📅 Hi {{invitee_name}}, this is a friendly reminder that you have a meeting '{{meeting_name}}' scheduled tomorrow on {{meeting_date}} at {{meeting_time}}."
+      },
+      "twelve_hours_reminder": {
+        "enabled": true,
+        "message": "⏰ Hi {{invitee_name}}, \nyour meeting '{{meeting_name}}' is in 12 hours! \nIt's scheduled for {{meeting_date}} at {{meeting_time}}."
+      },
+      "six_hours_reminder": {
+        "enabled": true,
+        "message": "⏰ Hi {{invitee_name}}, your meeting '{{meeting_name}}' is in 6 hours! It's scheduled for {{meeting_date}} at {{meeting_time}}."
+      },
+      "three_hours_reminder": {
+        "enabled": true,
+        "message": "⏰ Hi {{invitee_name}}, your meeting '{{meeting_name}}' is in 3 hours! It's scheduled for {{meeting_date}} at {{meeting_time}}."
+      },
+      "one_hour_reminder": {
+        "enabled": true,
+        "message": "⏰ Hi {{invitee_name}}, your meeting '{{meeting_name}}' is in 1 hour! It's scheduled for {{meeting_date}} at {{meeting_time}}."
+      },
+      "five_minutes_reminder": {
+        "enabled": true,
+        "message": "🚨 Hi {{invitee_name}}, your meeting '{{meeting_name}}' is starting in 5 minutes! {{join_url}}"
+      },
+      "meeting_live": {
+        "enabled": true,
+        "message": "🎥 Hi {{invitee_name}}, your meeting '{{meeting_name}}' is now live! Please join: {{join_url}}"
+      },
+      "post_meeting_thanks": {
+        "enabled": true,
+        "message": "🙏 Thank you {{invitee_name}} for attending the meeting '{{meeting_name}}'! We hope it was valuable. Feel free to reach out if you have any questions.",
+        "mediaFromLibrary": {
+          "id": "me789g2bxotgpgoyyc",
+          "username": "robomate",
+          "name": "Automation",
+          "type": "image",
+          "filename": "1754923703688-automation.png",
+          "url": "/uploads/1754923703688-automation.png",
+          "fileSize": 625715,
+          "uploadDate": "2025-08-11T14:48:23.697Z",
+          "originalName": "automation.png",
+          "fullUrl": "http://localhost:3000/uploads/1754923703688-automation.png",
+          "originalUrl": "/uploads/1754923703688-automation.png"
+        }
+      }
+    }
+  }
+]

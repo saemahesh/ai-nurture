@@ -56,6 +56,8 @@ const campaignExecutionRouter = require('./routes/campaign-execution');
 const analyticsRouter = require('./routes/analytics');
 const statusRouter = require('./routes/status');
 const customersRouter = require('./routes/customers');
+const calendlyRouter = require('./routes/calendly');
+const emailRouter = require('./routes/email');
 
 // Initialize Campaign Executor for automatic message processing
 const CampaignExecutor = require('./campaign-executor');
@@ -300,6 +302,8 @@ app.use('/api/campaign-execution', express.json(), campaignExecutionRouter);
 app.use('/api/analytics', express.json(), analyticsRouter);
 app.use('/api/customers', express.json(), customersRouter);
 app.use('/status', statusRouter); // status routes
+app.use('/api/calendly', express.json(), calendlyRouter); // calendly routes
+app.use('/api/email', express.json(), emailRouter); // email routes
 
 // Centralized WhatsApp group message sender
 async function sendWhatsAppGroupMessage({ group_id, type, message, media_url, instance_id, access_token }) {
@@ -899,6 +903,190 @@ async function syncAllUsersGroups() {
 // Run daily at 2:30 AM
 cron.schedule('30 2 * * *', () => {
   syncAllUsersGroups();
+});
+
+// Calendly sync cron job - runs every hour
+cron.schedule('0 * * * *', async () => {
+  try {
+    console.log(`[CALENDLY-CRON] ${new Date().toISOString()} - Starting Calendly sync for all users...`);
+    
+    const usersPath = path.join(__dirname, 'data/users.json');
+    if (!fs.existsSync(usersPath)) {
+      console.log('[CALENDLY-CRON] Users file not found, skipping sync');
+      return;
+    }
+    
+    const users = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
+    const { syncCalendlyMeetings } = require('./routes/calendly');
+    
+    let syncedUsers = 0;
+    let totalNewMeetings = 0;
+    
+    for (const user of users) {
+      if (user.settings && user.settings.calendly_token) {
+        console.log(`[CALENDLY-CRON] Syncing meetings for user: ${user.username}`);
+        
+        try {
+          const result = await syncCalendlyMeetings(user.username, user.settings.calendly_token);
+          
+          if (result.success) {
+            console.log(`[CALENDLY-CRON] User ${user.username}: ${result.newMeetings} new meetings, ${result.totalMeetings} total`);
+            syncedUsers++;
+            totalNewMeetings += result.newMeetings;
+          } else {
+            console.error(`[CALENDLY-CRON] Failed to sync meetings for user ${user.username}: ${result.error}`);
+          }
+        } catch (error) {
+          console.error(`[CALENDLY-CRON] Error syncing meetings for user ${user.username}:`, error);
+        }
+        
+        // Add a small delay between users to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+    
+    console.log(`[CALENDLY-CRON] Sync completed: ${syncedUsers} users synced, ${totalNewMeetings} new meetings found`);
+  } catch (error) {
+    console.error('[CALENDLY-CRON] Error during Calendly sync:', error);
+  }
+});
+
+// Calendly notification cron job - runs every minute
+cron.schedule('* * * * *', async () => {
+  try {
+    const notificationsPath = path.join(__dirname, 'data/meeting_notifications.json');
+    if (!fs.existsSync(notificationsPath)) {
+      return;
+    }
+    
+    const { readNotifications, saveNotifications, replaceVariables } = require('./routes/calendly');
+    const notifications = readNotifications();
+    const now = new Date();
+    let processedCount = 0;
+    
+    for (const notification of notifications) {
+      if (notification.status === 'scheduled') {
+        const triggerTime = new Date(notification.trigger_time);
+        
+        if (triggerTime <= now) {
+          console.log(`[CALENDLY-NOTIFICATIONS] Processing ${notification.type} notification for meeting ${notification.meeting_id}`);
+          
+          try {
+            // Get user settings for WhatsApp sending
+            const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json'), 'utf8'));
+            const user = users.find(u => u.username === notification.username);
+            
+            if (user && user.settings && user.settings.instance_id && user.settings.access_token) {
+              // Get meeting details to find invitee phone
+              const meetingsPath = path.join(__dirname, 'data/calendly_meetings.json');
+              const meetings = JSON.parse(fs.readFileSync(meetingsPath, 'utf8'));
+              const meeting = meetings.find(m => m.id === notification.meeting_id);
+              
+              if (meeting && meeting.invitee && meeting.invitee.email) {
+                // Send email notification along with WhatsApp
+                try {
+                  const emailService = require('./services/email.service');
+                  const emailResult = await emailService.sendCalendlyReminder(meeting.invitee.email, meeting);
+                  if (emailResult.success) {
+                    console.log(`[CALENDLY-NOTIFICATIONS] Email sent successfully for ${notification.type} to ${meeting.invitee.email}`);
+                  } else {
+                    console.log(`[CALENDLY-NOTIFICATIONS] Email failed for ${notification.type}: ${emailResult.message}`);
+                  }
+                } catch (emailError) {
+                  console.log(`[CALENDLY-NOTIFICATIONS] Email service error for ${notification.type}:`, emailError.message);
+                }
+                
+                // Use WhatsApp number from notification, or fallback to test mobile
+                const phoneNumber = notification.whatsapp_number || user.settings.test_mobile || '919573713873';
+                
+                let payload = {
+                  number: phoneNumber,
+                  type: 'text',
+                  message: notification.message,
+                  instance_id: user.settings.instance_id,
+                  access_token: user.settings.access_token
+                };
+
+                // Handle media attachment if present
+                if (notification.mediaFromLibrary && notification.mediaFromLibrary.url) {
+                  // Get correct media URL for sending (similar to other cron jobs)
+                  const mediaUrl = notification.mediaFromLibrary.url.startsWith('http') ? 
+                    notification.mediaFromLibrary.url : 
+                    `https://wa.robomate.in/uploads/${notification.mediaFromLibrary.url}`;
+                  
+                  const mediaType = notification.mediaFromLibrary.type;
+                  
+                  // Determine WhatsApp message type based on media type
+                  if (mediaType === 'image') {
+                    payload.type = 'media';
+                    payload.media_url = mediaUrl;
+                    payload.filename = notification.mediaFromLibrary.originalName || notification.mediaFromLibrary.filename;
+                  } else if (mediaType === 'video') {
+                    payload.type = 'media';
+                    payload.media_url = mediaUrl;
+                    payload.filename = notification.mediaFromLibrary.originalName || notification.mediaFromLibrary.filename;
+                  } else if (mediaType === 'document') {
+                    payload.type = 'document';
+                    payload.media_url = mediaUrl;
+                    payload.filename = notification.mediaFromLibrary.originalName || notification.mediaFromLibrary.filename;
+                  }
+                  
+                  console.log(`[CALENDLY-NOTIFICATIONS] Sending ${notification.type} with media (${mediaType}) to ${phoneNumber}`);
+                } else {
+                  console.log(`[CALENDLY-NOTIFICATIONS] Sending ${notification.type} text message to ${phoneNumber}`);
+                }
+                
+                const response = await axios.post(
+                  'https://wa.robomate.in/api/send',
+                  qs.stringify(payload),
+                  { 
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    timeout: 10000
+                  }
+                );
+                
+                if (response.data && response.data.status === 'success') {
+                  notification.status = 'sent';
+                  notification.sent_at = new Date().toISOString();
+                  processedCount++;
+                  
+                  // Update the meeting's notification status
+                  const meetingIndex = meetings.findIndex(m => m.id === notification.meeting_id);
+                  if (meetingIndex !== -1 && meetings[meetingIndex].notifications_sent) {
+                    meetings[meetingIndex].notifications_sent[notification.type] = true;
+                    fs.writeFileSync(meetingsPath, JSON.stringify(meetings, null, 2));
+                  }
+                } else {
+                  console.error(`[CALENDLY-NOTIFICATIONS] Failed to send ${notification.type}:`, response.data);
+                  notification.status = 'failed';
+                  notification.error = response.data.message || 'Unknown error';
+                }
+              } else {
+                console.log(`[CALENDLY-NOTIFICATIONS] Meeting or invitee not found for notification ${notification.id}`);
+                notification.status = 'failed';
+                notification.error = 'Meeting or invitee not found';
+              }
+            } else {
+              console.log(`[CALENDLY-NOTIFICATIONS] User WhatsApp settings not configured for ${notification.username}`);
+              notification.status = 'failed';
+              notification.error = 'WhatsApp settings not configured';
+            }
+          } catch (error) {
+            console.error(`[CALENDLY-NOTIFICATIONS] Error sending notification ${notification.id}:`, error);
+            notification.status = 'failed';
+            notification.error = error.message;
+          }
+        }
+      }
+    }
+    
+    if (processedCount > 0) {
+      saveNotifications(notifications);
+      console.log(`[CALENDLY-NOTIFICATIONS] Processed ${processedCount} notifications`);
+    }
+  } catch (error) {
+    console.error('[CALENDLY-NOTIFICATIONS] Error processing notifications:', error);
+  }
 });
 
 // Debug endpoint to check WhatsApp instance status

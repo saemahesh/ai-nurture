@@ -15,6 +15,7 @@ angular.module('autopostWaApp.media', ['autopostWaApp.core']);
 angular.module('autopostWaApp.schedules', ['autopostWaApp.core']);
 angular.module('autopostWaApp.sequences', ['autopostWaApp.core']);
 angular.module('autopostWaApp.status', ['autopostWaApp.core']);
+angular.module('autopostWaApp.meetings', ['autopostWaApp.core']);
 
 // Main application module with dependencies
 var app = angular.module('autopostWaApp', [
@@ -27,7 +28,8 @@ var app = angular.module('autopostWaApp', [
   'autopostWaApp.media',
   'autopostWaApp.schedules',
   'autopostWaApp.sequences',
-  'autopostWaApp.status'
+  'autopostWaApp.status',
+  'autopostWaApp.meetings'
 ]);
 
 // Main routing configuration
@@ -125,6 +127,10 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
     .when('/status', {
       templateUrl: getTemplateUrl('status.html'),
       controller: 'StatusController'
+    })
+    .when('/meetings', {
+      templateUrl: getTemplateUrl('meetings.html'),
+      controller: 'MeetingsController'
     })
 
     .otherwise({ redirectTo: '/login' });

@@ -46,6 +46,12 @@
           <span class="nav-text">Events</span>
           <div class="nav-indicator" ng-if="isActive('/events')"></div>
         </a>
+        <a href="#/meetings" class="nav-item group relative" ng-class="{'active': isActive('/meetings')}" plan-expired-check>
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-video nav-icon" style="color: #7c3aed !important;"></i>
+          <span class="nav-text">Calendly Meetings</span>
+          <div class="nav-indicator" ng-if="isActive('/meetings')"></div>
+        </a>
         <a href="#/media" class="nav-item group relative" ng-class="{'active': isActive('/media')}" plan-expired-check>
           <div class="nav-item-bg"></div>
           <i class="fas fa-images nav-icon" style="color: #ec4899 !important;"></i>
@@ -260,6 +266,12 @@
             <i class="fas fa-calendar-alt nav-icon" style="color: #f59e0b !important;"></i>
             <span class="nav-text">Events</span>
             <div class="nav-indicator" ng-if="isActive('/events')"></div>
+          </a>
+          <a href="#/meetings" class="nav-item group relative" ng-class="{'active': isActive('/meetings')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-video nav-icon" style="color: #7c3aed !important;"></i>
+            <span class="nav-text">Calendly Meetings</span>
+            <div class="nav-indicator" ng-if="isActive('/meetings')"></div>
           </a>
           <a href="#/media" class="nav-item group relative" ng-class="{'active': isActive('/media')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>

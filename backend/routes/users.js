@@ -44,14 +44,15 @@ router.get('/settings', authRequired, (req, res) => {
     autosave_interval: user.settings?.autosave_interval || '60',
     log_messages: user.settings?.log_messages || false,
     auto_delete: user.settings?.auto_delete || false,
-    session_timeout: user.settings?.session_timeout || '60'
+    session_timeout: user.settings?.session_timeout || '60',
+    calendly_token: user.settings?.calendly_token || ''
   });
 });
 
 // POST update current user's settings
 router.post('/settings', authRequired, (req, res) => {
   const { access_token, instance_id, wa_phone, notification_enabled, test_mobile, whapi_token, 
-          default_language, autosave_interval, log_messages, auto_delete, session_timeout } = req.body;
+          default_language, autosave_interval, log_messages, auto_delete, session_timeout, calendly_token } = req.body;
   const users = readUsers();
   const user = users.find(u => u.username === req.session.user.username);
   if (!user) return res.status(404).json({ error: 'User not found' });
@@ -68,6 +69,7 @@ router.post('/settings', authRequired, (req, res) => {
   user.settings.log_messages = log_messages || false;
   user.settings.auto_delete = auto_delete || false;
   user.settings.session_timeout = session_timeout || '60';
+  user.settings.calendly_token = calendly_token || '';
   // Remove any legacy root-level fields
   delete user.access_token;
   delete user.instance_id;

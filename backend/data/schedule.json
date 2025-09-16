@@ -34,9 +34,10 @@
     "time": "2025-09-03T13:45:00.000Z",
     "media": null,
     "username": "robomate",
-    "sent": false,
+    "sent": true,
     "repeat": "once",
-    "days": {}
+    "days": {},
+    "sentAt": "2025-09-03T14:56:00.421Z"
   },
   {
     "id": "1756905265536un8oxxm",
@@ -47,9 +48,10 @@
     "time": "2025-09-03T14:00:00.000Z",
     "media": null,
     "username": "robomate",
-    "sent": false,
+    "sent": true,
     "repeat": "once",
-    "days": {}
+    "days": {},
+    "sentAt": "2025-09-03T14:56:00.421Z"
   },
   {
     "id": "1756905265536e2ul8em",
@@ -60,9 +62,10 @@
     "time": "2025-09-03T14:10:00.000Z",
     "media": null,
     "username": "robomate",
-    "sent": false,
+    "sent": true,
     "repeat": "once",
-    "days": {}
+    "days": {},
+    "sentAt": "2025-09-03T14:56:00.421Z"
   },
   {
     "id": "1756905265536m4711om",
@@ -73,9 +76,10 @@
     "time": "2025-09-03T14:15:00.000Z",
     "media": null,
     "username": "robomate",
-    "sent": false,
+    "sent": true,
     "repeat": "once",
-    "days": {}
+    "days": {},
+    "sentAt": "2025-09-03T14:56:00.421Z"
   },
   {
     "id": "1756905265536198ib8g",
@@ -86,9 +90,10 @@
     "time": "2025-09-03T14:20:00.000Z",
     "media": "/uploads/1754923703688-automation.png",
     "username": "robomate",
-    "sent": false,
+    "sent": true,
     "repeat": "once",
-    "days": {}
+    "days": {},
+    "sentAt": "2025-09-03T14:56:00.421Z"
   },
   {
     "id": "1756905265536tu00jqd",
@@ -99,9 +104,10 @@
     "time": "2025-09-03T14:25:00.000Z",
     "media": null,
     "username": "robomate",
-    "sent": false,
+    "sent": true,
     "repeat": "once",
-    "days": {}
+    "days": {},
+    "sentAt": "2025-09-03T14:56:00.421Z"
   },
   {
     "id": "1756905265536rr0t4aw",
@@ -112,9 +118,10 @@
     "time": "2025-09-03T14:30:00.000Z",
     "media": null,
     "username": "robomate",
-    "sent": false,
+    "sent": true,
     "repeat": "once",
-    "days": {}
+    "days": {},
+    "sentAt": "2025-09-03T14:56:00.421Z"
   },
   {
     "id": "1756905265536vwfb2qm",
@@ -125,9 +132,10 @@
     "time": "2025-09-03T14:45:00.000Z",
     "media": null,
     "username": "robomate",
-    "sent": false,
+    "sent": true,
     "repeat": "once",
-    "days": {}
+    "days": {},
+    "sentAt": "2025-09-03T14:56:00.421Z"
   },
   {
     "id": "17569052655361958fdt",
@@ -138,9 +146,10 @@
     "time": "2025-09-03T15:15:00.000Z",
     "media": null,
     "username": "robomate",
-    "sent": false,
+    "sent": true,
     "repeat": "once",
-    "days": {}
+    "days": {},
+    "sentAt": "2025-09-03T15:15:00.575Z"
   },
   {
     "id": "1756905265536mqofcem",
@@ -151,9 +160,10 @@
     "time": "2025-09-03T16:15:00.000Z",
     "media": null,
     "username": "robomate",
-    "sent": false,
+    "sent": true,
     "repeat": "once",
-    "days": {}
+    "days": {},
+    "sentAt": "2025-09-03T16:15:00.213Z"
   },
   {
     "id": "1756905265536yd7f4ra",
@@ -164,9 +174,10 @@
     "time": "2025-09-03T17:15:00.000Z",
     "media": null,
     "username": "robomate",
-    "sent": false,
+    "sent": true,
     "repeat": "once",
-    "days": {}
+    "days": {},
+    "sentAt": "2025-09-03T17:15:00.253Z"
   },
   {
     "id": "1756905265537one2x54",
@@ -177,8 +188,9 @@
     "time": "2025-09-03T18:15:00.000Z",
     "media": null,
     "username": "robomate",
-    "sent": false,
+    "sent": true,
     "repeat": "once",
-    "days": {}
+    "days": {},
+    "sentAt": "2025-09-03T18:15:00.530Z"
   }
 ]

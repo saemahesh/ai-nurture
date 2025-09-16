@@ -1,0 +1,966 @@
+<!-- Calendly Meetings Template -->
+<div class="flex h-screen dark-theme">
+  <!-- Sidebar -->
+  <div ng-include="'sidebar.html?v=' + Date.now()" ng-controller="SidebarController"></div>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Top Header -->
+    <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <h2 class="text-lg sm:text-xl font-semibold text-white responsive-header-title pl-5 sm:pl-12">Calendly Meetings</h2>
+        </div>
+        <div ng-include="'controllers/components/header-user.html'" ng-controller="HeaderUserController"></div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto dark-theme-main-bg p-3 sm:p-6">
+      <div class="max-w-7xl mx-auto">
+        
+        <!-- Page Title -->
+        <div class="mb-4 sm:mb-6">
+          <h1 class="text-xl sm:text-2xl font-bold text-white mb-2">
+            <i class="fas fa-video mr-2 sm:mr-3"></i>Calendly Meetings
+          </h1>
+          <p class="text-sm sm:text-base text-gray-400">Manage your scheduled meetings and automated notifications</p>
+        </div>
+        
+        <!-- Search and Filter Section -->
+        <div class="bg-gray-800 rounded-lg p-3 sm:p-4 mb-6">
+          <div class="max-w-md mx-auto">
+            <div class="relative">
+              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input type="text" 
+                     ng-model="searchText" 
+                     placeholder="Search meetings by name, type, invitee, email..." 
+                     class="w-full pl-10 pr-10 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <button ng-if="searchText" 
+                      ng-click="clearSearch()" 
+                      class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-400">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div ng-if="searchText" class="text-center mt-2 text-gray-400 text-sm">
+              Found {{getResultsCount()}} meeting{{getResultsCount() !== 1 ? 's' : ''}}
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+          <div class="flex flex-col sm:flex-row flex-wrap gap-3 w-full lg:w-auto">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-50 w-full sm:w-auto" 
+                    ng-click="syncMeetings()" ng-disabled="loading">
+              <span ng-if="loading" class="animate-spin">
+                <i class="fas fa-spinner"></i>
+              </span>
+              <i ng-if="!loading" class="fas fa-sync"></i>
+              {{loading ? 'Syncing...' : 'Sync Now'}}
+            </button>
+            <a href="#/settings#calendly" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors no-underline w-full sm:w-auto">
+              <i class="fas fa-cog"></i>
+              Settings
+            </a>
+            <button class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors w-full sm:w-auto" 
+                    ng-click="showTemplates = !showTemplates">
+              <i class="fas fa-edit"></i>
+              {{showTemplates ? 'Hide' : 'Customize'}} Templates
+            </button>
+          </div>
+          
+          <div class="flex gap-2 w-full lg:w-auto">
+            <button class="px-3 lg:px-4 py-2 rounded-lg transition-colors flex-1 lg:flex-none text-sm lg:text-base" 
+                    ng-class="filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
+                    ng-click="setFilter('all')">
+              All
+            </button>
+            <button class="px-3 lg:px-4 py-2 rounded-lg transition-colors flex-1 lg:flex-none text-sm lg:text-base" 
+                    ng-class="filter === 'upcoming' ? 'bg-green-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
+                    ng-click="setFilter('upcoming')">
+              Upcoming
+            </button>
+            <button class="px-3 lg:px-4 py-2 rounded-lg transition-colors flex-1 lg:flex-none text-sm lg:text-base" 
+                    ng-class="filter === 'past' ? 'bg-gray-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
+                    ng-click="setFilter('past')">
+              Past
+            </button>
+          </div>
+        </div>
+
+  <!-- Removed Available Template Variables section per issue instructions -->
+
+        <!-- Template Section -->
+        <div ng-if="showTemplates" class="bg-gray-800 rounded-lg p-3 sm:p-6 mb-6">
+          <h3 class="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+            <i class="fas fa-edit"></i> Notification Templates
+          </h3>
+          <p class="text-gray-400 mb-4">Customize WhatsApp notification messages sent to meeting invitees</p>
+
+          <div class="space-y-4">
+            <!-- Booking Confirmation -->
+            <div class="bg-gray-700 rounded-lg p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-check-circle text-green-400"></i>
+                    Booking Confirmation
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent immediately after booking</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.booking_confirmation.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.booking_confirmation.message"
+                        rows="8" 
+                        placeholder="Hi {{invitee_name}}, your {{meeting_name}} is confirmed for {{meeting_date}} at {{meeting_time}}. Join here: {{join_url}}"
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('booking_confirmation')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.booking_confirmation.mediaFromLibrary && templateSettings.booking_confirmation.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.booking_confirmation.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.booking_confirmation.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-blue-400" />
+                    <video ng-if="isVideo(templateSettings.booking_confirmation.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.booking_confirmation.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-blue-400" controls></video>
+                    <span class="text-blue-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.booking_confirmation.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5 Days Reminder -->
+            <div class="bg-gray-700 rounded-lg p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-calendar text-yellow-400"></i>
+                    5 Days Reminder
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent 5 days before the meeting</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.five_days_reminder.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.five_days_reminder.message"
+                        rows="8" 
+                        placeholder="Reminder: Hi {{invitee_name}}, your {{meeting_name}} is in 5 days on {{meeting_date}} at {{meeting_time}}."
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('five_days_reminder')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.five_days_reminder.mediaFromLibrary && templateSettings.five_days_reminder.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.five_days_reminder.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.five_days_reminder.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-yellow-400" />
+                    <video ng-if="isVideo(templateSettings.five_days_reminder.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.five_days_reminder.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-yellow-400" controls></video>
+                    <span class="text-yellow-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.five_days_reminder.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4 Days Reminder -->
+            <div class="bg-gray-700 rounded-lg p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-calendar text-yellow-400"></i>
+                    4 Days Reminder
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent 4 days before the meeting</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.four_days_reminder.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.four_days_reminder.message"
+                        rows="8" 
+                        placeholder="Reminder: Hi {{invitee_name}}, your {{meeting_name}} is in 4 days on {{meeting_date}} at {{meeting_time}}."
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('four_days_reminder')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.four_days_reminder.mediaFromLibrary && templateSettings.four_days_reminder.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.four_days_reminder.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.four_days_reminder.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-yellow-400" />
+                    <video ng-if="isVideo(templateSettings.four_days_reminder.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.four_days_reminder.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-yellow-400" controls></video>
+                    <span class="text-yellow-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.four_days_reminder.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3 Days Reminder -->
+            <div class="bg-gray-700 rounded-lg p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-calendar text-yellow-400"></i>
+                    3 Days Reminder
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent 3 days before the meeting</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.three_days_reminder.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.three_days_reminder.message"
+                        rows="8" 
+                        placeholder="Reminder: Hi {{invitee_name}}, your {{meeting_name}} is in 3 days on {{meeting_date}} at {{meeting_time}}."
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('three_days_reminder')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.three_days_reminder.mediaFromLibrary && templateSettings.three_days_reminder.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.three_days_reminder.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.three_days_reminder.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-yellow-400" />
+                    <video ng-if="isVideo(templateSettings.three_days_reminder.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.three_days_reminder.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-yellow-400" controls></video>
+                    <span class="text-yellow-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.three_days_reminder.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2 Days Reminder -->
+            <div class="bg-gray-700 rounded-lg p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-calendar text-yellow-400"></i>
+                    2 Days Reminder
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent 2 days before the meeting</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.two_days_reminder.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.two_days_reminder.message"
+                        rows="8" 
+                        placeholder="Reminder: Hi {{invitee_name}}, your {{meeting_name}} is in 2 days on {{meeting_date}} at {{meeting_time}}."
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('two_days_reminder')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.two_days_reminder.mediaFromLibrary && templateSettings.two_days_reminder.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.two_days_reminder.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.two_days_reminder.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-yellow-400" />
+                    <video ng-if="isVideo(templateSettings.two_days_reminder.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.two_days_reminder.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-yellow-400" controls></video>
+                    <span class="text-yellow-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.two_days_reminder.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 1 Day Reminder -->
+            <div class="bg-gray-700 rounded-lg p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-clock text-orange-400"></i>
+                    1 Day Reminder
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent 1 day before the meeting</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.one_day_reminder.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.one_day_reminder.message"
+                        rows="8" 
+                        placeholder="Tomorrow! Hi {{invitee_name}}, your {{meeting_name}} is tomorrow at {{meeting_time}}. Join: {{join_url}}"
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('one_day_reminder')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.one_day_reminder.mediaFromLibrary && templateSettings.one_day_reminder.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.one_day_reminder.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.one_day_reminder.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-orange-400" />
+                    <video ng-if="isVideo(templateSettings.one_day_reminder.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.one_day_reminder.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-orange-400" controls></video>
+                    <span class="text-orange-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.one_day_reminder.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 12 Hours Reminder -->
+            <div class="bg-gray-700 rounded-lg p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-clock text-indigo-400"></i>
+                    12 Hours Reminder
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent 12 hours before the meeting</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.twelve_hours_reminder.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.twelve_hours_reminder.message"
+                        rows="8" 
+                        placeholder="Today! Hi {{invitee_name}}, {{meeting_name}} is in 12 hours. Don't forget! Join: {{join_url}}"
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('twelve_hours_reminder')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.twelve_hours_reminder.mediaFromLibrary && templateSettings.twelve_hours_reminder.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.twelve_hours_reminder.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.twelve_hours_reminder.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-indigo-400" />
+                    <video ng-if="isVideo(templateSettings.twelve_hours_reminder.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.twelve_hours_reminder.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-indigo-400" controls></video>
+                    <span class="text-indigo-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.twelve_hours_reminder.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6 Hours Reminder -->
+            <div class="bg-gray-700 rounded-lg p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-bell text-cyan-400"></i>
+                    6 Hours Reminder
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent 6 hours before the meeting</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.six_hours_reminder.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.six_hours_reminder.message"
+                        rows="8" 
+                        placeholder="Getting closer! Hi {{invitee_name}}, {{meeting_name}} is in 6 hours. Prepare now! Join: {{join_url}}"
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('six_hours_reminder')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.six_hours_reminder.mediaFromLibrary && templateSettings.six_hours_reminder.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.six_hours_reminder.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.six_hours_reminder.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-cyan-400" />
+                    <video ng-if="isVideo(templateSettings.six_hours_reminder.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.six_hours_reminder.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-cyan-400" controls></video>
+                    <span class="text-cyan-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.six_hours_reminder.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3 Hours Reminder -->
+            <div class="bg-gray-700 rounded-lg p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-calendar text-yellow-400"></i>
+                    3 Hours Reminder  
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent 3 hours before the meeting</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.three_hours_reminder.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.three_hours_reminder.message"
+                        rows="8" 
+                        placeholder="Final preparation! Hi {{invitee_name}}, {{meeting_name}} is in 3 hours. Get ready! Join: {{join_url}}"
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('three_hours_reminder')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.three_hours_reminder.mediaFromLibrary && templateSettings.three_hours_reminder.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.three_hours_reminder.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.three_hours_reminder.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-yellow-400" />
+                    <video ng-if="isVideo(templateSettings.three_hours_reminder.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.three_hours_reminder.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-yellow-400" controls></video>
+                    <span class="text-yellow-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.three_hours_reminder.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 1 Hour Reminder -->
+            <div class="bg-gray-700 rounded-lg p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-hourglass-half text-purple-400"></i>
+                    1 Hour Reminder
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent 1 hour before the meeting</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.one_hour_reminder.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.one_hour_reminder.message"
+                        rows="8" 
+                        placeholder="Starting soon! Hi {{invitee_name}}, {{meeting_name}} starts in 1 hour. Get ready! Join: {{join_url}}"
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('one_hour_reminder')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.one_hour_reminder.mediaFromLibrary && templateSettings.one_hour_reminder.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.one_hour_reminder.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.one_hour_reminder.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-purple-400" />
+                    <video ng-if="isVideo(templateSettings.one_hour_reminder.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.one_hour_reminder.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-purple-400" controls></video>
+                    <span class="text-purple-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.one_hour_reminder.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5 Minutes Reminder -->
+            <div class="bg-gray-700 rounded-lg p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-stopwatch text-red-400"></i>
+                    5 Minutes Reminder
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent 5 minutes before the meeting</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.five_minutes_reminder.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.five_minutes_reminder.message"
+                        rows="8" 
+                        placeholder="Almost time! Hi {{invitee_name}}, {{meeting_name}} starts in 5 minutes. Join now: {{join_url}}"
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('five_minutes_reminder')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.five_minutes_reminder.mediaFromLibrary && templateSettings.five_minutes_reminder.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.five_minutes_reminder.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.five_minutes_reminder.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-red-400" />
+                    <video ng-if="isVideo(templateSettings.five_minutes_reminder.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.five_minutes_reminder.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-red-400" controls></video>
+                    <span class="text-red-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.five_minutes_reminder.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Meeting Live -->
+            <div class="bg-gray-700 rounded-lg p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-play-circle text-green-400"></i>
+                    Meeting Live
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent when the meeting starts</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.meeting_live.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.meeting_live.message"
+                        rows="8" 
+                        placeholder="We're live! Hi {{invitee_name}}, {{meeting_name}} is starting now. Join immediately: {{join_url}}"
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('meeting_live')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.meeting_live.mediaFromLibrary && templateSettings.meeting_live.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.meeting_live.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.meeting_live.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-green-400" />
+                    <video ng-if="isVideo(templateSettings.meeting_live.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.meeting_live.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-green-400" controls></video>
+                    <span class="text-green-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.meeting_live.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Post Meeting Thanks -->
+            <div class="bg-gray-700 rounded-lg p-3 sm:p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-heart text-pink-400"></i>
+                    Post Meeting Thanks
+                  </h4>
+                  <div class="text-sm text-gray-400">Sent 1 hour after the meeting ends</div>
+                </div>
+                <label class="flex items-center">
+                  <input type="checkbox" ng-model="templateSettings.post_meeting_thanks.enabled" 
+                         class="mr-2 h-4 w-4 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500">
+                  <span class="text-sm text-gray-300">Enable</span>
+                </label>
+              </div>
+              <textarea ng-model="templateSettings.post_meeting_thanks.message"
+                        rows="8" 
+                        placeholder="Thank you! Hi {{invitee_name}}, thanks for attending {{meeting_name}}. Hope it was valuable for you!"
+                        class="w-full p-6 sm:p-4 bg-gray-600 border border-gray-500 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[180px] sm:min-h-[160px] lg:min-h-[140px] text-base sm:text-sm"></textarea>
+              
+              <!-- Media Attachment -->
+              <div class="mt-3">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Media Attachment</label>
+                <button type="button" ng-click="openMediaSelector('post_meeting_thanks')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors">
+                  <i class="fas fa-photo-video"></i>
+                  Browse Media Library
+                </button>
+                
+                <!-- Media Preview -->
+                <div ng-if="templateSettings.post_meeting_thanks.mediaFromLibrary && templateSettings.post_meeting_thanks.mediaFromLibrary.url" 
+                     class="mt-2 p-3 bg-gray-600 rounded-lg border border-gray-500">
+                  <div class="flex items-center gap-3">
+                    <img ng-if="isImage(templateSettings.post_meeting_thanks.mediaFromLibrary.url)" 
+                         ng-src="{{getImageUrl(templateSettings.post_meeting_thanks.mediaFromLibrary.url)}}" 
+                         class="h-12 w-12 object-cover rounded-lg border-2 border-pink-400" />
+                    <video ng-if="isVideo(templateSettings.post_meeting_thanks.mediaFromLibrary.url)" 
+                           ng-src="{{getImageUrl(templateSettings.post_meeting_thanks.mediaFromLibrary.url)}}" 
+                           class="h-12 w-12 rounded-lg border-2 border-pink-400" controls></video>
+                    <span class="text-pink-200 text-sm flex-1">Media attached</span>
+                    <button type="button" ng-click="templateSettings.post_meeting_thanks.mediaFromLibrary=null" 
+                            class="text-red-400 hover:text-red-300 transition-colors p-1 rounded">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 mt-6">
+            <button ng-click="resetAllTemplates()" 
+                    class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+              <i class="fas fa-undo"></i>
+              Reset All
+            </button>
+            <button ng-click="saveAllTemplates()" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+              <i class="fas fa-save"></i>
+              Save All Templates
+            </button>
+          </div>
+        </div>
+
+        <!-- Message Alert -->
+        <div ng-if="message.text" class="rounded-lg p-4 mb-6 flex items-center gap-3" 
+             ng-class="{'bg-green-700 border border-green-600 text-green-100': message.type === 'success',
+                        'bg-red-700 border border-red-600 text-red-100': message.type === 'error',
+                        'bg-blue-700 border border-blue-600 text-blue-100': message.type === 'info'}">
+          <i class="fas" ng-class="message.icon"></i>
+          {{message.text}}
+        </div>
+
+        <!-- Loading State -->
+        <div ng-if="loading && meetings.length === 0" class="text-center py-12">
+          <div class="animate-spin text-4xl text-blue-500 mb-4">
+            <i class="fas fa-spinner"></i>
+          </div>
+          <p class="text-gray-400">Loading meetings...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div ng-if="!loading && filteredMeetings.length === 0" class="text-center py-12">
+          <i class="fas fa-calendar-times text-6xl text-gray-500 mb-4"></i>
+          <h3 class="text-xl font-semibold text-white mb-2">No meetings found</h3>
+          <p class="text-gray-400" ng-if="filter === 'upcoming'">You don't have any upcoming meetings.</p>
+          <p class="text-gray-400" ng-if="filter === 'past'">You don't have any past meetings.</p>
+          <p class="text-gray-400" ng-if="filter === 'all'">No meetings synced yet. Configure your Calendly token in settings and sync.</p>
+        </div>
+
+        <!-- Meetings Grid -->
+        <div ng-if="filteredMeetings.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+          <div ng-repeat="meeting in filteredMeetings" class="relative rounded-xl p-4 sm:p-5 border border-gray-700 bg-gray-800 hover:border-blue-500 transition-colors duration-200 shadow-sm hover:shadow-md">
+            <!-- Status Badge -->
+            <div class="absolute top-3 sm:top-4 right-3 sm:right-4">
+              <span class="px-2 sm:px-3 py-1 rounded-full text-xs font-semibold tracking-wide"
+                    ng-class="{'bg-green-600/80 text-green-100': getMeetingStatus(meeting) === 'Upcoming',
+                               'bg-red-600/80 text-red-100 animate-pulse': getMeetingStatus(meeting) === 'Live',
+                               'bg-gray-600/70 text-gray-200': getMeetingStatus(meeting) === 'Completed'}">
+                {{getMeetingStatus(meeting)}}
+              </span>
+            </div>
+
+            <!-- Meeting Title -->
+            <h3 class="text-base sm:text-lg font-semibold text-white mb-3 pr-14 leading-snug line-clamp-2">{{meeting.name}}</h3>
+
+            <!-- Key Meta Row -->
+            <div class="flex flex-wrap gap-2 mb-4">
+              <div class="flex items-center gap-1.5 text-xs px-2 py-1 rounded bg-gray-700/60 text-gray-300">
+                <i class="fas fa-clock text-blue-400"></i>
+                <span>{{formatDateTime(meeting.start_time)}}</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs px-2 py-1 rounded bg-gray-700/60 text-gray-300">
+                <i class="fas fa-stopwatch text-blue-400"></i>
+                <span>{{calculateDuration(meeting.start_time, meeting.end_time)}}</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs px-2 py-1 rounded bg-gray-700/60 text-gray-300">
+                <i class="fas fa-tag text-blue-400"></i>
+                <span>{{meeting.event_type}}</span>
+              </div>
+              <div ng-if="meeting.location && meeting.location.join_url" class="flex items-center gap-1.5 text-xs px-2 py-1 rounded bg-gray-700/60 text-gray-300">
+                <i class="fas fa-map-marker-alt text-blue-400"></i>
+                <span>Online</span>
+              </div>
+            </div>
+
+            <!-- Invitee Section -->
+            <div ng-if="meeting.invitee" class="rounded-lg p-3 mb-4 bg-gray-700/50 border border-gray-600/60">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="bg-blue-600/20 rounded-full p-1.5">
+                  <i class="fas fa-user text-blue-400 text-xs"></i>
+                </div>
+                <span class="font-medium text-white text-sm">{{meeting.invitee.name || 'Guest'}}</span>
+              </div>
+
+              <div class="grid grid-cols-1 gap-2 text-xs">
+                <div ng-if="meeting.invitee.email" class="flex items-center gap-2 bg-gray-800/60 rounded px-2 py-1">
+                  <i class="fas fa-envelope text-blue-400 w-3"></i>
+                  <span class="text-gray-300 truncate">{{meeting.invitee.email}}</span>
+                </div>
+                <div ng-if="meeting.invitee.timezone" class="flex items-center gap-2 bg-gray-800/60 rounded px-2 py-1">
+                  <i class="fas fa-globe text-blue-400 w-3"></i>
+                  <span class="text-gray-300">{{meeting.invitee.timezone}}</span>
+                </div>
+              </div>
+
+              <div ng-if="meeting.invitee.questions_and_answers && meeting.invitee.questions_and_answers.length > 0" class="mt-3">
+                <h5 class="text-xs font-semibold text-gray-200 mb-2 tracking-wide">Booking Questions</h5>
+                <div class="space-y-2 max-h-32 overflow-auto pr-1 custom-scrollbar thin-scroll">
+                  <div ng-repeat="qa in meeting.invitee.questions_and_answers" class="bg-gray-800/50 rounded p-2">
+                    <div class="text-blue-300 text-xs font-medium">{{qa.question}}</div>
+                    <div class="text-gray-300 mt-1 text-xs leading-snug">{{qa.answer}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-between items-center mt-auto" ng-class="{'pt-2': meeting.invitee}">
+              <a ng-if="meeting.location && meeting.location.join_url" ng-href="{{meeting.location.join_url}}" target="_blank" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors no-underline">
+                <i class="fas fa-video"></i>
+                Join
+              </a>
+              <button type="button" ng-click="toggleMeetingExpanded(meeting)" class="text-xs text-gray-400 hover:text-gray-200 ml-auto flex items-center gap-1">
+                <span>{{meeting.__expanded ? 'Hide' : 'More'}}</span>
+                <i class="fas" ng-class="meeting.__expanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </button>
+            </div>
+
+            <!-- Expanded Details -->
+            <div ng-if="meeting.__expanded" class="mt-4 border-t border-gray-700 pt-3 text-xs space-y-2">
+              <div class="flex items-start gap-2">
+                <i class="fas fa-hashtag text-blue-400 mt-0.5"></i>
+                <div class="text-gray-300 break-all">ID: {{meeting.uri || meeting.uuid}}</div>
+              </div>
+              <div class="flex items-start gap-2" ng-if="meeting.created_at">
+                <i class="fas fa-calendar-plus text-blue-400 mt-0.5"></i>
+                <div class="text-gray-300">Created: {{formatDateTime(meeting.created_at)}}</div>
+              </div>
+              <div class="flex items-start gap-2" ng-if="meeting.end_time">
+                <i class="fas fa-flag-checkered text-blue-400 mt-0.5"></i>
+                <div class="text-gray-300">Ends: {{formatDateTime(meeting.end_time)}}</div>
+              </div>
+              <div class="flex items-start gap-2" ng-if="meeting.event_type">
+                <i class="fas fa-tags text-blue-400 mt-0.5"></i>
+                <div class="text-gray-300">Type: {{meeting.event_type}}</div>
+              </div>
+              <div class="flex items-start gap-2" ng-if="meeting.location && meeting.location.join_url">
+                <i class="fas fa-link text-blue-400 mt-0.5"></i>
+                <a class="text-blue-400 hover:underline break-all" ng-href="{{meeting.location.join_url}}" target="_blank">{{meeting.location.join_url}}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Media Selector Modal -->
+<div ng-if="showMediaSelector" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-gray-800 rounded-lg p-6 w-full max-w-4xl mx-4 max-h-screen overflow-y-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-semibold text-white">Select Media from Library</h3>
+      <button ng-click="closeMediaSelector()" class="text-gray-400 hover:text-white">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
+    
+    <div ng-if="mediaLibrary.length === 0" class="text-center py-8">
+      <i class="fas fa-images text-gray-500 text-4xl mb-4"></i>
+      <p class="text-gray-400">No media files found. Upload some files in the Media section first.</p>
+      <a href="#/media" class="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+        Go to Media Library
+      </a>
+    </div>
+    
+    <div ng-if="mediaLibrary.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div ng-repeat="media in mediaLibrary" 
+           class="bg-gray-700 rounded-lg p-3 cursor-pointer hover:bg-gray-600 transition-colors"
+           ng-click="selectMediaForTemplate(media)">
+        <div class="aspect-square mb-2 bg-gray-600 rounded-lg overflow-hidden flex items-center justify-center">
+          <img ng-if="isImage(media.url)" 
+               ng-src="{{getImageUrl(media.url)}}" 
+               class="w-full h-full object-cover" 
+               loading="lazy" />
+          <video ng-if="isVideo(media.url)" 
+                 ng-src="{{getImageUrl(media.url)}}" 
+                 class="w-full h-full object-cover">
+          </video>
+          <i ng-if="!isImage(media.url) && !isVideo(media.url)" 
+             class="fas fa-file text-gray-400 text-2xl"></i>
+        </div>
+        <p class="text-sm text-gray-300 truncate">{{media.filename || media.name || 'Untitled'}}</p>
+        <p class="text-xs text-gray-500">{{media.size ? (media.size / 1024 / 1024).toFixed(1) + ' MB' : ''}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Toast for Template Save -->
+<div ng-if="showSaveSuccessToast" class="fixed top-4 right-4 z-50 max-w-sm w-full bg-green-600 border border-green-400 rounded-lg shadow-lg transform transition-all duration-300 ease-out">
+  <div class="p-4">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <i class="fas fa-check-circle text-white text-lg"></i>
+      </div>
+      <div class="ml-3 flex-1">
+        <p class="text-sm font-medium text-white">
+          Templates saved successfully!
+        </p>
+        <p class="text-xs text-green-100 mt-1">
+          Your notification templates have been updated and will be used for future meetings.
+        </p>
+      </div>
+      <div class="ml-4 flex-shrink-0">
+        <button ng-click="closeSaveSuccessToast()" class="text-green-200 hover:text-white transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

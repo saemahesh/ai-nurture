@@ -69,6 +69,12 @@
           <span class="nav-text">Drip Campaigns</span>
           <div class="nav-indicator" ng-if="isActive('/sequences')"></div>
         </a>
+        <a href="#/ai-agents" class="nav-item group relative" ng-class="{'active': isActive('/ai-agents')}" plan-expired-check>
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-brain nav-icon" style="color: #10b981 !important;"></i>
+          <span class="nav-text">AI Agents</span>
+          <div class="nav-indicator" ng-if="isActive('/ai-agents')"></div>
+        </a>
        
         <a href="#/event-reminders" class="nav-item group relative" ng-class="{'active': isActive('/event-reminders')}" plan-expired-check>
           <div class="nav-item-bg"></div>
@@ -289,6 +295,12 @@
             <i class="fas fa-robot nav-icon" style="color: #ef4444 !important;"></i>
             <span class="nav-text">Drip Campaigns</span>
             <div class="nav-indicator" ng-if="isActive('/sequences')"></div>
+          </a>
+          <a href="#/ai-agents" class="nav-item group relative" ng-class="{'active': isActive('/ai-agents')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-brain nav-icon" style="color: #10b981 !important;"></i>
+            <span class="nav-text">AI Agents</span>
+            <div class="nav-indicator" ng-if="isActive('/ai-agents')"></div>
           </a>
        
           

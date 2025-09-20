@@ -59,6 +59,7 @@ const statusRouter = require('./routes/status');
 const customersRouter = require('./routes/customers');
 const calendlyRouter = require('./routes/calendly');
 const emailRouter = require('./routes/email');
+const aiAgentsRouter = require('./routes/ai-agents');
 
 // Initialize Campaign Executor for automatic message processing
 const CampaignExecutor = require('./campaign-executor');
@@ -313,6 +314,7 @@ app.use('/api/customers', express.json(), customersRouter);
 app.use('/status', statusRouter); // status routes
 app.use('/api/calendly', express.json(), calendlyRouter); // calendly routes
 app.use('/api/email', express.json(), emailRouter); // email routes
+app.use('/api/ai-agents', express.json(), aiAgentsRouter); // ai agents routes
 
 // Centralized WhatsApp group message sender
 async function sendWhatsAppGroupMessage({ group_id, type, message, media_url, instance_id, access_token }) {

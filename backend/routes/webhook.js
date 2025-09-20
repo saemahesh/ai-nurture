@@ -3,11 +3,15 @@ const { getDataFilePath } = require('../data-utils');
 const fs = require("fs");
 const path = require("path");
 const moment = require("moment-timezone");
+const axios = require("axios");
 const router = express.Router();
 
 // Import the CampaignExecutor singleton
 const CampaignExecutor = require("../campaign-executor");
 const campaignExecutor = CampaignExecutor.getInstance();
+
+// Import AI service for intelligent responses
+const { generateAIResponse, shouldRespond, getActiveAgents } = require("../services/ai.service");
 
 /**
  * Unified Webhook Handler
@@ -363,6 +367,15 @@ router.post("/enroll", (req, res) => {
   // 3. If not a stop message, check for enrollment keywords
   try {
     const result = handleEnrollment(phone, messageText, user, pushName);
+    
+    // 4. If no sequence match found, check for AI agent responses
+    if (result.action === "no_match") {
+      console.log(`[WEBHOOK] No sequence match found, checking AI agents for ${phone}`);
+      
+      // Try to get AI response (asynchronous, don't wait for response)
+      handleAIResponse(phone, content, user, instance_id);
+    }
+    
     return res.json(result);
   } catch (error) {
     console.error(`[WEBHOOK] Error processing enrollment for ${phone}:`, error);
@@ -635,5 +648,145 @@ router.post("/test-message", (req, res) => {
     res.status(500).json({ error: "Test failed", details: error.message });
   }
 });
+
+// Function to handle AI agent responses
+async function handleAIResponse(phone, message, user, instanceId) {
+  try {
+    console.log(`[AI] Checking for AI agents for user: ${user.username}`);
+    
+    // Get active AI agents for this user
+    const activeAgents = getActiveAgents(user.username);
+    
+    if (activeAgents.length === 0) {
+      console.log(`[AI] No active AI agents found for user: ${user.username}`);
+      return;
+    }
+    
+    console.log(`[AI] Found ${activeAgents.length} active AI agents`);
+    
+    // Check each agent to see if it should respond
+    for (const agent of activeAgents) {
+      if (shouldRespond(agent, message)) {
+        console.log(`[AI] Agent "${agent.name}" will respond to message: "${message}"`);
+        
+        try {
+          // Generate AI response
+          const aiResponse = await generateAIResponse(agent, message);
+          
+          if (aiResponse) {
+            console.log(`[AI] Generated response from agent "${agent.name}": "${aiResponse}"`);
+            
+            // Send response via WhatsApp API
+            await sendAIResponse(phone, aiResponse, instanceId, user);
+            
+            // Log the interaction
+            logAIInteraction(agent.id, phone, message, aiResponse, user.username);
+            
+            // Only respond with first matching agent
+            break;
+          }
+        } catch (error) {
+          console.error(`[AI] Error generating response from agent "${agent.name}":`, error);
+          // Continue to next agent if this one fails
+          continue;
+        }
+      } else {
+        console.log(`[AI] Agent "${agent.name}" should not respond to this message`);
+      }
+    }
+  } catch (error) {
+    console.error(`[AI] Error in handleAIResponse:`, error);
+  }
+}
+
+// Function to send AI response via WhatsApp API
+async function sendAIResponse(phone, message, instanceId, user) {
+  try {
+    const delay = 2000; // 2 second delay to make it feel more natural
+    
+    setTimeout(async () => {
+      try {
+        // Get user's WhatsApp API settings
+        const accessToken = user.settings?.access_token;
+        
+        if (!accessToken) {
+          console.error(`[AI] No access token found for user: ${user.username}`);
+          return;
+        }
+        
+        // Prepare WhatsApp API request
+        const whatsappPayload = {
+          messaging_product: "whatsapp",
+          to: phone,
+          type: "text",
+          text: {
+            body: message
+          }
+        };
+        
+        // Send via WhatsApp Business API
+        const axios = require('axios');
+        const response = await axios.post(
+          `https://graph.facebook.com/v17.0/${instanceId}/messages`,
+          whatsappPayload,
+          {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        
+        console.log(`[AI] Successfully sent AI response to ${phone}`);
+        
+      } catch (error) {
+        console.error(`[AI] Error sending WhatsApp message:`, error.response?.data || error.message);
+      }
+    }, delay);
+    
+  } catch (error) {
+    console.error(`[AI] Error in sendAIResponse:`, error);
+  }
+}
+
+// Function to log AI interactions
+function logAIInteraction(agentId, phone, userMessage, aiResponse, username) {
+  try {
+    const interactionLog = {
+      id: 'ai_' + Date.now(),
+      agent_id: agentId,
+      username: username,
+      phone: normalizePhoneNumber(phone),
+      user_message: userMessage,
+      ai_response: aiResponse,
+      timestamp: moment().toISOString()
+    };
+    
+    // Read existing interactions
+    const interactionsPath = getDataFilePath('ai-interactions.json');
+    let interactions = [];
+    
+    if (fs.existsSync(interactionsPath)) {
+      const data = fs.readFileSync(interactionsPath, 'utf8');
+      interactions = JSON.parse(data);
+    }
+    
+    // Add new interaction
+    interactions.push(interactionLog);
+    
+    // Keep only last 1000 interactions to prevent file from growing too large
+    if (interactions.length > 1000) {
+      interactions = interactions.slice(-1000);
+    }
+    
+    // Write back to file
+    fs.writeFileSync(interactionsPath, JSON.stringify(interactions, null, 2));
+    
+    console.log(`[AI] Logged interaction for agent ${agentId}`);
+    
+  } catch (error) {
+    console.error(`[AI] Error logging interaction:`, error);
+  }
+}
 
 module.exports = router;

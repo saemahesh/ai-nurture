@@ -1,0 +1,294 @@
+<div class="flex h-screen dark-theme">
+    <!-- Sidebar -->
+    <div ng-include="'sidebar.html?v=' + Date.now()" ng-controller="SidebarController"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="dark-theme-header dark-theme-header-bg z-10 py-4 px-6">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="#/ai-agents" class="text-gray-400 hover:text-gray-300 mr-4">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h2 class="text-xl font-semibold text-white responsive-header-title" style="padding-left:50px;">
+                    {{isEditMode ? 'Edit AI Agent' : 'Create AI Agent'}}
+                </h2>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button ng-click="saveAgent()" ng-disabled="saving || !isFormValid()" 
+                        class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-700 text-white font-medium rounded-lg hover:from-teal-500 hover:to-teal-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-save mr-2" ng-hide="saving"></i>
+                    <i class="fas fa-spinner fa-spin mr-2" ng-show="saving"></i>
+                    {{saving ? 'Saving...' : (isEditMode ? 'Update Agent' : 'Create Agent')}}
+                </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="flex-1 overflow-y-auto p-6 dark-theme-bg">
+    <div class="max-w-4xl mx-auto">
+        <form ng-submit="saveAgent()" novalidate>
+            <!-- Basic Information Card -->
+            <div class="bg-gray-800/50 rounded-xl shadow-sm border border-gray-700 p-6 mb-6">
+                <h2 class="text-lg font-semibold text-white mb-6">Basic Information</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Agent Name *</label>
+                        <input type="text" ng-model="agent.name" 
+                               class="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-white placeholder-gray-400"
+                               placeholder="Enter agent name" required>
+                        <div ng-show="errors.name" class="text-red-400 text-sm mt-1">{{errors.name}}</div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Status</label>
+                        <select ng-model="agent.status" 
+                                class="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-white">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                    <textarea ng-model="agent.description" rows="3"
+                             class="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-white placeholder-gray-400"
+                             placeholder="Describe what this agent does..."></textarea>
+                </div>
+            </div>
+
+            <!-- System Prompt Configuration -->
+            <div class="bg-gray-800/50 rounded-xl shadow-sm border border-gray-700 p-6 mb-6">
+                <h2 class="text-lg font-semibold text-white mb-6">AI Configuration</h2>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">System Prompt</label>
+                    <textarea ng-model="agent.systemPrompt" rows="4"
+                             class="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-white placeholder-gray-400"
+                             placeholder="You are a helpful assistant that..."></textarea>
+                    <p class="text-sm text-gray-400 mt-1">Define the agent's personality and behavior. Uses Grok-4 model via OpenRouter.</p>
+                </div>
+            </div>
+
+            <!-- Knowledge Bases -->
+            <div class="bg-gray-800/50 rounded-xl shadow-sm border border-gray-700 p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-lg font-semibold text-white">Knowledge Bases</h2>
+                    <button type="button" ng-click="addKnowledgeBase()" 
+                            class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-medium rounded-lg hover:from-green-500 hover:to-green-600 transition-all duration-200">
+                        <i class="fas fa-plus mr-2"></i>
+                        Add Knowledge Base
+                    </button>
+                </div>
+                
+                <!-- Knowledge Base Items -->
+                <div ng-if="agent.knowledgeBases.length === 0" class="text-center py-8 text-gray-400">
+                    <i class="fas fa-database text-3xl mb-4"></i>
+                    <p>No knowledge bases added yet</p>
+                    <p class="text-sm">Add knowledge bases to provide context to your AI agent</p>
+                </div>
+                
+                <div ng-repeat="kb in agent.knowledgeBases" class="border border-gray-600 rounded-lg p-4 mb-4 bg-gray-700/30">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex-1">
+                            <input type="text" ng-model="kb.name" 
+                                   class="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-white placeholder-gray-400"
+                                   placeholder="Knowledge base name" required>
+                            <div ng-show="errors['kb_name_' + $index]" class="text-red-400 text-sm mt-1">{{errors['kb_name_' + $index]}}</div>
+                        </div>
+                        <div class="flex items-center ml-3 space-x-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" ng-model="kb.active" id="kb_active_{{$index}}"
+                                       class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-600 bg-gray-700 rounded">
+                                <label for="kb_active_{{$index}}" class="ml-2 block text-sm text-gray-300">
+                                    Active
+                                </label>
+                            </div>
+                            <button type="button" ng-click="confirmRemoveKnowledgeBase($index)" 
+                                    class="text-red-400 hover:text-red-300 p-2">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Content</label>
+                        <textarea ng-model="kb.content" rows="6"
+                                 class="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-white placeholder-gray-400"
+                                 placeholder="Paste your knowledge base content here..." required></textarea>
+                        <div class="flex justify-between text-xs text-gray-400 mt-1">
+                            <span>{{kb.content ? kb.content.length : 0}} characters</span>
+                            <span ng-show="kb.content && kb.content.length > 8000" class="text-orange-400">
+                                Large content may affect response time
+                            </span>
+                        </div>
+                        <div ng-show="errors['kb_content_' + $index]" class="text-red-400 text-sm mt-1">{{errors['kb_content_' + $index]}}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Auto-Response Settings -->
+            <div class="bg-gray-800/50 rounded-xl shadow-sm border border-gray-700 p-6 mb-6">
+                <h2 class="text-lg font-semibold text-white mb-6">Auto-Response Settings</h2>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center">
+                        <input type="checkbox" ng-model="agent.autoRespond" id="autoRespond"
+                               class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-600 bg-gray-700 rounded">
+                        <label for="autoRespond" class="ml-2 block text-sm text-gray-300">
+                            Enable automatic responses to incoming messages
+                        </label>
+                    </div>
+                    
+                    <div ng-show="agent.autoRespond" class="ml-6 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Response Delay (seconds)</label>
+                            <input type="number" ng-model="agent.responseDelay" min="0" max="300"
+                                   class="w-32 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-white placeholder-gray-400"
+                                   style="background-color: rgb(55 65 81) !important; color: white !important;">
+                            <p class="text-sm text-gray-400 mt-1">Delay before sending automatic response (0-300 seconds)</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Trigger Keywords (optional)</label>
+                            <input type="text" ng-model="agent.triggerKeywords" 
+                                   class="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-white placeholder-gray-400"
+                                   placeholder="help, support, question (comma separated)">
+                            <p class="text-sm text-gray-400 mt-1">Only respond to messages containing these keywords. Leave empty to respond to all messages.</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Ignore Keywords (optional)</label>
+                            <input type="text" ng-model="agent.ignoreKeywords" 
+                                   class="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-white placeholder-gray-400"
+                                   placeholder="spam, promotion, advertisement (comma separated)">
+                            <p class="text-sm text-gray-400 mt-1">Do not respond to messages containing these keywords.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex items-center justify-between">
+                <a href="#/ai-agents" class="text-gray-400 hover:text-gray-300 font-medium">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to AI Agents
+                </a>
+                
+                <div class="flex items-center space-x-3">
+                    <button type="button" ng-click="testAgent()" ng-show="isEditMode"
+                            class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white font-medium rounded-lg hover:from-green-500 hover:to-green-600 transition-all duration-200">
+                        <i class="fas fa-play mr-2"></i>
+                        Test Agent
+                    </button>
+                    <button type="submit" ng-disabled="saving || !isFormValid()" 
+                            class="inline-flex items-center px-6 py-2 bg-gradient-to-r from-teal-600 to-teal-700 text-white font-medium rounded-lg hover:from-teal-500 hover:to-teal-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-save mr-2" ng-hide="saving"></i>
+                        <i class="fas fa-spinner fa-spin mr-2" ng-show="saving"></i>
+                        {{saving ? 'Saving...' : (isEditMode ? 'Update Agent' : 'Create Agent')}}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+<!-- Test Agent Modal (only show in edit mode) -->
+<div ng-show="showTestModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-md mx-4 border border-gray-700">
+        <div class="p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Test AI Agent</h3>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Test Message</label>
+                <textarea ng-model="testMessage" rows="3" 
+                         class="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-white placeholder-gray-400"
+                         placeholder="Enter a test message..."></textarea>
+            </div>
+            
+            <div ng-show="testResponse" class="mb-4 p-3 bg-gray-700/30 rounded-lg border border-gray-600">
+                <label class="block text-sm font-medium text-gray-300 mb-2">AI Response</label>
+                <div class="text-sm text-gray-200">{{testResponse}}</div>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button ng-click="closeTestModal()" class="px-4 py-2 text-gray-400 font-medium rounded-lg hover:bg-gray-700/50">
+                    Close
+                </button>
+                <button ng-click="runTest()" ng-disabled="testingAgent || !testMessage"
+                        class="px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-700 text-white font-medium rounded-lg hover:from-teal-500 hover:to-teal-600 disabled:opacity-50">
+                    <i class="fas fa-spinner fa-spin mr-2" ng-show="testingAgent"></i>
+                    {{testingAgent ? 'Testing...' : 'Send Test'}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div ng-if="toast.show" class="fixed top-4 right-4 z-50 transition-all duration-300 ease-in-out">
+        <div class="rounded-lg shadow-lg px-6 py-4 max-w-sm" 
+             ng-class="{
+                 'bg-green-600 text-white': toast.type === 'success',
+                 'bg-red-600 text-white': toast.type === 'error',
+                 'bg-yellow-600 text-white': toast.type === 'warning',
+                 'bg-blue-600 text-white': toast.type === 'info'
+             }">
+            <div class="flex items-center">
+                <i class="fas mr-3" 
+                   ng-class="{
+                       'fa-check-circle': toast.type === 'success',
+                       'fa-exclamation-circle': toast.type === 'error',
+                       'fa-exclamation-triangle': toast.type === 'warning',
+                       'fa-info-circle': toast.type === 'info'
+                   }"></i>
+                <span>{{toast.message}}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div ng-if="showConfirmModal" class="fixed inset-0 z-50 flex items-center justify-center min-h-screen overflow-y-auto" style="background: rgba(15,23,42,0.7); z-index: 99999 !important;" ng-click="handleCancel()">
+        <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important; min-height: 0; margin-top: 4rem; margin-bottom: 2rem;" ng-click="$event.stopPropagation()">
+            <!-- Close X button at top -->
+            <button type="button" class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl font-bold close-x-button" style="border: none !important; outline: none !important; background: transparent !important;" ng-click="handleCancel()">✕</button>
+            
+            <div class="pt-4">
+                <div class="flex items-center mb-4">
+                    <div class="flex-shrink-0 mr-3">
+                        <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">{{confirmModal.title}}</h3>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <p class="text-gray-300">{{confirmModal.message}}</p>
+                    <p class="text-sm text-gray-400 mt-2">This action cannot be undone.</p>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button 
+                        ng-click="handleCancel()"
+                        class="px-4 py-2 bg-gray-500 hover:bg-gray-600 rounded-lg text-white font-semibold transition">
+                        {{confirmModal.cancelText}}
+                    </button>
+                    <button 
+                        ng-click="handleConfirm()"
+                        class="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg text-white font-semibold transition">
+                        {{confirmModal.confirmText}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

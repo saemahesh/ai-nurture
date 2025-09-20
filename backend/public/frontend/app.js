@@ -14,6 +14,7 @@ angular.module('autopostWaApp.events', ['autopostWaApp.core']);
 angular.module('autopostWaApp.media', ['autopostWaApp.core']);
 angular.module('autopostWaApp.schedules', ['autopostWaApp.core']);
 angular.module('autopostWaApp.sequences', ['autopostWaApp.core']);
+angular.module('autopostWaApp.aiAgents', ['autopostWaApp.core']);
 angular.module('autopostWaApp.status', ['autopostWaApp.core']);
 angular.module('autopostWaApp.meetings', ['autopostWaApp.core']);
 
@@ -28,6 +29,7 @@ var app = angular.module('autopostWaApp', [
   'autopostWaApp.media',
   'autopostWaApp.schedules',
   'autopostWaApp.sequences',
+  'autopostWaApp.aiAgents',
   'autopostWaApp.status',
   'autopostWaApp.meetings'
 ]);
@@ -120,6 +122,18 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
     .when('/customers', {
       templateUrl: getTemplateUrl('customers.html'),
       controller: 'CustomersController'
+    })
+    .when('/ai-agents', {
+      templateUrl: getTemplateUrl('ai-agents.html'),
+      controller: 'AIAgentsController'
+    })
+    .when('/ai-agents/create', {
+      templateUrl: getTemplateUrl('ai-agent-create.html'),
+      controller: 'AIAgentCreateController'
+    })
+    .when('/ai-agents/:id', {
+      templateUrl: getTemplateUrl('ai-agent-create.html'),
+      controller: 'AIAgentCreateController'
     })
     .when('/campaigns', {
       redirectTo: '/sequences'

@@ -1,5 +1,5 @@
 const CampaignExecutor = require('./campaign-executor');
-const { getDataFilePath } = require('../data-utils');
+const { getDataFilePath } = require('./data-utils');
 const fs = require('fs');
 const path = require('path');
 
@@ -7,14 +7,13 @@ const path = require('path');
 class EnrollmentProcessor {
   constructor() {
     this.executor = new CampaignExecutor();
-    this.dataDir = path.join(__dirname, 'data');
   }
 
   // Process all existing enrollments
   processAllEnrollments() {
     console.log('🔄 Processing All Existing Enrollments...\n');
     
-    const enrollments = JSON.parse(fs.readFileSync(path.join(this.dataDir, 'enrollments.json'), 'utf8'));
+    const enrollments = JSON.parse(fs.readFileSync(getDataFilePath('enrollments.json'), 'utf8'));
     
     if (enrollments.length === 0) {
       console.log('❌ No enrollments found to process');
@@ -60,7 +59,7 @@ class EnrollmentProcessor {
   // Show current queue status
   showQueueStatus() {
     console.log('\n📬 Queue Status After Processing:');
-    const queue = JSON.parse(fs.readFileSync(path.join(this.dataDir, 'campaign_queue.json'), 'utf8'));
+    const queue = JSON.parse(fs.readFileSync(getDataFilePath('campaign_queue.json'), 'utf8'));
     
     if (queue.length === 0) {
       console.log('   ❌ Queue is still empty');

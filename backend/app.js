@@ -10,6 +10,11 @@ const cron = require('node-cron');
 const axios = require('axios');
 const { getDataFilePath } = require('./data-utils');
 
+// Initialize data files on startup
+const { verifyCriticalFiles } = require('./services/data-init.service');
+console.log('🚀 Starting application...');
+verifyCriticalFiles();
+
 // Helper function to get the correct media URL for sending
 function getMediaUrlForSending(mediaUrl) {
   // If no media URL, return null
@@ -60,6 +65,7 @@ const customersRouter = require('./routes/customers');
 const calendlyRouter = require('./routes/calendly');
 const emailRouter = require('./routes/email');
 const aiAgentsRouter = require('./routes/ai-agents');
+const chatRouter = require('./routes/chat');
 
 // Initialize Campaign Executor for automatic message processing
 const CampaignExecutor = require('./campaign-executor');
@@ -315,6 +321,8 @@ app.use('/status', statusRouter); // status routes
 app.use('/api/calendly', express.json(), calendlyRouter); // calendly routes
 app.use('/api/email', express.json(), emailRouter); // email routes
 app.use('/api/ai-agents', express.json(), aiAgentsRouter); // ai agents routes
+app.use('/api/chat', express.json(), chatRouter); // chat routes
+app.use('/api/data-init', express.json(), require('./routes/data-init')); // data initialization routes
 
 // Centralized WhatsApp group message sender
 async function sendWhatsAppGroupMessage({ group_id, type, message, media_url, instance_id, access_token }) {

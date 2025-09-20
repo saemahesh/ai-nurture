@@ -5,8 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
-const dataPath = path.join(__dirname, '..', 'data');
-const directSchedulesFilePath = path.join(dataPath, 'direct_schedules.json');
+const directSchedulesFilePath = getDataFilePath('direct_schedules.json');
 
 // Middleware to check if user is logged in
 function isAuthenticated(req, res, next) {

@@ -1,16 +1,67 @@
-**Action Plan - Iteration 1**
+Task Plan for AI-Nurture**Action Plan - Iteration 5/148**
 
-Current Issue: Old "keywords" field still appearing in sequence JSON data
+**Current Issue from issue-details.txt:**
+"are you making sure to add json files in db/local and db/production folders for the chat feature and ai agent feature to work properly ?"
 
-Root Cause Analysis:
-- Sequences.json contains old "keywords" field: ["sdfdsf"] alongside new exactKeywords/containsKeywords
-- This indicates incomplete migration or residual code still creating old field
+**Investigation Focus:**
+1. Verify all required JSON files exist in db/local and db/production folders
+2. Check if chat feature requires specific JSON files (chats.json)
+3. Check if AI agent feature requires specific JSON files (ai-agents.json)
+4. Ensure data initialization creates missing files in proper environment-based locations
+5. Verify all services properly initialize their required JSON files
 
-Investigation Tasks:
-1. Search all code for any reference to setting "keywords" field (not exactKeywords/containsKeywords)
-2. Check if frontend controller still sends keywords field in requests
-3. Identify where the old keywords field is being created/maintained
-4. Create migration to clean up existing sequence data
-5. Ensure all new sequences only use the new dual keyword system
+**Status:** Investigating JSON file initialization for chat and AI agent featuresct - AI Agent Feature Issues
 
-Target: Remove all traces of old "keywords" field from sequence data structure
+## Current Iteration: 5/148
+## Current Issue Focus: Input Styling and UI Improvements
+
+### Primary Issues to Fix:
+1. **Response Delay Input Styling**
+   - Page: http://localhost:3000/dashboard#/ai-agents/create 
+   - Problem: Response Delay (seconds) input bg not matching other inputs
+   - Solution: Apply consistent dark theme styling
+
+2. **AI Agent Pause/Delete Functionality**
+   - Problem: Agent pause and delete buttons not working
+   - Solution: Fix controller functions and add confirmation popups
+   - Need confirmation popup before delete for both agent and knowledgebase
+
+3. **Knowledge Base Active/Inactive Option**
+   - Problem: No option to activate/deactivate individual knowledge bases
+   - Solution: Add toggle functionality for each knowledge base
+
+4. **Ignore Keywords Feature**
+   - Problem: Missing ignore keywords functionality (opposite of trigger keywords)
+   - Solution: Add ignore keywords field that prevents responses when matched
+
+### Action Plan for Current Iteration:
+1. Fix Response Delay input styling to match other inputs
+2. Implement working pause/delete functionality with confirmations
+3. Add active/inactive toggle for knowledge bases
+4. Add ignore keywords field and functionality
+5. Test all new features thoroughly
+
+### Success Criteria:
+- All input fields have consistent styling
+- Delete confirmations work properly
+- Knowledge base toggle functionality works
+- Ignore keywords feature works correctly
+
+### Next Steps After Current Issues Resolved:
+- Re-read issue-details.txt for feedback
+- Continue iterating until all issues resolved
+
+Problems Identified:
+1. Controller not registered for AI agents - pages not loading
+2. Frontend controllers not properly loaded
+3. Missing controller registration in main app
+
+Fix Tasks:
+1. Register AI Agents controllers in main app.js or index.html
+2. Ensure controller files are loaded by the frontend
+3. Fix any routing or template loading issues
+4. Test AI agents page navigation and functionality
+5. Verify backend API endpoints are working
+6. Test the complete AI agent creation and response flow
+
+Target: Fix all AI agent page loading and controller registration issues

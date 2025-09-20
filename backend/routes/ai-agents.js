@@ -201,7 +201,7 @@ router.post('/:id/test', requireAuth, async (req, res) => {
       return res.status(404).json({ error: 'Agent not found or you do not have permission to access it' });
     }
     
-    const { message } = req.body;
+    const { message, conversationHistory, phone } = req.body;
     if (!message) {
       return res.status(400).json({ error: 'Test message is required' });
     }
@@ -209,8 +209,34 @@ router.post('/:id/test', requireAuth, async (req, res) => {
     // Import AI service
     const { generateAIResponse } = require('../services/ai.service');
     
-    // Generate response using AI service
-    const response = await generateAIResponse(agent, message);
+    // Generate response using AI service with conversation history
+    // If phone is provided, it will use real chat history, otherwise use test conversation history
+    let response;
+    if (phone) {
+      response = await generateAIResponse(agent, message, phone);
+    } else {
+      // For test mode, we'll create a temporary test phone number to store conversation history
+      const testPhoneId = `test_${agent.id}_${req.session.user.username}`;
+      
+      // Store the test conversation history temporarily in chat service
+      if (conversationHistory && conversationHistory.length > 0) {
+        const chatService = require('../services/chat.service');
+        // Clear any existing test conversation
+        await chatService.clearTestConversation(testPhoneId);
+        // Add the conversation history
+        for (const msg of conversationHistory) {
+          await chatService.addMessage({
+            phone: testPhoneId,
+            text: msg.text,
+            type: msg.type,
+            timestamp: msg.timestamp || new Date().toISOString(),
+            username: req.session.user.username
+          });
+        }
+      }
+      
+      response = await generateAIResponse(agent, message, testPhoneId);
+    }
     
     res.json({ response });
   } catch (error) {

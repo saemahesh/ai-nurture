@@ -19,6 +19,8 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
     $scope.testMessage = '';
     $scope.testResponse = '';
     $scope.testingAgent = false;
+    $scope.testConversation = [];
+    $scope.testInput = { text: '' };
 
     // Initialize notification service
     NotificationService.initToast($scope);
@@ -227,37 +229,92 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
     // Test agent
     $scope.testAgent = function() {
         $scope.showTestModal = true;
-        $scope.testMessage = '';
-        $scope.testResponse = '';
+        $scope.testConversation = [];
+        $scope.testInput.text = '';
     };
 
     // Close test modal
     $scope.closeTestModal = function() {
         $scope.showTestModal = false;
-        $scope.testMessage = '';
-        $scope.testResponse = '';
+        $scope.testConversation = [];
+        $scope.testInput.text = '';
     };
 
-    // Run test
-    $scope.runTest = function() {
-        if (!$scope.testMessage || $scope.testingAgent) return;
+    // Clear test conversation
+    $scope.clearTestConversation = function() {
+        $scope.testConversation = [];
+    };
+
+    // Send test message
+    $scope.sendTestMessage = function() {
+        if (!$scope.testInput.text || $scope.testingAgent) return;
+        
+        const userMessage = $scope.testInput.text.trim();
+        if (!userMessage) return;
+        
+        // Add user message to conversation
+        $scope.testConversation.push({
+            text: userMessage,
+            type: 'incoming',
+            timestamp: new Date().toISOString(),
+            sender: 'User'
+        });
         
         $scope.testingAgent = true;
-        $scope.testResponse = '';
+        $scope.testInput.text = '';
+        
+        // Get last 20 messages for context (or all if less than 20)
+        const conversationHistory = $scope.testConversation.slice(-20);
         
         $http.post('/api/ai-agents/' + $scope.agentId + '/test', {
-            message: $scope.testMessage
+            message: userMessage,
+            conversationHistory: conversationHistory
         })
         .then(function(response) {
-            $scope.testResponse = response.data.response;
+            // Add AI response to conversation
+            $scope.testConversation.push({
+                text: response.data.response,
+                type: 'ai',
+                timestamp: new Date().toISOString(),
+                sender: 'AI'
+            });
+            
+            // Scroll to bottom of conversation
+            setTimeout(function() {
+                var container = document.getElementById('testConversationContainer');
+                if (container) {
+                    container.scrollTop = container.scrollHeight;
+                }
+            }, 100);
         })
         .catch(function(error) {
             console.error('Error testing agent:', error);
-            $scope.testResponse = 'Error testing agent: ' + (error.data && error.data.error ? error.data.error : 'Unknown error');
+            // Add error message to conversation
+            $scope.testConversation.push({
+                text: 'Error: ' + (error.data && error.data.error ? error.data.error : 'Unknown error occurred'),
+                type: 'error',
+                timestamp: new Date().toISOString(),
+                sender: 'System'
+            });
         })
         .finally(function() {
             $scope.testingAgent = false;
         });
+    };
+
+    // Handle enter key in test input
+    $scope.handleTestKeyPress = function(event) {
+        if (event.keyCode === 13 && !event.shiftKey) {
+            event.preventDefault();
+            $scope.sendTestMessage();
+        }
+    };
+
+    // Format time for conversation
+    $scope.formatTestTime = function(timestamp) {
+        if (!timestamp) return '';
+        var date = new Date(timestamp);
+        return date.toLocaleTimeString();
     };
 
     // Initialize on load

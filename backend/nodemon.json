@@ -5,6 +5,8 @@
   ],
   "ignore": [
     "data/*.json",
+    "db/local/*.json",
+    "db/production/*.json",
     "node_modules"
   ],
   "ext": "js,json",

@@ -41,7 +41,6 @@ class CampaignExecutor {
     console.log('\n\n\n server started.');
     console.log('🆕 [CAMPAIGN_EXECUTOR] Creating new instance');
     
-    this.dataDir = getDataDir();
     this.queueFile = getDataFilePath('campaign_queue.json');
     this.campaignsFile = getDataFilePath('campaigns.json');
     this.enrollmentsFile = getDataFilePath('enrollments.json');
@@ -605,7 +604,7 @@ class CampaignExecutor {
     console.log(`📄 [WHATSAPP] Message content:`, JSON.stringify(message, null, 2));
     try {
       // Load user settings to get WhatsApp API credentials
-      const usersFile = path.join(this.dataDir, 'users.json');
+      const usersFile = getDataFilePath('users.json');
       const users = this.loadData(usersFile);
       const user = users.find(u => u.username === username);
       if (!user || !user.settings || !user.settings.instance_id || !user.settings.access_token) {

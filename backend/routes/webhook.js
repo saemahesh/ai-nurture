@@ -13,6 +13,9 @@ const campaignExecutor = CampaignExecutor.getInstance();
 // Import AI service for intelligent responses
 const { generateAIResponse, shouldRespond, getActiveAgents } = require("../services/ai.service");
 
+// Import chat service for storing message history
+const chatService = require("../services/chat.service");
+
 /**
  * Unified Webhook Handler
  * 
@@ -24,10 +27,11 @@ const { generateAIResponse, shouldRespond, getActiveAgents } = require("../servi
  * This consolidates enrollment and opt-out logic into a single endpoint.
  */
 
-const usersFile = path.join(__dirname, "../data/users.json");
-const sequencesFile = path.join(__dirname, "../data/sequences.json");
-const enrollmentsFile = path.join(__dirname, "../data/enrollments.json");
-const messageQueueFile = path.join(__dirname, "../data/message_queue.json");
+// Use environment-based data paths (already imported at top)
+const usersFile = getDataFilePath('users.json');
+const sequencesFile = getDataFilePath('sequences.json');
+const enrollmentsFile = getDataFilePath('enrollments.json');
+const messageQueueFile = getDataFilePath('message_queue.json');
 
 // Helper functions that are still needed in this file
 function readUsers() {
@@ -319,6 +323,21 @@ router.post("/enroll", (req, res) => {
   const phone = normalizePhoneNumber(fromContact);
 
   console.log(`[WEBHOOK] Processing message from ${phone}: "${content}"`);
+
+  // Store incoming message in chat history immediately
+  try {
+    chatService.addMessage({
+      phone: phone,
+      text: content.trim(), // Use original content, not lowercase
+      type: 'incoming',
+      username: null, // Incoming messages don't have a username
+      timestamp: new Date().toISOString()
+    });
+    console.log(`[WEBHOOK] Stored incoming message in chat history for ${phone}`);
+  } catch (error) {
+    console.error(`[WEBHOOK] Error storing message in chat history:`, error);
+    // Continue processing even if chat storage fails
+  }
 
   // 1. Find the user by instance_id
   const users = readUsers();
@@ -671,13 +690,13 @@ async function handleAIResponse(phone, message, user, instanceId) {
         
         try {
           // Generate AI response
-          const aiResponse = await generateAIResponse(agent, message);
+          const aiResponse = await generateAIResponse(agent, message, phone);
           
           if (aiResponse) {
             console.log(`[AI] Generated response from agent "${agent.name}": "${aiResponse}"`);
             
             // Send response via WhatsApp API
-            await sendAIResponse(phone, aiResponse, instanceId, user);
+            await sendAIResponse(phone, aiResponse, instanceId, user, agent);
             
             // Log the interaction
             logAIInteraction(agent.id, phone, message, aiResponse, user.username);
@@ -700,7 +719,7 @@ async function handleAIResponse(phone, message, user, instanceId) {
 }
 
 // Function to send AI response via WhatsApp API
-async function sendAIResponse(phone, message, instanceId, user) {
+async function sendAIResponse(phone, message, instanceId, user, agent = null) {
   try {
     const delay = 2000; // 2 second delay to make it feel more natural
     
@@ -738,6 +757,21 @@ async function sendAIResponse(phone, message, instanceId, user) {
         );
         
         console.log(`[AI] Successfully sent AI response to ${phone}`);
+        
+        // Store AI response in chat history
+        try {
+          chatService.addMessage({
+            phone: phone,
+            text: message,
+            type: 'ai',
+            username: user.username,
+            timestamp: new Date().toISOString(),
+            agentId: agent ? agent.id : null
+          });
+          console.log(`[AI] Stored AI response in chat history for ${phone}`);
+        } catch (error) {
+          console.error(`[AI] Error storing AI response in chat history:`, error);
+        }
         
       } catch (error) {
         console.error(`[AI] Error sending WhatsApp message:`, error.response?.data || error.message);

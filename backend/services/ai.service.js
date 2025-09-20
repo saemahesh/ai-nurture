@@ -1,13 +1,33 @@
-const axios = require('axios');
-
 /**
- * Generate AI response using OpenRouter API with Grok-4 model
+ * Generate AI response using OpenRouter API with free model
  * @param {Object} agent - The AI agent configuration
  * @param {string} userMessage - The user's message
+ * @param {string} [phone] - Phone number for chat history context
  * @returns {Promise<string>} - The AI's response
  */
-async function generateAIResponse(agent, userMessage) {
+async function generateAIResponse(agent, userMessage, phone = null) {
   try {
+    // Get recent chat history for context if phone is provided
+    let chatHistory = '';
+    if (phone) {
+      try {
+        const { getRecentMessagesForAI } = require('./chat.service');
+        const recentMessages = getRecentMessagesForAI(phone, 20); // Last 20 messages
+        
+        if (recentMessages.length > 0) {
+          chatHistory = 'Recent Chat History:\n\n';
+          recentMessages.forEach((msg, index) => {
+            const sender = msg.type === 'incoming' ? 'User' : (msg.type === 'ai' ? 'AI' : 'Support');
+            chatHistory += `${sender}: ${msg.text}\n`;
+          });
+          chatHistory += '\n---\n\n';
+        }
+      } catch (error) {
+        console.error('Error getting chat history for AI context:', error);
+        // Continue without chat history if there's an error
+      }
+    }
+
     // Build the context from active knowledge bases only
     let context = '';
     if (agent.knowledgeBases && agent.knowledgeBases.length > 0) {
@@ -20,6 +40,8 @@ async function generateAIResponse(agent, userMessage) {
         context += '---\n\n';
       }
     }
+
+
     
     // Prepare the system prompt with context and WhatsApp formatting instructions
     const whatsappFormatting = `
@@ -33,7 +55,7 @@ IMPORTANT FORMATTING INSTRUCTIONS:
 - Use emojis sparingly and only when appropriate
 - Make it conversational and friendly like WhatsApp chat and use emojis if relevant`;
     
-    const systemPrompt = `${agent.systemPrompt}${whatsappFormatting}\n\n${context}Based on the above knowledge base, please answer the following question. If the information is not available in the knowledge base, politely let the user know and provide general helpful information if possible.`;
+    const systemPrompt = `${agent.systemPrompt}${whatsappFormatting}\n\n${chatHistory}${context}Based on the above knowledge base and chat history, please answer the following question. Consider the conversation context to provide more relevant responses. If the information is not available in the knowledge base, politely let the user know and provide general helpful information if possible.`;
     
     // Prepare messages for the API call
     const messages = [

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const CampaignExecutor = require('../campaign-executor');
+const { getDataFilePath } = require('../data-utils');
 
 // Create campaign executor instance
 const campaignExecutor = new CampaignExecutor();
@@ -89,7 +90,7 @@ router.get('/queue', authRequired, (req, res) => {
   try {
     const fs = require('fs');
     const path = require('path');
-    const queueFile = path.join(__dirname, '../data/campaign_queue.json');
+    const queueFile = getDataFilePath('campaign_queue.json');
     
     const queue = JSON.parse(fs.readFileSync(queueFile, 'utf8'));
     const username = req.session.user.username;
@@ -118,7 +119,7 @@ router.get('/logs/:campaignId', authRequired, (req, res) => {
     const { campaignId } = req.params;
     const username = req.session.user.username;
     
-    const messageQueueFile = path.join(__dirname, '../data/message_queue.json');
+    const messageQueueFile = getDataFilePath('message_queue.json');
     const messageQueue = JSON.parse(fs.readFileSync(messageQueueFile, 'utf8'));
     
     // Filter logs for current user and campaign

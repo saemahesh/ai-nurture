@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
+const { getDataFilePath } = require('../data-utils');
 
 class EmailService {
     constructor() {
@@ -10,7 +11,7 @@ class EmailService {
 
     loadEmailSettings() {
         try {
-            const settingsPath = path.join(__dirname, '../data/email_settings.json');
+            const settingsPath = getDataFilePath('email_settings.json');
             if (fs.existsSync(settingsPath)) {
                 const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
                 this.createTransporter(settings);
@@ -38,7 +39,7 @@ class EmailService {
 
     async updateEmailSettings(settings) {
         try {
-            const settingsPath = path.join(__dirname, '../data/email_settings.json');
+            const settingsPath = getDataFilePath('email_settings.json');
             fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
             this.createTransporter(settings);
             return { success: true, message: 'Email settings updated successfully' };
@@ -110,7 +111,7 @@ class EmailService {
 
     async getFromAddress() {
         try {
-            const settingsPath = path.join(__dirname, '../data/email_settings.json');
+            const settingsPath = getDataFilePath('email_settings.json');
             if (fs.existsSync(settingsPath)) {
                 const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
                 return settings.email;

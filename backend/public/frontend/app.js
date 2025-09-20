@@ -17,6 +17,7 @@ angular.module('autopostWaApp.sequences', ['autopostWaApp.core']);
 angular.module('autopostWaApp.aiAgents', ['autopostWaApp.core']);
 angular.module('autopostWaApp.status', ['autopostWaApp.core']);
 angular.module('autopostWaApp.meetings', ['autopostWaApp.core']);
+angular.module('autopostWaApp.chat', ['autopostWaApp.core']);
 
 // Main application module with dependencies
 var app = angular.module('autopostWaApp', [
@@ -31,7 +32,8 @@ var app = angular.module('autopostWaApp', [
   'autopostWaApp.sequences',
   'autopostWaApp.aiAgents',
   'autopostWaApp.status',
-  'autopostWaApp.meetings'
+  'autopostWaApp.meetings',
+  'autopostWaApp.chat'
 ]);
 
 // Main routing configuration
@@ -122,6 +124,10 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
     .when('/customers', {
       templateUrl: getTemplateUrl('customers.html'),
       controller: 'CustomersController'
+    })
+    .when('/chat', {
+      templateUrl: getTemplateUrl('chat.html'),
+      controller: 'ChatController'
     })
     .when('/ai-agents', {
       templateUrl: getTemplateUrl('ai-agents.html'),

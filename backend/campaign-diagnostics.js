@@ -1,12 +1,12 @@
 const CampaignExecutor = require('./campaign-executor');
 const fs = require('fs');
 const path = require('path');
+const { getDataFilePath } = require('./data-utils');
 
 // Diagnostic tool to check campaign system status
 class CampaignDiagnostics {
   constructor() {
     this.executor = new CampaignExecutor();
-    this.dataDir = path.join(__dirname, 'data');
   }
 
   // Check if all data files exist
@@ -22,7 +22,7 @@ class CampaignDiagnostics {
     ];
 
     files.forEach(file => {
-      const filePath = path.join(this.dataDir, file);
+      const filePath = getDataFilePath(file);
       if (fs.existsSync(filePath)) {
         const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
         console.log(`  ✅ ${file}: ${data.length} records`);
@@ -35,7 +35,7 @@ class CampaignDiagnostics {
   // Check current enrollments
   checkEnrollments() {
     console.log('\n👥 Checking Enrollments:');
-    const enrollments = JSON.parse(fs.readFileSync(path.join(this.dataDir, 'enrollments.json'), 'utf8'));
+    const enrollments = JSON.parse(fs.readFileSync(getDataFilePath('enrollments.json'), 'utf8'));
     
     if (enrollments.length === 0) {
       console.log('  ❌ No enrollments found');
@@ -54,7 +54,7 @@ class CampaignDiagnostics {
   // Check message queue
   checkQueue() {
     console.log('\n📬 Checking Message Queue:');
-    const queue = JSON.parse(fs.readFileSync(path.join(this.dataDir, 'campaign_queue.json'), 'utf8'));
+    const queue = JSON.parse(fs.readFileSync(getDataFilePath('campaign_queue.json'), 'utf8'));
     
     if (queue.length === 0) {
       console.log('  ❌ No messages in queue');
@@ -106,7 +106,7 @@ class CampaignDiagnostics {
     console.log('\n🧪 Testing Enrollment Processing:');
     
     // Get existing enrollments
-    const enrollments = JSON.parse(fs.readFileSync(path.join(this.dataDir, 'enrollments.json'), 'utf8'));
+    const enrollments = JSON.parse(fs.readFileSync(getDataFilePath('enrollments.json'), 'utf8'));
     
     if (enrollments.length === 0) {
       console.log('  ❌ No enrollments to process');

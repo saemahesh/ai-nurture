@@ -1,6 +1,7 @@
 const CampaignExecutor = require('./campaign-executor');
 const fs = require('fs');
 const path = require('path');
+const { getDataFilePath } = require('./data-utils');
 
 // Test the campaign execution system
 async function testCampaignExecution() {
@@ -75,10 +76,10 @@ async function testCampaignExecution() {
     ];
     
     // Save test data
-    fs.writeFileSync(path.join(__dirname, 'data/campaigns.json'), JSON.stringify(campaigns, null, 2));
-    fs.writeFileSync(path.join(__dirname, 'data/sequences.json'), JSON.stringify(sequences, null, 2));
-    fs.writeFileSync(path.join(__dirname, 'data/enrollments.json'), JSON.stringify(enrollments, null, 2));
-    fs.writeFileSync(path.join(__dirname, 'data/campaign_leads.json'), JSON.stringify(campaignLeads, null, 2));
+    fs.writeFileSync(getDataFilePath('campaigns.json'), JSON.stringify(campaigns, null, 2));
+    fs.writeFileSync(getDataFilePath('sequences.json'), JSON.stringify(sequences, null, 2));
+    fs.writeFileSync(getDataFilePath('enrollments.json'), JSON.stringify(enrollments, null, 2));
+    fs.writeFileSync(getDataFilePath('campaign_leads.json'), JSON.stringify(campaignLeads, null, 2));
     
     console.log('✓ Test data created');
     
@@ -88,7 +89,7 @@ async function testCampaignExecution() {
     console.log('Start result:', startResult);
     
     // Check if queue entries were created
-    const queue = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/campaign_queue.json'), 'utf8'));
+    const queue = JSON.parse(fs.readFileSync(getDataFilePath('campaign_queue.json'), 'utf8'));
     console.log('Queue entries created:', queue.length);
     
     // Test 2: Get campaign stats

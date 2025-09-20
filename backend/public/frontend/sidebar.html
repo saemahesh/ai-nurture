@@ -34,6 +34,12 @@
           <span class="nav-text">Customers</span>
           <div class="nav-indicator" ng-if="isActive('/customers')"></div>
         </a>
+        <a href="#/chat" class="nav-item group relative" ng-class="{'active': isActive('/chat')}" plan-expired-check>
+          <div class="nav-item-bg"></div>
+          <i class="fas fa-comment-dots nav-icon" style="color: #25D366 !important;"></i>
+          <span class="nav-text">WhatsApp Chat</span>
+          <div class="nav-indicator" ng-if="isActive('/chat')"></div>
+        </a>
         <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}" plan-expired-check>
           <div class="nav-item-bg"></div>
           <i class="fas fa-users nav-icon" style="color: #10b981 !important;"></i>
@@ -260,6 +266,13 @@
             <i class="fas fa-user-tag nav-icon" style="color: #fbbf24 !important;"></i>
             <span class="nav-text">Customers</span>
             <div class="nav-indicator" ng-if="isActive('/customers')"></div>
+          </a>
+          <!-- WhatsApp Chat for mobile -->
+          <a href="#/chat" class="nav-item group relative" ng-class="{'active': isActive('/chat')}" ng-click="closeSidebar()">
+            <div class="nav-item-bg"></div>
+            <i class="fas fa-comment-dots nav-icon" style="color: #25D366 !important;"></i>
+            <span class="nav-text">WhatsApp Chat</span>
+            <div class="nav-indicator" ng-if="isActive('/chat')"></div>
           </a>
           <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}" ng-click="closeSidebar()">
             <div class="nav-item-bg"></div>

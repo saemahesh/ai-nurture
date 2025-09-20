@@ -4,10 +4,11 @@ const path = require('path');
 const multer = require('multer');
 const csv = require('csv-parser');
 const { createObjectCsvWriter } = require('csv-writer');
+const { getDataFilePath } = require('../data-utils');
 const router = express.Router();
 
-const campaignLeadsFile = path.join(__dirname, '../data/campaign_leads.json');
-const campaignQueueFile = path.join(__dirname, '../data/campaign_queue.json');
+const campaignLeadsFile = getDataFilePath('campaign_leads.json');
+const campaignQueueFile = getDataFilePath('campaign_queue.json');
 
 // Configure multer for CSV uploads
 const upload = multer({
@@ -350,7 +351,7 @@ router.delete('/:campaignId/leads/:leadId', (req, res) => {
     writeCampaignLeads(leads);
 
     // Also remove all campaign_queue.json entries for this lead
-    const campaignQueueFile = path.join(__dirname, '../data/campaign_queue.json');
+    const campaignQueueFile = getDataFilePath('campaign_queue.json');
     let queue = [];
     try {
       queue = JSON.parse(fs.readFileSync(campaignQueueFile, 'utf8'));

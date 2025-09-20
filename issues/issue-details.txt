@@ -9,6 +9,7 @@ Read Mandatory instructions to follow on every iteration:
     Do not create test scripts; you will receive manual feedback.
     Avoid using the bg-gradient-to-br class in your code changes.
     you should not modify the issue-details.txt file directly.
+    do not run any curl commands, i am running it and TESTING to give you feedback in issue-details.txt
     do not run localhost:3000 or backend server commands, i am running it and TESTING to give you feedback
     Clear your previous iteration count to start fresh if reading this file first time
     Iterate on the issue-details.txt file 62 times until you see no issues listed , otherwise fix issues accordingly.
@@ -16,16 +17,7 @@ Read Mandatory instructions to follow on every iteration:
     until i clear the issues here, consider they are not fixed
 --------------------------------------------------------
 **** Issue List ****
-based on your implementation for the keyword matching feature
-still 
-    "keywords": [
-      "sdfdsf"
-    ],
 
-data is coming,in edit mode, why we need 
-    "keywords": [
-      "sdfdsf"
-    ],
-    section in sequence json ?? 
-
-    check again the code and fix it
+issues:
+are you making sure to add json files in db/local and db/production folders for the chat feature 
+and ai agent feature to work properly ?

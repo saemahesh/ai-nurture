@@ -4,11 +4,12 @@ const moment = require('moment');
 
 class CustomersService {
   constructor() {
-    this.customersFile = path.join(__dirname, '../data/customers.json');
-    this.enrollmentsFile = path.join(__dirname, '../data/enrollments.json');
-    this.sequencesFile = path.join(__dirname, '../data/sequences.json');
-    this.messageQueueFile = path.join(__dirname, '../data/message_queue.json');
-    this.campaignQueueFile = path.join(__dirname, '../data/campaign_queue.json');
+    const { getDataFilePath } = require('../data-utils');
+    this.customersFile = getDataFilePath('customers.json');
+    this.enrollmentsFile = getDataFilePath('enrollments.json');
+    this.sequencesFile = getDataFilePath('sequences.json');
+    this.messageQueueFile = getDataFilePath('message_queue.json');
+    this.campaignQueueFile = getDataFilePath('campaign_queue.json');
   }
 
   // Helper functions to read/write data

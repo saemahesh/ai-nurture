@@ -52,21 +52,17 @@ async function generateAIResponse(agent, userMessage) {
 async function callOpenRouterAPI(messages) {
   try {
     // Hardcoded OpenRouter API key as requested
-    const apiKey = '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';
-    
+    const apiKey = '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';
+
     // console.log('Calling OpenRouter API with messages:', JSON.stringify(messages, null, 2));
     
     const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
       model: 'x-ai/grok-4-fast:free',
       messages: messages,
-      temperature: 0.7,
-      max_tokens: 1000
     }, {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'http://localhost:3000',
-        'X-Title': 'AI Nurture WhatsApp Agent'
       }
     });
     

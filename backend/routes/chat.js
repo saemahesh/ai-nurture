@@ -134,4 +134,22 @@ router.get('/context/:phone', requireAuth, async (req, res) => {
   }
 });
 
+// Clear test conversation (for test agents only)
+router.delete('/messages/:phone', requireAuth, async (req, res) => {
+  try {
+    const phone = decodeURIComponent(req.params.phone);
+    
+    // Only allow clearing test phone conversations
+    if (!phone.startsWith('test_')) {
+      return res.status(403).json({ error: 'Can only clear test conversations' });
+    }
+    
+    await chatService.clearTestConversation(phone);
+    res.json({ success: true, message: 'Test conversation cleared successfully' });
+  } catch (error) {
+    console.error('Error clearing test conversation:', error);
+    res.status(500).json({ error: 'Failed to clear test conversation' });
+  }
+});
+
 module.exports = router;

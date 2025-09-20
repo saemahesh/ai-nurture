@@ -116,7 +116,13 @@ function getContacts(username) {
     });
     
     // Group messages by phone number and get latest message
+    // Filter out test phone numbers (they start with 'test_')
     chats.forEach(chat => {
+      // Skip test phone numbers - they shouldn't appear in regular WhatsApp chat
+      if (chat.phone && chat.phone.startsWith('test_')) {
+        return;
+      }
+      
       if (!contactMap.has(chat.phone) || 
           new Date(chat.timestamp) > new Date(contactMap.get(chat.phone).timestamp)) {
         contactMap.set(chat.phone, {

@@ -229,20 +229,73 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
     // Test agent
     $scope.testAgent = function() {
         $scope.showTestModal = true;
-        $scope.testConversation = [];
         $scope.testInput.text = '';
+        
+        // Load previous test conversation history if available
+        $scope.loadTestConversationHistory();
     };
 
     // Close test modal
     $scope.closeTestModal = function() {
         $scope.showTestModal = false;
-        $scope.testConversation = [];
         $scope.testInput.text = '';
+        // Don't clear testConversation - let it persist for next time
+    };
+
+    // Load test conversation history
+    $scope.loadTestConversationHistory = function() {
+        if (!$scope.agentId) {
+            $scope.testConversation = [];
+            return;
+        }
+        
+        // Get test phone ID for this agent and user
+        const testPhoneId = 'test_' + $scope.agentId + '_' + $scope.currentUser.username;
+        
+        $http.get('/api/chat/messages/' + testPhoneId)
+            .then(function(response) {
+                // Convert chat messages to test conversation format
+                $scope.testConversation = response.data.map(function(msg) {
+                    return {
+                        text: msg.text,
+                        type: msg.type,
+                        timestamp: msg.timestamp,
+                        sender: msg.type === 'incoming' ? 'User' : (msg.type === 'ai' ? 'AI' : 'System')
+                    };
+                });
+                
+                // Scroll to bottom after loading
+                setTimeout(function() {
+                    var container = document.getElementById('testConversationContainer');
+                    if (container) {
+                        container.scrollTop = container.scrollHeight;
+                    }
+                }, 100);
+            })
+            .catch(function(error) {
+                // If no history found, start with empty conversation
+                console.log('No test conversation history found, starting fresh');
+                $scope.testConversation = [];
+            });
     };
 
     // Clear test conversation
     $scope.clearTestConversation = function() {
-        $scope.testConversation = [];
+        if (!$scope.agentId) return;
+        
+        // Clear from backend
+        const testPhoneId = 'test_' + $scope.agentId + '_' + $scope.currentUser.username;
+        
+        $http.delete('/api/chat/messages/' + testPhoneId)
+            .then(function() {
+                $scope.testConversation = [];
+                console.log('Test conversation cleared successfully');
+            })
+            .catch(function(error) {
+                console.error('Error clearing test conversation:', error);
+                // Clear locally anyway
+                $scope.testConversation = [];
+            });
     };
 
     // Send test message

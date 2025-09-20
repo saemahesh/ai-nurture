@@ -21,8 +21,19 @@ async function generateAIResponse(agent, userMessage) {
       }
     }
     
-    // Prepare the system prompt with context
-    const systemPrompt = `${agent.systemPrompt}\n\n${context}Based on the above knowledge base, please answer the following question. If the information is not available in the knowledge base, politely let the user know and provide general helpful information if possible.`;
+    // Prepare the system prompt with context and WhatsApp formatting instructions
+    const whatsappFormatting = `
+
+IMPORTANT FORMATTING INSTRUCTIONS:
+- Format your response like a WhatsApp message with proper line breaks
+- Keep responses concise and easy to read on mobile
+- Use bullet points (•) for lists instead of numbers when appropriate
+- Add empty lines between different topics or sections
+- If the response is long, break it into digestible chunks
+- Use emojis sparingly and only when appropriate
+- Make it conversational and friendly like WhatsApp chat and use emojis if relevant`;
+    
+    const systemPrompt = `${agent.systemPrompt}${whatsappFormatting}\n\n${context}Based on the above knowledge base, please answer the following question. If the information is not available in the knowledge base, politely let the user know and provide general helpful information if possible.`;
     
     // Prepare messages for the API call
     const messages = [
@@ -68,7 +79,8 @@ async function callOpenRouterAPI(messages) {
     console.log('OpenRouter API response:', response.data);
     
     if (response.data && response.data.choices && response.data.choices.length > 0) {
-      return response.data.choices[0].message.content.trim();
+      const rawResponse = response.data.choices[0].message.content.trim();
+      return formatWhatsAppMessage(rawResponse);
     } else {
       throw new Error('Invalid response from OpenRouter API: ' + JSON.stringify(response.data));
     }
@@ -87,6 +99,36 @@ async function callOpenRouterAPI(messages) {
       throw new Error('OpenRouter API request failed: ' + (error.response?.data?.error?.message || error.message));
     }
   }
+}
+
+/**
+ * Format AI response for WhatsApp-like messaging
+ * @param {string} response - The raw AI response
+ * @returns {string} - Formatted response
+ */
+function formatWhatsAppMessage(response) {
+  // Clean up the response
+  let formatted = response.trim();
+  
+  // Ensure proper line breaks between sentences and paragraphs
+  formatted = formatted.replace(/\. ([A-Z])/g, '.\n\n$1');
+  
+  // Format bullet points with proper spacing
+  formatted = formatted.replace(/^\* /gm, '• ');
+  formatted = formatted.replace(/^- /gm, '• ');
+  formatted = formatted.replace(/^\d+\. /gm, '• ');
+  
+  // Add spacing around bullet points
+  formatted = formatted.replace(/(^• .+$)/gm, '\n$1');
+  formatted = formatted.replace(/\n\n• /g, '\n• ');
+  
+  // Clean up multiple line breaks
+  formatted = formatted.replace(/\n{3,}/g, '\n\n');
+  
+  // Ensure the message doesn't start with a line break
+  formatted = formatted.replace(/^\n+/, '');
+  
+  return formatted;
 }
 
 /**

@@ -52,8 +52,7 @@ async function generateAIResponse(agent, userMessage) {
 async function callOpenRouterAPI(messages) {
   try {
     // Hardcoded OpenRouter API key as requested
-    const apiKey = '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';
-
+    const apiKey = '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';
     // console.log('Calling OpenRouter API with messages:', JSON.stringify(messages, null, 2));
     
     const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', {

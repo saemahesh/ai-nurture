@@ -34,24 +34,7 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
                     $scope.sequence.messages = [];
                 }
                 
-                // Fix time format for HTML5 time inputs
-                $scope.sequence.messages.forEach(function(message) {
-                    if (message.time) {
-                        // Ensure time is in HH:MM format
-                        if (message.time.length === 5 && message.time.includes(':')) {
-                            // Already in correct format
-                        } else if (message.time.length === 4) {
-                            // Convert HHMM to HH:MM
-                            message.time = message.time.substring(0, 2) + ':' + message.time.substring(2);
-                        } else {
-                            // Default to 09:00 if format is unexpected
-                            message.time = '09:00';
-                        }
-                    } else {
-                        // Set default time if missing
-                        message.time = '09:00';
-                    }
-                });
+
                 
                 // Sort messages by day
                 $scope.sequence.messages.sort(function(a, b) {
@@ -127,14 +110,32 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
                });
     };
 
+    // Handle day change for minute delay options
+    $scope.onDayChange = function(message) {
+        // If day is changed to 1, initialize minuteDelay if not set
+        if (message.day === 1 && !message.minuteDelay) {
+            message.minuteDelay = 60; // Default to 1 hour
+        }
+        // If day is changed from 1, remove minuteDelay
+        if (message.day !== 1) {
+            delete message.minuteDelay;
+        }
+    };
+
     // Add new message
     $scope.addMessage = function() {
+        const nextDay = $scope.getNextDay();
         const newMessage = {
-            day: $scope.getNextDay(),
+            day: nextDay,
             type: 'text',
-            message: '',
-            time: '09:00'  // Ensure proper HH:MM format
+            message: ''
         };
+        
+        // If it's day 1, add minute delay option
+        if (nextDay === 1) {
+            newMessage.minuteDelay = 60; // Default to 1 hour
+        }
+        
         $scope.sequence.messages.push(newMessage);
     };
 
@@ -180,6 +181,23 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
     $scope.getMessagePreview = function(message) {
         if (!message) return '';
         return message.replace(/\{name\}/g, 'John');
+    };
+
+    // Get minute delay text for display
+    $scope.getMinuteDelayText = function(minuteDelay) {
+        if (minuteDelay < 60) {
+            return minuteDelay + ' minutes';
+        } else if (minuteDelay === 60) {
+            return '1 hour';
+        } else {
+            const hours = Math.floor(minuteDelay / 60);
+            const minutes = minuteDelay % 60;
+            if (minutes === 0) {
+                return hours + ' hours';
+            } else {
+                return hours + 'h ' + minutes + 'm';
+            }
+        }
     };
 
     // Save as draft
@@ -518,34 +536,7 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
         return 'Unknown';
     };
 
-    // Utility function to format time properly
-    $scope.formatTime = function(timeString) {
-        if (!timeString) return '09:00';
-        
-        // If already in HH:MM format, return as is
-        if (timeString.length === 5 && timeString.includes(':')) {
-            return timeString;
-        }
-        
-        // If in HHMM format, convert to HH:MM
-        if (timeString.length === 4) {
-            return timeString.substring(0, 2) + ':' + timeString.substring(2);
-        }
-        
-        // Default fallback
-        return '09:00';
-    };
 
-    // Watch for time changes to ensure proper format
-    $scope.$watchCollection('sequence.messages', function(newMessages) {
-        if (newMessages) {
-            newMessages.forEach(function(message) {
-                if (message.time) {
-                    message.time = $scope.formatTime(message.time);
-                }
-            });
-        }
-    });
 
     // Initialize controller
     $scope.init();

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsPro - Your Advanced WhatsApp Automation Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 25%, #3b82f6 50%, #06b6d4 75%, #10b981 100%);
+        }
+        .feature-card {
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+        .stats-counter {
+            font-family: 'Arial', sans-serif;
+            font-weight: 800;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        .integration-logo {
+            filter: brightness(0.8) contrast(1.2);
+            transition: all 0.3s ease;
+        }
+        .integration-logo:hover {
+            filter: brightness(1.2) contrast(1.4);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-gray-900/90 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i class="fab fa-whatsapp text-3xl text-green-400 mr-3"></i>
+                    <h1 class="text-2xl font-bold text-white">WhatsPro</h1>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="text-gray-300 hover:text-white transition">Features</a>
+                    <a href="#solutions" class="text-gray-300 hover:text-white transition">Solutions</a>
+                    <a href="#integrations" class="text-gray-300 hover:text-white transition">Integrations</a>
+                    <a href="#contact" class="text-gray-300 hover:text-white transition">Contact</a>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="/app#/login" class="px-4 py-2 text-gray-300 hover:text-white transition">Login</a>
+                    <a href="/app#/register" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center">
+                <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+                    Your 24/7 AI Employee on
+                    <span class="text-green-400">WhatsApp</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-200 mb-8 max-w-4xl mx-auto leading-relaxed">
+                    Boost sales, qualify leads, manage campaigns & support customers with advanced WhatsApp automation, 
+                    powered by WhatsPro. No coding required | Works 24/7 | Built for SMBs & Enterprises
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+                    <a href="/app#/register" class="px-8 py-4 bg-green-500 text-white text-lg font-semibold rounded-lg hover:bg-green-600 transition-all transform hover:scale-105">
+                        Start Free Trial
+                    </a>
+                    <a href="#demo" class="px-8 py-4 border-2 border-white text-white text-lg font-semibold rounded-lg hover:bg-white hover:text-gray-900 transition-all">
+                        Request a Demo
+                    </a>
+                </div>
+                
+                <!-- Trust Indicators -->
+                <div class="text-center">
+                    <p class="text-gray-300 mb-6">Trusted by thousands of businesses worldwide</p>
+                    <div class="flex justify-center items-center space-x-8 opacity-70">
+                        <div class="integration-logo">
+                            <i class="fab fa-shopify text-4xl text-green-400"></i>
+                        </div>
+                        <div class="integration-logo">
+                            <i class="fab fa-google text-4xl text-blue-400"></i>
+                        </div>
+                        <div class="integration-logo">
+                            <i class="fas fa-calendar-alt text-4xl text-purple-400"></i>
+                        </div>
+                        <div class="integration-logo">
+                            <i class="fas fa-envelope text-4xl text-red-400"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="feature-card p-6 bg-gray-700/50 rounded-xl">
+                    <div class="text-4xl font-bold text-blue-400 mb-2 stats-counter">40%</div>
+                    <div class="text-gray-300">Workload Reduction</div>
+                </div>
+                <div class="feature-card p-6 bg-gray-700/50 rounded-xl">
+                    <div class="text-4xl font-bold text-green-400 mb-2 stats-counter">2.5X</div>
+                    <div class="text-gray-300">Faster Conversions</div>
+                </div>
+                <div class="feature-card p-6 bg-gray-700/50 rounded-xl">
+                    <div class="text-4xl font-bold text-purple-400 mb-2 stats-counter">35%</div>
+                    <div class="text-gray-300">Fewer No-shows</div>
+                </div>
+                <div class="feature-card p-6 bg-gray-700/50 rounded-xl">
+                    <div class="text-4xl font-bold text-yellow-400 mb-2 stats-counter">30%</div>
+                    <div class="text-gray-300">Repeat Purchases</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Meet our WhatsApp Automation Features</h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">Each feature is designed to handle real business outcomes and drive growth.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Drip Campaigns -->
+                <div class="feature-card p-8 bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl border border-gray-600">
+                    <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mb-6 floating">
+                        <i class="fas fa-robot text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Drip Campaigns</h3>
+                    <p class="text-gray-400 mb-6">Automate follow-up sequences and nurture leads with intelligent messaging workflows.</p>
+                    <a href="/app#/sequences" class="text-purple-400 font-semibold hover:text-purple-300 transition">Learn More →</a>
+                </div>
+
+                <!-- Event Management -->
+                <div class="feature-card p-8 bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl border border-gray-600">
+                    <div class="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mb-6 floating" style="animation-delay: -2s;">
+                        <i class="fas fa-calendar-alt text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Event Management</h3>
+                    <p class="text-gray-400 mb-6">Schedule events and send automated reminders to increase attendance rates.</p>
+                    <a href="/app#/events" class="text-orange-400 font-semibold hover:text-orange-300 transition">Learn More →</a>
+                </div>
+
+                <!-- Calendly Integration -->
+                <div class="feature-card p-8 bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl border border-gray-600">
+                    <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mb-6 floating" style="animation-delay: -4s;">
+                        <i class="fas fa-video text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Calendly Meetings</h3>
+                    <p class="text-gray-400 mb-6">Sync with Calendly and send automated meeting reminders via WhatsApp and Email.</p>
+                    <a href="/app#/meetings" class="text-purple-400 font-semibold hover:text-purple-300 transition">Learn More →</a>
+                </div>
+
+                <!-- Customer Management -->
+                <div class="feature-card p-8 bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl border border-gray-600">
+                    <div class="w-16 h-16 bg-yellow-600 rounded-full flex items-center justify-center mb-6 floating" style="animation-delay: -1s;">
+                        <i class="fas fa-user-tag text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Customer Management</h3>
+                    <p class="text-gray-400 mb-6">Organize and track customer interactions with advanced CRM features.</p>
+                    <a href="/app#/customers" class="text-yellow-400 font-semibold hover:text-yellow-300 transition">Learn More →</a>
+                </div>
+
+                <!-- Group Messaging -->
+                <div class="feature-card p-8 bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl border border-gray-600">
+                    <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mb-6 floating" style="animation-delay: -3s;">
+                        <i class="fas fa-users text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Group Management</h3>
+                    <p class="text-gray-400 mb-6">Manage WhatsApp groups and broadcast messages to targeted audiences.</p>
+                    <a href="/app#/groups" class="text-green-400 font-semibold hover:text-green-300 transition">Learn More →</a>
+                </div>
+
+                <!-- Media Library -->
+                <div class="feature-card p-8 bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl border border-gray-600">
+                    <div class="w-16 h-16 bg-pink-600 rounded-full flex items-center justify-center mb-6 floating" style="animation-delay: -5s;">
+                        <i class="fas fa-images text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Media Library</h3>
+                    <p class="text-gray-400 mb-6">Store and organize images, videos, and documents for your campaigns.</p>
+                    <a href="/app#/media" class="text-pink-400 font-semibold hover:text-pink-300 transition">Learn More →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solutions Section -->
+    <section id="solutions" class="py-20 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Why Choose WhatsPro?</h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">Built specifically for WhatsApp automation with enterprise-grade features</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card p-8 bg-gray-700/50 rounded-2xl border border-gray-600">
+                    <i class="fas fa-whatsapp text-4xl text-green-400 mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-3">Built only for WhatsApp</h3>
+                    <p class="text-gray-400">Native WhatsApp Business API integration with advanced messaging capabilities.</p>
+                </div>
+                
+                <div class="feature-card p-8 bg-gray-700/50 rounded-2xl border border-gray-600">
+                    <i class="fas fa-code text-4xl text-blue-400 mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-3">No-code setup</h3>
+                    <p class="text-gray-400">Fast onboarding with intuitive interface and custom workflow builder.</p>
+                </div>
+                
+                <div class="feature-card p-8 bg-gray-700/50 rounded-2xl border border-gray-600">
+                    <i class="fas fa-plug text-4xl text-purple-400 mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-3">Works with your tools</h3>
+                    <p class="text-gray-400">Integrates with Calendly, Gmail, GoDaddy, and other popular platforms.</p>
+                </div>
+                
+                <div class="feature-card p-8 bg-gray-700/50 rounded-2xl border border-gray-600">
+                    <i class="fas fa-shield-alt text-4xl text-green-400 mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-3">Enterprise-grade security</h3>
+                    <p class="text-gray-400">Powered by secure infrastructure with data protection and privacy controls.</p>
+                </div>
+                
+                <div class="feature-card p-8 bg-gray-700/50 rounded-2xl border border-gray-600">
+                    <i class="fas fa-cogs text-4xl text-yellow-400 mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-3">Industry-specific features</h3>
+                    <p class="text-gray-400">Not generic templates - built for real business automation needs.</p>
+                </div>
+                
+                <div class="feature-card p-8 bg-gray-700/50 rounded-2xl border border-gray-600">
+                    <i class="fas fa-clock text-4xl text-blue-400 mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-3">24/7 Automation</h3>
+                    <p class="text-gray-400">Works around the clock to engage customers and drive conversions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integrations Section -->
+    <section id="integrations" class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Native integrations for a friction-free tech stack</h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">Connect with your favorite tools and platforms seamlessly</p>
+            </div>
+            
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-8 items-center justify-center">
+                <div class="integration-logo text-center">
+                    <i class="fab fa-google text-6xl text-blue-400 mb-2"></i>
+                    <p class="text-gray-400 text-sm">Google Calendar</p>
+                </div>
+                <div class="integration-logo text-center">
+                    <i class="fas fa-calendar-check text-6xl text-blue-500 mb-2"></i>
+                    <p class="text-gray-400 text-sm">Calendly</p>
+                </div>
+                <div class="integration-logo text-center">
+                    <i class="fas fa-envelope text-6xl text-red-400 mb-2"></i>
+                    <p class="text-gray-400 text-sm">Gmail</p>
+                </div>
+                <div class="integration-logo text-center">
+                    <i class="fas fa-server text-6xl text-orange-400 mb-2"></i>
+                    <p class="text-gray-400 text-sm">GoDaddy</p>
+                </div>
+                <div class="integration-logo text-center">
+                    <i class="fab fa-shopify text-6xl text-green-400 mb-2"></i>
+                    <p class="text-gray-400 text-sm">Shopify</p>
+                </div>
+                <div class="integration-logo text-center">
+                    <i class="fas fa-database text-6xl text-purple-400 mb-2"></i>
+                    <p class="text-gray-400 text-sm">CRM Systems</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="demo" class="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+        <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Ready to get started?</h2>
+            <p class="text-xl text-blue-100 mb-8">Join thousands of businesses automating their WhatsApp communication</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/app#/register" class="px-8 py-4 bg-white text-blue-600 text-lg font-semibold rounded-lg hover:bg-gray-100 transition-all transform hover:scale-105">
+                    Start Free Trial
+                </a>
+                <a href="#contact" class="px-8 py-4 border-2 border-white text-white text-lg font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition-all">
+                    Contact Sales
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-gray-900 py-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fab fa-whatsapp text-3xl text-green-400 mr-3"></i>
+                        <h3 class="text-2xl font-bold text-white">WhatsPro</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">Advanced WhatsApp automation platform for modern businesses.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Features</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/app#/sequences" class="hover:text-white transition">Drip Campaigns</a></li>
+                        <li><a href="/app#/events" class="hover:text-white transition">Event Management</a></li>
+                        <li><a href="/app#/meetings" class="hover:text-white transition">Calendly Integration</a></li>
+                        <li><a href="/app#/groups" class="hover:text-white transition">Group Management</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Documentation</a></li>
+                        <li><a href="#" class="hover:text-white transition">API Reference</a></li>
+                        <li><a href="#" class="hover:text-white transition">Tutorials</a></li>
+                        <li><a href="#" class="hover:text-white transition">Support</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Company</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition">Contact</a></li>
+                        <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 WhatsPro. All rights reserved. Powered by advanced WhatsApp automation technology.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

@@ -17,25 +17,13 @@ Read Mandatory instructions to follow on every iteration:
 --------------------------------------------------------
 **** Issue List ****
 
-curl 'http://localhost:3000/status/7bf02412-6bef-4f82-a2da-5c322a7e1468/pause' \
-  -X 'PUT' \
-  -H 'sec-ch-ua-platform: "Android"' \
-  -H 'Referer: http://localhost:3000/' \
-  -H 'User-Agent: Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Mobile Safari/537.36' \
-  -H 'Accept: application/json, text/plain, */*' \
-  -H 'sec-ch-ua: "Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"' \
-  -H 'Content-Type: application/json;charset=UTF-8' \
-  -H 'sec-ch-ua-mobile: ?1' \
-  --data-raw '{}'
+in the sequence drip campaign section,
+keep Day *
+1
+Minutes After Enrollment
 
-  getting error when pausing status, it is not pausing
+How long after enrollment to send this message
 
-even if group schedule  is paused, still message is sending by cron jobs - fix it
+Type
 
- ---------------------------------------------------------
-
- Do not stop for testing changes, i am testing as soon as you are 
- making code changes, and updating feedback in this file it self.
- iterate again on this file for issues and fix them
----------------------------------------------------------
-
+these 3 fields in one row for day 1 message also for better ui

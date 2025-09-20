@@ -339,11 +339,17 @@ class CampaignExecutor {
           // Existing system: messages are scheduled by day
           sendTime = new Date(baseTime.getTime() + (message.day - 1) * 24 * 60 * 60 * 1000);
           if (message.day === 1) {
-            // For day 1, always schedule 1 hour after enrollment
-            sendTime = new Date(baseTime.getTime() + 1 * 60 * 60 * 1000);
-            console.log('⏰ [QUEUE_GENERATOR] Day 1 message: forcing 1 hour delay after enrollment');
+            // For day 1, check if minute delay is specified
+            if (message.minuteDelay && typeof message.minuteDelay === 'number') {
+              sendTime = new Date(baseTime.getTime() + message.minuteDelay * 60 * 1000);
+              console.log(`⏰ [QUEUE_GENERATOR] Day 1 message: using minute delay of ${message.minuteDelay} minutes after enrollment`);
+            } else {
+              // Default: schedule 1 hour after enrollment
+              sendTime = new Date(baseTime.getTime() + 1 * 60 * 60 * 1000);
+              console.log('⏰ [QUEUE_GENERATOR] Day 1 message: using default 1 hour delay after enrollment');
+            }
           } else {
-            // Add random time between 6 AM and 9 PM
+            // Add random time between 6 AM and 9 PM for other days
             const randomHours = Math.floor(Math.random() * 15); // 0-14 hours (6 AM to 9 PM)
             const randomMinutes = Math.floor(Math.random() * 60);
             sendTime.setHours(6 + randomHours, randomMinutes, 0, 0);

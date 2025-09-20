@@ -213,7 +213,49 @@ app.use(express.static(path.join(__dirname, 'public'), {
   }
 }));
 
-// Serve frontend as the main app with ENHANCED cache-busting
+// Serve landing page at root, and app at /app - MUST come before static middleware
+app.get('/', (req, res) => {
+  console.log('🏠 Serving landing page at root /');
+  const landingPath = path.join(__dirname, 'public/frontend/landing.html');
+  res.sendFile(landingPath);
+});
+
+// Add app route for the main AngularJS application
+app.get('/app', (req, res) => {
+  console.log('📱 Serving AngularJS app at /app');
+  const indexPath = path.join(__dirname, 'public/frontend/index.html');
+  
+  // Read the template index.html
+  fs.readFile(indexPath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading index.html:', err);
+      return res.status(500).send('Error loading page');
+    }
+    
+    try {
+      // Generate dynamic version number
+      const version = Date.now();
+      const randomId = Math.random().toString(36).substr(2, 9);
+      
+      // Replace all empty ?v= parameters with actual version numbers
+      const updatedHtml = data.replace(/\?v=/g, `?v=${version}&cb=${randomId}`);
+      
+      // Set aggressive no-cache headers for the HTML response
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('Content-Type', 'text/html');
+      
+      console.log(`📄 Served index.html with cache-busting version: ${version}`);
+      res.send(updatedHtml);
+    } catch (error) {
+      console.error('Error processing index.html:', error);
+      res.status(500).send('Error processing page');
+    }
+  });
+});
+
+// Serve frontend as the main app with ENHANCED cache-busting - AFTER custom routes
 app.use(express.static(path.join(__dirname, 'public/frontend'), {
   etag: false,
   maxAge: 0,
@@ -247,40 +289,6 @@ app.get('*.js', (req, res, next) => {
   
   // Continue to static file serving
   next();
-});
-
-// Add dynamic index.html route with automatic cache-busting version generation
-app.get('/', (req, res) => {
-  const indexPath = path.join(__dirname, 'public/frontend/index.html');
-  
-  // Read the template index.html
-  fs.readFile(indexPath, 'utf8', (err, data) => {
-    if (err) {
-      console.error('Error reading index.html:', err);
-      return res.status(500).send('Error loading page');
-    }
-    
-    try {
-      // Generate dynamic version number
-      const version = Date.now();
-      const randomId = Math.random().toString(36).substr(2, 9);
-      
-      // Replace all empty ?v= parameters with actual version numbers
-      const updatedHtml = data.replace(/\?v=/g, `?v=${version}&cb=${randomId}`);
-      
-      // Set aggressive no-cache headers for the HTML response
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-      res.setHeader('Pragma', 'no-cache');
-      res.setHeader('Expires', '0');
-      res.setHeader('Content-Type', 'text/html');
-      
-      console.log(`📄 Served index.html with cache-busting version: ${version}`);
-      res.send(updatedHtml);
-    } catch (error) {
-      console.error('Error processing index.html:', error);
-      res.status(500).send('Error processing page');
-    }
-  });
 });
 
 app.use('/', indexRouter);
@@ -1264,8 +1272,8 @@ app.post('/debug/process-enrollments', async (req, res) => {
 
 // Catch-all route for SPA - serve dynamic index.html with cache-busting
 app.get('*', (req, res) => {
-  // Skip API routes and static file requests
-  if (req.path.startsWith('/api/') || req.path.startsWith('/auth/') || 
+  // Skip API routes, static file requests, and root path (which serves landing page)
+  if (req.path === '/' || req.path.startsWith('/api/') || req.path.startsWith('/auth/') || 
       req.path.startsWith('/media/') || req.path.startsWith('/wa/') ||
       req.path.includes('.js') || req.path.includes('.css') || req.path.includes('.html') ||
       req.path.includes('.png') || req.path.includes('.jpg') || req.path.includes('.svg') ||

@@ -19,4 +19,5 @@ Read Mandatory instructions to follow on every iteration:
 **** Issue List ****
 
 issues:
-axios not defined in ai.service.js
+try reading openrouter api key from env variable OPENROUTER_API_KEY
+do not hardcode it in ai.service.js file

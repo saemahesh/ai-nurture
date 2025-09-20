@@ -1,15 +1,16 @@
-Task Plan for AI-Nurture**Action Plan - Iteration 7/148**
+Task Plan for AI-Nurture**Action Plan - Iteration 10/148**
 
 **Current Issue from issue-details.txt:**
-"axios not defined in ai.service.js"
+"try reading openrouter api key from env variable OPENROUTER_API_KEY
+do not hardcode it in ai.service.js file"
 
 **Investigation Focus:**
-1. Check current state of ai.service.js (user made manual edits)
-2. Identify where axios is being used but not imported
-3. Add proper axios import/require statement
-4. Verify all axios usage in the file
+1. Find the hardcoded OpenRouter API key in ai.service.js
+2. Replace hardcoded key with process.env.OPENROUTER_API_KEY
+3. Add proper error handling if environment variable is missing
+4. Update .env file documentation if needed
 
-**Status:** Investigating axios import issue in ai.service.jsct - AI Agent Feature Issues
+**Status:** Replacing hardcoded OpenRouter API key with environment variablect - AI Agent Feature Issues
 
 ## Current Iteration: 5/148
 ## Current Issue Focus: Input Styling and UI Improvements

@@ -87,8 +87,13 @@ IMPORTANT FORMATTING INSTRUCTIONS:
  */
 async function callOpenRouterAPI(messages) {
   try {
-    // Hardcoded OpenRouter API key as requested
-    const apiKey = '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';
+    // Get OpenRouter API key from environment variable
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    
+    if (!apiKey) {
+      throw new Error('OPENROUTER_API_KEY environment variable is not set. Please add it to your .env file.');
+    }
+    
     console.log('Calling OpenRouter API with messages:', JSON.stringify(messages, null, 2));
     
     const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
@@ -119,7 +124,7 @@ async function callOpenRouterAPI(messages) {
     } else if (error.response?.status === 429) {
       throw new Error('OpenRouter API rate limit exceeded. Please try again later.');
     } else if (error.response?.status === 401) {
-      throw new Error('OpenRouter API authentication failed. Please check your API key.');
+      throw new Error('OpenRouter API authentication failed. Please check your OPENROUTER_API_KEY environment variable.');
     } else {
       throw new Error('OpenRouter API request failed: ' + (error.response?.data?.error?.message || error.message));
     }

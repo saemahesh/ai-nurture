@@ -399,9 +399,32 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
         try {
             var container = document.getElementById('testConversationContainer');
             if (container) {
-                // Force a reflow to ensure all content is rendered
-                container.scrollTop = container.scrollHeight + 100; // Add extra to ensure we're at bottom
-                console.log('Scrolled to bottom. Container height:', container.scrollHeight, 'Scroll position:', container.scrollTop);
+                // Multiple techniques to ensure scrolling works
+                // 1. Force reflow
+                container.style.height = container.style.height;
+                
+                // 2. Use smooth scroll if supported
+                if (container.scrollTo) {
+                    container.scrollTo({
+                        top: container.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    // 3. Fallback to direct scrollTop
+                    container.scrollTop = container.scrollHeight;
+                }
+                
+                console.log('Scrolled to bottom. Container height:', container.scrollHeight, 'Scroll position:', container.scrollTop, 'Client height:', container.clientHeight);
+                
+                // 4. Double-check after animation frame
+                requestAnimationFrame(function() {
+                    if (container.scrollTop < container.scrollHeight - container.clientHeight - 5) {
+                        container.scrollTop = container.scrollHeight;
+                        console.log('Force scrolled to bottom on animation frame');
+                    }
+                });
+            } else {
+                console.warn('testConversationContainer not found for scrolling');
             }
         } catch (error) {
             console.error('Error scrolling to bottom:', error);

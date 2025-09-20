@@ -26,8 +26,22 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
     NotificationService.initToast($scope);
     NotificationService.initConfirmModal($scope);
 
+    // Load current user info
+    $scope.loadCurrentUser = function() {
+        $http.get('/auth/me')
+            .then(function(response) {
+                $scope.currentUser = response.data.user;
+            })
+            .catch(function(error) {
+                console.error('Error loading current user:', error);
+                // Fallback - try to get username from session or use default
+                $scope.currentUser = { username: 'default_user' };
+            });
+    };
+
     // Initialize
     $scope.init = function() {
+        $scope.loadCurrentUser();
         if ($scope.agentId) {
             $scope.isEditMode = true;
             $scope.loadAgent();
@@ -245,15 +259,27 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
     // Load test conversation history
     $scope.loadTestConversationHistory = function() {
         if (!$scope.agentId) {
+            console.log('No agentId available for loading test history');
             $scope.testConversation = [];
+            return;
+        }
+        
+        if (!$scope.currentUser || !$scope.currentUser.username) {
+            console.log('Current user not loaded yet, trying again in 500ms...');
+            setTimeout(function() {
+                $scope.loadTestConversationHistory();
+            }, 500);
             return;
         }
         
         // Get test phone ID for this agent and user
         const testPhoneId = 'test_' + $scope.agentId + '_' + $scope.currentUser.username;
+        console.log('Loading test conversation history for:', testPhoneId);
         
         $http.get('/api/chat/messages/' + testPhoneId)
             .then(function(response) {
+                console.log('Test conversation history loaded:', response.data.length, 'messages');
+                
                 // Convert chat messages to test conversation format
                 $scope.testConversation = response.data.map(function(msg) {
                     return {
@@ -264,17 +290,16 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
                     };
                 });
                 
-                // Scroll to bottom after loading
-                setTimeout(function() {
-                    var container = document.getElementById('testConversationContainer');
-                    if (container) {
-                        container.scrollTop = container.scrollHeight;
-                    }
-                }, 100);
+                // Scroll to bottom after loading with proper timing
+                $scope.$evalAsync(function() {
+                    setTimeout(function() {
+                        $scope.scrollToBottom();
+                    }, 300);
+                });
             })
             .catch(function(error) {
                 // If no history found, start with empty conversation
-                console.log('No test conversation history found, starting fresh');
+                console.log('No test conversation history found, starting fresh:', error.status);
                 $scope.testConversation = [];
             });
     };
@@ -313,6 +338,13 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
             sender: 'User'
         });
         
+        // Scroll to show user message immediately
+        $scope.$evalAsync(function() {
+            setTimeout(function() {
+                $scope.scrollToBottom();
+            }, 50);
+        });
+        
         $scope.testingAgent = true;
         $scope.testInput.text = '';
         
@@ -333,12 +365,11 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
             });
             
             // Scroll to bottom of conversation
-            setTimeout(function() {
-                var container = document.getElementById('testConversationContainer');
-                if (container) {
-                    container.scrollTop = container.scrollHeight;
-                }
-            }, 100);
+            $scope.$evalAsync(function() {
+                setTimeout(function() {
+                    $scope.scrollToBottom();
+                }, 200);
+            });
         })
         .catch(function(error) {
             console.error('Error testing agent:', error);
@@ -360,6 +391,20 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
         if (event.keyCode === 13 && !event.shiftKey) {
             event.preventDefault();
             $scope.sendTestMessage();
+        }
+    };
+
+    // Scroll to bottom of conversation container
+    $scope.scrollToBottom = function() {
+        try {
+            var container = document.getElementById('testConversationContainer');
+            if (container) {
+                // Force a reflow to ensure all content is rendered
+                container.scrollTop = container.scrollHeight + 100; // Add extra to ensure we're at bottom
+                console.log('Scrolled to bottom. Container height:', container.scrollHeight, 'Scroll position:', container.scrollTop);
+            }
+        } catch (error) {
+            console.error('Error scrolling to bottom:', error);
         }
     };
 

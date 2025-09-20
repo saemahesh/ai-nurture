@@ -1,4 +1,5 @@
 const express = require('express');
+const { getDataFilePath } = require('../data-utils');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -22,7 +23,7 @@ function authRequired(req, res, next) {
 }
 
 // Helper to store uploaded files by user
-const USER_MEDIA_FILE = path.join(__dirname, '../data/user_media.json');
+const USER_MEDIA_FILE = getDataFilePath('user_media.json');
 
 // Helper to generate full URL
 function getFullUrl(req, relativePath) {

@@ -1,0 +1,90 @@
+{
+  "1755154757804lc4ss6d": {
+    "5days": {
+      "enabled": true,
+      "text": "5 days to go until {{eventName}}!"
+    },
+    "4days": {
+      "enabled": true,
+      "text": "4 days to go until {{eventName}}!"
+    },
+    "3days": {
+      "enabled": true,
+      "text": "3 days to go until {{eventName}}!"
+    },
+    "2days": {
+      "enabled": true,
+      "text": "2 days to go until {{eventName}}!"
+    },
+    "1day": {
+      "enabled": true,
+      "text": "Only 1 day to go until {{eventName}}!"
+    },
+    "12hours": {
+      "enabled": true,
+      "text": "Just 12 hours to go until {{eventName}}!"
+    },
+    "6hours": {
+      "enabled": true,
+      "text": "6 hours to go until {{eventName}}!"
+    },
+    "3hours": {
+      "enabled": true,
+      "text": "3 hours to go until {{eventName}}!"
+    },
+    "1hour": {
+      "enabled": true,
+      "text": "1 hour to go until {{eventName}}!"
+    },
+    "30mins": {
+      "enabled": true,
+      "text": "Only 30 minutes to go until {{eventName}}!"
+    },
+    "15mins": {
+      "enabled": true,
+      "text": "15 minutes to go until {{eventName}}!"
+    },
+    "5mins": {
+      "enabled": true,
+      "text": "5 minutes to go until {{eventName}}!"
+    },
+    "live": {
+      "enabled": true,
+      "text": "We are LIVE now! {{eventName}} has started!"
+    },
+    "after5mins": {
+      "enabled": true,
+      "text": "{{eventName}} started 5 minutes ago – join us now!",
+      "mediaId": "me789g2bxotgpgoyyc",
+      "mediaUrl": "/uploads/1754923703688-automation.png"
+    },
+    "after10mins": {
+      "enabled": true,
+      "text": "{{eventName}} started 10 minutes ago – not too late to join!"
+    },
+    "after15mins": {
+      "enabled": true,
+      "text": "{{eventName}} is underway – 15 minutes in!"
+    },
+    "after30mins": {
+      "enabled": true,
+      "text": "30 minutes into {{eventName}} – catch up live!"
+    },
+    "after1hour": {
+      "enabled": true,
+      "text": "{{eventName}} started 1 hour ago – join before it ends!"
+    },
+    "after2hours": {
+      "enabled": true,
+      "text": "{{eventName}} started 2 hours ago – still going!"
+    },
+    "after3hours": {
+      "enabled": true,
+      "text": "{{eventName}} started 3 hours ago – last chance to engage!"
+    },
+    "after4hours": {
+      "enabled": true,
+      "text": "{{eventName}} started 4 hours ago – wrapping up soon!"
+    }
+  }
+}

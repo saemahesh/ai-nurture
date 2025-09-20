@@ -1,12 +1,13 @@
 const express = require('express');
+const { getDataFilePath } = require('../data-utils');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const router = express.Router();
 
-const EVENTS_FILE = path.join(__dirname, '../data/events.json');
-const REMINDERS_FILE = path.join(__dirname, '../data/event_reminders.json');
-const SCHEDULE_FILE = path.join(__dirname, '../data/schedule.json');
+const EVENTS_FILE = getDataFilePath('events.json');
+const REMINDERS_FILE = getDataFilePath('event_reminders.json');
+const SCHEDULE_FILE = getDataFilePath('schedule.json');
 
 // Set up multer storage for file uploads
 const uploadDir = path.join(__dirname, '../public/uploads');

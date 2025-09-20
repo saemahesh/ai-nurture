@@ -1,14 +1,15 @@
-**Action Plan - Iteration 4**
+**Action Plan - Iteration 5**
 
-Current Issue: Improve UI layout for Day 1 messages in sequence drip campaign section
+Current Issue: Separate local and production database JSON files to avoid conflicts
 
 Tasks:
-1. Reorganize Day, Minutes After Enrollment, and Type fields in one row for Day 1
-2. Ensure proper responsive layout for Day 1 messages
-3. Keep layout clean and organized for better user experience
-4. Test that the layout works well on different screen sizes
+1. Create db/local and db/production folders structure
+2. Move existing data files to appropriate folders
+3. Update all code references to use environment-specific paths
+4. Implement environment detection logic
+5. Ensure minimal changes while maintaining all functionality
 
-Focus: UI improvement for Day 1 message layout in sequence creation
+Focus: Database separation for local/production environments
 6. Check if there's browser caching causing old behavior
 
 Target: Finally fix the redirection issue by identifying exact root cause

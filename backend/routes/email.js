@@ -1,4 +1,5 @@
 const express = require('express');
+const { getDataFilePath } = require('../data-utils');
 const router = express.Router();
 const emailService = require('../services/email.service');
 const fs = require('fs');
@@ -7,7 +8,7 @@ const path = require('path');
 // Get email settings
 router.get('/settings', (req, res) => {
     try {
-        const settingsPath = path.join(__dirname, '../data/email_settings.json');
+        const settingsPath = getDataFilePath('email_settings.json');
         if (fs.existsSync(settingsPath)) {
             const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
             // Don't send password back to frontend

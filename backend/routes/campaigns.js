@@ -1,4 +1,5 @@
 const express = require('express');
+const { getDataFilePath } = require('../data-utils');
 const path = require('path');
 const fs = require('fs');
 const router = express.Router();
@@ -11,7 +12,7 @@ function authRequired(req, res, next) {
   next();
 }
 
-const CAMPAIGNS_FILE = path.join(__dirname, '../data/campaigns.json');
+const CAMPAIGNS_FILE = getDataFilePath('campaigns.json');
 
 // Helper functions
 function readCampaigns() {

@@ -16,14 +16,4 @@ Read Mandatory instructions to follow on every iteration:
     until i clear the issues here, consider they are not fixed
 --------------------------------------------------------
 **** Issue List ****
-
-in the sequence drip campaign section,
-keep Day *
-1
-Minutes After Enrollment
-
-How long after enrollment to send this message
-
-Type
-
-these 3 fields in one row for day 1 message also for better ui
+can we now delete 

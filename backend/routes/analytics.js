@@ -1,4 +1,5 @@
 const express = require('express');
+const { getDataFilePath } = require('../data-utils');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
@@ -12,12 +13,12 @@ function authRequired(req, res, next) {
 }
 
 // File paths
-const analyticsFile = path.join(__dirname, '../data/campaign_analytics.json');
-const queueFile = path.join(__dirname, '../data/campaign_queue.json');
-const messageQueueFile = path.join(__dirname, '../data/message_queue.json');
-const enrollmentsFile = path.join(__dirname, '../data/enrollments.json');
-const campaignsFile = path.join(__dirname, '../data/campaigns.json');
-const sequencesFile = path.join(__dirname, '../data/sequences.json');
+const analyticsFile = getDataFilePath('campaign_analytics.json');
+const queueFile = getDataFilePath('campaign_queue.json');
+const messageQueueFile = getDataFilePath('message_queue.json');
+const enrollmentsFile = getDataFilePath('enrollments.json');
+const campaignsFile = getDataFilePath('campaigns.json');
+const sequencesFile = getDataFilePath('sequences.json');
 
 // Helper functions
 function loadData(filename) {

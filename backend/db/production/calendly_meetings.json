@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1756919494509.8276,
+    "username": "robomate",
+    "calendly_id": "https://api.calendly.com/scheduled_events/5f3cbe91-7291-4ce1-968a-eb1abfe19382",
+    "name": "30 Minute Meeting",
+    "start_time": "2025-09-04T10:30:00.000000Z",
+    "end_time": "2025-09-04T10:45:00.000000Z",
+    "status": "active",
+    "location": {
+      "join_url": "https://calendly.com/events/5f3cbe91-7291-4ce1-968a-eb1abfe19382/google_meet",
+      "status": "pushed",
+      "type": "google_conference"
+    },
+    "event_type": "30 Minute Meeting",
+    "event_type_uri": "https://api.calendly.com/event_types/742440b4-35ac-47a2-84f0-89b211d3f27f",
+    "invitee": {
+      "cancel_url": "https://calendly.com/cancellations/b489adc4-6e37-4638-a51d-beac898d70a8",
+      "created_at": "2025-09-03T17:11:23.788912Z",
+      "email": "saemahesh@gmail.com",
+      "event": "https://api.calendly.com/scheduled_events/5f3cbe91-7291-4ce1-968a-eb1abfe19382",
+      "first_name": null,
+      "invitee_scheduled_by": "https://api.calendly.com/users/b0464528-f677-48e1-b497-0154b0d9e723",
+      "last_name": null,
+      "name": "mahesh",
+      "new_invitee": null,
+      "no_show": null,
+      "old_invitee": null,
+      "payment": null,
+      "questions_and_answers": [
+        {
+          "answer": "nothing",
+          "position": 0,
+          "question": "Please share anything that will help prepare for our meeting."
+        },
+        {
+          "answer": "+91 95737 13873",
+          "position": 1,
+          "question": "Whatsapp Number"
+        }
+      ],
+      "reconfirmation": null,
+      "reschedule_url": "https://calendly.com/reschedulings/b489adc4-6e37-4638-a51d-beac898d70a8",
+      "rescheduled": false,
+      "routing_form_submission": null,
+      "scheduling_method": null,
+      "status": "active",
+      "text_reminder_number": "+91 95737 13873",
+      "timezone": "Asia/Calcutta",
+      "tracking": {
+        "utm_campaign": null,
+        "utm_source": null,
+        "utm_medium": null,
+        "utm_content": null,
+        "utm_term": null,
+        "salesforce_uuid": null
+      },
+      "updated_at": "2025-09-03T17:11:23.788912Z",
+      "uri": "https://api.calendly.com/scheduled_events/5f3cbe91-7291-4ce1-968a-eb1abfe19382/invitees/b489adc4-6e37-4638-a51d-beac898d70a8"
+    },
+    "created_at": "2025-09-03T17:11:34.509Z",
+    "updated_at": "2025-09-03T17:11:34.509Z",
+    "notifications_sent": {
+      "booking_confirmation": false,
+      "five_days_reminder": false,
+      "four_days_reminder": false,
+      "three_days_reminder": false,
+      "two_days_reminder": false,
+      "one_day_reminder": false,
+      "twelve_hours_reminder": true,
+      "six_hours_reminder": true,
+      "three_hours_reminder": true,
+      "one_hour_reminder": true,
+      "five_minutes_reminder": true,
+      "meeting_live": true,
+      "post_meeting_thanks": true
+    }
+  }
+]

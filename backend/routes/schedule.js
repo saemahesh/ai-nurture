@@ -1,10 +1,11 @@
 const express = require('express');
+const { getDataFilePath } = require('../data-utils');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const router = express.Router();
 
-const SCHEDULE_FILE = path.join(__dirname, '../data/schedule.json');
+const SCHEDULE_FILE = getDataFilePath('schedule.json');
 function readSchedule() {
   if (!fs.existsSync(SCHEDULE_FILE)) return [];
   return JSON.parse(fs.readFileSync(SCHEDULE_FILE));

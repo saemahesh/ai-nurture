@@ -1,0 +1,90 @@
+[
+  {
+    "username": "robomate",
+    "password": "123",
+    "status": "active",
+    "registrationDate": "2025-05-02",
+    "expirationDate": "2027-06-12T18:30:00.000Z",
+    "settings": {
+      "access_token": "668d650c1df10",
+      "instance_id": "6782310EA48EE",
+      "wa_phone": "916302009818",
+      "notification_enabled": true,
+      "timezone": "Asia/Kolkata",
+      "test_mobile": "919573713873",
+      "whapi_token": "UcYJY2xxMnKf3l06PXSoCg7s4tBDWmre",
+      "default_language": "en",
+      "autosave_interval": "60",
+      "log_messages": false,
+      "auto_delete": false,
+      "session_timeout": "60",
+      "calendly_token": "eyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzU2NzM0MjU2LCJqdGkiOiI2ZDVjZTIwNi1jNzcxLTQwNjEtYTcyZi1jOWIxYmM1ZDQ2Y2MiLCJ1c2VyX3V1aWQiOiJiMDQ2NDUyOC1mNjc3LTQ4ZTEtYjQ5Ny0wMTU0YjBkOWU3MjMifQ.TmoF42ECjtVkwuI3F_Ly7kI7-upohd7dbdApOuH__2HN2qD_aTTsCB5WmjhE77IqhnSttjgwXTt9szKrr6lKFA"
+    }
+  },
+  {
+    "username": "sai",
+    "password": "123",
+    "status": "active",
+    "registrationDate": "2025-05-02",
+    "expirationDate": "2025-12-10T18:30:00.000Z",
+    "settings": {
+      "access_token": "668d650c1df10",
+      "instance_id": "686E92A347643",
+      "wa_phone": "919573713873",
+      "notification_enabled": true,
+      "timezone": "Asia/Kolkata",
+      "test_mobile": "916302009818",
+      "whapi_token": "sdfghjkl",
+      "default_language": "en",
+      "autosave_interval": "60",
+      "log_messages": false,
+      "auto_delete": false,
+      "session_timeout": "60"
+    }
+  },
+  {
+    "username": "admin",
+    "password": "admin123",
+    "status": "active",
+    "registrationDate": "2025-05-02",
+    "expirationDate": "2029-09-01T18:30:00.000Z",
+    "role": "admin",
+    "settings": {
+      "access_token": "",
+      "instance_id": "",
+      "wa_phone": "",
+      "notification_enabled": true,
+      "timezone": "",
+      "test_mobile": ""
+    }
+  },
+  {
+    "username": "user3",
+    "password": "123",
+    "status": "active",
+    "registrationDate": "2025-05-02",
+    "expirationDate": "2025-05-29T18:30:00.000Z",
+    "settings": {
+      "access_token": "",
+      "instance_id": "",
+      "wa_phone": "",
+      "notification_enabled": true,
+      "timezone": "",
+      "test_mobile": ""
+    }
+  },
+  {
+    "username": "farzana",
+    "password": "123",
+    "status": "active",
+    "registrationDate": "2025-07-31",
+    "expirationDate": "2025-08-30"
+  },
+  {
+    "username": "chinni",
+    "password": "123",
+    "status": "pending",
+    "registrationDate": "2025-07-31",
+    "expirationDate": "2025-08-30"
+  }
+]

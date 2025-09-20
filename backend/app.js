@@ -8,6 +8,7 @@ const cors = require('cors');
 const session = require('express-session');
 const cron = require('node-cron');
 const axios = require('axios');
+const { getDataFilePath } = require('./data-utils');
 
 // Helper function to get the correct media URL for sending
 function getMediaUrlForSending(mediaUrl) {
@@ -68,9 +69,9 @@ console.log('Campaign executor initialized and started');
 setTimeout(() => {
   try {
     console.log('Processing existing enrollments on startup...');
-    const enrollments = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/enrollments.json'), 'utf8'));
-    const campaignQueue = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/campaign_queue.json'), 'utf8'));
-    const sequences = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/sequences.json'), 'utf8'));
+    const enrollments = JSON.parse(fs.readFileSync(getDataFilePath('enrollments.json'), 'utf8'));
+    const campaignQueue = JSON.parse(fs.readFileSync(getDataFilePath('campaign_queue.json'), 'utf8'));
+    const sequences = JSON.parse(fs.readFileSync(getDataFilePath('sequences.json'), 'utf8'));
     
     let processedCount = 0;
     let completedCount = 0;
@@ -136,7 +137,7 @@ setTimeout(() => {
     
     // Save updated enrollments if any were marked as completed
     if (completedCount > 0) {
-      fs.writeFileSync(path.join(__dirname, 'data/enrollments.json'), JSON.stringify(enrollments, null, 2));
+      fs.writeFileSync(getDataFilePath('enrollments.json'), JSON.stringify(enrollments, null, 2));
     }
     
     console.log(`📊 Startup summary: ${processedCount} processed, ${completedCount} completed, ${alreadyQueuedCount} already queued`);
@@ -153,7 +154,7 @@ app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 // Session middleware
 app.use(session({
-  store: new SingleFileSessionStore(path.join(__dirname, 'data/sessions.json')),
+  store: new SingleFileSessionStore(getDataFilePath('sessions.json')),
   secret: 'autopost-wa-secret',
   resave: false,
   saveUninitialized: true,
@@ -455,7 +456,7 @@ cron.schedule('* * * * *', async () => {
   try {
     console.log(`[CRON] ${new Date().toISOString()} - Checking for scheduled messages...`);
     
-    const schedulePath = path.join(__dirname, 'data/schedule.json');
+    const schedulePath = getDataFilePath('schedule.json');
     if (!fs.existsSync(schedulePath)) {
       console.log('[CRON] Schedule file not found, skipping check');
       return;
@@ -510,8 +511,8 @@ cron.schedule('* * * * *', async () => {
             console.log(`[CRON] Message content: "${item.message.substring(0, 50)}${item.message.length > 50 ? '...' : ''}"`);
             
             // Fetch user settings and group info
-            const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json')));
-            const groups = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/groups.json')));
+            const users = JSON.parse(fs.readFileSync(getDataFilePath('users.json')));
+            const groups = JSON.parse(fs.readFileSync(getDataFilePath('groups.json')));
             const user = users.find(u => u.username === item.username);
             if (!user || !user.settings || !user.settings.instance_id || !user.settings.access_token) {
               console.error(`[WA API] Missing WhatsApp API credentials for user ${item.username}`);
@@ -653,8 +654,8 @@ cron.schedule('* * * * *', async () => {
       console.log(`[CRON] Message content: "${item.message.substring(0, 50)}${item.message.length > 50 ? '...' : ''}"`);
       
       // Fetch user settings and group info
-      const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json')));
-      const groups = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/groups.json')));
+      const users = JSON.parse(fs.readFileSync(getDataFilePath('users.json')));
+      const groups = JSON.parse(fs.readFileSync(getDataFilePath('groups.json')));
       const user = users.find(u => u.username === item.username);
       if (!user || !user.settings || !user.settings.instance_id || !user.settings.access_token) {
         console.error(`[WA API] Missing WhatsApp API credentials for user ${item.username}`);
@@ -729,7 +730,7 @@ cron.schedule('* * * * *', async () => {
     }
 
     // Process direct schedules with schedule types (once, daily, custom)
-    const directSchedulePath = path.join(__dirname, 'data/direct_schedules.json');
+    const directSchedulePath = getDataFilePath('direct_schedules.json');
     if (fs.existsSync(directSchedulePath)) {
       const directSchedules = JSON.parse(fs.readFileSync(directSchedulePath));
       console.log(`[CRON] Found ${directSchedules.length} total direct scheduled items`);
@@ -754,7 +755,7 @@ cron.schedule('* * * * *', async () => {
           continue;
         }
         // Skip items that are not for current user's active time slots
-        const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json')));
+        const users = JSON.parse(fs.readFileSync(getDataFilePath('users.json')));
         const user = users.find(u => u.username === item.username);
         
         if (!user || !user.settings || !user.settings.instance_id || !user.settings.access_token) {
@@ -877,8 +878,8 @@ cron.schedule('* * * * *', async () => {
 });
 
 // === Daily Groups Sync Cron ===
-const GROUPS_FILE = path.join(__dirname, 'data/groups.json');
-const USERS_FILE = path.join(__dirname, 'data/users.json');
+const GROUPS_FILE = getDataFilePath('groups.json');
+const USERS_FILE = getDataFilePath('users.json');
 
 async function syncAllUsersGroups() {
   if (!fs.existsSync(USERS_FILE)) return;
@@ -918,7 +919,7 @@ cron.schedule('0 * * * *', async () => {
   try {
     console.log(`[CALENDLY-CRON] ${new Date().toISOString()} - Starting Calendly sync for all users...`);
     
-    const usersPath = path.join(__dirname, 'data/users.json');
+    const usersPath = getDataFilePath('users.json');
     if (!fs.existsSync(usersPath)) {
       console.log('[CALENDLY-CRON] Users file not found, skipping sync');
       return;
@@ -962,7 +963,7 @@ cron.schedule('0 * * * *', async () => {
 // Calendly notification cron job - runs every minute
 cron.schedule('* * * * *', async () => {
   try {
-    const notificationsPath = path.join(__dirname, 'data/meeting_notifications.json');
+    const notificationsPath = getDataFilePath('meeting_notifications.json');
     if (!fs.existsSync(notificationsPath)) {
       return;
     }
@@ -981,12 +982,12 @@ cron.schedule('* * * * *', async () => {
           
           try {
             // Get user settings for WhatsApp sending
-            const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json'), 'utf8'));
+            const users = JSON.parse(fs.readFileSync(getDataFilePath('users.json'), 'utf8'));
             const user = users.find(u => u.username === notification.username);
             
             if (user && user.settings && user.settings.instance_id && user.settings.access_token) {
               // Get meeting details to find invitee phone
-              const meetingsPath = path.join(__dirname, 'data/calendly_meetings.json');
+              const meetingsPath = getDataFilePath('calendly_meetings.json');
               const meetings = JSON.parse(fs.readFileSync(meetingsPath, 'utf8'));
               const meeting = meetings.find(m => m.id === notification.meeting_id);
               
@@ -1100,7 +1101,7 @@ cron.schedule('* * * * *', async () => {
 // Debug endpoint to check WhatsApp instance status
 app.get('/debug/wa-status/:username', async (req, res) => {
   try {
-    const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json')));
+    const users = JSON.parse(fs.readFileSync(getDataFilePath('users.json')));
     const user = users.find(u => u.username === req.params.username);
     
     if (!user) {
@@ -1173,7 +1174,7 @@ app.post('/debug/wa-test/:username', async (req, res) => {
       return res.status(400).json({ error: 'Number and message are required' });
     }
     
-    const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json')));
+    const users = JSON.parse(fs.readFileSync(getDataFilePath('users.json')));
     const user = users.find(u => u.username === req.params.username);
     
     if (!user || !user.settings || !user.settings.instance_id || !user.settings.access_token) {
@@ -1207,10 +1208,10 @@ app.post('/debug/wa-test/:username', async (req, res) => {
 // Debug endpoint to check campaign execution status
 app.get('/debug/campaign-status', async (req, res) => {
   try {
-    const enrollments = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/enrollments.json'), 'utf8'));
-    const sequences = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/sequences.json'), 'utf8'));
-    const campaignQueue = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/campaign_queue.json'), 'utf8'));
-    const messageQueue = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/message_queue.json'), 'utf8'));
+    const enrollments = JSON.parse(fs.readFileSync(getDataFilePath('enrollments.json'), 'utf8'));
+    const sequences = JSON.parse(fs.readFileSync(getDataFilePath('sequences.json'), 'utf8'));
+    const campaignQueue = JSON.parse(fs.readFileSync(getDataFilePath('campaign_queue.json'), 'utf8'));
+    const messageQueue = JSON.parse(fs.readFileSync(getDataFilePath('message_queue.json'), 'utf8'));
     
     res.json({
       enrollments: enrollments.length,
@@ -1230,7 +1231,7 @@ app.get('/debug/campaign-status', async (req, res) => {
 // Endpoint to process existing enrollments and queue their messages
 app.post('/debug/process-enrollments', async (req, res) => {
   try {
-    const enrollments = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/enrollments.json'), 'utf8'));
+    const enrollments = JSON.parse(fs.readFileSync(getDataFilePath('enrollments.json'), 'utf8'));
     const results = [];
     
     for (const enrollment of enrollments) {
@@ -1255,7 +1256,7 @@ app.post('/debug/process-enrollments', async (req, res) => {
     }
     
     // Check final queue status
-    const campaignQueue = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/campaign_queue.json'), 'utf8'));
+    const campaignQueue = JSON.parse(fs.readFileSync(getDataFilePath('campaign_queue.json'), 'utf8'));
     
     res.json({
       message: 'Processed existing enrollments',

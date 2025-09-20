@@ -1,11 +1,12 @@
 const express = require('express');
+const { getDataFilePath } = require('../data-utils');
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const router = express.Router();
 
-const GROUPS_FILE = path.join(__dirname, '../data/groups.json');
-const USERS_FILE = path.join(__dirname, '../data/users.json');
+const GROUPS_FILE = getDataFilePath('groups.json');
+const USERS_FILE = getDataFilePath('users.json');
 
 function readGroups() {
   if (!fs.existsSync(GROUPS_FILE)) return [];

@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1756919494516.0608,
+    "username": "robomate",
+    "meeting_id": 1756919494509.8276,
+    "calendly_id": "https://api.calendly.com/scheduled_events/5f3cbe91-7291-4ce1-968a-eb1abfe19382",
+    "type": "twelve_hours_reminder",
+    "trigger_time": "2025-09-03T22:30:00.000Z",
+    "message": "⏰ Hi mahesh, your meeting '30 Minute Meeting' is in 12 hours! It's scheduled for 4/9/2025 at 4:00:00 pm.",
+    "status": "sent",
+    "created_at": "2025-09-03T17:11:34.517Z",
+    "sent_at": "2025-09-04T03:59:02.609Z"
+  },
+  {
+    "id": 1756919494517.9727,
+    "username": "robomate",
+    "meeting_id": 1756919494509.8276,
+    "calendly_id": "https://api.calendly.com/scheduled_events/5f3cbe91-7291-4ce1-968a-eb1abfe19382",
+    "type": "six_hours_reminder",
+    "trigger_time": "2025-09-04T04:30:00.000Z",
+    "message": "⏰ Hi mahesh, your meeting '30 Minute Meeting' is in 6 hours! It's scheduled for 4/9/2025 at 4:00:00 pm.",
+    "status": "sent",
+    "created_at": "2025-09-03T17:11:34.517Z",
+    "sent_at": "2025-09-04T04:30:03.343Z"
+  },
+  {
+    "id": 1756919494517.211,
+    "username": "robomate",
+    "meeting_id": 1756919494509.8276,
+    "calendly_id": "https://api.calendly.com/scheduled_events/5f3cbe91-7291-4ce1-968a-eb1abfe19382",
+    "type": "three_hours_reminder",
+    "trigger_time": "2025-09-04T07:30:00.000Z",
+    "message": "⏰ Hi mahesh, your meeting '30 Minute Meeting' is in 3 hours! It's scheduled for 4/9/2025 at 4:00:00 pm.",
+    "status": "sent",
+    "created_at": "2025-09-03T17:11:34.517Z",
+    "sent_at": "2025-09-04T07:30:01.861Z"
+  },
+  {
+    "id": 1756919494517.8853,
+    "username": "robomate",
+    "meeting_id": 1756919494509.8276,
+    "calendly_id": "https://api.calendly.com/scheduled_events/5f3cbe91-7291-4ce1-968a-eb1abfe19382",
+    "type": "one_hour_reminder",
+    "trigger_time": "2025-09-04T09:30:00.000Z",
+    "message": "⏰ Hi mahesh, your meeting '30 Minute Meeting' is in 1 hour! It's scheduled for 4/9/2025 at 4:00:00 pm.",
+    "status": "sent",
+    "created_at": "2025-09-03T17:11:34.517Z",
+    "sent_at": "2025-09-04T09:30:02.169Z"
+  },
+  {
+    "id": 1756919494517.5264,
+    "username": "robomate",
+    "meeting_id": 1756919494509.8276,
+    "calendly_id": "https://api.calendly.com/scheduled_events/5f3cbe91-7291-4ce1-968a-eb1abfe19382",
+    "type": "five_minutes_reminder",
+    "trigger_time": "2025-09-04T10:25:00.000Z",
+    "message": "🚨 Hi mahesh, your meeting '30 Minute Meeting' is starting in 5 minutes! https://calendly.com/events/5f3cbe91-7291-4ce1-968a-eb1abfe19382/google_meet",
+    "status": "sent",
+    "created_at": "2025-09-03T17:11:34.517Z",
+    "sent_at": "2025-09-04T10:25:02.409Z"
+  },
+  {
+    "id": 1756919494517.9634,
+    "username": "robomate",
+    "meeting_id": 1756919494509.8276,
+    "calendly_id": "https://api.calendly.com/scheduled_events/5f3cbe91-7291-4ce1-968a-eb1abfe19382",
+    "type": "meeting_live",
+    "trigger_time": "2025-09-04T10:30:00.000Z",
+    "message": "🎥 Hi mahesh, your meeting '30 Minute Meeting' is now live! Please join: https://calendly.com/events/5f3cbe91-7291-4ce1-968a-eb1abfe19382/google_meet",
+    "status": "sent",
+    "created_at": "2025-09-03T17:11:34.517Z",
+    "sent_at": "2025-09-04T10:30:03.671Z"
+  },
+  {
+    "id": 1756919494517.831,
+    "username": "robomate",
+    "meeting_id": 1756919494509.8276,
+    "calendly_id": "https://api.calendly.com/scheduled_events/5f3cbe91-7291-4ce1-968a-eb1abfe19382",
+    "type": "post_meeting_thanks",
+    "trigger_time": "2025-09-04T11:45:00.000Z",
+    "message": "🙏 Thank you mahesh for attending the meeting '30 Minute Meeting'! We hope it was valuable. Feel free to reach out if you have any questions.",
+    "status": "sent",
+    "created_at": "2025-09-03T17:11:34.517Z",
+    "sent_at": "2025-09-04T11:45:02.033Z"
+  }
+]

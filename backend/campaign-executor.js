@@ -3,6 +3,7 @@ const path = require('path');
 const cron = require('node-cron');
 const axios = require('axios');
 const qs = require('querystring');
+const { getDataDir, getDataFilePath } = require('./data-utils');
 
 // Helper function to get the correct media URL for sending
 function getMediaUrlForSending(mediaUrl) {
@@ -40,13 +41,13 @@ class CampaignExecutor {
     console.log('\n\n\n server started.');
     console.log('🆕 [CAMPAIGN_EXECUTOR] Creating new instance');
     
-    this.dataDir = path.join(__dirname, 'data');
-    this.queueFile = path.join(this.dataDir, 'campaign_queue.json');
-    this.campaignsFile = path.join(this.dataDir, 'campaigns.json');
-    this.enrollmentsFile = path.join(this.dataDir, 'enrollments.json');
-    this.campaignLeadsFile = path.join(this.dataDir, 'campaign_leads.json');
-    this.sequencesFile = path.join(this.dataDir, 'sequences.json');
-    this.messageQueueFile = path.join(this.dataDir, 'message_queue.json');
+    this.dataDir = getDataDir();
+    this.queueFile = getDataFilePath('campaign_queue.json');
+    this.campaignsFile = getDataFilePath('campaigns.json');
+    this.enrollmentsFile = getDataFilePath('enrollments.json');
+    this.campaignLeadsFile = getDataFilePath('campaign_leads.json');
+    this.sequencesFile = getDataFilePath('sequences.json');
+    this.messageQueueFile = getDataFilePath('message_queue.json');
     
     this.isProcessing = false;
     this.activeUsers = new Set();

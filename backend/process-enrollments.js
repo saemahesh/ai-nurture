@@ -1,4 +1,5 @@
 const CampaignExecutor = require('./campaign-executor');
+const { getDataFilePath } = require('../data-utils');
 const fs = require('fs');
 const path = require('path');
 

@@ -4,7 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const qs = require('querystring');
-const USERS_FILE = path.join(__dirname, '../data/users.json');
+const { getDataFilePath } = require('../data-utils');
+const USERS_FILE = getDataFilePath('users.json');
 
 function readUsers() {
   return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));

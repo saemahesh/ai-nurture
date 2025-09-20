@@ -3,10 +3,11 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment-timezone');
 const { requireAuth } = require('../middleware/auth');
+const { getDataFilePath } = require('../data-utils');
 const router = express.Router();
 
-const sequencesFile = path.join(__dirname, '../data/sequences.json');
-const enrollmentsFile = path.join(__dirname, '../data/enrollments.json');
+const sequencesFile = getDataFilePath('sequences.json');
+const enrollmentsFile = getDataFilePath('enrollments.json');
 
 // Helper function to read sequences
 function readSequences() {

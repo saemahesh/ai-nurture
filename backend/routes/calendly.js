@@ -1,14 +1,15 @@
 const express = require('express');
+const { getDataFilePath } = require('../data-utils');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 
 // Data file paths
-const meetingsPath = path.join(__dirname, '../data/calendly_meetings.json');
-const usersPath = path.join(__dirname, '../data/users.json');
-const notificationsPath = path.join(__dirname, '../data/meeting_notifications.json');
-const templatesPath = path.join(__dirname, '../data/calendly_reminder_templates.json');
+const meetingsPath = getDataFilePath('calendly_meetings.json');
+const usersPath = getDataFilePath('users.json');
+const notificationsPath = getDataFilePath('meeting_notifications.json');
+const templatesPath = getDataFilePath('calendly_reminder_templates.json');
 
 // Helper functions
 function readMeetings() {

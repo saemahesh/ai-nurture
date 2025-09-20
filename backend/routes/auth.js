@@ -1,9 +1,10 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const { getDataFilePath } = require('../data-utils');
 const router = express.Router();
 
-const USERS_FILE = path.join(__dirname, '../data/users.json');
+const USERS_FILE = getDataFilePath('users.json');
 
 function readUsers() {
   if (!fs.existsSync(USERS_FILE)) return [];

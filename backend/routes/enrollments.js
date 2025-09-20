@@ -1,4 +1,5 @@
 const express = require('express');
+const { getDataFilePath } = require('../data-utils');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
@@ -17,11 +18,11 @@ const campaignExecutor = CampaignExecutor.getInstance();
 const CustomersService = require('../services/customers.service');
 const customersService = new CustomersService();
 
-const enrollmentsFile = path.join(__dirname, '../data/enrollments.json');
-const sequencesFile = path.join(__dirname, '../data/sequences.json');
-const messageQueueFile = path.join(__dirname, '../data/message_queue.json');
-const campaignQueueFile = path.join(__dirname, '../data/campaign_queue.json');
-const campaignLeadsFile = path.join(__dirname, '../data/campaign_leads.json');
+const enrollmentsFile = getDataFilePath('enrollments.json');
+const sequencesFile = getDataFilePath('sequences.json');
+const messageQueueFile = getDataFilePath('message_queue.json');
+const campaignQueueFile = getDataFilePath('campaign_queue.json');
+const campaignLeadsFile = getDataFilePath('campaign_leads.json');
 
 // Apply authentication middleware to all routes
 router.use(requireAuth);

@@ -239,29 +239,6 @@
                     Get your token from <a href="https://developer.calendly.com/how-to-authenticate-with-personal-access-tokens" target="_blank" class="text-purple-300 hover:text-purple-200">Calendly Developer Settings</a>
                   </div>
                 </div>
-
-                <!-- Information -->
-                <div class="p-4 bg-slate-700/30 rounded-lg border border-slate-600">
-                  <div class="text-sm text-gray-300">
-                    <i class="fas fa-info-circle text-purple-300 mr-2"></i>
-                    <strong>Auto Features:</strong> Once you save your token, meetings will sync every hour and automatic WhatsApp notifications will be sent to invitees. Customize notification templates from the Meetings page.
-                  </div>
-                </div>
-
-                <!-- Test Connection Button -->
-                <div class="pt-4 border-t border-slate-600">
-                  <button type="button" 
-                          ng-click="testCalendlySync()" 
-                          ng-disabled="testingCalendly || !settings.calendly_token"
-                          class="flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white rounded-lg font-medium transition-all duration-300">
-                    <i class="fas mr-2" ng-class="{'fa-spinner fa-spin': testingCalendly, 'fa-sync': !testingCalendly}"></i>
-                    {{testingCalendly ? 'Testing...' : 'Test Connection'}}
-                  </button>
-                  <div ng-if="calendlyTestResult" class="mt-2 text-sm" ng-class="{'text-green-300': calendlyTestResult.success, 'text-red-300': !calendlyTestResult.success}">
-                    <i class="fas" ng-class="{'fa-check': calendlyTestResult.success, 'fa-times': !calendlyTestResult.success}"></i>
-                    {{calendlyTestResult.message}}
-                  </div>
-                </div>
               </div>
             </div>
 

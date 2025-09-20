@@ -28,7 +28,7 @@
                 </div>
                 <div class="flex space-x-3">
 
-                    <button ng-click="saveAndActivate()" ng-disabled="saving || !isValidSequence()"
+                    <button ng-click="saveAndActivate()" ng-disabled="saving"
                             class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-4 py-2 rounded-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-emerald-400">
                         {{saving ? 'Saving...' : (isEditMode ? 'Save' : 'Create')}}
                     </button>
@@ -75,15 +75,46 @@
 
                     <!-- Keywords -->
                     <div class="mt-4">
-                        <label for="sequenceKeywords" class="block text-sm font-medium text-cyan-300 mb-2">
-                            Keywords for Auto-Enrollment (Optional)
+                        <label class="block text-sm font-medium text-cyan-300 mb-2">
+                            Keywords for Auto-Enrollment *
                         </label>
-                        <input type="text" id="sequenceKeywords" ng-model="sequence.keywords"
-                               class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300"
-                               placeholder="e.g., whatsapp, crm, offer (comma-separated)">
-                        <p class="mt-1 text-xs text-gray-300">
-                            Comma-separated keywords. If an incoming message matches any keyword, the sender may be enrolled.
+                        <p class="text-sm text-gray-400 mb-3">
+                            At least one keyword is required. Users will be automatically enrolled when they send a message matching these keywords.
                         </p>
+                        
+                        <!-- Dual Keyword Input Fields -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                            <div>
+                                <label class="block text-sm font-medium text-cyan-300 mb-2">Exact Match Keywords</label>
+                                <input type="text" ng-model="sequence.exactKeywords" ng-change="clearKeywordError()"
+                                       class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300"
+                                       placeholder="e.g., hi, hello, start (comma-separated)">
+                                <p class="text-xs text-gray-300 mt-1">Message must match keyword exactly</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-cyan-300 mb-2">Contains Keywords</label>
+                                <input type="text" ng-model="sequence.containsKeywords" ng-change="clearKeywordError()"
+                                       class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300"
+                                       placeholder="e.g., demo, trial, discount (comma-separated)">
+                                <p class="text-xs text-gray-300 mt-1">Keyword appears as complete word in message</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Validation Error -->
+                        <div ng-if="errors.keywords" class="mt-2 p-2 bg-red-900 border border-red-600 rounded text-red-200 text-sm">
+                            {{errors.keywords}}
+                        </div>
+                        
+                        <!-- Combined explanation -->
+                        <div class="mt-1 text-xs text-gray-300 p-3 rounded-lg" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);">
+                            <div class="mb-2">
+                                <strong>📍 Exact Match:</strong> "hi" matches only "hi", not "high" or "this"
+                            </div>
+                            <div>
+                                <strong>🔍 Contains:</strong> "demo" matches "demo video" and "see the demo", but not "demonstrate"
+                            </div>
+                        </div>
                     </div>
                     </div>                <!-- Messages -->
                 <div class="bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 rounded-xl shadow-2xl p-2 border-2 border-white sequence-form-bg">

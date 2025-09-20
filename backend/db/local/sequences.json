@@ -3,10 +3,6 @@
     "id": "seq-1",
     "campaignId": "test-campaign-1",
     "username": "testuser",
-    "keywords": [
-      "whatsapp",
-      "demo"
-    ],
     "messages": [
       {
         "id": "msg-1",
@@ -20,7 +16,9 @@
         "message": "Hi {first_name}, this is a follow-up message from {company}.",
         "delay": 60
       }
-    ]
+    ],
+    "exactKeywords": [],
+    "containsKeywords": []
   },
   {
     "id": "seq_1752221360754",
@@ -28,9 +26,6 @@
     "description": "test",
     "status": "active",
     "username": "robomate",
-    "keywords": [
-      "sdfdsf"
-    ],
     "messages": [
       {
         "day": 1,
@@ -38,7 +33,8 @@
         "message": "Hey {name} , drip media first, congratzzzz\n\nIts time to {rock|party|explode}",
         "time": "09:00",
         "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
-        "mediaType": "image"
+        "mediaType": "image",
+        "minuteDelay": 60
       },
       {
         "day": 2,
@@ -51,7 +47,13 @@
     ],
     "total_days": 2,
     "created_at": "2025-07-11T08:09:20.754Z",
-    "updated_at": "2025-08-02T11:11:44.549Z"
+    "updated_at": "2025-09-20T10:21:19.737Z",
+    "exactKeywords": [
+      "hi"
+    ],
+    "containsKeywords": [
+      "hello"
+    ]
   },
   {
     "id": "seq_1752247551668",
@@ -59,9 +61,6 @@
     "description": "",
     "status": "active",
     "username": "sai",
-    "keywords": [
-      "sai"
-    ],
     "messages": [
       {
         "day": 1,
@@ -79,7 +78,9 @@
     ],
     "total_days": 2,
     "created_at": "2025-07-11T15:25:51.668Z",
-    "updated_at": "2025-07-11T15:27:39.113Z"
+    "updated_at": "2025-07-11T15:27:39.113Z",
+    "exactKeywords": [],
+    "containsKeywords": []
   },
   {
     "id": "seq_1753955697527",
@@ -97,9 +98,10 @@
         "mediaType": "image"
       }
     ],
-    "keywords": [],
     "total_days": 1,
     "created_at": "2025-07-31T09:54:57.528Z",
-    "updated_at": "2025-07-31T09:54:57.530Z"
+    "updated_at": "2025-07-31T09:54:57.530Z",
+    "exactKeywords": [],
+    "containsKeywords": []
   }
 ]

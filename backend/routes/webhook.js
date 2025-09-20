@@ -78,19 +78,58 @@ function normalizePhoneNumber(phone) {
   return cleaned;
 }
 
+// Function to check if message matches keyword based on sequence settings
+function matchesKeyword(message, keyword, matchType, caseSensitive) {
+  const msgText = caseSensitive ? message : message.toLowerCase();
+  const keywordText = caseSensitive ? keyword : keyword.toLowerCase();
+  
+  if (matchType === 'exact') {
+    return msgText === keywordText;
+  } else if (matchType === 'contains') {
+    // Use word boundary regex to ensure whole word match
+    const regex = new RegExp(`\\b${keywordText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, caseSensitive ? 'g' : 'gi');
+    return regex.test(msgText);
+  }
+  
+  return false;
+}
+
 // Function to handle user enrollment in sequences
 function handleEnrollment(phone, messageText, user, pushName) {
   console.log(`[WEBHOOK] Processing enrollment for ${phone} with keyword: "${messageText}"`);
   
   // Find matching sequence
   const sequences = readSequences();
-  const targetSequence = sequences.find(
-    (s) =>
-      s.username === user.username &&
-      s.status === "active" &&
-      s.keywords &&
-      s.keywords.some(keyword => keyword.toLowerCase() === messageText)
-  );
+  const targetSequence = sequences.find((s) => {
+    if (s.username !== user.username || s.status !== "active") {
+      return false;
+    }
+    
+    // Check exact match keywords
+    if (s.exactKeywords && s.exactKeywords.length > 0) {
+      const exactMatch = s.exactKeywords.some(keyword => 
+        matchesKeyword(messageText, keyword, 'exact', false)
+      );
+      if (exactMatch) return true;
+    }
+    
+    // Check contains keywords
+    if (s.containsKeywords && s.containsKeywords.length > 0) {
+      const containsMatch = s.containsKeywords.some(keyword => 
+        matchesKeyword(messageText, keyword, 'contains', false)
+      );
+      if (containsMatch) return true;
+    }
+    
+    // Backward compatibility: check old keywords field
+    if (s.keywords && s.keywords.length > 0) {
+      const matchType = s.keywordMatchType || 'contains';
+      const caseSensitive = s.caseSensitive === true || s.caseSensitive === 'true';
+      return s.keywords.some(keyword => matchesKeyword(messageText, keyword, matchType, caseSensitive));
+    }
+    
+    return false;
+  });
 
   if (!targetSequence) {
     console.log(`[WEBHOOK] No matching sequence found for keyword: "${messageText}"`);

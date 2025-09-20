@@ -1,15 +1,16 @@
-**Action Plan - Iteration 5**
+**Action Plan - Iteration 1**
 
-Current Issue: Separate local and production database JSON files to avoid conflicts
+Current Issue: Old "keywords" field still appearing in sequence JSON data
 
-Tasks:
-1. Create db/local and db/production folders structure
-2. Move existing data files to appropriate folders
-3. Update all code references to use environment-specific paths
-4. Implement environment detection logic
-5. Ensure minimal changes while maintaining all functionality
+Root Cause Analysis:
+- Sequences.json contains old "keywords" field: ["sdfdsf"] alongside new exactKeywords/containsKeywords
+- This indicates incomplete migration or residual code still creating old field
 
-Focus: Database separation for local/production environments
-6. Check if there's browser caching causing old behavior
+Investigation Tasks:
+1. Search all code for any reference to setting "keywords" field (not exactKeywords/containsKeywords)
+2. Check if frontend controller still sends keywords field in requests
+3. Identify where the old keywords field is being created/maintained
+4. Create migration to clean up existing sequence data
+5. Ensure all new sequences only use the new dual keyword system
 
-Target: Finally fix the redirection issue by identifying exact root cause
+Target: Remove all traces of old "keywords" field from sequence data structure

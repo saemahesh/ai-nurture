@@ -16,4 +16,16 @@ Read Mandatory instructions to follow on every iteration:
     until i clear the issues here, consider they are not fixed
 --------------------------------------------------------
 **** Issue List ****
-can we now delete 
+based on your implementation for the keyword matching feature
+still 
+    "keywords": [
+      "sdfdsf"
+    ],
+
+data is coming,in edit mode, why we need 
+    "keywords": [
+      "sdfdsf"
+    ],
+    section in sequence json ?? 
+
+    check again the code and fix it

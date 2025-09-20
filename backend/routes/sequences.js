@@ -86,11 +86,22 @@ router.get('/', requireAuth, (req, res) => {
     // Filter by user
     const userSequences = sequences.filter(s => s.username === req.session.user.username);
     
-    // Add stats to each sequence
-    const sequencesWithStats = userSequences.map(sequence => ({
-      ...sequence,
-      stats: getSequenceStats(sequence.id, req.session.user.username)
-    }));
+    // Add stats to each sequence and clean up old fields
+    const sequencesWithStats = userSequences.map(sequence => {
+      const cleanedSequence = { ...sequence };
+      // Remove old fields for backward compatibility
+      if (cleanedSequence.keywords) {
+        delete cleanedSequence.keywords;
+      }
+      if (cleanedSequence.keywordMatchType) {
+        delete cleanedSequence.keywordMatchType;
+      }
+      
+      return {
+        ...cleanedSequence,
+        stats: getSequenceStats(sequence.id, req.session.user.username)
+      };
+    });
     
     res.json(sequencesWithStats);
   } catch (error) {
@@ -108,9 +119,18 @@ router.get('/:id', requireAuth, (req, res) => {
       return res.status(404).json({ error: 'Sequence not found or you do not have permission to access it' });
     }
     
+    // Clean up old fields for backward compatibility
+    const cleanedSequence = { ...sequence };
+    if (cleanedSequence.keywords) {
+      delete cleanedSequence.keywords;
+    }
+    if (cleanedSequence.keywordMatchType) {
+      delete cleanedSequence.keywordMatchType;
+    }
+    
     // Add stats to the sequence
     const sequenceWithStats = {
-      ...sequence,
+      ...cleanedSequence,
       stats: getSequenceStats(sequence.id, req.session.user.username)
     };
     
@@ -127,6 +147,16 @@ router.post('/', requireAuth, (req, res) => {
     
     if (!name || !messages || !Array.isArray(messages) || messages.length === 0) {
       return res.status(400).json({ error: 'Name and messages are required' });
+    }
+    
+    // Validate keywords - at least one keyword field must be provided
+    const hasExactKeywords = req.body.exactKeywords && 
+      (Array.isArray(req.body.exactKeywords) ? req.body.exactKeywords.length > 0 : req.body.exactKeywords.trim() !== '');
+    const hasContainsKeywords = req.body.containsKeywords && 
+      (Array.isArray(req.body.containsKeywords) ? req.body.containsKeywords.length > 0 : req.body.containsKeywords.trim() !== '');
+    
+    if (!hasExactKeywords && !hasContainsKeywords) {
+      return res.status(400).json({ error: 'At least one keyword field (exact match or contains) is required for auto-enrollment' });
     }
     
     // Validate messages
@@ -149,7 +179,12 @@ router.post('/', requireAuth, (req, res) => {
       status: req.body.status || 'inactive', // Use status from request or default to inactive
       username: req.session.user.username,
       messages: messages,
-      keywords: req.body.keywords ? req.body.keywords.split(',').map(k => k.trim().toLowerCase()).filter(k => k) : [],
+      exactKeywords: Array.isArray(req.body.exactKeywords) 
+        ? req.body.exactKeywords.map(k => k.trim().toLowerCase()).filter(k => k) 
+        : (req.body.exactKeywords ? req.body.exactKeywords.split(',').map(k => k.trim().toLowerCase()).filter(k => k) : []),
+      containsKeywords: Array.isArray(req.body.containsKeywords) 
+        ? req.body.containsKeywords.map(k => k.trim().toLowerCase()).filter(k => k) 
+        : (req.body.containsKeywords ? req.body.containsKeywords.split(',').map(k => k.trim().toLowerCase()).filter(k => k) : []),
       total_days: Math.max(...messages.map(m => m.day)),
       created_at: moment().toISOString(),
       updated_at: moment().toISOString()
@@ -198,8 +233,33 @@ router.put('/:id', requireAuth, (req, res) => {
     if (name) sequences[sequenceIndex].name = name.trim();
     if (description !== undefined) sequences[sequenceIndex].description = description.trim();
     if (status) sequences[sequenceIndex].status = status;
-    if (req.body.keywords !== undefined) {
-      sequences[sequenceIndex].keywords = req.body.keywords ? req.body.keywords.split(',').map(k => k.trim().toLowerCase()).filter(k => k) : [];
+    if (req.body.exactKeywords !== undefined) {
+      sequences[sequenceIndex].exactKeywords = Array.isArray(req.body.exactKeywords) 
+        ? req.body.exactKeywords.map(k => k.trim().toLowerCase()).filter(k => k) 
+        : (req.body.exactKeywords ? req.body.exactKeywords.split(',').map(k => k.trim().toLowerCase()).filter(k => k) : []);
+    }
+    if (req.body.containsKeywords !== undefined) {
+      sequences[sequenceIndex].containsKeywords = Array.isArray(req.body.containsKeywords) 
+        ? req.body.containsKeywords.map(k => k.trim().toLowerCase()).filter(k => k) 
+        : (req.body.containsKeywords ? req.body.containsKeywords.split(',').map(k => k.trim().toLowerCase()).filter(k => k) : []);
+    }
+    
+    // Remove old keywords field if it exists (cleanup for backward compatibility)
+    if (sequences[sequenceIndex].keywords) {
+      delete sequences[sequenceIndex].keywords;
+    }
+    // Also remove keywordMatchType as it's no longer needed
+    if (sequences[sequenceIndex].keywordMatchType) {
+      delete sequences[sequenceIndex].keywordMatchType;
+    }
+    
+    // Validate that at least one keyword field has content after update
+    const updatedSequence = sequences[sequenceIndex];
+    const hasExactKeywords = updatedSequence.exactKeywords && updatedSequence.exactKeywords.length > 0;
+    const hasContainsKeywords = updatedSequence.containsKeywords && updatedSequence.containsKeywords.length > 0;
+    
+    if (!hasExactKeywords && !hasContainsKeywords) {
+      return res.status(400).json({ error: 'At least one keyword field (exact match or contains) is required for auto-enrollment' });
     }
     
     sequences[sequenceIndex].updated_at = moment().toISOString();

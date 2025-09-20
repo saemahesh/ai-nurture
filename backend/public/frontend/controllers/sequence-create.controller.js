@@ -4,7 +4,8 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
         description: '',
         status: 'inactive',
         messages: [],
-        keywords: ''
+        exactKeywords: '',
+        containsKeywords: ''
     };
     
     $scope.isEditMode = false;
@@ -41,9 +42,33 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
                     return a.day - b.day;
                 });
 
-                // Convert keywords array to comma-separated string for editing
+                // Handle backward compatibility for old keyword format
                 if (Array.isArray($scope.sequence.keywords)) {
-                    $scope.sequence.keywords = $scope.sequence.keywords.join(', ');
+                    // If old format exists, migrate to new format based on match type
+                    if ($scope.sequence.keywordMatchType === 'exact') {
+                        $scope.sequence.exactKeywords = $scope.sequence.keywords.join(', ');
+                        $scope.sequence.containsKeywords = '';
+                    } else {
+                        $scope.sequence.containsKeywords = $scope.sequence.keywords.join(', ');
+                        $scope.sequence.exactKeywords = '';
+                    }
+                    delete $scope.sequence.keywords; // Remove old field
+                }
+                
+                // Convert keyword arrays to comma-separated strings for editing
+                if (Array.isArray($scope.sequence.exactKeywords)) {
+                    $scope.sequence.exactKeywords = $scope.sequence.exactKeywords.join(', ');
+                }
+                if (Array.isArray($scope.sequence.containsKeywords)) {
+                    $scope.sequence.containsKeywords = $scope.sequence.containsKeywords.join(', ');
+                }
+                
+                // Ensure new fields have defaults
+                if (!$scope.sequence.exactKeywords) {
+                    $scope.sequence.exactKeywords = '';
+                }
+                if (!$scope.sequence.containsKeywords) {
+                    $scope.sequence.containsKeywords = '';
                 }
             })
             .catch(function(error) {
@@ -91,14 +116,34 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
             }
         });
 
+        // Check keywords - at least one keyword field must have content
+        const hasExactKeywords = $scope.sequence.exactKeywords && $scope.sequence.exactKeywords.trim() !== '';
+        const hasContainsKeywords = $scope.sequence.containsKeywords && $scope.sequence.containsKeywords.trim() !== '';
+        
+        if (!hasExactKeywords && !hasContainsKeywords) {
+            $scope.errors.keywords = 'At least one keyword field (Exact Match or Contains) is required';
+            isValid = false;
+        }
+
         return isValid;
+    };
+
+    // Clear keyword validation error when user starts typing
+    $scope.clearKeywordError = function() {
+        if ($scope.errors.keywords) {
+            delete $scope.errors.keywords;
+        }
     };
 
     // Check if sequence is valid for activation
     $scope.isValidSequence = function() {
+        const hasExactKeywords = $scope.sequence.exactKeywords && $scope.sequence.exactKeywords.trim() !== '';
+        const hasContainsKeywords = $scope.sequence.containsKeywords && $scope.sequence.containsKeywords.trim() !== '';
+        
         return $scope.sequence.name && 
                $scope.sequence.name.trim() !== '' && 
                $scope.sequence.messages.length > 0 &&
+               (hasExactKeywords || hasContainsKeywords) &&
                $scope.sequence.messages.every(function(message) {
                    if (message.type === 'text') {
                        return message.day && message.day >= 1 && message.message && message.message.trim() !== '';
@@ -229,6 +274,23 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
 
         // Prepare sequence data
         const sequenceData = angular.copy($scope.sequence);
+        
+        // Convert keyword strings back to arrays for backend storage
+        if (sequenceData.exactKeywords && typeof sequenceData.exactKeywords === 'string') {
+            sequenceData.exactKeywords = sequenceData.exactKeywords.split(',').map(function(keyword) {
+                return keyword.trim();
+            }).filter(function(keyword) {
+                return keyword.length > 0;
+            });
+        }
+        
+        if (sequenceData.containsKeywords && typeof sequenceData.containsKeywords === 'string') {
+            sequenceData.containsKeywords = sequenceData.containsKeywords.split(',').map(function(keyword) {
+                return keyword.trim();
+            }).filter(function(keyword) {
+                return keyword.length > 0;
+            });
+        }
         
         // Handle media uploads if any
         $scope.uploadMediaFiles(sequenceData).then(function(updatedSequence) {

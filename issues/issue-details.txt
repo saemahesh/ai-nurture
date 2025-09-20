@@ -19,6 +19,4 @@ Read Mandatory instructions to follow on every iteration:
 **** Issue List ****
 
 issues:
-in ai agent test agent popup, its not showing previus chat history when reloaded 
-but it is showing in whatsapp chat section , do not show test agent contact in chat history in whatsapp chat section
-and also provide scroll option in test agent popup, otherwise it is going outof screen
+axios not defined in ai.service.js

@@ -1,3 +1,6 @@
+
+const axios = require('axios');
+
 /**
  * Generate AI response using OpenRouter API with free model
  * @param {Object} agent - The AI agent configuration

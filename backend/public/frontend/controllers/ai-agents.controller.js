@@ -252,7 +252,9 @@ angular.module('autopostWaApp').controller('AIAgentsController', ['$scope', '$ht
         if ($scope.currentTestAgent.ignoreKeywords && $scope.currentTestAgent.ignoreKeywords.length > 0) {
             const messageLower = userMessage.toLowerCase();
             const hasIgnoreKeyword = $scope.currentTestAgent.ignoreKeywords.some(function(keyword) {
-                return messageLower.includes(keyword.toLowerCase());
+                // Use word boundary regex to match whole words only
+                var regex = new RegExp('\\b' + keyword.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+                return regex.test(messageLower);
             });
             
             if (hasIgnoreKeyword) {

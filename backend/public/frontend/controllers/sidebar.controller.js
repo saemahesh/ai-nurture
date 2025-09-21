@@ -20,8 +20,8 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
   // Initialize notification service
   NotificationService.initToast($scope);
   
-  // Pages that are below direct-schedule in sidebar
-  var pagesRequiringSidebarScroll = ['/status', '/users', '/settings'];
+  // Pages that require sidebar scroll - starting from Drip Campaigns (sequences) onwards
+  var pagesRequiringSidebarScroll = ['/sequences', '/ai-agents', '/event-reminders', '/schedules', '/direct-schedule', '/status', '/users', '/settings'];
   
   // Function to scroll sidebar to show active item with retry mechanism
   $scope.scrollToActiveItem = function(retryCount) {

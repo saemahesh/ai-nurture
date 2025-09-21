@@ -17,8 +17,8 @@ Read Mandatory instructions to follow on every iteration:
     until i clear the issues here, consider they are not fixed
 --------------------------------------------------------
 **** Issue List ****
+sidebar autoscroll should happen from drip campaign option itself 
+becoz now we have added new features, so length increased in both mobile and desktop modes.
 
-some syntax issue in chat contrller .js
-    $scope.filte                // Update filtered contacts as well
-
-you removed logic also ??
+why did you kept workspace section sticky? it should be like previous only 
+there is already code for this, check once, i removed your fix for this 

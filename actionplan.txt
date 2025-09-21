@@ -1,32 +1,48 @@
-**ITERATION 4/148 - ACTION PLAN**
+**ITERATION 6/148 - ACTION PLAN**
 
 ## Previously Fixed Issues:
 1. ✅ **Test Agent Popup Ignore Keywords** (Iteration 1) - Fixed ignore keyword checking in frontend test popup with system message display
 2. ✅ **Frontend API Calls vs Socket.IO** (Iteration 1) - Replaced API polling with real-time Socket.IO events for unread counts
 3. ✅ **Chat Controller Broadcast** (Iteration 2) - Fixed remaining broadcast event that wasn't updated to use Socket.IO
 4. ✅ **Corrupted Code in Chat Controller** (Iteration 3) - Fixed incomplete/corrupted variable declaration
+5. ✅ **Missing Logic in Chat Controller** (Iteration 4) - Restored accidentally removed filtered contacts update logic  
+6. ✅ **Stop Keyword False Positive** (Iteration 5) - Fixed "Send demo" being treated as stop keyword because it contains "end"
 
-## Current Issue (Iteration 4):
-1. **Missing Logic in Chat Controller** - Restored accidentally removed filtered contacts update logic
+## Current Issue (Iteration 6):
+1. **Aggressive Ignore Keyword Matching** - "hi" ignore keyword blocking "how to make payment to this software" message
 
-## Changes Made in Iteration 4:
-- Identified that when fixing syntax corruption, I accidentally removed logic from `selectContact` function
-- Restored the filtered contacts update logic in `selectContact` function
-- The missing logic updates filtered contacts immediately when a contact is selected (before API call)
-- Logic: Find filtered contact by `$scope.selectedContact.phone` and set `unreadCount = 0`
+## Problem Analysis:
+- Frontend test agent ignore keyword "hi" is blocking message "how to make payment to this software"
+- The word "how" contains "hi", causing false positive
+- Backend AI service has same issue with `.includes()` substring matching
+- Ignore keywords should use whole-word matching to prevent false positives
+
+## Changes Made in Iteration 6:
+- Fixed frontend test agent ignore keyword checking to use whole-word regex matching
+- Fixed backend AI service ignore keyword checking to use whole-word regex matching  
+- Changed from `messageLower.includes(keyword.toLowerCase())` to word boundary regex
+- Left trigger keywords as `.includes()` since they may benefit from partial matching
 
 ## Technical Details:
-The corrupted code fragment was:
-```javascript
-const filteredContact = $scope.filteredContacts.find(c => c.phone === $scope.selectedContact.phone);
-if (filteredContact) {
-    filteredContact.unreadCount = 0;
-}
-```
+**Problem Example**: 
+- Ignore keyword: "hi"
+- Message: "how to make payment to this software"  
+- "how" contains "hi" → false positive block
 
-This logic was restored inside the `selectContact` function where it belongs for immediate UI updates.
+**Solution**:
+- **Before**: `messageLower.includes(keyword.toLowerCase())` - matches substrings
+- **After**: `new RegExp('\\b' + keyword + '\\b', 'i').test(message)` - matches whole words only
 
-## Status: All logic restored, syntax clean
+**Fixed Locations**:
+1. Frontend: `ai-agents.controller.js` - test agent ignore keyword validation
+2. Backend: `ai.service.js` - shouldRespond function ignore keyword checking
+
+**Test Cases**:
+- "hi" ignore keyword + "hi there" message → blocked ✅
+- "hi" ignore keyword + "how to make payment" message → allowed ✅  
+- "hi" ignore keyword + "this software" message → allowed ✅
+
+## Status: Ignore keyword false positives fixed
 
 ### Iteration 10: AI Agent API Migration
 **Status**: In Progress

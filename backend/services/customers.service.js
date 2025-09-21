@@ -129,6 +129,49 @@ class CustomersService {
     return newCustomer;
   }
 
+  // Create customer from any message (not necessarily from enrollment)
+  createCustomerFromMessage(phone, name, username, additionalData = {}) {
+    const customers = this.readCustomers();
+    
+    // Check if customer already exists
+    const existingCustomer = customers.find(c => 
+      c.phone === phone && 
+      c.username === username
+    );
+
+    if (existingCustomer) {
+      // Just return existing customer, no need to update
+      return existingCustomer;
+    }
+
+    // Create new customer
+    const newCustomer = {
+      id: 'customer_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+      username: username,
+      phone: phone,
+      name: name || phone, // Use phone as fallback name if no name provided
+      type: 'lead', // Default to lead
+      designation: additionalData.designation || '',
+      business: additionalData.business || '',
+      servicesNeeded: additionalData.servicesNeeded || '',
+      productsInterested: additionalData.productsInterested || '',
+      tags: [], // Tags like 'hot_lead', 'warm_lead', 'service_1', 'product_1_interested', etc.
+      notes: additionalData.notes || '',
+      purchasedProducts: [], // Products/services purchased when converted to paid customer
+      enrolledSequences: [], // Start with empty array since they may not be enrolled in any sequence
+      lastSequenceEnrollment: null,
+      firstEnrolledAt: null, // Will be set if they get enrolled later
+      convertedAt: null, // Date when converted to paid customer
+      converted_by: null, // User who converted the lead
+      created_at: moment().toISOString(),
+      updated_at: moment().toISOString()
+    };
+
+    customers.push(newCustomer);
+    this.writeCustomers(customers);
+    return newCustomer;
+  }
+
   // Get customer by phone and username
   getCustomerByPhone(phone, username) {
     const customers = this.readCustomers();

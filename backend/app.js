@@ -1016,7 +1016,7 @@ cron.schedule('* * * * *', async () => {
                 }
                 
                 // Use WhatsApp number from notification, or fallback to test mobile
-                const phoneNumber = notification.whatsapp_number || user.settings.test_mobile || '919573713873';
+                const phoneNumber = notification.whatsapp_number || user.settings.test_mobile;
                 
                 let payload = {
                   number: phoneNumber,

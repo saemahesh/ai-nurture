@@ -33,9 +33,9 @@ const sequencesFile = getDataFilePath('sequences.json');
 const enrollmentsFile = getDataFilePath('enrollments.json');
 const messageQueueFile = getDataFilePath('message_queue.json');
 
-// AI Response Timer System - wait 30 seconds before responding to collect full context
+// AI Response Timer System - wait 10 seconds before responding to collect full context
 const aiResponseTimers = new Map(); // phone -> { timeout, messages, user, instanceId, agent }
-const AI_RESPONSE_DELAY = process.env.AI_RESPONSE_DELAY || 30000; // 30 seconds
+const AI_RESPONSE_DELAY = process.env.AI_RESPONSE_DELAY || 10000; // 10 seconds
 
 // Helper functions that are still needed in this file
 function readUsers() {
@@ -206,6 +206,20 @@ function handleEnrollment(phone, messageText, user, pushName) {
   enrollments.push(newEnrollment);
   writeEnrollments(enrollments);
 
+  // Update customer record for sequence enrollment
+  try {
+    const CustomersService = require('../services/customers.service');
+    const customersService = new CustomersService();
+    
+    // This will update existing customer or create new one with enrollment data
+    customersService.createCustomerFromEnrollment(newEnrollment);
+    
+    console.log(`[WEBHOOK] Customer record updated for enrollment ${phone} in ${targetSequence.name}`);
+  } catch (error) {
+    console.error(`[WEBHOOK] Error updating customer record for enrollment:`, error);
+    // Continue with enrollment even if customer update fails
+  }
+
   // Schedule messages using CampaignExecutor
   try {
     const result = campaignExecutor.processEnrollment({
@@ -364,6 +378,24 @@ router.post("/enroll", (req, res) => {
   } catch (error) {
     console.error(`[WEBHOOK] Error storing message in chat history:`, error);
     // Continue processing even if chat storage fails
+  }
+
+  // Create customer record for anyone who sends a message (regardless of sequence matching)
+  try {
+    const CustomersService = require('../services/customers.service');
+    const customersService = new CustomersService();
+    
+    // This will create a new customer if they don't exist, or return existing customer
+    const customer = customersService.createCustomerFromMessage(
+      phone, 
+      pushName || phone, // Use pushName as name, fallback to phone
+      user.username
+    );
+    
+    console.log(`[WEBHOOK] Customer record ensured for ${phone}`);
+  } catch (error) {
+    console.error(`[WEBHOOK] Error creating customer record for ${phone}:`, error);
+    // Continue processing even if customer creation fails
   }
 
   // 2. Check if message contains stop keywords first

@@ -19,5 +19,7 @@ Read Mandatory instructions to follow on every iteration:
 
 --------------------------------------------------------
 **** Issue List ****
-webhook.js has lot of debugers, remove them
-pleaes keep it simple and clean, important logs only
+why if any new person sends msg , the webhook is receiveing it and enrolling in sequence, 
+but why they are not showing in customers page 
+even they do not match the criteria for drip sequence , they should still be visible in the customers page
+cusotmers section should show all the people who sent any msg to the whatsapp number

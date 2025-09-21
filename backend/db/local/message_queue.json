@@ -62,5 +62,21 @@
     "sentAt": "2025-07-13T14:35:04.613Z",
     "status": "sent",
     "createdAt": "2025-07-13T14:35:04.669Z"
+  },
+  {
+    "id": "msg-1758435185291-r4tae80hg",
+    "campaignId": "seq_1752221360754",
+    "username": "robomate",
+    "phone": "919573713873",
+    "message": {
+      "id": "msg-0",
+      "type": "media",
+      "message": "Hey {name} , drip media first, congratzzzz\n\nIts time to {rock|party|explode}",
+      "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
+      "day": 1
+    },
+    "sentAt": "2025-09-21T06:13:05.282Z",
+    "status": "sent",
+    "createdAt": "2025-09-21T06:13:05.291Z"
   }
 ]

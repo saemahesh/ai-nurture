@@ -228,10 +228,37 @@
       "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
       "day": 1
     },
-    "scheduledAt": "2025-09-21T06:10:16.904Z",
-    "status": "pending",
+    "scheduledAt": "2025-09-21T06:12:55.371Z",
+    "status": "sent",
     "createdAt": "2025-09-21T05:10:16.920Z",
-    "attempts": 0
+    "attempts": 1,
+    "lastAttemptAt": "2025-09-21T06:10:55.371Z",
+    "apiError": "The authentication process has failed",
+    "sentAt": "2025-09-21T06:13:05.282Z",
+    "apiResponse": {
+      "status": "success",
+      "message": {
+        "key": {
+          "remoteJid": "919573713873@s.whatsapp.net",
+          "fromMe": true,
+          "id": "3EB09BDE8CA47E1FD26876"
+        },
+        "message": {
+          "imageMessage": {
+            "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m269/AQOnUOyerlUD_qF7el3qpkJLZXmlOJZkwdWyg_G8SKEnT0GjsK6VfytPM6Udmc4HKkAGeuWh4HX_EAdf4KISoGVDTe30I98R2KZ7YTNXNg?ccb=9-4&oh=01_Q5Aa2gHkWYRO_pD6RsKsAO9MIA9xzwbKDfUqLmPW-T5r6Z8CLA&oe=68F71446&_nc_sid=e6ed6c&mms3=true",
+            "mimetype": "image/jpeg",
+            "caption": "Hey Sai Mahesh , drip media first, congratzzzz\n\nIts time to explode",
+            "fileSha256": "kiSj5VnwVFttnLXuVk4WNizGK+QueOByEcC/4kPjVK8=",
+            "fileLength": "101298",
+            "mediaKey": "UdvQx+0iAKXCl+XGw+dTURKZRnKIcZ20D24sEgq/mZw=",
+            "fileEncSha256": "5hT11ygiaCpF1HV2KRi0jSSvMiZHC/nuAyBc9AOA7nc=",
+            "directPath": "/o1/v/t24/f2/m269/AQOnUOyerlUD_qF7el3qpkJLZXmlOJZkwdWyg_G8SKEnT0GjsK6VfytPM6Udmc4HKkAGeuWh4HX_EAdf4KISoGVDTe30I98R2KZ7YTNXNg?ccb=9-4&oh=01_Q5Aa2gHkWYRO_pD6RsKsAO9MIA9xzwbKDfUqLmPW-T5r6Z8CLA&oe=68F71446&_nc_sid=e6ed6c",
+            "mediaKeyTimestamp": "1758435184"
+          }
+        },
+        "messageTimestamp": "1758435184"
+      }
+    }
   },
   {
     "id": "seq_1752221360754-919573713873-1-1758431416921",

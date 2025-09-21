@@ -18,7 +18,8 @@
       "log_messages": false,
       "auto_delete": false,
       "session_timeout": "60",
-      "calendly_token": "eyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzU2NzM0MjU2LCJqdGkiOiI2ZDVjZTIwNi1jNzcxLTQwNjEtYTcyZi1jOWIxYmM1ZDQ2Y2MiLCJ1c2VyX3V1aWQiOiJiMDQ2NDUyOC1mNjc3LTQ4ZTEtYjQ5Ny0wMTU0YjBkOWU3MjMifQ.TmoF42ECjtVkwuI3F_Ly7kI7-upohd7dbdApOuH__2HN2qD_aTTsCB5WmjhE77IqhnSttjgwXTt9szKrr6lKFA"
+      "calendly_token": "eyJraWQiOiIxY2UxZTEzNjE3ZGNmNzY2YjNjZWJjY2Y4ZGM1YmFmYThhNjVlNjg0MDIzZjdjMzJiZTgzNDliMjM4MDEzNWI0IiwidHlwIjoiUEFUIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJodHRwczovL2F1dGguY2FsZW5kbHkuY29tIiwiaWF0IjoxNzU2NzM0MjU2LCJqdGkiOiI2ZDVjZTIwNi1jNzcxLTQwNjEtYTcyZi1jOWIxYmM1ZDQ2Y2MiLCJ1c2VyX3V1aWQiOiJiMDQ2NDUyOC1mNjc3LTQ4ZTEtYjQ5Ny0wMTU0YjBkOWU3MjMifQ.TmoF42ECjtVkwuI3F_Ly7kI7-upohd7dbdApOuH__2HN2qD_aTTsCB5WmjhE77IqhnSttjgwXTt9szKrr6lKFA",
+      "webhook_url": ""
     }
   },
   {

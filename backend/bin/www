@@ -155,5 +155,10 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
   // Print port and environment to console
+  console.log(`\n=== SERVER STARTUP ===`);
   console.log(`App running on port ${addr.port} in ${process.env.NODE_ENV || 'development'} mode`);
+  console.log(`Server started at: ${new Date().toISOString()}`);
+  console.log(`Socket.IO enabled for real-time communication`);
+  console.log(`Webhook service initialized - registration available via /users/settings endpoint`);
+  console.log(`=== SERVER READY ===\n`);
 }

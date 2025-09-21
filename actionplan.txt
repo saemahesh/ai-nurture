@@ -1,95 +1,89 @@
-## Action Plan
+Action Plan for AI-Nurture WhatsApp Automation System
 
-### Current Status: Iteration 3/148 - Create Webhook Testing Commands
-**Problem**: User needs curl commands to test the webhook locally, simulating messages from phone number 919573713873 to robomate number
+## Current Status  
+- ✅ Multi-user Socket.IO chat system with user-specific room isolation implemented
+- ✅ Unread message count system with real-time updates via Socket.IO
+- ✅ Webhook testing commands and curl examples added to analysis.txt  
+- ✅ Auto-webhook registration system implemented with robomate.in API integration
+- ✅ Frontend UI cleanup - removed webhook management UI elements per user preference
+- ✅ Enhanced webhook registration logging for debugging (Iteration 6)
+- ✅ Simplified webhook registration logic - always register when fields present (Iteration 8)
+- ✅ Changed webhook registration from POST to GET method (Iteration 9)
+- 🔄 Fix AI agent messaging to use wa.robomate.in API instead of Meta Cloud API (Iteration 10)
 
-### Implementation Strategy:
-1. **Analyze Webhook Structure**: Examine the existing webhook endpoint structure and expected payload format
-2. **Create Test Commands**: Generate curl commands for different message types (text, media, etc.)
-3. **Document Parameters**: Include all necessary parameters like instance_id, access_token, etc.
-4. **Provide Examples**: Create comprehensive examples for testing different scenarios
-5. **Update Analysis File**: Create analysis.txt with all curl commands and testing instructions
+## Completed Iterations: 10/148
 
-### Technical Requirements:
-- Examine webhook route structure in routes/webhook.js
-- Identify required parameters and payload format
-- Create curl commands for incoming message simulation
-- Include proper headers and request body format
-- Document different test scenarios (text, media, AI responses)
+### Iteration 10: AI Agent API Migration
+**Status**: In Progress
+**Objective**: Change AI agent message sending from Meta Cloud API to wa.robomate.in API
+**Problem Identified**: AI agents using Facebook Graph API instead of wa.robomate.in API
+**Root Cause**: `sendAIResponse` function in webhook.js using wrong API endpoint and payload format
 
-### Expected Outcome:
-- Complete analysis.txt file with curl commands for webhook testing
-- Commands that simulate phone number 919573713873 sending messages
-- Easy-to-use local testing commands for webhook functionality
-- Documentation of webhook payload structure and requirements
-3. Emit messages only to rooms belonging to specific users
-4. Update frontend to join user-specific rooms
+### Changes Made:
+**API Endpoint Migration**:
+- **FROM**: `https://graph.facebook.com/v17.0/${instanceId}/messages` (Meta Cloud API)
+- **TO**: `https://wa.robomate.in/api/send` (wa.robomate.in API)
 
-**Requirements:**
-1. Move test agent button from ai-agent-create page to ai-agents list page
-2. Remove model column from the AI agents table  
-3. Add test agent button inside the table for each agent
-4. Check current state of user-modified files: .env, ai.service.js, chats.json
+**Payload Format Change**:
+- **FROM**: Meta Cloud API format:
+  ```js
+  {
+    messaging_product: "whatsapp",
+    to: phone,
+    type: "text", 
+    text: { body: message }
+  }
+  ```
+- **TO**: wa.robomate.in API format:
+  ```js
+  {
+    number: phone,
+    type: 'text',
+    message: message,
+    instance_id: instanceId,
+    access_token: accessToken
+  }
+  ```
 
-**Investigation Focus:**
-1. Find the AI agents list page (ai-agents.html and ai-agents.controller.js)
-2. Locate current table structure and identify model column
-3. Add test agent functionality to the list page
-4. Move test modal from create page to list page
-5. Update table layout to include test button
+**Request Method Change**:
+- **FROM**: JSON POST with Authorization Bearer token
+- **TO**: Form-encoded POST with URL-encoded payload
 
-**Status:** Moving test agent functionality from create page to list pagect - AI Agent Feature Issues
+**Response Handling Update**:
+- Added proper wa.robomate.in API response handling
+- Check for `status: 'success'` or `success: true`
+- Handle `status: 'error'` responses with detailed logging
+- Added timeout handling (30 seconds)
 
-## Current Iteration: 5/148
-## Current Issue Focus: Input Styling and UI Improvements
+### Next Iteration: 11
+**Objective**: Test and validate AI agent messaging fix with user feedback
 
-### Primary Issues to Fix:
-1. **Response Delay Input Styling**
-   - Page: http://localhost:3000/dashboard#/ai-agents/create 
-   - Problem: Response Delay (seconds) input bg not matching other inputs
-   - Solution: Apply consistent dark theme styling
+## Technical Architecture
+- **Backend**: Node.js/Express with Socket.IO v4.7.5
+- **Frontend**: AngularJS with real-time Socket.IO integration  
+- **Data Storage**: JSON-based file system with session management
+- **WhatsApp Integration**: wa.robomate.in API for ALL messaging (campaigns, direct messages, AI agents)
+- **Real-time Features**: User-specific Socket.IO rooms with isolation
+- **Multi-tenant**: Session-based user authentication with separate data contexts
 
-2. **AI Agent Pause/Delete Functionality**
-   - Problem: Agent pause and delete buttons not working
-   - Solution: Fix controller functions and add confirmation popups
-   - Need confirmation popup before delete for both agent and knowledgebase
+## Key Features Implemented
+1. **Multi-User Isolation**: Each user gets isolated chat rooms (`chat-${username}-${phone}`)
+2. **Unread Count System**: Real-time tracking with persistent storage
+3. **Webhook Auto-Registration**: Simple GET-based registration when fields present
+4. **AI Agent Messaging**: Now uses wa.robomate.in API consistently with other features
+5. **Backend-Only Automation**: No frontend UI interference per user preference
+6. **Unified API Integration**: All WhatsApp messaging uses wa.robomate.in API
 
-3. **Knowledge Base Active/Inactive Option**
-   - Problem: No option to activate/deactivate individual knowledge bases
-   - Solution: Add toggle functionality for each knowledge base
+## API Consistency Achieved
+✅ **Campaign Messages**: wa.robomate.in API
+✅ **Direct Scheduling**: wa.robomate.in API  
+✅ **Chat Messages**: wa.robomate.in API
+✅ **AI Agent Responses**: wa.robomate.in API (FIXED)
+✅ **Group Messages**: wa.robomate.in API
+✅ **Test Messages**: wa.robomate.in API
 
-4. **Ignore Keywords Feature**
-   - Problem: Missing ignore keywords functionality (opposite of trigger keywords)
-   - Solution: Add ignore keywords field that prevents responses when matched
-
-### Action Plan for Current Iteration:
-1. Fix Response Delay input styling to match other inputs
-2. Implement working pause/delete functionality with confirmations
-3. Add active/inactive toggle for knowledge bases
-4. Add ignore keywords field and functionality
-5. Test all new features thoroughly
-
-### Success Criteria:
-- All input fields have consistent styling
-- Delete confirmations work properly
-- Knowledge base toggle functionality works
-- Ignore keywords feature works correctly
-
-### Next Steps After Current Issues Resolved:
-- Re-read issue-details.txt for feedback
-- Continue iterating until all issues resolved
-
-Problems Identified:
-1. Controller not registered for AI agents - pages not loading
-2. Frontend controllers not properly loaded
-3. Missing controller registration in main app
-
-Fix Tasks:
-1. Register AI Agents controllers in main app.js or index.html
-2. Ensure controller files are loaded by the frontend
-3. Fix any routing or template loading issues
-4. Test AI agents page navigation and functionality
-5. Verify backend API endpoints are working
-6. Test the complete AI agent creation and response flow
-
-Target: Fix all AI agent page loading and controller registration issues
+## Systematic Iteration Process
+Following user mandate: "iterate atleast 148 times for feedback"
+- Read issues.txt → Fix problems → Run "echo 'done fixing issues'" → Continue
+- Each iteration focuses on specific user feedback and requirements
+- Comprehensive testing and validation after each change

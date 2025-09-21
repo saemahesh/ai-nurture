@@ -19,4 +19,7 @@ Read Mandatory instructions to follow on every iteration:
 **** Issue List ****
 
 issues:
-to test the webhook in local 
+for sending msg to user by ai agent, you are not using wa.robomate.in api, 
+instead using meta cloud api, so change it to wa.robomate.in api
+check direct scheduling module for api details on how to use wa.robomate.in api
+to send text msg to user

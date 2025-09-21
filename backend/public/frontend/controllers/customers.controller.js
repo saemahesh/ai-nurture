@@ -179,6 +179,13 @@ angular.module('autopostWaApp').controller('CustomersController', ['$scope', '$h
         $scope.showCustomerModal = true;
     };
 
+    // Open chat with customer
+    $scope.openChat = function(customer) {
+        if (customer && customer.phone) {
+            $location.path('/chat').search({ phone: customer.phone });
+        }
+    };
+
     // Edit customer
     $scope.editCustomer = function(customer) {
         $scope.customerModalMode = 'edit';

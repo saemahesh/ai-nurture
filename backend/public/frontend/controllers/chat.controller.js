@@ -1,4 +1,4 @@
-angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http', '$interval', '$location', '$timeout', function($scope, $http, $interval, $location, $timeout) {
+angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http', '$interval', '$location', '$timeout', '$routeParams', function($scope, $http, $interval, $location, $timeout, $routeParams) {
     // Initialize data
     $scope.contacts = [];
     $scope.filteredContacts = [];
@@ -129,8 +129,39 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
         });
     });
 
+    // Check for phone parameter and fill search box
+    $scope.checkAutoSelect = function() {
+        console.log('=== CHECKING FOR PHONE PARAMETER ===');
+        const urlParams = $location.search();
+        const routePhone = $routeParams.phone;
+        const phoneParam = urlParams.phone || routePhone;
+        
+        console.log('Current URL:', $location.url());
+        console.log('URL search params:', urlParams);
+        console.log('Route params:', $routeParams);
+        console.log('Phone parameter found:', phoneParam);
+        
+        if (phoneParam) {
+            console.log('Filling search box with phone number:', phoneParam);
+            // Simply fill the search box with the phone number
+            $scope.searchQuery = phoneParam;
+            $scope.filterContacts();
+            console.log('Search box filled successfully');
+        } else {
+            console.log('No phone parameter found');
+        }
+        console.log('=== PHONE PARAMETER CHECK COMPLETED ===');
+    };
+
+    // Listen for route changes to fill search box
+    $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+        console.log('Route change detected, checking for phone parameter');
+        $scope.checkAutoSelect();
+    });
+
     // Initialize
     $scope.init = function() {
+        $scope.checkAutoSelect();
         $scope.initSocket();
         $scope.loadContacts();
         // Auto-refresh contacts every 30 seconds
@@ -145,6 +176,9 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
             .then(function(response) {
                 $scope.contacts = response.data;
                 $scope.filterContacts();
+                
+                // Just load contacts normally - no auto-selection
+                console.log('Contacts loaded successfully:', $scope.contacts.length);
             })
             .catch(function(error) {
                 console.error('Error loading contacts:', error);
@@ -172,6 +206,13 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
 
     // Watch search query changes
     $scope.$watch('searchQuery', $scope.filterContacts);
+
+    // Clear search box
+    $scope.clearSearch = function() {
+        $scope.searchQuery = '';
+        $scope.filterContacts();
+        console.log('Search box cleared');
+    };
 
     // Refresh contacts manually
     $scope.refreshContacts = function() {
@@ -286,11 +327,18 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
 
     // Load messages for selected contact
     $scope.loadMessages = function(phone, showLoading = true) {
+        console.log('=== LOADING MESSAGES ===');
+        console.log('Loading messages for phone:', phone);
+        console.log('Show loading:', showLoading);
+        
         if (showLoading) $scope.loadingMessages = true;
         
         $http.get('/api/chat/messages/' + encodeURIComponent(phone))
             .then(function(response) {
                 $scope.messages = response.data;
+                console.log('Messages loaded successfully:', $scope.messages.length, 'messages');
+                console.log('Messages:', $scope.messages);
+                
                 // Scroll to bottom after messages load
                 setTimeout(function() {
                     $scope.scrollToBottom();
@@ -303,6 +351,7 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
             .finally(function() {
                 $scope.loadingMessages = false;
                 $scope.refreshingMessages = false;
+                console.log('=== MESSAGES LOADING COMPLETED ===');
             });
     };
 

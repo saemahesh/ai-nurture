@@ -20,4 +20,4 @@ Read Mandatory instructions to follow on every iteration:
 --------------------------------------------------------
 **** Issue List ****
 
-show chat icon in customers page and when clicked on it should open chat window with that customer number
+provide X mark to clear search box in chat page

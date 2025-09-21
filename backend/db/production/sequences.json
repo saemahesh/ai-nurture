@@ -28,9 +28,6 @@
     "description": "test",
     "status": "active",
     "username": "robomate",
-    "keywords": [
-      "sdfdsf"
-    ],
     "messages": [
       {
         "day": 1,
@@ -38,20 +35,17 @@
         "message": "Hey {name} , drip media first, congratzzzz\n\nIts time to {rock|party|explode}",
         "time": "09:00",
         "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
-        "mediaType": "image"
-      },
-      {
-        "day": 2,
-        "type": "media",
-        "message": "Hey , day 2 drip msg",
-        "time": "09:00",
-        "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
-        "mediaType": "image"
+        "mediaType": "image",
+        "minuteDelay": 60
       }
     ],
-    "total_days": 2,
+    "total_days": 1,
     "created_at": "2025-07-11T08:09:20.754Z",
-    "updated_at": "2025-08-02T11:11:44.549Z"
+    "updated_at": "2025-09-21T05:23:54.265Z",
+    "exactKeywords": [
+      "mahesh"
+    ],
+    "containsKeywords": []
   },
   {
     "id": "seq_1752247551668",
@@ -91,15 +85,19 @@
       {
         "day": 1,
         "type": "media",
-        "message": "Hey there, its first msg",
+        "message": "Hey there, How can we help you?",
         "time": "09:00",
         "mediaUrl": "/uploads/1753955626889-automation.png",
-        "mediaType": "image"
+        "mediaType": "image",
+        "minuteDelay": 60
       }
     ],
-    "keywords": [],
     "total_days": 1,
     "created_at": "2025-07-31T09:54:57.528Z",
-    "updated_at": "2025-07-31T09:54:57.530Z"
+    "updated_at": "2025-09-21T05:23:44.175Z",
+    "exactKeywords": [
+      "sdadsds"
+    ],
+    "containsKeywords": []
   }
 ]

@@ -1,1 +1,110 @@
-[]
+[
+  {
+    "id": "1758431961820kyuua9kmi",
+    "phone": "919573713873",
+    "text": "hey mahesh",
+    "type": "outgoing",
+    "username": "robomate",
+    "timestamp": "2025-09-21T05:19:21.820Z",
+    "agentId": null
+  },
+  {
+    "id": "1758432362246xlkscvdva",
+    "phone": "919573713873",
+    "text": "its mahesh",
+    "type": "incoming",
+    "username": null,
+    "timestamp": "2025-09-21T05:26:02.246Z",
+    "agentId": null
+  },
+  {
+    "id": "1758434409778p9fy70rch",
+    "phone": "919573713873",
+    "text": "How are you",
+    "type": "incoming",
+    "username": null,
+    "timestamp": "2025-09-21T06:00:09.777Z",
+    "agentId": null
+  },
+  {
+    "id": "1758434609841xrhzrruqt",
+    "phone": "test_agent_1758434478127_robomate",
+    "text": "how are u",
+    "type": "incoming",
+    "username": "robomate",
+    "timestamp": "2025-09-21T06:02:54.728Z",
+    "agentId": null
+  },
+  {
+    "id": "1758434609842nzw7yevsz",
+    "phone": "test_agent_1758434478127_robomate",
+    "text": "I'm doing great, thanks! 😊 How about you?",
+    "type": "ai",
+    "username": "robomate",
+    "timestamp": "2025-09-21T06:02:58.101Z",
+    "agentId": null
+  },
+  {
+    "id": "1758434609842r7sqpxms8",
+    "phone": "test_agent_1758434478127_robomate",
+    "text": "who am i",
+    "type": "incoming",
+    "username": "robomate",
+    "timestamp": "2025-09-21T06:03:03.194Z",
+    "agentId": null
+  },
+  {
+    "id": "17584346098422z19r6i3n",
+    "phone": "test_agent_1758434478127_robomate",
+    "text": "Haha, deep question! 😄\n\nFrom our chat, you're someone who's friendly and curious.\n\nBut I don't have access to personal info about you for privacy reasons—what's on your mind?",
+    "type": "ai",
+    "username": "robomate",
+    "timestamp": "2025-09-21T06:03:07.012Z",
+    "agentId": null
+  },
+  {
+    "id": "1758434609843z0rz5dlan",
+    "phone": "test_agent_1758434478127_robomate",
+    "text": "i am mahesh",
+    "type": "incoming",
+    "username": "robomate",
+    "timestamp": "2025-09-21T06:03:18.768Z",
+    "agentId": null
+  },
+  {
+    "id": "1758434609844z1mcrhpu8",
+    "phone": "test_agent_1758434478127_robomate",
+    "text": "Nice to meet you, Mahesh! 😊\n\nWhat can I help you with today?",
+    "type": "ai",
+    "username": "robomate",
+    "timestamp": "2025-09-21T06:03:21.961Z",
+    "agentId": null
+  },
+  {
+    "id": "1758434609844x0idnvhna",
+    "phone": "test_agent_1758434478127_robomate",
+    "text": "who am i now?",
+    "type": "incoming",
+    "username": "robomate",
+    "timestamp": "2025-09-21T06:03:30.251Z",
+    "agentId": null
+  },
+  {
+    "id": "1758434629059hxas36qzs",
+    "phone": "919573713873",
+    "text": "How are you",
+    "type": "incoming",
+    "username": null,
+    "timestamp": "2025-09-21T06:03:49.058Z",
+    "agentId": null
+  },
+  {
+    "id": "17584346871796me3b6nm7",
+    "phone": "919573713873",
+    "text": "How are you",
+    "type": "incoming",
+    "username": null,
+    "timestamp": "2025-09-21T06:04:47.179Z",
+    "agentId": null
+  }
+]

@@ -222,4 +222,37 @@ router.delete('/messages/:phone', requireAuth, async (req, res) => {
   }
 });
 
+// Delete chat history for a specific phone number
+router.delete('/history/:phone', requireAuth, async (req, res) => {
+  try {
+    const phone = decodeURIComponent(req.params.phone);
+    const username = req.session.user.username;
+    
+    // Delete all messages for this phone number and user
+    await chatService.deleteChatHistory(phone, username);
+    
+    res.json({ success: true, message: 'Chat history deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting chat history:', error);
+    res.status(500).json({ error: 'Failed to delete chat history' });
+  }
+});
+
+// Optimize all chat history (keep only last 50 messages per phone)
+router.post('/optimize', requireAuth, async (req, res) => {
+  try {
+    const result = await chatService.optimizeAllChatHistory();
+    
+    res.json({ 
+      success: true, 
+      message: `Chat history optimized successfully. Removed ${result.totalRemoved} old messages, kept ${result.totalKept} messages.`,
+      totalRemoved: result.totalRemoved,
+      totalKept: result.totalKept
+    });
+  } catch (error) {
+    console.error('Error optimizing chat history:', error);
+    res.status(500).json({ error: 'Failed to optimize chat history' });
+  }
+});
+
 module.exports = router;

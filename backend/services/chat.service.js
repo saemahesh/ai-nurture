@@ -35,7 +35,7 @@ function writeChats(chats) {
 }
 
 /**
- * Add a new message to chat history
+ * Add a new message to chat history with automatic cleanup
  * @param {Object} message - Message object
  * @param {string} message.phone - Phone number
  * @param {string} message.text - Message text
@@ -60,7 +60,31 @@ function addMessage(message) {
     };
     
     chats.push(newMessage);
-    writeChats(chats);
+    
+    // Optimize performance: Keep only last 50 messages per phone number
+    const MESSAGE_LIMIT_PER_PHONE = 50;
+    
+    // Get all messages for this phone number
+    const phoneMessages = chats
+      .filter(chat => chat.phone === message.phone)
+      .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    
+    // If we exceed the limit, remove oldest messages
+    if (phoneMessages.length > MESSAGE_LIMIT_PER_PHONE) {
+      const messagesToRemove = phoneMessages.slice(0, phoneMessages.length - MESSAGE_LIMIT_PER_PHONE);
+      const messageIdsToRemove = new Set(messagesToRemove.map(msg => msg.id));
+      
+      // Filter out the old messages for this phone number
+      const optimizedChats = chats.filter(chat => 
+        !(chat.phone === message.phone && messageIdsToRemove.has(chat.id))
+      );
+      
+      console.log(`📱 Optimized chat history for ${message.phone}: removed ${messagesToRemove.length} old messages, keeping ${MESSAGE_LIMIT_PER_PHONE} most recent`);
+      
+      writeChats(optimizedChats);
+    } else {
+      writeChats(chats);
+    }
     
     return newMessage;
   } catch (error) {
@@ -324,6 +348,94 @@ function clearTestConversation(testPhoneId) {
   }
 }
 
+/**
+ * Delete all chat history for a specific phone number and username
+ * @param {string} phone - Phone number
+ * @param {string} username - Username to filter messages
+ */
+function deleteChatHistory(phone, username) {
+  try {
+    const chats = readChats();
+    // Remove all messages for this phone number and username
+    const filteredChats = chats.filter(chat => 
+      !(chat.phone === phone && chat.username === username)
+    );
+    writeChats(filteredChats);
+    
+    // Also clear read status for this phone number and user
+    const readStatus = readMessageReadStatus();
+    for (const messageId in readStatus) {
+      if (readStatus[messageId] && readStatus[messageId].includes(username)) {
+        // Find the message to check if it belongs to this phone
+        const message = chats.find(c => c.id === messageId);
+        if (message && message.phone === phone) {
+          readStatus[messageId] = readStatus[messageId].filter(u => u !== username);
+          if (readStatus[messageId].length === 0) {
+            delete readStatus[messageId];
+          }
+        }
+      }
+    }
+    writeMessageReadStatus(readStatus);
+    
+  } catch (error) {
+    console.error('Error deleting chat history:', error);
+    throw error;
+  }
+}
+
+/**
+ * Optimize all chat history by keeping only last 50 messages per phone number
+ * This function can be called to clean up existing data
+ */
+function optimizeAllChatHistory() {
+  try {
+    const chats = readChats();
+    const MESSAGE_LIMIT_PER_PHONE = 50;
+    
+    // Group messages by phone number
+    const messagesByPhone = {};
+    chats.forEach(chat => {
+      if (!messagesByPhone[chat.phone]) {
+        messagesByPhone[chat.phone] = [];
+      }
+      messagesByPhone[chat.phone].push(chat);
+    });
+    
+    let totalRemoved = 0;
+    const optimizedChats = [];
+    
+    // Process each phone number
+    Object.keys(messagesByPhone).forEach(phone => {
+      const phoneMessages = messagesByPhone[phone]
+        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      
+      if (phoneMessages.length > MESSAGE_LIMIT_PER_PHONE) {
+        const messagesToKeep = phoneMessages.slice(-MESSAGE_LIMIT_PER_PHONE);
+        const removedCount = phoneMessages.length - MESSAGE_LIMIT_PER_PHONE;
+        totalRemoved += removedCount;
+        
+        console.log(`📱 Optimized chat history for ${phone}: removed ${removedCount} old messages, kept ${messagesToKeep.length}`);
+        optimizedChats.push(...messagesToKeep);
+      } else {
+        optimizedChats.push(...phoneMessages);
+      }
+    });
+    
+    if (totalRemoved > 0) {
+      writeChats(optimizedChats);
+      console.log(`🚀 Chat history optimization complete: removed ${totalRemoved} old messages across all conversations`);
+    } else {
+      console.log('📱 Chat history already optimized - no cleanup needed');
+    }
+    
+    return { totalRemoved, totalKept: optimizedChats.length };
+  } catch (error) {
+    console.error('Error optimizing chat history:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   readChats,
   writeChats,
@@ -332,6 +444,8 @@ module.exports = {
   getContacts,
   getRecentMessagesForAI,
   clearTestConversation,
+  deleteChatHistory,
+  optimizeAllChatHistory,
   markMessagesAsRead,
   getUnreadCount,
   getTotalUnreadCount,

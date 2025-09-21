@@ -1,4 +1,4 @@
-angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
+angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http', '$interval', '$location', '$timeout', function($scope, $http, $interval, $location, $timeout) {
     // Initialize data
     $scope.contacts = [];
     $scope.filteredContacts = [];
@@ -15,6 +15,30 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
     $scope.refreshing = false;
     $scope.refreshingMessages = false;
     $scope.sending = false;
+    
+    // Modal states
+    $scope.showDeleteModal = false;
+    $scope.deletingChat = false;
+    
+    // Toast notification system
+    $scope.toast = { show: false };
+    
+    // Load Earlier Messages button state
+    $scope.showLoadEarlierButton = false;
+    
+    // Show toast notification
+    $scope.showToast = function(message, type) {
+        $scope.toast = {
+            show: true,
+            message: message,
+            type: type || 'success'
+        };
+        
+        // Auto-hide toast after 3 seconds
+        $timeout(function() {
+            $scope.toast.show = false;
+        }, 3000);
+    };
 
     // Initialize Socket.IO
     $scope.socket = null;
@@ -186,6 +210,44 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
                 filteredContact.unreadCount = 0;
             }
         }
+        
+        // Set up scroll detection for Load Earlier Messages button
+        $scope.setupScrollDetection();
+    };
+
+    // Setup scroll detection for Load Earlier Messages button
+    $scope.setupScrollDetection = function() {
+        $timeout(function() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            if (messagesContainer) {
+                // Remove any existing scroll listener
+                messagesContainer.removeEventListener('scroll', $scope.handleScroll);
+                
+                // Add new scroll listener
+                messagesContainer.addEventListener('scroll', $scope.handleScroll);
+            }
+        }, 100);
+    };
+
+    // Handle scroll events to show/hide Load Earlier Messages button
+    $scope.handleScroll = function() {
+        const messagesContainer = document.getElementById('messagesContainer');
+        if (messagesContainer) {
+            // Check if scrolled to top (within 10px threshold)
+            const isAtTop = messagesContainer.scrollTop <= 10;
+            
+            if (isAtTop !== $scope.showLoadEarlierButton) {
+                $scope.$apply(function() {
+                    $scope.showLoadEarlierButton = isAtTop;
+                });
+            }
+        }
+    };
+
+    // Check if should show Load Earlier Messages button
+    $scope.shouldShowLoadEarlierButton = function() {
+        // Show button if no messages or if scrolled to top
+        return !$scope.messages || $scope.messages.length === 0 || $scope.showLoadEarlierButton;
     };
 
     // Mark messages as read for a phone number
@@ -412,6 +474,64 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
         }, 0);
     });
 
+    // Show delete chat confirmation modal
+    $scope.showDeleteChatModal = function() {
+        if (!$scope.selectedContact) return;
+        $scope.showDeleteModal = true;
+    };
+
+    // Close delete modal
+    $scope.closeDeleteModal = function() {
+        $scope.showDeleteModal = false;
+        $scope.deletingChat = false;
+    };
+
+    // Confirm delete chat history
+    $scope.confirmDeleteChat = function() {
+        if (!$scope.selectedContact) return;
+        
+        $scope.deletingChat = true;
+        
+        $http.delete('/api/chat/history/' + encodeURIComponent($scope.selectedContact.phone))
+            .then(function(response) {
+                console.log('Chat history deleted successfully');
+                
+                // Clear messages for current conversation
+                $scope.messages = [];
+                
+                // Update the contact in contacts list to show empty chat history
+                const contactIndex = $scope.contacts.findIndex(c => c.phone === $scope.selectedContact.phone);
+                if (contactIndex !== -1) {
+                    // Keep the contact but clear its message data
+                    $scope.contacts[contactIndex].lastMessage = '';
+                    $scope.contacts[contactIndex].lastMessageType = '';
+                    $scope.contacts[contactIndex].unreadCount = 0;
+                    $scope.contacts[contactIndex].timestamp = new Date().toISOString();
+                    $scope.filterContacts();
+                }
+                
+                // Close modal but keep contact selected
+                $scope.closeDeleteModal();
+                
+                // Show success toast message
+                $scope.showToast('Chat history deleted successfully', 'success');
+                
+            })
+            .catch(function(error) {
+                console.error('Error deleting chat history:', error);
+                $scope.deletingChat = false;
+                $scope.showToast('Failed to delete chat history. Please try again.', 'error');
+            });
+    };
+
     // Initialize on load
     $scope.init();
+
+    // Cleanup scroll listeners when scope is destroyed
+    $scope.$on('$destroy', function() {
+        const messagesContainer = document.getElementById('messagesContainer');
+        if (messagesContainer) {
+            messagesContainer.removeEventListener('scroll', $scope.handleScroll);
+        }
+    });
 }]);

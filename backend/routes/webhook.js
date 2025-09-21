@@ -399,9 +399,11 @@ router.post("/enroll", (req, res) => {
     "remove"
   ];
   
-  const containsStopKeyword = stopKeywords.some((keyword) =>
-    messageText.includes(keyword)
-  );
+  const containsStopKeyword = stopKeywords.some((keyword) => {
+    // Use word boundary regex to match whole words only
+    const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+    return regex.test(messageText);
+  });
 
   if (containsStopKeyword) {
     console.log(`[WEBHOOK] Stop keyword detected in message: "${content}"`);
@@ -496,9 +498,11 @@ router.post("/whatsapp", (req, res) => {
       "quit",
       "end",
     ];
-    const containsStopKeyword = stopKeywords.some((keyword) =>
-      messageText.includes(keyword)
-    );
+    const containsStopKeyword = stopKeywords.some((keyword) => {
+      // Use word boundary regex to match whole words only
+      const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+      return regex.test(messageText);
+    });
 
     if (containsStopKeyword) {
       // Find all active enrollments for this phone number

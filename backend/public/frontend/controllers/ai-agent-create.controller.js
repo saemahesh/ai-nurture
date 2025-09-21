@@ -8,7 +8,8 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
         autoRespond: true,
         responseDelay: 2,
         triggerKeywords: '',
-        ignoreKeywords: ''
+        ignoreKeywordsExact: '',
+        ignoreKeywordsContains: ''
     };
     
     $scope.isEditMode = false;
@@ -66,10 +67,18 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
                     $scope.agent.triggerKeywords = '';
                 }
                 
-                if ($scope.agent.ignoreKeywords && Array.isArray($scope.agent.ignoreKeywords)) {
-                    $scope.agent.ignoreKeywords = $scope.agent.ignoreKeywords.join(', ');
+                // Handle exact match ignore keywords
+                if ($scope.agent.ignoreKeywordsExact && Array.isArray($scope.agent.ignoreKeywordsExact)) {
+                    $scope.agent.ignoreKeywordsExact = $scope.agent.ignoreKeywordsExact.join(', ');
                 } else {
-                    $scope.agent.ignoreKeywords = '';
+                    $scope.agent.ignoreKeywordsExact = '';
+                }
+
+                // Handle contains ignore keywords
+                if ($scope.agent.ignoreKeywordsContains && Array.isArray($scope.agent.ignoreKeywordsContains)) {
+                    $scope.agent.ignoreKeywordsContains = $scope.agent.ignoreKeywordsContains.join(', ');
+                } else {
+                    $scope.agent.ignoreKeywordsContains = '';
                 }
                 
                 // Ensure knowledge bases have active status
@@ -174,22 +183,28 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
             agentData.triggerKeywords = [];
         }
         
-        if (agentData.ignoreKeywords) {
-            if (typeof agentData.ignoreKeywords === 'string') {
-                agentData.ignoreKeywords = agentData.ignoreKeywords
+        // Process exact match ignore keywords
+        if (agentData.ignoreKeywordsExact) {
+            if (typeof agentData.ignoreKeywordsExact === 'string') {
+                agentData.ignoreKeywordsExact = agentData.ignoreKeywordsExact
                     .split(',')
                     .map(function(keyword) { return keyword.trim(); })
                     .filter(function(keyword) { return keyword.length > 0; });
-            } else if (Array.isArray(agentData.ignoreKeywords)) {
-                // If it's already an array, just normalize it
-                agentData.ignoreKeywords = agentData.ignoreKeywords.map(function(keyword) {
-                    return keyword.toString().trim();
-                }).filter(function(keyword) {
-                    return keyword.length > 0;
-                });
             }
         } else {
-            agentData.ignoreKeywords = [];
+            agentData.ignoreKeywordsExact = [];
+        }
+
+        // Process contains ignore keywords
+        if (agentData.ignoreKeywordsContains) {
+            if (typeof agentData.ignoreKeywordsContains === 'string') {
+                agentData.ignoreKeywordsContains = agentData.ignoreKeywordsContains
+                    .split(',')
+                    .map(function(keyword) { return keyword.trim(); })
+                    .filter(function(keyword) { return keyword.length > 0; });
+            }
+        } else {
+            agentData.ignoreKeywordsContains = [];
         }
         
         // Process trigger keywords

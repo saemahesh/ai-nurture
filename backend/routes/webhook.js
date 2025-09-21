@@ -740,36 +740,55 @@ async function sendAIResponse(phone, message, instanceId, user, agent = null) {
       try {
         // Get user's WhatsApp API settings
         const accessToken = user.settings?.access_token;
+        const instanceId = user.settings?.instance_id;
         
-        if (!accessToken) {
-          console.error(`[AI] No access token found for user: ${user.username}`);
+        if (!accessToken || !instanceId) {
+          console.error(`[AI] Missing API credentials for user: ${user.username}`);
+          console.error(`[AI] Access token: ${accessToken ? 'PROVIDED' : 'MISSING'}`);
+          console.error(`[AI] Instance ID: ${instanceId ? 'PROVIDED' : 'MISSING'}`);
           return;
         }
         
-        // Prepare WhatsApp API request
+        // Prepare wa.robomate.in API request
+        const qs = require('querystring');
         const whatsappPayload = {
-          messaging_product: "whatsapp",
-          to: phone,
-          type: "text",
-          text: {
-            body: message
-          }
+          number: phone,
+          type: 'text',
+          message: message,
+          instance_id: instanceId,
+          access_token: accessToken
         };
         
-        // Send via WhatsApp Business API
+        console.log(`[AI] Sending AI response via wa.robomate.in API to ${phone}`);
+        console.log(`[AI] Instance ID: ${instanceId}`);
+        console.log(`[AI] Message: ${message.substring(0, 50)}...`);
+        
+        // Send via wa.robomate.in API
         const axios = require('axios');
         const response = await axios.post(
-          `https://graph.facebook.com/v17.0/${instanceId}/messages`,
-          whatsappPayload,
+          'https://wa.robomate.in/api/send',
+          qs.stringify(whatsappPayload),
           {
             headers: {
-              'Authorization': `Bearer ${accessToken}`,
-              'Content-Type': 'application/json'
-            }
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            timeout: 30000 // 30 second timeout
           }
         );
         
-        console.log(`[AI] Successfully sent AI response to ${phone}`);
+        console.log(`[AI] wa.robomate.in API response:`, response.data);
+        
+        // Check for error status in response
+        if (response.data && response.data.status === 'error') {
+          console.error(`[AI] Error response from wa.robomate.in API:`, response.data);
+          throw new Error(`API error: ${response.data.message || 'Unknown error'}`);
+        }
+        
+        if (response.data && (response.data.status === 'success' || response.data.success === true)) {
+          console.log(`[AI] Successfully sent AI response to ${phone}`);
+        } else {
+          console.warn(`[AI] Unexpected response format from wa.robomate.in API:`, response.data);
+        }
         
         // Store AI response in chat history
         try {

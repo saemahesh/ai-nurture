@@ -291,6 +291,20 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- System Messages -->
+                    <div ng-if="message.type === 'system'" class="flex items-start justify-center space-x-2 max-w-[80%] mx-auto">
+                        <div class="bg-yellow-600 rounded-lg p-3 relative">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-info-circle text-yellow-200 mr-2"></i>
+                                <span class="text-xs text-yellow-200">System</span>
+                            </div>
+                            <div class="text-white text-sm whitespace-pre-wrap">{{message.text}}</div>
+                            <div class="text-xs text-yellow-100 mt-1">
+                                {{formatTestTime(message.timestamp)}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Typing Indicator -->

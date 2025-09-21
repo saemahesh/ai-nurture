@@ -124,5 +124,41 @@
     "username": null,
     "timestamp": "2025-09-21T06:36:24.828Z",
     "agentId": null
+  },
+  {
+    "id": "1758449646075x3qdnjvnl",
+    "phone": "test_agent_1758366828739_robomate",
+    "text": "is it spam msg",
+    "type": "incoming",
+    "username": "robomate",
+    "timestamp": "2025-09-21T09:27:47.029Z",
+    "agentId": null
+  },
+  {
+    "id": "1758449646078tozncxp2f",
+    "phone": "test_agent_1758366828739_robomate",
+    "text": "hi",
+    "type": "incoming",
+    "username": "robomate",
+    "timestamp": "2025-09-21T10:13:59.969Z",
+    "agentId": null
+  },
+  {
+    "id": "1758449646080xwp6hkzt1",
+    "phone": "test_agent_1758366828739_robomate",
+    "text": "Error: Failed to test AI agent: Failed to generate AI response: OpenRouter API is currently unavailable (503). Please try again later.",
+    "type": "error",
+    "username": "robomate",
+    "timestamp": "2025-09-21T10:14:00.434Z",
+    "agentId": null
+  },
+  {
+    "id": "1758449646082fglluzllr",
+    "phone": "test_agent_1758366828739_robomate",
+    "text": "1",
+    "type": "incoming",
+    "username": "robomate",
+    "timestamp": "2025-09-21T10:14:06.066Z",
+    "agentId": null
   }
 ]

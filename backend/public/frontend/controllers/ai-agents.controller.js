@@ -248,6 +248,35 @@ angular.module('autopostWaApp').controller('AIAgentsController', ['$scope', '$ht
             sender: 'User'
         });
         
+        // Check ignore keywords before sending to AI
+        if ($scope.currentTestAgent.ignoreKeywords && $scope.currentTestAgent.ignoreKeywords.length > 0) {
+            const messageLower = userMessage.toLowerCase();
+            const hasIgnoreKeyword = $scope.currentTestAgent.ignoreKeywords.some(function(keyword) {
+                return messageLower.includes(keyword.toLowerCase());
+            });
+            
+            if (hasIgnoreKeyword) {
+                // Add system message explaining why AI didn't respond
+                $scope.testConversation.push({
+                    text: 'AI Agent did not respond because the message contains an ignore keyword. The agent is configured to ignore messages containing: ' + $scope.currentTestAgent.ignoreKeywords.join(', '),
+                    type: 'system',
+                    timestamp: new Date().toISOString(),
+                    sender: 'System'
+                });
+                
+                $scope.testInput.text = '';
+                
+                // Scroll to bottom to show system message
+                $scope.$evalAsync(function() {
+                    setTimeout(function() {
+                        $scope.scrollToBottom();
+                    }, 50);
+                });
+                
+                return; // Don't send to backend
+            }
+        }
+        
         // Scroll to show user message immediately
         $scope.$evalAsync(function() {
             setTimeout(function() {

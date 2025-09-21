@@ -18,15 +18,7 @@ Read Mandatory instructions to follow on every iteration:
 --------------------------------------------------------
 **** Issue List ****
 
-issues:
-3|whatspro  | }
-3|whatspro  | [AI] Successfully sent AI response to 919573713873
-3|whatspro  | [AI] Stored AI response in chat history for 919573713873
-3|whatspro  | [AI] Error storing AI response in chat history: ReferenceError: req is not defined
-3|whatspro  |     at Timeout._onTimeout (/www/wwwroot/whatspro.robomate.in/ai-nurture/backend/routes/webhook.js:806:22)
-3|whatspro  |     at processTicksAndRejections (node:internal/process/task_queues:96:5)
-3|whatspro  | POST /api/webhook/enroll 400 5.579 ms - 35
+some syntax issue in chat contrller .js
+    $scope.filte                // Update filtered contacts as well
 
-still user getting response from ai agent,
-but it is not added to chat history when i checked from local with curl command to hit webhook api,
-and also why i can't see any logs for webhook received msg and whats happening to it?
+you removed logic also ??

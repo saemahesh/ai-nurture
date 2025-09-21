@@ -164,6 +164,10 @@ router.post('/read/:phone', requireAuth, async (req, res) => {
       const roomName = `chat-${username}-${phone}`;
       io.to(roomName).emit('unread-count-update', { phone, unreadCount: 0 });
       console.log(`📖 Marked ${markedCount} messages as read for ${username} - ${phone}`);
+      
+      // Emit total unread count update for real-time sidebar updates
+      const totalUnreadCount = chatService.getTotalUnreadCount(username);
+      io.to(roomName).emit('total-unread-update', { totalUnreadCount });
     }
     
     res.json({ success: true, markedCount });

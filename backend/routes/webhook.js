@@ -377,6 +377,10 @@ router.post("/enroll", (req, res) => {
       const chatService = require('../services/chat.service');
       const unreadCount = chatService.getUnreadCount(phone, user.username);
       io.to(roomName).emit('unread-count-update', { phone, unreadCount });
+      
+      // Emit total unread count update for real-time sidebar updates
+      const totalUnreadCount = chatService.getTotalUnreadCount(user.username);
+      io.to(roomName).emit('total-unread-update', { totalUnreadCount });
     }
   } catch (error) {
     console.error(`[WEBHOOK] Error storing message in chat history:`, error);
@@ -886,6 +890,10 @@ async function sendAIResponse(phone, message, instanceId, user, agent = null, re
             const chatService = require('../services/chat.service');
             const unreadCount = chatService.getUnreadCount(phone, user.username);
             io.to(roomName).emit('unread-count-update', { phone, unreadCount });
+            
+            // Emit total unread count update for real-time sidebar updates
+            const totalUnreadCount = chatService.getTotalUnreadCount(user.username);
+            io.to(roomName).emit('total-unread-update', { totalUnreadCount });
           } else {
             console.log(`[AI] Socket.IO not available, skipping real-time message emit for ${phone}`);
           }

@@ -76,8 +76,7 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
                     $scope.$apply();
                 }
                 
-                // Broadcast event for sidebar to update total unread count
-                $scope.$root.$broadcast('unread-count-changed');
+                // Note: Total unread count updates are now handled by Socket.IO 'total-unread-update' events
             });
             
             // Handle disconnection
@@ -180,6 +179,12 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
         // Mark messages as read for this contact
         if (contact.unreadCount > 0) {
             $scope.markMessagesAsRead(contact.phone);
+            
+            // Update filtered contacts as well (immediate UI update)
+            const filteredContact = $scope.filteredContacts.find(c => c.phone === $scope.selectedContact.phone);
+            if (filteredContact) {
+                filteredContact.unreadCount = 0;
+            }
         }
     };
 
@@ -201,8 +206,7 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
                     filteredContact.unreadCount = 0;
                 }
                 
-                // Broadcast event for sidebar to update total unread count
-                $scope.$root.$broadcast('unread-count-changed');
+                // Note: Total unread count updates are now handled by Socket.IO 'total-unread-update' events
             })
             .catch(function(error) {
                 console.error('Error marking messages as read:', error);

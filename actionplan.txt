@@ -1,17 +1,32 @@
-Action Plan for AI-Nurture WhatsApp Automation System
+**ITERATION 4/148 - ACTION PLAN**
 
-## Current Status  
-- ✅ Multi-user Socket.IO chat system with user-specific room isolation implemented
-- ✅ Unread message count system with real-time updates via Socket.IO
-- ✅ Webhook testing commands and curl examples added to analysis.txt  
-- ✅ Auto-webhook registration system implemented with robomate.in API integration
-- ✅ Frontend UI cleanup - removed webhook management UI elements per user preference
-- ✅ Enhanced webhook registration logging for debugging (Iteration 6)
-- ✅ Simplified webhook registration logic - always register when fields present (Iteration 8)
-- ✅ Changed webhook registration from POST to GET method (Iteration 9)
-- 🔄 Fix AI agent messaging to use wa.robomate.in API instead of Meta Cloud API (Iteration 10)
+## Previously Fixed Issues:
+1. ✅ **Test Agent Popup Ignore Keywords** (Iteration 1) - Fixed ignore keyword checking in frontend test popup with system message display
+2. ✅ **Frontend API Calls vs Socket.IO** (Iteration 1) - Replaced API polling with real-time Socket.IO events for unread counts
+3. ✅ **Chat Controller Broadcast** (Iteration 2) - Fixed remaining broadcast event that wasn't updated to use Socket.IO
+4. ✅ **Corrupted Code in Chat Controller** (Iteration 3) - Fixed incomplete/corrupted variable declaration
 
-## Completed Iterations: 10/148
+## Current Issue (Iteration 4):
+1. **Missing Logic in Chat Controller** - Restored accidentally removed filtered contacts update logic
+
+## Changes Made in Iteration 4:
+- Identified that when fixing syntax corruption, I accidentally removed logic from `selectContact` function
+- Restored the filtered contacts update logic in `selectContact` function
+- The missing logic updates filtered contacts immediately when a contact is selected (before API call)
+- Logic: Find filtered contact by `$scope.selectedContact.phone` and set `unreadCount = 0`
+
+## Technical Details:
+The corrupted code fragment was:
+```javascript
+const filteredContact = $scope.filteredContacts.find(c => c.phone === $scope.selectedContact.phone);
+if (filteredContact) {
+    filteredContact.unreadCount = 0;
+}
+```
+
+This logic was restored inside the `selectContact` function where it belongs for immediate UI updates.
+
+## Status: All logic restored, syntax clean
 
 ### Iteration 10: AI Agent API Migration
 **Status**: In Progress

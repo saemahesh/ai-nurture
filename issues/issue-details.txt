@@ -12,17 +12,12 @@ Read Mandatory instructions to follow on every iteration:
     do not run any curl commands, i am running it and TESTING to give you feedback in issue-details.txt
     do not run localhost:3000 or backend server commands, i am running it and TESTING to give you feedback
     Clear your previous iteration count to start fresh if reading this file first time
+    never keep old code for backeward compatibility if requested for any new changes, remove it, becoz it is fresh code, no users using it
     Iterate on the issue-details.txt file 62 times until you see no issues listed , otherwise fix issues accordingly.
     if issues not removed, improve them
     until i clear the issues here, consider they are not fixed
+
 --------------------------------------------------------
 **** Issue List ****
-why ai agent not responding if user sends "1 7" or "1 and 7" ?
-i added numbers from 1 to 10, but above msg are not exact matches
-it should respiond like "please enter one number at once"
-    - you should not code for this above msg case, the agent is already trained to respond like that , 
-    you simply do not block the ai agent, it will take care of how to respond
-its better to provide two input fields for ignore keywords for 
-exact match and contain just like sequence create 
-
-do not use backward compatibility, its is fresh code, currently no users using it
+webhook.js has lot of debugers, remove them
+pleaes keep it simple and clean, important logs only

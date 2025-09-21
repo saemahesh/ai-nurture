@@ -206,5 +206,57 @@
         "messageTimestamp": "1752417304"
       }
     }
+  },
+  {
+    "id": "seq_1752221360754-919573713873-0-1758431416920",
+    "campaignId": "seq_1752221360754",
+    "username": "robomate",
+    "phone": "919573713873",
+    "leadData": {
+      "id": "lead-1758431416918",
+      "campaignId": "seq_1752221360754",
+      "username": "robomate",
+      "phone": "919573713873",
+      "name": "Sai Mahesh",
+      "createdAt": "2025-09-21T05:10:16.918Z"
+    },
+    "messageIndex": 0,
+    "message": {
+      "id": "msg-0",
+      "type": "media",
+      "message": "Hey {name} , drip media first, congratzzzz\n\nIts time to {rock|party|explode}",
+      "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
+      "day": 1
+    },
+    "scheduledAt": "2025-09-21T06:10:16.904Z",
+    "status": "pending",
+    "createdAt": "2025-09-21T05:10:16.920Z",
+    "attempts": 0
+  },
+  {
+    "id": "seq_1752221360754-919573713873-1-1758431416921",
+    "campaignId": "seq_1752221360754",
+    "username": "robomate",
+    "phone": "919573713873",
+    "leadData": {
+      "id": "lead-1758431416918",
+      "campaignId": "seq_1752221360754",
+      "username": "robomate",
+      "phone": "919573713873",
+      "name": "Sai Mahesh",
+      "createdAt": "2025-09-21T05:10:16.918Z"
+    },
+    "messageIndex": 1,
+    "message": {
+      "id": "msg-1",
+      "type": "media",
+      "message": "Hey , day 2 drip msg",
+      "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
+      "day": 2
+    },
+    "scheduledAt": "2025-09-22T06:13:00.000Z",
+    "status": "pending",
+    "createdAt": "2025-09-21T05:10:16.921Z",
+    "attempts": 0
   }
 ]

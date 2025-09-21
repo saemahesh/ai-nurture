@@ -324,22 +324,7 @@ router.post("/enroll", (req, res) => {
 
   console.log(`[WEBHOOK] Processing message from ${phone}: "${content}"`);
 
-  // Store incoming message in chat history immediately
-  try {
-    chatService.addMessage({
-      phone: phone,
-      text: content.trim(), // Use original content, not lowercase
-      type: 'incoming',
-      username: null, // Incoming messages don't have a username
-      timestamp: new Date().toISOString()
-    });
-    console.log(`[WEBHOOK] Stored incoming message in chat history for ${phone}`);
-  } catch (error) {
-    console.error(`[WEBHOOK] Error storing message in chat history:`, error);
-    // Continue processing even if chat storage fails
-  }
-
-  // 1. Find the user by instance_id
+  // 1. Find the user by instance_id first (needed for user-specific chat rooms)
   const users = readUsers();
   const user = users.find((u) => u.settings && u.settings.instance_id === instance_id);
 
@@ -351,6 +336,34 @@ router.post("/enroll", (req, res) => {
   }
 
   console.log(`[WEBHOOK] Found user: ${user.username} for instance_id: ${instance_id}`);
+
+  // Store incoming message in chat history immediately
+  try {
+    const savedMessage = chatService.addMessage({
+      phone: phone,
+      text: content.trim(), // Use original content, not lowercase
+      type: 'incoming',
+      username: null, // Incoming messages don't have a username
+      timestamp: new Date().toISOString()
+    });
+    console.log(`[WEBHOOK] Stored incoming message in chat history for ${phone}`);
+    
+    // Emit real-time message to user-specific chat room
+    const io = req.app.get('io');
+    if (io) {
+      const roomName = `chat-${user.username}-${phone}`;
+      io.to(roomName).emit('new-message', savedMessage);
+      console.log(`📥 Emitted incoming message to ${roomName}:`, savedMessage.text.substring(0, 50) + '...');
+      
+      // Also emit unread count update (this will be handled by client if they're not viewing this chat)
+      const chatService = require('../services/chat.service');
+      const unreadCount = chatService.getUnreadCount(phone, user.username);
+      io.to(roomName).emit('unread-count-update', { phone, unreadCount });
+    }
+  } catch (error) {
+    console.error(`[WEBHOOK] Error storing message in chat history:`, error);
+    // Continue processing even if chat storage fails
+  }
 
   // 2. Check if message contains stop keywords first
   const stopKeywords = [
@@ -760,7 +773,7 @@ async function sendAIResponse(phone, message, instanceId, user, agent = null) {
         
         // Store AI response in chat history
         try {
-          chatService.addMessage({
+          const savedMessage = chatService.addMessage({
             phone: phone,
             text: message,
             type: 'ai',
@@ -769,6 +782,19 @@ async function sendAIResponse(phone, message, instanceId, user, agent = null) {
             agentId: agent ? agent.id : null
           });
           console.log(`[AI] Stored AI response in chat history for ${phone}`);
+          
+          // Emit real-time AI message to user-specific chat room
+          const io = req.app.get('io');
+          if (io) {
+            const roomName = `chat-${user.username}-${phone}`;
+            io.to(roomName).emit('new-message', savedMessage);
+            console.log(`🤖 Emitted AI message to ${roomName}:`, savedMessage.text.substring(0, 50) + '...');
+            
+            // Also emit unread count update for AI messages
+            const chatService = require('../services/chat.service');
+            const unreadCount = chatService.getUnreadCount(phone, user.username);
+            io.to(roomName).emit('unread-count-update', { phone, unreadCount });
+          }
         } catch (error) {
           console.error(`[AI] Error storing AI response in chat history:`, error);
         }

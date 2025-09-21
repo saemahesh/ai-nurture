@@ -19,5 +19,4 @@ Read Mandatory instructions to follow on every iteration:
 **** Issue List ****
 
 issues:
-try reading openrouter api key from env variable OPENROUTER_API_KEY
-do not hardcode it in ai.service.js file
+to test the webhook in local 

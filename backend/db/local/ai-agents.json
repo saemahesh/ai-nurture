@@ -15,11 +15,11 @@
       }
     ],
     "autoRespond": true,
-    "responseDelay": 23,
+    "responseDelay": 5,
     "triggerKeywords": [],
     "username": "robomate",
     "created_at": "2025-09-20T11:13:48.739Z",
-    "updated_at": "2025-09-20T13:37:01.924Z",
+    "updated_at": "2025-09-21T04:12:03.720Z",
     "ignoreKeywords": [
       "spam"
     ]

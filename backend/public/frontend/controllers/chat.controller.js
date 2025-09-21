@@ -16,6 +16,79 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
     $scope.refreshingMessages = false;
     $scope.sending = false;
 
+    // Initialize Socket.IO
+    $scope.socket = null;
+    $scope.initSocket = function() {
+        if (typeof io !== 'undefined') {
+            $scope.socket = io();
+            
+            // Handle connection
+            $scope.socket.on('connect', function() {
+                console.log('🔌 Connected to server with Socket.IO');
+            });
+            
+            // Handle new messages
+            $scope.socket.on('new-message', function(message) {
+                console.log('📨 Received new message:', message);
+                
+                // Add message to current conversation if it matches selected contact
+                if ($scope.selectedContact && message.phone === $scope.selectedContact.phone) {
+                    $scope.messages.push(message);
+                    $scope.$apply(); // Trigger digest cycle
+                    
+                    // Scroll to bottom
+                    setTimeout(function() {
+                        $scope.scrollToBottom();
+                    }, 100);
+                    
+                    // If user is viewing this conversation, mark new messages as read immediately
+                    setTimeout(function() {
+                        $scope.markMessagesAsRead(message.phone);
+                    }, 500);
+                } else {
+                    // If message is not for currently selected contact, increment unread count
+                    const contact = $scope.contacts.find(c => c.phone === message.phone);
+                    if (contact && (message.type === 'incoming' || message.type === 'ai')) {
+                        contact.unreadCount = (contact.unreadCount || 0) + 1;
+                        $scope.$apply();
+                    }
+                }
+                
+                // Update contacts list
+                $scope.loadContacts();
+            });
+            
+            // Handle unread count updates
+            $scope.socket.on('unread-count-update', function(data) {
+                console.log('📊 Received unread count update:', data);
+                
+                // Update the contact's unread count
+                const contact = $scope.contacts.find(c => c.phone === data.phone);
+                if (contact) {
+                    contact.unreadCount = data.unreadCount;
+                    $scope.$apply();
+                }
+                
+                // Update filtered contacts as well
+                const filteredContact = $scope.filteredContacts.find(c => c.phone === data.phone);
+                if (filteredContact) {
+                    filteredContact.unreadCount = data.unreadCount;
+                    $scope.$apply();
+                }
+                
+                // Broadcast event for sidebar to update total unread count
+                $scope.$root.$broadcast('unread-count-changed');
+            });
+            
+            // Handle disconnection
+            $scope.socket.on('disconnect', function() {
+                console.log('🔌 Disconnected from server');
+            });
+        } else {
+            console.error('Socket.IO not loaded');
+        }
+    };
+
     // Helper function to check if message is valid
     $scope.isMessageValid = function() {
         return $scope.messageInput.text && $scope.messageInput.text.trim().length > 0;
@@ -35,6 +108,7 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
 
     // Initialize
     $scope.init = function() {
+        $scope.initSocket();
         $scope.loadContacts();
         // Auto-refresh contacts every 30 seconds
         $interval($scope.loadContacts, 30000);
@@ -84,12 +158,55 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
 
     // Select a contact to view messages
     $scope.selectContact = function(contact) {
+        // Leave previous chat room if any
+        if ($scope.selectedContact && $scope.socket) {
+            $scope.socket.emit('leave-chat', $scope.selectedContact.phone);
+        }
+        
         $scope.selectedContact = contact;
+        
+        // Join new chat room
+        if ($scope.socket && contact) {
+            $scope.socket.emit('join-chat', contact.phone);
+        }
+        
         // Only hide contact list on mobile when selecting a contact
         if ($scope.isMobile) {
             $scope.showContactList = false;
         }
+        
         $scope.loadMessages(contact.phone);
+        
+        // Mark messages as read for this contact
+        if (contact.unreadCount > 0) {
+            $scope.markMessagesAsRead(contact.phone);
+        }
+    };
+
+    // Mark messages as read for a phone number
+    $scope.markMessagesAsRead = function(phone) {
+        $http.post('/api/chat/read/' + encodeURIComponent(phone))
+            .then(function(response) {
+                console.log('Messages marked as read for', phone);
+                
+                // Update the contact's unread count to 0 in the contacts list
+                const contact = $scope.contacts.find(c => c.phone === phone);
+                if (contact) {
+                    contact.unreadCount = 0;
+                }
+                
+                // Update filtered contacts as well
+                const filteredContact = $scope.filteredContacts.find(c => c.phone === phone);
+                if (filteredContact) {
+                    filteredContact.unreadCount = 0;
+                }
+                
+                // Broadcast event for sidebar to update total unread count
+                $scope.$root.$broadcast('unread-count-changed');
+            })
+            .catch(function(error) {
+                console.error('Error marking messages as read:', error);
+            });
     };
 
     // Back to contact list (mobile)
@@ -251,25 +368,25 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
             return minutes + 'm';
         }
         
-        // Same day
+        // Same day - show time only
         if (date.toDateString() === now.toDateString()) {
-            return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+            return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
         }
         
-        // Yesterday
+        // Yesterday - show Yesterday with time
         const yesterday = new Date(now);
         yesterday.setDate(yesterday.getDate() - 1);
         if (date.toDateString() === yesterday.toDateString()) {
-            return 'Yesterday';
+            return 'Yesterday ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
         }
         
-        // This week
+        // This week - show day name with time
         if (diff < 604800000) { // 7 days
-            return date.toLocaleDateString([], { weekday: 'short' });
+            return date.toLocaleDateString([], { weekday: 'short' }) + ' ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
         }
         
-        // Older
-        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        // Older - show date with time
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
     };
 
     // Scroll messages container to bottom

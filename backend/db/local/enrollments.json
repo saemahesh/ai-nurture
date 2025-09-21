@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "id": "enroll_1758431416904",
+    "sequence_id": "seq_1752221360754",
+    "username": "robomate",
+    "phone": "919573713873",
+    "name": "Sai Mahesh",
+    "enrolled_at": "2025-09-21T05:10:16.904Z",
+    "current_day": 0,
+    "status": "active",
+    "last_message_sent": null,
+    "next_message_due": "2025-09-21T06:10:16.904Z",
+    "messages_sent": 0,
+    "total_messages": 2,
+    "custom_fields": {}
+  }
+]

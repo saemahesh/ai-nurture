@@ -131,7 +131,7 @@ function getContacts(username) {
           lastMessage: chat.text,
           lastMessageType: chat.type,
           timestamp: chat.timestamp,
-          unreadCount: 0 // TODO: Implement unread count logic
+          unreadCount: getUnreadCount(chat.phone, username)
         });
       }
     });
@@ -186,6 +186,130 @@ function getRecentMessagesForAI(phone, limit = 10) {
 }
 
 /**
+ * Read message read status from JSON file
+ * @returns {Object} Object mapping messageId to array of usernames who read it
+ */
+function readMessageReadStatus() {
+  try {
+    const readStatusPath = getDataFilePath('message_read_status.json');
+    if (!fs.existsSync(readStatusPath)) {
+      return {};
+    }
+    const data = fs.readFileSync(readStatusPath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading message read status:', error);
+    return {};
+  }
+}
+
+/**
+ * Write message read status to JSON file
+ * @param {Object} readStatus - Object mapping messageId to array of usernames
+ */
+function writeMessageReadStatus(readStatus) {
+  try {
+    const readStatusPath = getDataFilePath('message_read_status.json');
+    fs.writeFileSync(readStatusPath, JSON.stringify(readStatus, null, 2));
+  } catch (error) {
+    console.error('Error writing message read status:', error);
+    throw error;
+  }
+}
+
+/**
+ * Mark messages as read by a user for a specific phone number
+ * @param {string} phone - Phone number
+ * @param {string} username - Username who read the messages
+ * @returns {number} Number of messages marked as read
+ */
+function markMessagesAsRead(phone, username) {
+  try {
+    const chats = readChats();
+    const readStatus = readMessageReadStatus();
+    
+    // Get all messages for this phone that are not from this user (incoming or AI messages)
+    const unreadMessages = chats.filter(chat => 
+      chat.phone === phone && 
+      (chat.type === 'incoming' || chat.type === 'ai') &&
+      (!readStatus[chat.id] || !readStatus[chat.id].includes(username))
+    );
+    
+    let markedCount = 0;
+    
+    // Mark these messages as read by this user
+    unreadMessages.forEach(message => {
+      if (!readStatus[message.id]) {
+        readStatus[message.id] = [];
+      }
+      if (!readStatus[message.id].includes(username)) {
+        readStatus[message.id].push(username);
+        markedCount++;
+      }
+    });
+    
+    if (markedCount > 0) {
+      writeMessageReadStatus(readStatus);
+    }
+    
+    return markedCount;
+  } catch (error) {
+    console.error('Error marking messages as read:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get unread message count for a phone number and user
+ * @param {string} phone - Phone number
+ * @param {string} username - Username
+ * @returns {number} Number of unread messages
+ */
+function getUnreadCount(phone, username) {
+  try {
+    const chats = readChats();
+    const readStatus = readMessageReadStatus();
+    
+    // Count incoming and AI messages that haven't been read by this user
+    const unreadCount = chats.filter(chat => 
+      chat.phone === phone && 
+      (chat.type === 'incoming' || chat.type === 'ai') &&
+      (!readStatus[chat.id] || !readStatus[chat.id].includes(username))
+    ).length;
+    
+    return unreadCount;
+  } catch (error) {
+    console.error('Error getting unread count:', error);
+    return 0;
+  }
+}
+
+/**
+ * Get total unread message count across all contacts for a user
+ * @param {string} username - Username
+ * @returns {number} Total number of unread messages
+ */
+function getTotalUnreadCount(username) {
+  try {
+    const chats = readChats();
+    const readStatus = readMessageReadStatus();
+    
+    // Count all incoming and AI messages that haven't been read by this user
+    // Skip test phone numbers
+    const unreadCount = chats.filter(chat => 
+      !chat.phone.startsWith('test_') &&
+      (chat.type === 'incoming' || chat.type === 'ai') &&
+      (!readStatus[chat.id] || !readStatus[chat.id].includes(username))
+    ).length;
+    
+    return unreadCount;
+  } catch (error) {
+    console.error('Error getting total unread count:', error);
+    return 0;
+  }
+}
+
+/**
  * Clear test conversation history for a specific test phone ID
  * @param {string} testPhoneId - Test phone identifier
  */
@@ -207,5 +331,10 @@ module.exports = {
   getChatHistory,
   getContacts,
   getRecentMessagesForAI,
-  clearTestConversation
+  clearTestConversation,
+  markMessagesAsRead,
+  getUnreadCount,
+  getTotalUnreadCount,
+  readMessageReadStatus,
+  writeMessageReadStatus
 };

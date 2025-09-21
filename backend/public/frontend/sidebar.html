@@ -38,6 +38,11 @@
           <div class="nav-item-bg"></div>
           <i class="fas fa-comment-dots nav-icon" style="color: #25D366 !important;"></i>
           <span class="nav-text">WhatsApp Chat</span>
+          <!-- Unread count badge -->
+          <span ng-if="totalUnreadCount > 0" 
+                class="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+            {{totalUnreadCount > 99 ? '99+' : totalUnreadCount}}
+          </span>
           <div class="nav-indicator" ng-if="isActive('/chat')"></div>
         </a>
         <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}" plan-expired-check>
@@ -272,6 +277,11 @@
             <div class="nav-item-bg"></div>
             <i class="fas fa-comment-dots nav-icon" style="color: #25D366 !important;"></i>
             <span class="nav-text">WhatsApp Chat</span>
+            <!-- Unread count badge -->
+            <span ng-if="totalUnreadCount > 0" 
+                  class="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+              {{totalUnreadCount > 99 ? '99+' : totalUnreadCount}}
+            </span>
             <div class="nav-indicator" ng-if="isActive('/chat')"></div>
           </a>
           <a href="#/groups" class="nav-item group relative" ng-class="{'active': isActive('/groups')}" ng-click="closeSidebar()">

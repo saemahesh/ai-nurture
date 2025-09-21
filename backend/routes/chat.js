@@ -92,6 +92,14 @@ router.post('/send', requireAuth, async (req, res) => {
       timestamp: new Date().toISOString()
     });
 
+    // Emit real-time message to user-specific chat room
+    const io = req.app.get('io');
+    if (io) {
+      const roomName = `chat-${req.session.user.username}-${phone}`;
+      io.to(roomName).emit('new-message', savedMessage);
+      console.log(`📤 Emitted new message to ${roomName}:`, savedMessage.text.substring(0, 50) + '...');
+    }
+
     res.json({ 
       success: true, 
       message: savedMessage,
@@ -110,6 +118,14 @@ router.post('/send', requireAuth, async (req, res) => {
         username: req.session.user.username,
         timestamp: new Date().toISOString()
       });
+      
+      // Emit real-time message even if WhatsApp API failed
+      const io = req.app.get('io');
+      if (io) {
+        const roomName = `chat-${req.session.user.username}-${req.body.phone}`;
+        io.to(roomName).emit('new-message', savedMessage);
+        console.log(`📤 Emitted new message to ${roomName} (API failed):`, savedMessage.text.substring(0, 50) + '...');
+      }
       
       res.status(500).json({ 
         error: 'Message saved locally but failed to send via WhatsApp: ' + error.message,
@@ -131,6 +147,56 @@ router.get('/context/:phone', requireAuth, async (req, res) => {
   } catch (error) {
     console.error('Error getting chat context:', error);
     res.status(500).json({ error: 'Failed to load chat context' });
+  }
+});
+
+// Mark messages as read for a specific phone number
+router.post('/read/:phone', requireAuth, async (req, res) => {
+  try {
+    const phone = decodeURIComponent(req.params.phone);
+    const username = req.session.user.username;
+    
+    const markedCount = chatService.markMessagesAsRead(phone, username);
+    
+    // Emit unread count update to user-specific room
+    const io = req.app.get('io');
+    if (io) {
+      const roomName = `chat-${username}-${phone}`;
+      io.to(roomName).emit('unread-count-update', { phone, unreadCount: 0 });
+      console.log(`📖 Marked ${markedCount} messages as read for ${username} - ${phone}`);
+    }
+    
+    res.json({ success: true, markedCount });
+  } catch (error) {
+    console.error('Error marking messages as read:', error);
+    res.status(500).json({ error: 'Failed to mark messages as read' });
+  }
+});
+
+// Get unread count for a specific phone number  
+router.get('/unread/:phone', requireAuth, async (req, res) => {
+  try {
+    const phone = decodeURIComponent(req.params.phone);
+    const username = req.session.user.username;
+    
+    const unreadCount = chatService.getUnreadCount(phone, username);
+    res.json({ unreadCount });
+  } catch (error) {
+    console.error('Error getting unread count:', error);
+    res.status(500).json({ error: 'Failed to get unread count' });
+  }
+});
+
+// Get total unread count across all contacts
+router.get('/unread-total', requireAuth, async (req, res) => {
+  try {
+    const username = req.session.user.username;
+    
+    const totalUnreadCount = chatService.getTotalUnreadCount(username);
+    res.json({ totalUnreadCount });
+  } catch (error) {
+    console.error('Error getting total unread count:', error);
+    res.status(500).json({ error: 'Failed to get total unread count' });
   }
 });
 

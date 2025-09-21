@@ -22,6 +22,73 @@ app.set('port', port);
 var server = http.createServer(app);
 
 /**
+ * Setup Socket.IO
+ */
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+// Setup session middleware for Socket.IO
+const session = require('express-session');
+const SingleFileSessionStore = require('../single-file-session-store');
+const { getDataFilePath } = require('../data-utils');
+
+const sessionMiddleware = session({
+  store: new SingleFileSessionStore(getDataFilePath('sessions.json')),
+  secret: 'autopost-wa-secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
+});
+
+// Use session middleware for Socket.IO
+io.use((socket, next) => {
+  sessionMiddleware(socket.request, {}, next);
+});
+
+// Store io instance in app for access in routes
+app.set('io', io);
+
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  console.log('🔌 New client connected:', socket.id);
+  
+  // Get user from session
+  const session = socket.request.session;
+  const username = session && session.user ? session.user.username : null;
+  
+  if (!username) {
+    console.log('❌ Unauthenticated socket connection rejected');
+    socket.disconnect();
+    return;
+  }
+  
+  console.log(`👤 Authenticated user ${username} connected with socket ${socket.id}`);
+  
+  // Handle joining chat rooms with user-specific naming
+  socket.on('join-chat', (phoneNumber) => {
+    const roomName = `chat-${username}-${phoneNumber}`;
+    socket.join(roomName);
+    console.log(`📱 Client ${socket.id} (${username}) joined chat room: ${roomName}`);
+  });
+  
+  // Handle leaving chat rooms with user-specific naming
+  socket.on('leave-chat', (phoneNumber) => {
+    const roomName = `chat-${username}-${phoneNumber}`;
+    socket.leave(roomName);
+    console.log(`📱 Client ${socket.id} (${username}) left chat room: ${roomName}`);
+  });
+  
+  // Handle disconnection
+  socket.on('disconnect', () => {
+    console.log('🔌 Client disconnected:', socket.id);
+  });
+});
+
+/**
  * Listen on provided port, on all network interfaces.
  */
 

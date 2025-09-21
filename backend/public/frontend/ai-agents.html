@@ -119,8 +119,8 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Agent</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Knowledge Bases</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Model</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Last Updated</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">Test</th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
@@ -152,11 +152,13 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                         {{agent.knowledgeBases ? agent.knowledgeBases.length : 0}} bases
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                        Grok-4 (OpenRouter)
-                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                                         {{formatDate(agent.updated_at)}}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <button ng-click="testAgent(agent)" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded-lg transition-colors duration-200">
+                                            Test Agent
+                                        </button>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex items-center justify-end space-x-2">
@@ -204,6 +206,138 @@
         </div>
     </div>
 
+    <!-- Test Agent Chat Modal -->
+    <div ng-show="showTestModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl border border-gray-700 flex flex-col test-modal-container" style="height: 600px; max-height: 90vh; min-height: 400px;">
+            <!-- Chat Header -->
+            <div class="p-4 border-b border-gray-700 flex items-center justify-between flex-shrink-0">
+                <div class="flex items-center">
+                    <div class="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold mr-3">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">Test AI Agent</h3>
+                        <p class="text-sm text-gray-400">{{currentTestAgent.name || 'Unnamed Agent'}}</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button ng-click="clearTestConversation()" class="p-2 text-gray-400 hover:text-white rounded-full hover:bg-gray-700" title="Clear conversation">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button ng-click="closeTestModal()" class="p-2 text-gray-400 hover:text-white rounded-full hover:bg-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-3 scroll-smooth" id="testConversationContainer" 
+                 style="
+                    scrollbar-width: thin; 
+                    scrollbar-color: #4B5563 #374151; 
+                    -webkit-overflow-scrolling: touch;
+                    overscroll-behavior: contain;
+                    max-height: 100%;
+                    min-height: 0;
+                 ">
+                <!-- Welcome Message -->
+                <div ng-if="testConversation.length === 0" class="text-center text-gray-400 py-8">
+                    <i class="fas fa-comment text-3xl mb-3"></i>
+                    <p>Start testing your AI agent</p>
+                    <p class="text-sm">Messages will include the last 20 conversations for context</p>
+                </div>
+
+                <!-- Conversation Messages -->
+                <div ng-repeat="message in testConversation" class="message-container">
+                    <!-- User Messages -->
+                    <div ng-if="message.type === 'incoming'" class="flex items-start space-x-2 max-w-[70%]">
+                        <div class="bg-gray-700 rounded-lg p-3 relative">
+                            <div class="text-white text-sm whitespace-pre-wrap">{{message.text}}</div>
+                            <div class="text-xs text-gray-400 mt-1">
+                                {{formatTestTime(message.timestamp)}}
+                            </div>
+                            <!-- Triangle pointer -->
+                            <div class="absolute left-0 top-3 w-0 h-0 border-r-8 border-r-gray-700 border-t-4 border-t-transparent border-b-4 border-b-transparent -ml-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- AI Messages -->
+                    <div ng-if="message.type === 'ai'" class="flex items-start justify-end space-x-2 max-w-[70%] ml-auto">
+                        <div class="bg-blue-600 rounded-lg p-3 relative">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-robot text-blue-200 mr-2"></i>
+                                <span class="text-xs text-blue-200">AI Agent</span>
+                            </div>
+                            <div class="text-white text-sm whitespace-pre-wrap">{{message.text}}</div>
+                            <div class="text-xs text-blue-100 mt-1 flex items-center justify-end">
+                                {{formatTestTime(message.timestamp)}}
+                                <i class="fas fa-check-double ml-1 text-blue-200"></i>
+                            </div>
+                            <!-- Triangle pointer -->
+                            <div class="absolute right-0 top-3 w-0 h-0 border-l-8 border-l-blue-600 border-t-4 border-t-transparent border-b-4 border-b-transparent -mr-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- Error Messages -->
+                    <div ng-if="message.type === 'error'" class="flex items-start justify-center space-x-2 max-w-[70%] mx-auto">
+                        <div class="bg-red-600 rounded-lg p-3 relative">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-exclamation-triangle text-red-200 mr-2"></i>
+                                <span class="text-xs text-red-200">Error</span>
+                            </div>
+                            <div class="text-white text-sm whitespace-pre-wrap">{{message.text}}</div>
+                            <div class="text-xs text-red-100 mt-1">
+                                {{formatTestTime(message.timestamp)}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typing Indicator -->
+                <div ng-if="testingAgent" class="flex items-start justify-end space-x-2">
+                    <div class="bg-blue-600 rounded-lg p-3 max-w-[70%]">
+                        <div class="flex items-center space-x-1">
+                            <div class="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                            <div class="w-2 h-2 bg-white rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                            <div class="w-2 h-2 bg-white rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 border-t border-gray-700 flex-shrink-0">
+                <div class="flex items-end space-x-3">
+                    <!-- Message Input -->
+                    <div class="flex-1 relative">
+                        <textarea ng-model="testInput.text" 
+                                placeholder="Type your test message..."
+                                class="w-full p-3 pr-12 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                                rows="1"
+                                ng-keypress="handleTestKeyPress($event)"
+                                style="max-height: 120px; overflow-y: auto;"
+                                ng-disabled="testingAgent"></textarea>
+                        
+                        <!-- Emoji Button -->
+                        <button class="absolute right-3 top-3 text-gray-400 hover:text-white">
+                            <i class="fas fa-smile"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Send Button -->
+                    <button ng-click="sendTestMessage()"
+                            ng-disabled="!testInput.text || testingAgent"
+                            class="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors duration-200">
+                        <i class="fas fa-paper-plane" ng-class="{'fa-spinner fa-spin': testingAgent, 'fa-paper-plane': !testingAgent}"></i>
+                    </button>
+                </div>
+                <div class="mt-2 text-xs text-gray-400">
+                    Press Enter to send • {{testConversation.length}} messages • Last 20 used for context
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Confirmation Modal -->
     <div ng-if="showConfirmModal" class="fixed inset-0 z-50 flex items-center justify-center min-h-screen overflow-y-auto" style="background: rgba(15,23,42,0.7); z-index: 99999 !important;" ng-click="handleCancel()">
         <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important; min-height: 0; margin-top: 4rem; margin-bottom: 2rem;" ng-click="$event.stopPropagation()">
@@ -242,4 +376,48 @@
             </div>
         </div>
     </div>
+
+    <!-- Additional CSS for test modal scrolling -->
+    <style>
+    #testConversationContainer {
+        /* Ensure scrolling works on all browsers */
+        overflow-y: scroll !important;
+        -webkit-overflow-scrolling: touch;
+        
+        /* Custom scrollbar for webkit browsers */
+        scrollbar-width: thin;
+        scrollbar-color: #4B5563 #374151;
+    }
+
+    #testConversationContainer::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #testConversationContainer::-webkit-scrollbar-track {
+        background: #374151;
+        border-radius: 4px;
+    }
+
+    #testConversationContainer::-webkit-scrollbar-thumb {
+        background: #4B5563;
+        border-radius: 4px;
+    }
+
+    #testConversationContainer::-webkit-scrollbar-thumb:hover {
+        background: #6B7280;
+    }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+        .test-modal-container {
+            height: 80vh !important;
+            max-height: 80vh !important;
+            margin: 10vh 0;
+        }
+        
+        #testConversationContainer {
+            max-height: calc(80vh - 180px) !important;
+        }
+    }
+    </style>
 </div>

@@ -1,16 +1,44 @@
-Task Plan for AI-Nurture**Action Plan - Iteration 10/148**
+## Action Plan
 
-**Current Issue from issue-details.txt:**
-"try reading openrouter api key from env variable OPENROUTER_API_KEY
-do not hardcode it in ai.service.js file"
+### Current Status: Iteration 3/148 - Create Webhook Testing Commands
+**Problem**: User needs curl commands to test the webhook locally, simulating messages from phone number 919573713873 to robomate number
+
+### Implementation Strategy:
+1. **Analyze Webhook Structure**: Examine the existing webhook endpoint structure and expected payload format
+2. **Create Test Commands**: Generate curl commands for different message types (text, media, etc.)
+3. **Document Parameters**: Include all necessary parameters like instance_id, access_token, etc.
+4. **Provide Examples**: Create comprehensive examples for testing different scenarios
+5. **Update Analysis File**: Create analysis.txt with all curl commands and testing instructions
+
+### Technical Requirements:
+- Examine webhook route structure in routes/webhook.js
+- Identify required parameters and payload format
+- Create curl commands for incoming message simulation
+- Include proper headers and request body format
+- Document different test scenarios (text, media, AI responses)
+
+### Expected Outcome:
+- Complete analysis.txt file with curl commands for webhook testing
+- Commands that simulate phone number 919573713873 sending messages
+- Easy-to-use local testing commands for webhook functionality
+- Documentation of webhook payload structure and requirements
+3. Emit messages only to rooms belonging to specific users
+4. Update frontend to join user-specific rooms
+
+**Requirements:**
+1. Move test agent button from ai-agent-create page to ai-agents list page
+2. Remove model column from the AI agents table  
+3. Add test agent button inside the table for each agent
+4. Check current state of user-modified files: .env, ai.service.js, chats.json
 
 **Investigation Focus:**
-1. Find the hardcoded OpenRouter API key in ai.service.js
-2. Replace hardcoded key with process.env.OPENROUTER_API_KEY
-3. Add proper error handling if environment variable is missing
-4. Update .env file documentation if needed
+1. Find the AI agents list page (ai-agents.html and ai-agents.controller.js)
+2. Locate current table structure and identify model column
+3. Add test agent functionality to the list page
+4. Move test modal from create page to list page
+5. Update table layout to include test button
 
-**Status:** Replacing hardcoded OpenRouter API key with environment variablect - AI Agent Feature Issues
+**Status:** Moving test agent functionality from create page to list pagect - AI Agent Feature Issues
 
 ## Current Iteration: 5/148
 ## Current Issue Focus: Input Styling and UI Improvements

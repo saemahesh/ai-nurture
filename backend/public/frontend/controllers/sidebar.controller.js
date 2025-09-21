@@ -1,4 +1,4 @@
-angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', '$location', 'AuthService', 'NotificationService', function($scope, $location, AuthService, NotificationService) {
+angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', '$location', '$http', '$interval', 'AuthService', 'NotificationService', function($scope, $location, $http, $interval, AuthService, NotificationService) {
   $scope.isActive = function(route) {
     return $location.path().indexOf(route) === 0;
   };
@@ -8,6 +8,9 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
   $scope.userError = false;
   $scope.desktopScrollDirection = 'down'; // Track scroll direction for desktop
   $scope.mobileScrollDirection = 'down';  // Track scroll direction for mobile
+  
+  // Unread message count for chat
+  $scope.totalUnreadCount = 0;
   
   // Sidebar scroll position management
   $scope.sidebarScrollPosition = 0;
@@ -154,10 +157,35 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
   AuthService.me().then(function(response) {
     $scope.user = response.data.user;
     $scope.loadingUser = false;
+    
+    // Load unread count after user is loaded
+    $scope.loadTotalUnreadCount();
+    
+    // Set up periodic refresh of unread count every 30 seconds
+    $interval($scope.loadTotalUnreadCount, 30000);
   }).catch(function(error) {
     console.error('Error loading user data:', error);
     $scope.loadingUser = false;
     $scope.userError = true;
+  });
+
+  // Function to load total unread count
+  $scope.loadTotalUnreadCount = function() {
+    if (!$scope.user) return;
+    
+    $http.get('/api/chat/unread-total')
+      .then(function(response) {
+        $scope.totalUnreadCount = response.data.totalUnreadCount;
+      })
+      .catch(function(error) {
+        console.error('Error loading total unread count:', error);
+        $scope.totalUnreadCount = 0;
+      });
+  };
+
+  // Listen for unread count changes from chat controller
+  $scope.$on('unread-count-changed', function() {
+    $scope.loadTotalUnreadCount();
   });
   
   $scope.logout = function() {

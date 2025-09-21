@@ -1,0 +1,247 @@
+# Webhook Testing Commands - Local Development
+
+## Overview
+This document provides curl commands to test the WhatsApp webhook functionality locally. The webhook simulates messages from phone number **919573713873** to test the robomate integration.
+
+## Prerequisites
+- Backend server running on localhost:3000
+- User account configured with WhatsApp API settings (instance_id and access_token)
+- Test phone number: 919573713873
+
+## Webhook Endpoints Available
+
+### 1. Main Webhook Endpoint: `/api/webhook/enroll`
+This is the primary endpoint that handles all incoming WhatsApp messages.
+
+### 2. Legacy Endpoint: `/api/webhook/whatsapp` 
+Legacy endpoint that redirects to `/enroll` for compatibility.
+
+### 3. Test Endpoint: `/api/webhook/test-message`
+Simplified test endpoint for quick testing.
+
+## Required Parameters
+
+### For `/enroll` endpoint:
+- `instance_id`: WhatsApp instance ID from user settings
+- `data.message.body_message.content`: The message text
+- `data.message.from_contact`: Sender's phone number
+- `data.message.push_name`: Sender's display name (optional)
+
+## Curl Commands for Testing
+
+### 1. Basic Text Message Test
+```bash
+curl -X POST http://localhost:3000/api/webhook/enroll \
+  -H "Content-Type: application/json" \
+  -d '{
+    "instance_id": "YOUR_INSTANCE_ID",
+    "data": {
+      "message": {
+        "body_message": {
+          "content": "Hello from test user"
+        },
+        "from_contact": "919573713873",
+        "push_name": "Test User"
+      }
+    }
+  }'
+```
+
+### 2. Sequence Enrollment Test (Using Keywords)
+```bash
+curl -X POST http://localhost:3000/api/webhook/enroll \
+  -H "Content-Type: application/json" \
+  -d '{
+    "instance_id": "YOUR_INSTANCE_ID",
+    "data": {
+      "message": {
+        "body_message": {
+          "content": "info"
+        },
+        "from_contact": "919573713873",
+        "push_name": "Test User"
+      }
+    }
+  }'
+```
+
+### 3. Stop/Opt-out Keywords Test
+```bash
+curl -X POST http://localhost:3000/api/webhook/enroll \
+  -H "Content-Type: application/json" \
+  -d '{
+    "instance_id": "YOUR_INSTANCE_ID",
+    "data": {
+      "message": {
+        "body_message": {
+          "content": "stop"
+        },
+        "from_contact": "919573713873",
+        "push_name": "Test User"
+      }
+    }
+  }'
+```
+
+### 4. AI Agent Trigger Test
+```bash
+curl -X POST http://localhost:3000/api/webhook/enroll \
+  -H "Content-Type: application/json" \
+  -d '{
+    "instance_id": "YOUR_INSTANCE_ID",
+    "data": {
+      "message": {
+        "body_message": {
+          "content": "I need help with my order"
+        },
+        "from_contact": "919573713873",
+        "push_name": "Test User"
+      }
+    }
+  }'
+```
+
+### 5. Test Endpoint (Simplified)
+```bash
+curl -X POST http://localhost:3000/api/webhook/test-message \
+  -H "Content-Type: application/json" \
+  -d '{
+    "instance_id": "YOUR_INSTANCE_ID",
+    "phone": "919573713873",
+    "message": "Test message via simplified endpoint",
+    "name": "Test User"
+  }'
+```
+
+### 6. Legacy WhatsApp Endpoint Test
+```bash
+curl -X POST http://localhost:3000/api/webhook/whatsapp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "instance_id": "YOUR_INSTANCE_ID",
+    "phone": "919573713873",
+    "message": "Legacy endpoint test",
+    "from": "919573713873",
+    "name": "Test User"
+  }'
+```
+
+## Finding Your Instance ID
+
+### Method 1: Check User Settings
+1. Login to your application
+2. Go to Settings page
+3. Look for WhatsApp API configuration
+4. Copy the instance_id value
+
+### Method 2: Check Users JSON File
+```bash
+cat backend/data/users.json | jq '.[] | select(.username=="YOUR_USERNAME") | .settings.instance_id'
+```
+
+### Method 3: Using API
+```bash
+curl -X GET http://localhost:3000/api/users/me \
+  -H "Cookie: connect.sid=YOUR_SESSION_COOKIE"
+```
+
+## Expected Responses
+
+### Success Response
+```json
+{
+  "success": true,
+  "action": "enrolled",
+  "phone": "919573713873",
+  "sequence": "welcome_sequence",
+  "message": "User enrolled successfully"
+}
+```
+
+### Stop/Opt-out Response
+```json
+{
+  "success": true,
+  "action": "opted_out",
+  "phone": "919573713873",
+  "message": "User opted out from all sequences"
+}
+```
+
+### AI Response Trigger
+```json
+{
+  "success": true,
+  "action": "ai_response",
+  "phone": "919573713873",
+  "ai_agent": "support_agent",
+  "response": "I'll help you with your order..."
+}
+```
+
+### Error Response
+```json
+{
+  "error": "User with the given instance_id not found"
+}
+```
+
+## Testing Different Scenarios
+
+### 1. First Time User
+- Send message with sequence keyword
+- Should enroll user in sequence
+- Check enrollments.json file
+
+### 2. Existing User - New Message
+- Send regular message
+- Should trigger AI response if AI agents are active
+- Check chat history in chats.json
+
+### 3. Stop Keywords
+- Send "stop", "unsubscribe", "opt out"
+- Should remove user from all active sequences
+- Check enrollments.json for removal
+
+### 4. Real-time Chat
+- Send message while viewing chat page
+- Should appear immediately via Socket.IO
+- Unread count should update
+
+## Monitoring Commands
+
+### Check Chat History
+```bash
+cat backend/data/chats.json | jq '.[] | select(.phone=="919573713873")'
+```
+
+### Check Enrollments
+```bash
+cat backend/data/enrollments.json | jq '.[] | select(.phone=="919573713873")'
+```
+
+### Check Message Queue
+```bash
+cat backend/data/message_queue.json | jq '.[] | select(.phone=="919573713873")'
+```
+
+## Notes
+- Replace `YOUR_INSTANCE_ID` with your actual instance ID
+- Test phone number is normalized to 919573713873
+- All messages are stored in chat history
+- Real-time updates work via Socket.IO
+- AI responses require active AI agents configured
+
+## Troubleshooting
+
+### Common Issues
+1. **Invalid instance_id**: Ensure the instance_id exists in user settings
+2. **Phone number format**: Numbers are normalized automatically
+3. **Missing parameters**: All required fields must be provided
+4. **Server not running**: Ensure backend is running on localhost:3000
+
+### Debug Mode
+Add `console.log` statements in webhook.js to trace message processing:
+```javascript
+console.log('[WEBHOOK] Received payload:', JSON.stringify(req.body, null, 2));
+```

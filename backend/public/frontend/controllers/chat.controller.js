@@ -26,6 +26,12 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
     // Load Earlier Messages button state
     $scope.showLoadEarlierButton = false;
     
+    // Initialize chat with auto-scroll to bottom
+    $scope.initializeChat = function() {
+        // Set scroll to bottom immediately on page load
+        $scope.scrollToBottom();
+    };
+    
     // Show toast notification
     $scope.showToast = function(message, type) {
         $scope.toast = {
@@ -253,6 +259,11 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
         
         $scope.loadMessages(contact.phone);
         
+        // Ensure scroll to bottom after contact selection
+        $timeout(function() {
+            $scope.scrollToBottom();
+        }, 10);
+        
         // Mark messages as read for this contact
         if (contact.unreadCount > 0) {
             $scope.markMessagesAsRead(contact.phone);
@@ -352,9 +363,9 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
                 console.log('Messages:', $scope.messages);
                 
                 // Scroll to bottom after messages load
-                setTimeout(function() {
+                $timeout(function() {
                     $scope.scrollToBottom();
-                }, 100);
+                }, 20);
             })
             .catch(function(error) {
                 console.error('Error loading messages:', error);
@@ -578,10 +589,12 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
         return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
     };
 
-    // Scroll messages container to bottom
+    // Scroll messages container to bottom - instant and silent
     $scope.scrollToBottom = function() {
         const container = document.getElementById('messagesContainer');
         if (container) {
+            // Set scroll position instantly without any animation or delay
+            container.style.scrollBehavior = 'auto'; // Disable smooth scrolling
             container.scrollTop = container.scrollHeight;
         }
     };
@@ -649,6 +662,23 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
 
     // Initialize on load
     $scope.init();
+
+    // Watch messages array and auto-scroll to bottom when messages change
+    $scope.$watchCollection('messages', function(newMessages, oldMessages) {
+        if (newMessages && newMessages.length > 0 && $scope.selectedContact) {
+            // Only scroll if messages were added (not on initial load which is handled separately)
+            if (oldMessages && newMessages.length > oldMessages.length) {
+                $scope.scrollToBottom(); // Instant scroll without timeout
+            }
+        }
+    });
+
+    // Ensure scroll to bottom when selectedContact changes
+    $scope.$watch('selectedContact', function(newContact, oldContact) {
+        if (newContact && newContact !== oldContact) {
+            $scope.scrollToBottom(); // Instant scroll without timeout
+        }
+    });
 
     // Cleanup scroll listeners when scope is destroyed
     $scope.$on('$destroy', function() {

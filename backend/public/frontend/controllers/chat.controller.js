@@ -166,6 +166,18 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
         $scope.loadContacts();
         // Auto-refresh contacts every 30 seconds
         $interval($scope.loadContacts, 30000);
+
+        // Watch for text changes to auto-resize textarea
+        $scope.$watch('messageInput.text', function(newVal, oldVal) {
+            if (newVal !== oldVal) {
+                $timeout(function() {
+                    const textarea = document.querySelector('textarea[ng-model="messageInput.text"]');
+                    if (textarea) {
+                        $scope.autoResizeTextarea(textarea);
+                    }
+                }, 0);
+            }
+        });
     };
 
     // Load contacts list
@@ -397,6 +409,9 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
             // Clear input
             $scope.messageInput.text = '';
             
+            // Reset textarea height
+            $scope.resetTextareaHeight();
+            
             // Scroll to bottom
             setTimeout(function() {
                 $scope.scrollToBottom();
@@ -428,6 +443,65 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
             event.preventDefault();
             $scope.sendMessage();
         }
+        
+        // Auto-resize textarea
+        $scope.autoResizeTextarea(event.target);
+    };
+
+    // Auto-resize textarea based on content
+    $scope.autoResizeTextarea = function(element) {
+        // Reset height to get accurate scrollHeight
+        element.style.height = '36px';
+        
+        // Set height based on scroll height, with min and max limits
+        const minHeight = 36;
+        const maxHeight = 120;
+        const scrollHeight = element.scrollHeight;
+        
+        if (scrollHeight > minHeight) {
+            const newHeight = Math.min(scrollHeight, maxHeight);
+            element.style.height = newHeight + 'px';
+            
+            // Also update parent container min-height to match
+            const parentContainer = element.closest('.min-h-\\[40px\\]');
+            if (parentContainer) {
+                parentContainer.style.minHeight = (newHeight + 8) + 'px'; // Add padding
+            }
+        }
+    };
+
+    // Handle input events for auto-resize (covers typing, pasting, etc.)
+    $scope.handleInput = function(event) {
+        if (event && event.target) {
+            $scope.autoResizeTextarea(event.target);
+        }
+    };
+
+    // Handle text model changes for auto-resize
+    $scope.handleTextChange = function() {
+        $timeout(function() {
+            const textarea = document.querySelector('textarea[ng-model="messageInput.text"]');
+            if (textarea) {
+                $scope.autoResizeTextarea(textarea);
+            }
+        }, 0);
+    };
+
+    // Reset textarea height to original size
+    $scope.resetTextareaHeight = function() {
+        // Use timeout to ensure the input is cleared first
+        $timeout(function() {
+            const textarea = document.querySelector('textarea[ng-model="messageInput.text"]');
+            if (textarea) {
+                textarea.style.height = '36px';
+                
+                // Reset parent container min-height
+                const parentContainer = textarea.closest('.min-h-\\[40px\\]');
+                if (parentContainer) {
+                    parentContainer.style.minHeight = '40px';
+                }
+            }
+        }, 0);
     };
 
     // Get contact name (or format phone number)

@@ -282,8 +282,33 @@
       "day": 2
     },
     "scheduledAt": "2025-09-22T06:13:00.000Z",
-    "status": "pending",
+    "status": "sent",
     "createdAt": "2025-09-21T05:10:16.921Z",
-    "attempts": 0
+    "attempts": 0,
+    "sentAt": "2025-09-22T07:17:35.935Z",
+    "apiResponse": {
+      "status": "success",
+      "message": {
+        "key": {
+          "remoteJid": "919573713873@s.whatsapp.net",
+          "fromMe": true,
+          "id": "3EB0E6CB49B5164BAE8A9C"
+        },
+        "message": {
+          "imageMessage": {
+            "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m233/AQO8b88uujFx8P7l0wMV0ABezIWqVdOXV8wnwQBTx6qex990gPlDAtYdLwm3t4TXmbM_eBDNJDOlKQGGZ0NAPm_Kez0jcQbqKqXTrxIjxQ?ccb=9-4&oh=01_Q5Aa2gGKaz8IxTCdWPz03JgstbMujbCu6mddhKEpBihWMpDnIA&oe=68F858CC&_nc_sid=e6ed6c&mms3=true",
+            "mimetype": "image/jpeg",
+            "caption": "Hey , day 2 drip msg",
+            "fileSha256": "kiSj5VnwVFttnLXuVk4WNizGK+QueOByEcC/4kPjVK8=",
+            "fileLength": "101298",
+            "mediaKey": "sZjWKyDKHoGSOeB7YJ6TCAJXgLB7kOUUudgfCvj+JyE=",
+            "fileEncSha256": "fKljT8H4hHCzGr+BhsaiOcQNIlD1YccssvZqMC/1eDE=",
+            "directPath": "/o1/v/t24/f2/m233/AQO8b88uujFx8P7l0wMV0ABezIWqVdOXV8wnwQBTx6qex990gPlDAtYdLwm3t4TXmbM_eBDNJDOlKQGGZ0NAPm_Kez0jcQbqKqXTrxIjxQ?ccb=9-4&oh=01_Q5Aa2gGKaz8IxTCdWPz03JgstbMujbCu6mddhKEpBihWMpDnIA&oe=68F858CC&_nc_sid=e6ed6c",
+            "mediaKeyTimestamp": "1758525455"
+          }
+        },
+        "messageTimestamp": "1758525455"
+      }
+    }
   }
 ]

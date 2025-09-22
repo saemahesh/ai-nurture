@@ -17,6 +17,24 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
     NotificationService.initToast($scope);
     NotificationService.initConfirmModal($scope);
 
+    // Initialize collapsible sections
+    $scope.sections = {
+        basicInfo: true,
+        keywords: true,
+        messages: true
+    };
+    $scope.messageExpanded = {};
+
+    // Toggle section visibility
+    $scope.toggleSection = function(section) {
+        $scope.sections[section] = !$scope.sections[section];
+    };
+
+    // Toggle individual message visibility  
+    $scope.toggleMessage = function(index) {
+        $scope.messageExpanded[index] = !$scope.messageExpanded[index];
+    };
+
     // Initialize
     $scope.init = function() {
         if ($scope.sequenceId) {
@@ -70,6 +88,18 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
                 if (!$scope.sequence.containsKeywords) {
                     $scope.sequence.containsKeywords = '';
                 }
+
+                // Reconstruct selectedMedia objects for media messages in edit mode
+                $scope.sequence.messages.forEach(function(message) {
+                    if (message.type === 'media' && message.mediaUrl && !message.selectedMedia) {
+                        // Create selectedMedia object for preview functionality
+                        message.selectedMedia = {
+                            url: message.mediaUrl,
+                            type: message.mediaType || 'unknown',
+                            name: $scope.extractFileNameFromUrl(message.mediaUrl)
+                        };
+                    }
+                });
             })
             .catch(function(error) {
                 console.error('Error loading sequence:', error);
@@ -165,6 +195,8 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
         if (message.day !== 1) {
             delete message.minuteDelay;
         }
+        // Auto-sort messages by day
+        $scope.sortMessages();
     };
 
     // Add new message
@@ -204,22 +236,19 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
         );
     };
 
-    // Move message up
-    $scope.moveMessageUp = function(index) {
-        if (index > 0) {
-            const temp = $scope.sequence.messages[index];
-            $scope.sequence.messages[index] = $scope.sequence.messages[index - 1];
-            $scope.sequence.messages[index - 1] = temp;
-        }
+    // Get sorted messages by day
+    $scope.getSortedMessages = function() {
+        if (!$scope.sequence.messages) return [];
+        return $scope.sequence.messages.slice().sort(function(a, b) {
+            return (a.day || 1) - (b.day || 1);
+        });
     };
 
-    // Move message down
-    $scope.moveMessageDown = function(index) {
-        if (index < $scope.sequence.messages.length - 1) {
-            const temp = $scope.sequence.messages[index];
-            $scope.sequence.messages[index] = $scope.sequence.messages[index + 1];
-            $scope.sequence.messages[index + 1] = temp;
-        }
+    // Auto-sort messages when day changes
+    $scope.sortMessages = function() {
+        $scope.sequence.messages.sort(function(a, b) {
+            return (a.day || 1) - (b.day || 1);
+        });
     };
 
     // Get message preview with personalization example
@@ -561,6 +590,30 @@ angular.module('autopostWaApp').controller('SequenceCreateController', ['$scope'
         }
         
         return '';
+    };
+
+    // Helper function to extract filename from URL
+    $scope.extractFileNameFromUrl = function(url) {
+        if (!url) return 'Unknown File';
+        
+        try {
+            // Remove query parameters and fragment
+            const cleanUrl = url.split('?')[0].split('#')[0];
+            // Get the last part of the path
+            const parts = cleanUrl.split('/');
+            const fileName = parts[parts.length - 1];
+            
+            // If we have a filename with extension, return it
+            if (fileName && fileName.includes('.')) {
+                return decodeURIComponent(fileName);
+            }
+            
+            // Fallback to 'Media File' if we can't extract a proper name
+            return 'Media File';
+        } catch (error) {
+            console.error('Error extracting filename from URL:', error);
+            return 'Media File';
+        }
     };
 
     $scope.getSelectedMediaName = function(message) {

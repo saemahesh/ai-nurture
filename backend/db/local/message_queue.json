@@ -78,5 +78,21 @@
     "sentAt": "2025-09-21T06:13:05.282Z",
     "status": "sent",
     "createdAt": "2025-09-21T06:13:05.291Z"
+  },
+  {
+    "id": "msg-1758525455937-mptccid40",
+    "campaignId": "seq_1752221360754",
+    "username": "robomate",
+    "phone": "919573713873",
+    "message": {
+      "id": "msg-1",
+      "type": "media",
+      "message": "Hey , day 2 drip msg",
+      "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
+      "day": 2
+    },
+    "sentAt": "2025-09-22T07:17:35.935Z",
+    "status": "sent",
+    "createdAt": "2025-09-22T07:17:35.937Z"
   }
 ]

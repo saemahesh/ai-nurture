@@ -6,12 +6,13 @@
     "phone": "919573713873",
     "name": "Sai Mahesh",
     "enrolled_at": "2025-09-21T05:10:16.904Z",
-    "current_day": 1,
-    "status": "active",
+    "current_day": 2,
+    "status": "completed",
     "last_message_sent": null,
-    "next_message_due": "2025-09-22T06:13:00.000Z",
-    "messages_sent": 1,
+    "next_message_due": null,
+    "messages_sent": 2,
     "total_messages": 2,
-    "custom_fields": {}
+    "custom_fields": {},
+    "completed_at": "2025-09-22T07:17:35.944Z"
   }
 ]

@@ -1,113 +1,5 @@
 [
   {
-    "id": "msg_1",
-    "phone": "919573713873",
-    "text": "Hi, I'm interested in your real estate services",
-    "type": "incoming",
-    "username": null,
-    "timestamp": "2025-01-19T10:30:00.000Z",
-    "agentId": null
-  },
-  {
-    "id": "msg_2",
-    "phone": "919573713873",
-    "text": "Hello! Thank you for your interest in our real estate services. I'd be happy to help you find your perfect property. \n\nWhat type of property are you looking for?\n• Residential apartment\n• Villa/Independent house\n• Commercial space\n• Investment property",
-    "type": "ai",
-    "username": "robomate",
-    "timestamp": "2025-01-19T10:31:00.000Z",
-    "agentId": "agent_real_estate"
-  },
-  {
-    "id": "msg_3",
-    "phone": "919573713873",
-    "text": "I'm looking for a 2BHK apartment",
-    "type": "incoming",
-    "username": null,
-    "timestamp": "2025-01-19T10:32:00.000Z",
-    "agentId": null
-  },
-  {
-    "id": "msg_4",
-    "phone": "918888888888",
-    "text": "Hello, can you help me with WhatsApp automation?",
-    "type": "incoming",
-    "username": null,
-    "timestamp": "2025-01-19T09:15:00.000Z",
-    "agentId": null
-  },
-  {
-    "id": "msg_5",
-    "phone": "918888888888",
-    "text": "Absolutely! I can help you with WhatsApp automation. 🚀\n\nOur platform offers:\n• Automated message sequences\n• AI-powered responses\n• Group management\n• Campaign analytics\n\nWhat specific automation are you looking for?",
-    "type": "ai",
-    "username": "robomate",
-    "timestamp": "2025-01-19T09:16:00.000Z",
-    "agentId": "agent_whatsapp"
-  },
-  {
-    "id": "1758380173286ig73ws4g9",
-    "phone": "919573713873",
-    "text": "hi",
-    "type": "outgoing",
-    "username": "robomate",
-    "timestamp": "2025-09-20T14:56:13.285Z",
-    "agentId": null
-  },
-  {
-    "id": "1758380351566r2dcdfzfo",
-    "phone": "919573713873",
-    "text": "thanks",
-    "type": "outgoing",
-    "username": "robomate",
-    "timestamp": "2025-09-20T14:59:11.563Z",
-    "agentId": null
-  },
-  {
-    "id": "1758380360063k4wynpbrf",
-    "phone": "919573713873",
-    "text": "sfdsf",
-    "type": "outgoing",
-    "username": "robomate",
-    "timestamp": "2025-09-20T14:59:20.063Z",
-    "agentId": null
-  },
-  {
-    "id": "1758429428912unv6vtdnh",
-    "phone": "919573713873",
-    "text": "hey",
-    "type": "outgoing",
-    "username": "robomate",
-    "timestamp": "2025-09-21T04:37:08.912Z",
-    "agentId": null
-  },
-  {
-    "id": "1758431416883lcirj70b4",
-    "phone": "919573713873",
-    "text": "Hello from mahesh",
-    "type": "incoming",
-    "username": null,
-    "timestamp": "2025-09-21T05:10:16.883Z",
-    "agentId": null
-  },
-  {
-    "id": "1758431451085v7n1y1v67",
-    "phone": "919573713873",
-    "text": "its mahesh",
-    "type": "incoming",
-    "username": null,
-    "timestamp": "2025-09-21T05:10:51.085Z",
-    "agentId": null
-  },
-  {
-    "id": "1758436584828c0tvmwfnk",
-    "phone": "919573713873",
-    "text": "its mahesh",
-    "type": "incoming",
-    "username": null,
-    "timestamp": "2025-09-21T06:36:24.828Z",
-    "agentId": null
-  },
-  {
     "id": "1758449646075x3qdnjvnl",
     "phone": "test_agent_1758366828739_robomate",
     "text": "is it spam msg",
@@ -141,6 +33,15 @@
     "type": "incoming",
     "username": "robomate",
     "timestamp": "2025-09-21T10:14:06.066Z",
+    "agentId": null
+  },
+  {
+    "id": "1758548026885i7dggg20s",
+    "phone": "919032655489",
+    "text": "hi",
+    "type": "outgoing",
+    "username": "robomate",
+    "timestamp": "2025-09-22T13:33:46.884Z",
     "agentId": null
   }
 ]

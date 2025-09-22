@@ -32,9 +32,9 @@
         "type": "media",
         "message": "Hey {name} , drip media first, congratzzzz\n\nIts time to {rock|party|explode}",
         "time": "09:00",
-        "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
+        "mediaUrl": "/uploads/1754923703688-automation.png",
         "mediaType": "image",
-        "minuteDelay": 60
+        "minuteDelay": "30"
       },
       {
         "day": 2,
@@ -47,7 +47,7 @@
     ],
     "total_days": 2,
     "created_at": "2025-07-11T08:09:20.754Z",
-    "updated_at": "2025-09-20T10:21:19.737Z",
+    "updated_at": "2025-09-22T15:11:29.975Z",
     "exactKeywords": [
       "hi"
     ],

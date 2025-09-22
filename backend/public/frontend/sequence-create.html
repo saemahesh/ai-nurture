@@ -1,433 +1,486 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <style>
-    .sequence-form-bg {
-      background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important
+    <style>
+        .sequence-form-bg {
+            background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important
         }
-  </style>
+    </style>
 </head>
+
 <body>
-<div class="flex h-screen dark-theme">
-    <!-- Include Sidebar -->
-    <div ng-include="'sidebar.html?v=' + Date.now()" ng-controller="SidebarController"></div>
+    <div class="flex h-screen dark-theme">
+        <!-- Include Sidebar -->
+        <div ng-include="'sidebar.html?v=' + Date.now()" ng-controller="SidebarController"></div>
 
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden">        <!-- Header -->
-        <header class="dark-theme-header z-10 py-4 px-6 border-b border-slate-700">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4 ml-12">
-                    <button ng-click="goBack()" class="text-cyan-300 hover:text-white transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </button>
-                    <h1 class="text-2xl font-semibold text-white">
-                        {{isEditMode ? 'Edit' : 'Create'}}
-                    </h1>
-                </div>
-                <div class="flex space-x-3">
-
-                    <button ng-click="saveAndActivate()" ng-disabled="saving"
-                            class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-4 py-2 rounded-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-emerald-400">
-                        {{saving ? 'Saving...' : (isEditMode ? 'Save' : 'Create')}}
-                    </button>
-                </div>
-            </div>
-        </header>        <!-- Content -->
-        <main class="flex-1 overflow-y-auto p-2" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
-            <div class="max-w-4xl mx-auto">
-                <!-- Sequence Basic Info -->
-                <div class="bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 rounded-xl shadow-2xl p-2 mb-6 border-2 border-white sequence-form-bg">
-                    <h2 class="text-lg font-semibold text-white mb-4">Sequence Details</h2>
-                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="sequenceName" class="block text-sm font-medium text-cyan-300 mb-2">
-                                Sequence Name *
-                            </label>
-                            <input type="text" id="sequenceName" ng-model="sequence.name" 
-                                   placeholder="e.g., WhatsApp Marketing 1"
-                                   class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300">
-                            <p ng-if="errors.name" class="text-red-400 text-sm mt-1">{{errors.name}}</p>
-                        </div>
-                        
-                        <div>
-                            <label for="sequenceStatus" class="block text-sm font-medium text-cyan-300 mb-2">
-                                Status
-                            </label>
-                            <select id="sequenceStatus" ng-model="sequence.status"
-                                    class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300">
-                                <option value="inactive">Inactive (Draft)</option>
-                                <option value="active">Active</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <label for="sequenceDescription" class="block text-sm font-medium text-cyan-300 mb-2">
-                            Description (Optional)
-                        </label>
-                        <textarea id="sequenceDescription" ng-model="sequence.description" 
-                                  placeholder="Describe the purpose of this sequence..."
-                                  rows="3"
-                                  class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300"></textarea>
-                    </div>
-
-                    <!-- Keywords -->
-                    <div class="mt-4">
-                        <label class="block text-sm font-medium text-cyan-300 mb-2">
-                            Keywords for Auto-Enrollment *
-                        </label>
-                        <p class="text-sm text-gray-400 mb-3">
-                            At least one keyword is required. Users will be automatically enrolled when they send a message matching these keywords.
-                        </p>
-                        
-                        <!-- Dual Keyword Input Fields -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                            <div>
-                                <label class="block text-sm font-medium text-cyan-300 mb-2">Exact Match Keywords</label>
-                                <input type="text" ng-model="sequence.exactKeywords" ng-change="clearKeywordError()"
-                                       class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300"
-                                       placeholder="e.g., hi, hello, start (comma-separated)">
-                                <p class="text-xs text-gray-300 mt-1">Message must match keyword exactly</p>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-cyan-300 mb-2">Contains Keywords</label>
-                                <input type="text" ng-model="sequence.containsKeywords" ng-change="clearKeywordError()"
-                                       class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300"
-                                       placeholder="e.g., demo, trial, discount (comma-separated)">
-                                <p class="text-xs text-gray-300 mt-1">Keyword appears as complete word in message</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Validation Error -->
-                        <div ng-if="errors.keywords" class="mt-2 p-2 bg-red-900 border border-red-600 rounded text-red-200 text-sm">
-                            {{errors.keywords}}
-                        </div>
-                        
-                        <!-- Combined explanation -->
-                        <div class="mt-1 text-xs text-gray-300 p-3 rounded-lg" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);">
-                            <div class="mb-2">
-                                <strong>📍 Exact Match:</strong> "hi" matches only "hi", not "high" or "this"
-                            </div>
-                            <div>
-                                <strong>🔍 Contains:</strong> "demo" matches "demo video" and "see the demo", but not "demonstrate"
-                            </div>
-                        </div>
-                    </div>
-                    </div>                <!-- Messages -->
-                <div class="bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-900 rounded-xl shadow-2xl p-2 border-2 border-white sequence-form-bg">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-lg font-semibold text-white">Messages</h2>
-                        <button ng-click="addMessage()" 
-                                class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-4 py-2 rounded-md transition duration-200 border border-emerald-400">
-                            <i class="fas fa-plus mr-2"></i>Add Message
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden"> <!-- Header -->
+            <header class="dark-theme-header z-10 py-4 px-6 border-b border-slate-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4 ml-12">
+                        <button ng-click="goBack()" class="text-cyan-300 hover:text-white transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
                         </button>
-                        </div>                    <!-- Messages List -->
-                    <div ng-if="sequence.messages.length === 0" class="text-center py-8 text-gray-300">
-                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                        </svg>
-                        <p class="text-lg">No messages added yet</p>
-                        <p class="text-sm">Add your first message to get started</p>
+                        <h1 class="text-2xl font-semibold text-white">
+                            {{isEditMode ? 'Edit' : 'Create'}}
+                        </h1>
+                    </div>
+                    <div class="flex space-x-3">
+
+                        <button ng-click="saveSequence()" ng-disabled="saving"
+                            class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-4 py-2 rounded-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-emerald-400">
+                            {{saving ? 'Saving...' : (isEditMode ? 'Save' : 'Create')}}
+                        </button>
+                    </div>
+                </div>
+            </header> <!-- Content -->
+            <main class="flex-1 overflow-y-auto p-2 sm:p-4"
+                style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important;">
+                <div class="max-w-5xl mx-auto space-y-3 sm:space-y-6">
+
+                    <!-- 1. Basic Information Section -->
+                    <div class="bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-2xl border border-slate-600/50">
+                        <div class="flex items-center justify-between p-4 sm:p-6 cursor-pointer"
+                            ng-click="toggleSection('basicInfo')" ng-init="sections.basicInfo = true">
+                            <div class="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                                <div
+                                    class="w-6 h-6 sm:w-8 sm:h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-info-circle text-white text-xs sm:text-sm"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <h2 class="text-lg sm:text-xl font-semibold text-white truncate">Basic Information
+                                    </h2>
+                                    <span ng-if="sequence.name"
+                                        class="text-xs sm:text-sm text-green-400 bg-green-900/30 px-2 py-1 rounded-full inline-block mt-1 sm:mt-0 truncate max-w-full">
+                                        {{sequence.name}}
+                                    </span>
+                                </div>
+                            </div>
+                            <i class="fas text-gray-400 transition-transform duration-200 flex-shrink-0 ml-2"
+                                ng-class="sections.basicInfo ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                        </div>
+
+                        <div ng-show="sections.basicInfo"
+                            class="px-4 sm:px-6 pb-4 sm:pb-6 border-t border-slate-600/50">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">
+                                <div>
+                                    <label for="sequenceName" class="block text-sm font-medium text-cyan-300 mb-2">
+                                        <i class="fas fa-tag mr-2"></i>Sequence Name *
+                                    </label>
+                                    <input type="text" id="sequenceName" ng-model="sequence.name"
+                                        placeholder="e.g., Marketing Campaign"
+                                        class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-slate-700/80 border border-slate-500 text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300/50 focus:bg-slate-700 transition-all duration-300 text-sm sm:text-base">
+                                    <p ng-if="errors.name" class="text-red-400 text-sm mt-1">{{errors.name}}</p>
+                                </div>
+
+                                <div>
+                                    <label for="sequenceStatus" class="block text-sm font-medium text-cyan-300 mb-2">
+                                        <i class="fas fa-toggle-on mr-2"></i>Status
+                                    </label>
+                                    <select id="sequenceStatus" ng-model="sequence.status"
+                                        class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-slate-700/80 border border-slate-500 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300/50 focus:bg-slate-700 transition-all duration-300 text-sm sm:text-base">
+                                        <option value="inactive">🔒 Inactive (Draft)</option>
+                                        <option value="active">✅ Active</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 sm:mt-6">
+                                <label for="sequenceDescription" class="block text-sm font-medium text-cyan-300 mb-2">
+                                    <i class="fas fa-align-left mr-2"></i>Description (Optional)
+                                </label>
+                                <textarea id="sequenceDescription" ng-model="sequence.description"
+                                    placeholder="Describe the purpose and goals of this sequence..." rows="3"
+                                    class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-slate-700/80 border border-slate-500 text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300/50 focus:bg-slate-700 transition-all duration-300 text-sm sm:text-base resize-none"></textarea>
+                            </div>
+                        </div>
                     </div>
 
-                    <div ng-if="sequence.messages.length > 0" class="space-y-4">
-                        <div ng-repeat="message in sequence.messages track by $index" 
-                             class="sequence-form-bg border border-slate-600 rounded-lg p-4 relative bg-gradient-to-br from-slate-800 to-gray-900">
-                            <!-- Message Header -->
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center space-x-4">
-                                    <div class="bg-gradient-to-r from-cyan-600 to-teal-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                                        Day {{message.day}}
-                                    </div>
-                                    <div class="text-sm text-gray-300">
-                                        {{message.type === 'text' ? 'Text Message' : 'Media Message'}}
-                                    </div>
-                                    <div ng-if="message.day === 1 && message.minuteDelay" class="text-xs text-cyan-300">
-                                        {{getMinuteDelayText(message.minuteDelay)}} after enrollment
-                                    </div>
+                    <!-- 2. Trigger Keywords Section -->
+                    <div class="bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-2xl border border-slate-600/50">
+                        <div class="flex items-center justify-between p-4 sm:p-6 cursor-pointer"
+                            ng-click="toggleSection('keywords')" ng-init="sections.keywords = true">
+                            <div class="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                                <div
+                                    class="w-6 h-6 sm:w-8 sm:h-8 bg-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-key text-white text-xs sm:text-sm"></i>
                                 </div>
-                                <div class="flex items-center space-x-2">
-                                    <button ng-click="moveMessageUp($index)" ng-disabled="$index === 0"
-                                            class="text-gray-400 hover:text-cyan-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"></path>
-                                            </svg>
-                                        </button>
-                                        <button ng-click="moveMessageDown($index)" ng-disabled="$index === sequence.messages.length - 1"
-                                                class="text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                            </svg>
-                                        </button>
-                                        <button ng-click="removeMessage($index)" 
-                                                class="text-red-400 hover:text-red-600">
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
+                                <div class="min-w-0 flex-1">
+                                    <h2 class="text-lg sm:text-xl font-semibold text-white">Trigger Keywords</h2>
+                                    <span
+                                        class="text-xs text-emerald-400 bg-emerald-900/30 px-2 py-1 rounded-full inline-block mt-1 sm:mt-0">
+                                        Auto-enrollment
+                                    </span>
                                 </div>
+                            </div>
+                            <i class="fas text-gray-400 transition-transform duration-200 flex-shrink-0 ml-2"
+                                ng-class="sections.keywords ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                        </div>
 
-                                <!-- Message Form -->
-                                <!-- Day 1 Layout: All fields in one row -->
-                                <div ng-if="message.day === 1" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-cyan-300 mb-2">Day *</label>
-                                        <input type="number" ng-model="message.day" min="1" max="365" ng-change="onDayChange(message)"
-                                               class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300">
-                                    </div>
+                        <div ng-show="sections.keywords" class="p-3 sm:p-4 border-t border-slate-600/50">
+                            <!-- Intro -->
+                            <div class="mb-4">
+                                <p class="text-sm text-gray-300 text-center sm:text-left">
+                                    <i class="fas fa-magic text-emerald-400 mr-2"></i>
+                                    Set trigger words to automatically enroll users
+                                </p>
+                            </div>
 
-                                    <div>
-                                        <label class="block text-sm font-medium text-cyan-300 mb-2">Minutes After Enrollment</label>
-                                        <select ng-model="message.minuteDelay" ng-init="message.minuteDelay = message.minuteDelay || 60"
-                                                class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300">
-                                            <option value="5">5 minutes</option>
-                                            <option value="10">10 minutes</option>
-                                            <option value="15">15 minutes</option>
-                                            <option value="30">30 minutes</option>
-                                            <option value="60">1 hour</option>
-                                            <option value="120">2 hours</option>
-                                            <option value="180">3 hours</option>
-                                            <option value="240">4 hours</option>
-                                            <option value="300">5 hours</option>
-                                            <option value="360">6 hours</option>
-                                        </select>
-                                        <p class="text-xs text-gray-300 mt-1">How long after enrollment to send this message</p>
-                                    </div>
-
-                                    <div>
-                                        <label class="block text-sm font-medium text-cyan-300 mb-2">Type</label>
-                                        <select ng-model="message.type"
-                                                class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300">
-                                            <option value="text">Text Message</option>
-                                            <option value="media">Media Message</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Day 2+ Layout: Day and Type only -->
-                                <div ng-if="message.day !== 1" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-cyan-300 mb-2">Day *</label>
-                                        <input type="number" ng-model="message.day" min="1" max="365" ng-change="onDayChange(message)"
-                                               class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300">
-                                    </div>
-
-                                    <div>
-                                        <label class="block text-sm font-medium text-cyan-300 mb-2">Type</label>
-                                        <select ng-model="message.type"
-                                                class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300">
-                                            <option value="text">Text Message</option>
-                                            <option value="media">Media Message</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                            <!-- Text Message Content -->
-                            <div class="mt-4">
-                                <label class="block text-sm font-medium text-cyan-300 mb-2">Message *</label>
-                                <textarea ng-model="message.message" 
-                                          placeholder="Type your message here... Use {name} to personalize."
-                                          rows="4"
-                                          class="w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-900 to-indigo-900 border-2 border-white text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300 focus:bg-gradient-to-r focus:from-blue-800 focus:to-indigo-800 transition-all duration-300"></textarea>
-                                <div class="flex justify-between items-center mt-2">
-                                    <p class="text-xs text-gray-300">
-                                        Use {name} to personalize messages. Falls back to "there" if name is missing.
-                                    </p>
-                                    <span class="text-xs text-gray-300">{{message.message ? message.message.length : 0}} characters</span>
-                                    </div>
-                                </div>
-
-                                <!-- Media Message Content -->
-                                <div ng-if="message.type === 'media'" class="mt-4">
-                                    <div class="space-y-4">
-                                        <!-- Media Selection Options -->
+                            <!-- Keyword Input Cards -->
+                            <div class="space-y-3 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-4">
+                                <!-- Exact Match Card -->
+                                <div
+                                    class="bg-slate-700/50 rounded-lg p-3 border border-slate-600/50 hover:border-cyan-500/50 transition-all duration-300">
+                                    <div class="flex items-center space-x-2 mb-3">
+                                        <div class="w-8 h-8 bg-cyan-600 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-crosshairs text-white text-sm"></i>
+                                        </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-300 mb-2">Select Media Source</label>
-                                            <div class="flex justify-center">
-                                                <!-- Media Library - Compact Dark Option -->
-                                                <div class="border-2 border-slate-500 bg-slate-700 rounded-lg p-3 w-full max-w-xs shadow-md">
-                                                    <h4 class="text-sm font-bold text-slate-200 mb-2 text-center">From Media Library</h4>
-                                                    <button type="button" ng-click="openMediaLibrary(message)" 
-                                                            class="w-full bg-slate-600 hover:bg-slate-500 text-white px-3 py-2 rounded-md text-xs font-semibold transition duration-200 flex items-center justify-center shadow-sm">
-                                                        <i class="fas fa-photo-video mr-2 text-xs"></i>Browse Library
-                                                    </button>
-                                                    <p class="text-xs text-slate-300 mt-1 text-center">Select from uploaded files</p>
-                                                </div>
-                                            </div>
+                                            <h3 class="text-white font-medium text-sm">Exact Match</h3>
+                                            <p class="text-xs text-gray-400">Must match exactly</p>
+                                        </div>
+                                    </div>
+
+                                    <textarea ng-model="sequence.exactKeywords" ng-change="clearKeywordError()" rows="2"
+                                        class="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-300/50 transition-all duration-300 resize-none text-sm"
+                                        placeholder="hi&#10;hello"></textarea>
+
+                                    <div class="mt-2 flex items-center justify-between">
+                                        <p class="text-xs text-gray-400">One per line</p>
+                                        <span class="text-xs text-cyan-400 bg-cyan-900/30 px-2 py-1 rounded">
+                                            "hi" → only "hi"
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Contains Match Card -->
+                                <div
+                                    class="bg-slate-700/50 rounded-lg p-3 border border-slate-600/50 hover:border-emerald-500/50 transition-all duration-300">
+                                    <div class="flex items-center space-x-2 mb-3">
+                                        <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-search text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-white font-medium text-sm">Contains Word</h3>
+                                            <p class="text-xs text-gray-400">Word in message</p>
+                                        </div>
+                                    </div>
+
+                                    <textarea ng-model="sequence.containsKeywords" ng-change="clearKeywordError()"
+                                        rows="2"
+                                        class="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white placeholder-gray-400 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-300/50 transition-all duration-300 resize-none text-sm"
+                                        placeholder="demo&#10;trial"></textarea>
+
+                                    <div class="mt-2 flex items-center justify-between">
+                                        <p class="text-xs text-gray-400">One per line</p>
+                                        <span class="text-xs text-emerald-400 bg-emerald-900/30 px-2 py-1 rounded">
+                                            "demo" → "demo video"
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Error Display -->
+                            <div ng-if="errors.keywords"
+                                class="mt-3 p-2 bg-red-900/50 border border-red-600/50 rounded text-red-200 text-sm">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>{{errors.keywords}}
+                            </div>
+
+                            <!-- Quick Tips -->
+                            <div class="mt-3 flex flex-col sm:flex-row sm:justify-between gap-2 text-xs text-gray-400">
+                                <span><i class="fas fa-lightbulb text-yellow-400 mr-1"></i>At least one keyword
+                                    required</span>
+                                <span><i class="fas fa-bolt text-blue-400 mr-1"></i>Auto-enrollment on match</span>
+                            </div>
+                        </div>
+                    </div> <!-- 3. Message Sequence Section -->
+                    <div class="bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-2xl border border-slate-600/50">
+                        <div class="flex items-center justify-between p-4 sm:p-6 cursor-pointer"
+                            ng-click="toggleSection('messages')" ng-init="sections.messages = true">
+                            <div class="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                                <div
+                                    class="w-6 h-6 sm:w-8 sm:h-8 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-comments text-white text-xs sm:text-sm"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <h2 class="text-lg sm:text-xl font-semibold text-white">Message Sequence</h2>
+                                    <span
+                                        class="text-xs sm:text-sm text-purple-400 bg-purple-900/30 px-2 py-1 rounded-full inline-block mt-1 sm:mt-0">
+                                        {{sequence.messages.length}} messages
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2 flex-shrink-0">
+                                <button ng-click="addMessage(); $event.stopPropagation()"
+                                    class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 sm:px-4 py-2 rounded-lg transition duration-200 flex items-center space-x-1 sm:space-x-2 text-sm">
+                                    <i class="fas fa-plus text-xs sm:text-sm"></i>
+                                    <span class="hidden sm:inline">Add Message</span>
+                                    <span class="sm:hidden">Add</span>
+                                </button>
+                                <i class="fas text-gray-400 transition-transform duration-200"
+                                    ng-class="sections.messages ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                            </div>
+                        </div>
+
+                        <div ng-show="sections.messages" class="border-t border-slate-600/50"> <!-- Empty State -->
+                            <div ng-if="sequence.messages.length === 0" class="text-center py-8 sm:py-12 px-4">
+                                <div
+                                    class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 bg-slate-700/50 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-comments text-xl sm:text-2xl text-gray-400"></i>
+                                </div>
+                                <h3 class="text-base sm:text-lg font-medium text-white mb-2">No messages yet</h3>
+                                <p class="text-sm sm:text-base text-gray-400 mb-6 max-w-sm mx-auto">Create your first
+                                    message to start building your sequence</p>
+                                <button ng-click="addMessage()"
+                                    class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center space-x-2 mx-auto text-sm sm:text-base">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Add First Message</span>
+                                </button>
+                            </div>
+
+                            <!-- Messages List -->
+                            <div ng-if="sequence.messages.length > 0" class="space-y-[5px]">
+                                <div ng-repeat="message in getSortedMessages() track by $index"
+                                    class="m-1 bg-slate-700/50 backdrop-blur-sm rounded-xl border border-slate-600/50 overflow-hidden">
+
+                                    <!-- Message Header - Collapsible -->
+                                    <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-600/30 transition-colors"
+                                        ng-click="toggleMessage($index)"
+                                        ng-init="messageExpanded = messageExpanded || {}; messageExpanded[$index] = false">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas text-gray-400 transition-transform duration-200 text-sm"
+                                                ng-class="messageExpanded[$index] ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                            <h4 class="text-white font-semibold text-lg">DAY {{message.day}}</h4>
                                         </div>
 
-                                        <!-- Selected Media Preview - Desktop Row Layout -->
-                                        <div ng-if="message.selectedMedia" class="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-lg p-4 border border-white">
-                                            <div class="hidden md:flex md:items-center md:justify-between md:gap-4">
-                                                <!-- Media Library Label - Desktop -->
-                                                <div class="flex-shrink-0">
-                                                    <h4 class="text-lg font-bold text-cyan-300">From Media Library:</h4>
+                                        <div class="flex items-center space-x-2">
+                                            <button ng-click="removeMessage($index); $event.stopPropagation()"
+                                                class="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-colors"
+                                                title="Delete Message">
+                                                <i class="fas fa-trash text-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Message Content - Collapsible -->
+                                    <div ng-show="messageExpanded[$index]"
+                                        class="border-t border-slate-600/50 p-4 sm:p-6 bg-slate-800/30">
+                                        <div class="space-y-4">
+
+                                            <!-- Message Settings -->
+                                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-cyan-300 mb-2">Day
+                                                        *</label>
+                                                    <input type="number" ng-model="message.day" min="1" max="365"
+                                                        ng-change="onDayChange(message)"
+                                                        class="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300/50 transition-all duration-300"
+                                                        style="background-color: #334155 !important; color: white !important;">
                                                 </div>
-                                                
-                                                <!-- Media Preview - Desktop -->
-                                                <div class="flex items-center flex-1 min-w-0 gap-3">
-                                                    <!-- Media thumbnail -->
-                                                    <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
-                                                        <img ng-if="isSelectedMediaImage(message)" ng-src="{{getSelectedMediaUrl(message)}}" 
-                                                             alt="{{getSelectedMediaName(message)}}"
-                                                             class="w-full h-full object-cover"
-                                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                                        
-                                                        <div class="w-full h-full flex items-center justify-center" ng-style="{'display': isSelectedMediaImage(message) ? 'none' : 'flex'}">
-                                                            <i ng-if="isSelectedMediaVideo(message)" class="fas fa-play-circle text-gray-500 text-xl"></i>
-                                                            <i ng-if="message.selectedMedia && !isSelectedMediaImage(message) && !isSelectedMediaVideo(message)" class="fas fa-file text-gray-500"></i>
+
+                                                <div ng-if="message.day === 1">
+                                                    <label class="block text-sm font-medium text-cyan-300 mb-2">Initial
+                                                        Delay</label>
+                                                    <select ng-model="message.minuteDelay"
+                                                        ng-init="message.minuteDelay = message.minuteDelay || 60"
+                                                        class="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300/50 transition-all duration-300">
+                                                        <option value="5">5 minutes</option>
+                                                        <option value="10">10 minutes</option>
+                                                        <option value="15">15 minutes</option>
+                                                        <option value="30">30 minutes</option>
+                                                        <option value="60">1 hour</option>
+                                                        <option value="120">2 hours</option>
+                                                        <option value="180">3 hours</option>
+                                                        <option value="240">4 hours</option>
+                                                        <option value="300">5 hours</option>
+                                                        <option value="360">6 hours</option>
+                                                    </select>
+                                                </div>
+
+                                                <div>
+                                                    <label
+                                                        class="block text-sm font-medium text-cyan-300 mb-2">Type</label>
+                                                    <select ng-model="message.type"
+                                                        class="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300/50 transition-all duration-300">
+                                                        <option value="text">Text Message</option>
+                                                        <option value="media">Media Message</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <!-- Message Content -->
+                                            <div class="space-y-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-cyan-300 mb-2">Message
+                                                        Content *</label>
+                                                    <textarea ng-model="message.message"
+                                                        placeholder="Type your message... Use {name} for personalization."
+                                                        rows="4"
+                                                        class="w-full px-4 py-3 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-gray-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300/50 transition-all duration-300 resize-none"></textarea>
+                                                    <div class="flex justify-between items-center mt-2 text-xs">
+                                                        <span class="text-gray-400">Use {name} for
+                                                            personalization</span>
+                                                        <span
+                                                            ng-class="message.message && message.message.length > 1000 ? 'text-orange-400' : 'text-gray-400'">
+                                                            {{message.message ? message.message.length : 0}} chars
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Media Selection for Media Messages -->
+                                                <div ng-if="message.type === 'media'" class="space-y-4">
+                                                    <div>
+                                                        <label
+                                                            class="block text-sm font-medium text-cyan-300 mb-3">Media
+                                                            Attachment</label>
+
+                                                        <button type="button" ng-click="openMediaLibrary(message)"
+                                                            class="w-full bg-slate-700 hover:bg-slate-600 border border-slate-600 text-white px-4 py-3 rounded-lg transition duration-200 flex items-center justify-center space-x-2">
+                                                            <i class="fas fa-photo-video"></i>
+                                                            <span>Browse Media Library</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <!-- Selected Media Preview -->
+                                                    <div ng-if="message.selectedMedia"
+                                                        class="bg-slate-600/30 rounded-lg p-4 border border-slate-600">
+                                                        <div class="flex items-center justify-between mb-3">
+                                                            <span class="text-sm font-medium text-emerald-300">Media
+                                                                Selected</span>
+                                                            <button type="button" ng-click="clearMedia(message)"
+                                                                class="text-red-400 hover:text-red-300 p-1 hover:bg-red-900/20 rounded transition-colors">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        </div>
+
+                                                        <div class="flex items-center space-x-3">
+                                                            <div
+                                                                class="w-12 h-12 bg-slate-500 rounded-lg flex items-center justify-center overflow-hidden">
+                                                                <img ng-if="isSelectedMediaImage(message)"
+                                                                    ng-src="{{getSelectedMediaUrl(message)}}"
+                                                                    alt="{{getSelectedMediaName(message)}}"
+                                                                    class="w-full h-full object-cover">
+                                                                <i ng-if="!isSelectedMediaImage(message)"
+                                                                    class="fas fa-file text-white"></i>
+                                                            </div>
+                                                            <div class="flex-1 min-w-0">
+                                                                <p class="text-sm font-medium text-white truncate">
+                                                                    {{getSelectedMediaName(message)}}</p>
+                                                                <p class="text-xs text-gray-300">
+                                                                    {{getSelectedMediaType(message)}}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    
-                                                    <!-- Media info -->
-                                                    <div class="flex-1 min-w-0">
-                                                        <p class="text-sm font-medium text-gray-100 truncate">{{getSelectedMediaName(message)}}</p>
-                                                        <p class="text-xs text-gray-300">{{getSelectedMediaType(message)}}</p>
-                                                    </div>
                                                 </div>
-                                                
-                                                <!-- Clear button - Desktop -->
-                                                <button type="button" ng-click="clearMedia(message)" 
-                                                        class="text-red-400 hover:text-red-300 flex-shrink-0 p-2 rounded-md hover:bg-red-900/20 transition-colors">
-                                                    <i class="fas fa-times text-lg"></i>
-                                                </button>
-                                            </div>
-                                            
-                                            <!-- Mobile Layout (vertical) -->
-                                            <div class="md:hidden">
-                                                <h4 class="text-sm font-medium text-cyan-300 mb-2">Selected Media:</h4>
-                                                <div class="flex items-center space-x-3">
-                                                    <!-- Media thumbnail -->
-                                                    <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
-                                                        <img ng-if="isSelectedMediaImage(message)" ng-src="{{getSelectedMediaUrl(message)}}" 
-                                                             alt="{{getSelectedMediaName(message)}}"
-                                                             class="w-full h-full object-cover"
-                                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                                        
-                                                        <div class="w-full h-full flex items-center justify-center" ng-style="{'display': isSelectedMediaImage(message) ? 'none' : 'flex'}">
-                                                            <i ng-if="isSelectedMediaVideo(message)" class="fas fa-play-circle text-gray-500 text-xl"></i>
-                                                            <i ng-if="message.selectedMedia && !isSelectedMediaImage(message) && !isSelectedMediaVideo(message)" class="fas fa-file text-gray-500"></i>
+
+                                                <!-- Message Preview -->
+                                                <div ng-if="message.message">
+                                                    <label class="block text-sm font-medium text-cyan-300 mb-3">Message
+                                                        Preview</label>
+                                                    <div class="bg-slate-600/30 rounded-lg p-4 border border-slate-600">
+                                                        <div class="text-sm text-gray-200 leading-relaxed break-words">
+                                                            {{getMessagePreview(message.message)}}
                                                         </div>
                                                     </div>
-                                                    
-                                                    <!-- Media info -->
-                                                    <div class="flex-1 min-w-0">
-                                                        <p class="text-sm font-medium text-gray-100 truncate">{{getSelectedMediaName(message)}}</p>
-                                                        <p class="text-xs text-gray-300">From Library ({{getSelectedMediaType(message)}})</p>
-                                                    </div>
-                                                    
-                                                    <!-- Clear button -->
-                                                    <button type="button" ng-click="clearMedia(message)" 
-                                                            class="text-red-500 hover:text-red-700 flex-shrink-0">
-                                                        <i class="fas fa-times"></i>
-                                                </button>
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <!-- Message for media (caption) -->
-                                        <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">Message (Caption) *</label>
-                                            <textarea ng-model="message.message" 
-                                                      placeholder="Enter your message caption... Use {name} to personalize."
-                                                      rows="4"
-                                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
-                                            <div class="flex justify-between items-center mt-2">
-                                                <p class="text-xs text-gray-500">
-                                                    Caption is required for media messages. Use {name} to personalize.
-                                                </p>
-                                                <span class="text-xs text-gray-500">{{message.message ? message.message.length : 0}} characters</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Message Preview -->
-                                <div ng-if="message.message" class="mt-4 p-3 bg-gradient-to-r from-blue-900 to-indigo-900 rounded-md border border-white">
-                                    <h4 class="text-sm font-medium text-cyan-300 mb-2">Preview:</h4>
-                                    <div class="text-sm text-gray-200">
-                                        {{getMessagePreview(message.message)}}
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        </p>
                     </div>
                 </div>
-            </main>
         </div>
     </div>
 
-    <!-- Media Library Modal -->
-    <media-library-modal 
-      show="showMediaLibrary" 
-      on-close="closeMediaLibrary()" 
-      on-select="selectMediaFromLibrary(media)"
-      title="Select Media for Sequence">
-    </media-library-modal>
-</div>
+    <!-- Message Preview -->
+    <div ng-if="message.message" class="mt-4 sm:mt-6 p-3 sm:p-4 bg-slate-700/30 rounded-lg border border-slate-600/50">
 
-<!-- Toast Notification -->
-<div ng-if="toast.show" class="fixed top-4 right-4 z-50 transition-all duration-300 ease-in-out">
-    <div class="rounded-lg shadow-lg px-6 py-4 max-w-sm" 
-         ng-class="{
+
+
+    </div>
+    </main>
+    </div>
+    </div>
+
+    <!-- Media Library Modal -->
+    <media-library-modal show="showMediaLibrary" on-close="closeMediaLibrary()"
+        on-select="selectMediaFromLibrary(media)" title="Select Media for Sequence">
+    </media-library-modal>
+    </div>
+
+    <!-- Toast Notification -->
+    <div ng-if="toast.show" class="fixed top-4 right-4 z-50 transition-all duration-300 ease-in-out">
+        <div class="rounded-lg shadow-lg px-6 py-4 max-w-sm" ng-class="{
              'bg-green-600 text-white': toast.type === 'success',
              'bg-red-600 text-white': toast.type === 'error',
              'bg-yellow-600 text-white': toast.type === 'warning',
              'bg-blue-600 text-white': toast.type === 'info'
          }">
-        <div class="flex items-center">
-            <i class="fas mr-3" 
-               ng-class="{
+            <div class="flex items-center">
+                <i class="fas mr-3" ng-class="{
                    'fa-check-circle': toast.type === 'success',
                    'fa-exclamation-circle': toast.type === 'error',
                    'fa-exclamation-triangle': toast.type === 'warning',
                    'fa-info-circle': toast.type === 'info'
                }"></i>
-            <span>{{toast.message}}</span>
+                <span>{{toast.message}}</span>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Confirmation Modal -->
-<div ng-if="showConfirmModal" class="fixed inset-0 z-50 flex items-center justify-center min-h-screen overflow-y-auto" style="background: rgba(15,23,42,0.7); z-index: 99999 !important;" ng-click="handleCancel()">
-    <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative" style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important; min-height: 0; margin-top: 4rem; margin-bottom: 2rem;" ng-click="$event.stopPropagation()">
-      <!-- Close X button at top -->
-      <button type="button" class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl font-bold close-x-button" style="border: none !important; outline: none !important; background: transparent !important;" ng-click="handleCancel()">✕</button>
-      
-      <div class="pt-4">
-        <div class="flex items-center mb-4">
-          <div class="flex-shrink-0 mr-3">
-            <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-white">{{confirmModal.title}}</h3>
-          </div>
+    <!-- Confirmation Modal -->
+    <div ng-if="showConfirmModal"
+        class="fixed inset-0 z-50 flex items-center justify-center min-h-screen overflow-y-auto"
+        style="background: rgba(15,23,42,0.7); z-index: 99999 !important;" ng-click="handleCancel()">
+        <div class="bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 rounded-xl shadow-2xl p-4 sm:p-6 w-full max-w-lg mx-auto border-2 border-slate-600 relative"
+            style="background: linear-gradient(115deg, #0c1624 0%, #051733 30%, #091426 70%, #0f172a 100%), radial-gradient(circle at 60% 40%, #3b82f6 0%, transparent 80%) !important; min-height: 0; margin-top: 4rem; margin-bottom: 2rem;"
+            ng-click="$event.stopPropagation()">
+            <!-- Close X button at top -->
+            <button type="button"
+                class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl font-bold close-x-button"
+                style="border: none !important; outline: none !important; background: transparent !important;"
+                ng-click="handleCancel()">✕</button>
+
+            <div class="pt-4">
+                <div class="flex items-center mb-4">
+                    <div class="flex-shrink-0 mr-3">
+                        <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">{{confirmModal.title}}</h3>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-gray-300">{{confirmModal.message}}</p>
+                    <p class="text-sm text-gray-400 mt-2">This action cannot be undone.</p>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button ng-click="handleCancel()"
+                        class="px-4 py-2 bg-gray-500 hover:bg-gray-600 rounded-lg text-white font-semibold transition">
+                        {{confirmModal.cancelText}}
+                    </button>
+                    <button ng-click="handleConfirm()"
+                        class="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg text-white font-semibold transition">
+                        {{confirmModal.confirmText}}
+                    </button>
+                </div>
+            </div>
         </div>
-        
-        <div class="mb-6">
-          <p class="text-gray-300">{{confirmModal.message}}</p>
-          <p class="text-sm text-gray-400 mt-2">This action cannot be undone.</p>
-        </div>
-        
-        <div class="flex justify-end space-x-3">
-          <button 
-            ng-click="handleCancel()"
-            class="px-4 py-2 bg-gray-500 hover:bg-gray-600 rounded-lg text-white font-semibold transition">
-            {{confirmModal.cancelText}}
-          </button>
-          <button 
-            ng-click="handleConfirm()"
-            class="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg text-white font-semibold transition">
-            {{confirmModal.confirmText}}
-          </button>
-        </div>
-      </div>
     </div>
-</div>
 </body>
+
 </html>

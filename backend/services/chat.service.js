@@ -356,10 +356,16 @@ function clearTestConversation(testPhoneId) {
 function deleteChatHistory(phone, username) {
   try {
     const chats = readChats();
-    // Remove all messages for this phone number and username
-    const filteredChats = chats.filter(chat => 
-      !(chat.phone === phone && chat.username === username)
-    );
+    // Remove all messages for this phone number - both sent by username and incoming messages
+    const filteredChats = chats.filter(chat => {
+      if (chat.phone === phone) {
+        // Delete if message is from this username OR if it's an incoming message
+        if (chat.username === username || chat.type === 'incoming') {
+          return false; // Delete this message
+        }
+      }
+      return true; // Keep this message
+    });
     writeChats(filteredChats);
     
     // Also clear read status for this phone number and user

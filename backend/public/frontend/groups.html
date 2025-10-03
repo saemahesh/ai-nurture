@@ -5,6 +5,20 @@
   <style>
     .white-border-btn { border: 2px solid #fff !important; }
     
+    /* Medium mobile screens - optimize icon button sizing */
+    @media (max-width: 767px) and (min-width: 391px) {
+      .group-card button {
+        width: 40px !important;
+        height: 40px !important;
+        padding: 0 !important;
+      }
+      
+      .group-card button i {
+        font-size: 16px !important;
+        margin: 0 !important;
+      }
+    }
+    
     /* Enhanced mobile responsiveness - FIXED CONTAINER OVERFLOW */
     @media (max-width: 767px) {
       /* Mobile container with proper constraints */
@@ -40,12 +54,44 @@
         overflow: hidden !important;
       }
       
-      /* Mobile button adjustments */
+      /* Mobile icon button adjustments */
       .group-card button {
-        padding: 6px 10px !important;
-        font-size: 10px !important;
-        border-radius: 5px !important;
-        white-space: nowrap !important;
+        width: 36px !important;
+        height: 36px !important;
+        padding: 0 !important;
+        border-radius: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      
+      /* Mobile action buttons container */
+      .group-card .flex.items-center.gap-2 {
+        gap: 8px !important;
+        flex-wrap: nowrap !important;
+        flex-shrink: 0 !important;
+      }
+      
+      /* Mobile icon sizing */
+      .group-card button i {
+        font-size: 14px !important;
+        margin: 0 !important;
+      }
+      
+      /* Very small screens - icon buttons remain horizontal */
+      @media (max-width: 390px) {
+        .group-card button {
+          width: 32px !important;
+          height: 32px !important;
+        }
+        
+        .group-card button i {
+          font-size: 12px !important;
+        }
+        
+        .group-card .flex.items-center.gap-2 {
+          gap: 6px !important;
+        }
       }
       
       /* Mobile header adjustments */
@@ -109,6 +155,76 @@
       
       .group-card {
         padding: 1.5rem !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+      }
+      
+      /* Desktop icon button styling */
+      .group-card .flex.items-center.gap-2 {
+        flex-shrink: 0 !important;
+        gap: 10px !important;
+      }
+      
+      .group-card button {
+        width: 36px !important;
+        height: 36px !important;
+        padding: 0 !important;
+        flex-shrink: 0 !important;
+      }
+      
+      .group-card button i {
+        font-size: 16px !important;
+        margin: 0 !important;
+      }
+    }
+    
+    /* Prevent horizontal overflow on all screen sizes */
+    .custom-group-bg {
+      max-width: 100% !important;
+      overflow-x: hidden !important;
+      box-sizing: border-box !important;
+    }
+    
+    /* Ensure main content doesn't overflow */
+    main.flex-1 {
+      overflow-x: hidden !important;
+      max-width: 100% !important;
+    }
+    
+    /* Large desktop screens - 2 columns layout with better spacing */
+    @media (min-width: 1200px) {
+      .groups-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 3rem !important;
+        max-width: 1000px !important;
+      }
+      
+      .group-card button {
+        width: 40px !important;
+        height: 40px !important;
+      }
+      
+      .group-card button i {
+        font-size: 18px !important;
+      }
+    }
+    
+    /* Extra large desktop screens - maintain 2 columns */
+    @media (min-width: 1400px) {
+      .groups-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 4rem !important;
+        max-width: 1200px !important;
+      }
+      
+      .group-card button {
+        width: 44px !important;
+        height: 44px !important;
+      }
+      
+      .group-card button i {
+        font-size: 20px !important;
       }
     }
     
@@ -142,6 +258,13 @@
                   title="Sync Groups">
             <i class="fas mr-2" ng-class="{'fa-spinner fa-spin': syncingGroups, 'fa-sync': !syncingGroups}"></i>
             <span class=" sm:inline">{{syncingGroups ? 'Syncing...' : 'Sync'}}</span>
+          </button>
+          <button ng-click="downloadCSV()" 
+                  class="header-create-btn ml-2" 
+                  style="background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);"
+                  title="Download Groups as CSV">
+            <i class="fas fa-download mr-2"></i>
+            <span class=" sm:inline">CSV</span>
           </button>
         </div>
       </div>
@@ -192,12 +315,19 @@
                 </div>
               </div>
               
-              <!-- Delete button integrated in header -->
-              <button ng-click="deleteGroup(g.id)" 
-                      class="ml-3 px-3 py-1.5 text-xs text-white bg-red-500 rounded-md font-medium shadow border border-red-400/50 transition-all duration-300 flex items-center opacity-80 hover:opacity-100 hover:scale-105"
-                      title="Delete group">
-                <i class="fas fa-trash mr-1"></i>Delete
-              </button>
+              <!-- Action buttons in header -->
+              <div class="flex items-center gap-2">
+                <button ng-click="downloadGroupMembers(g)" 
+                        class="w-8 h-8 text-white bg-green-600 rounded-md font-medium shadow border border-green-500/50 transition-all duration-300 flex items-center justify-center opacity-80 hover:opacity-100 hover:scale-105"
+                        title="Download group members as CSV">
+                  <i class="fas fa-download text-sm"></i>
+                </button>
+                <button ng-click="deleteGroup(g.id)" 
+                        class="w-8 h-8 text-white bg-red-500 rounded-md font-medium shadow border border-red-400/50 transition-all duration-300 flex items-center justify-center opacity-80 hover:opacity-100 hover:scale-105"
+                        title="Delete group">
+                  <i class="fas fa-trash text-sm"></i>
+                </button>
+              </div>
             </div>
             
             <!-- Group Status Info -->

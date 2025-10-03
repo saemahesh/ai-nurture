@@ -206,20 +206,6 @@ function handleEnrollment(phone, messageText, user, pushName) {
   enrollments.push(newEnrollment);
   writeEnrollments(enrollments);
 
-  // Update customer record for sequence enrollment
-  try {
-    const CustomersService = require('../services/customers.service');
-    const customersService = new CustomersService();
-    
-    // This will update existing customer or create new one with enrollment data
-    customersService.createCustomerFromEnrollment(newEnrollment);
-    
-    console.log(`[WEBHOOK] Customer record updated for enrollment ${phone} in ${targetSequence.name}`);
-  } catch (error) {
-    console.error(`[WEBHOOK] Error updating customer record for enrollment:`, error);
-    // Continue with enrollment even if customer update fails
-  }
-
   // Schedule messages using CampaignExecutor
   try {
     const result = campaignExecutor.processEnrollment({
@@ -378,24 +364,6 @@ router.post("/enroll", (req, res) => {
   } catch (error) {
     console.error(`[WEBHOOK] Error storing message in chat history:`, error);
     // Continue processing even if chat storage fails
-  }
-
-  // Create customer record for anyone who sends a message (regardless of sequence matching)
-  try {
-    const CustomersService = require('../services/customers.service');
-    const customersService = new CustomersService();
-    
-    // This will create a new customer if they don't exist, or return existing customer
-    const customer = customersService.createCustomerFromMessage(
-      phone, 
-      pushName || phone, // Use pushName as name, fallback to phone
-      user.username
-    );
-    
-    console.log(`[WEBHOOK] Customer record ensured for ${phone}`);
-  } catch (error) {
-    console.error(`[WEBHOOK] Error creating customer record for ${phone}:`, error);
-    // Continue processing even if customer creation fails
   }
 
   // 2. Check if message contains stop keywords first
@@ -728,7 +696,7 @@ async function handleAIResponse(phone, message, user, instanceId, req) {
     // Find the first agent that should respond to this message
     let responseAgent = null;
     for (const agent of activeAgents) {
-      if (shouldRespond(agent, message)) {
+      if (shouldRespond(agent, message, phone)) {
         responseAgent = agent;
         break;
       }

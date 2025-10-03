@@ -81,6 +81,13 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
                     $scope.agent.ignoreKeywordsContains = '';
                 }
                 
+                // Handle ignored phone numbers - convert array to text (one per line)
+                if ($scope.agent.ignoredNumbers && Array.isArray($scope.agent.ignoredNumbers)) {
+                    $scope.agent.ignoredNumbersText = $scope.agent.ignoredNumbers.join('\n');
+                } else {
+                    $scope.agent.ignoredNumbersText = '';
+                }
+                
                 // Ensure knowledge bases have active status
                 $scope.agent.knowledgeBases.forEach(function(kb) {
                     if (kb.active === undefined) kb.active = true;
@@ -226,6 +233,20 @@ angular.module('autopostWaApp').controller('AIAgentCreateController', ['$scope',
         } else {
             agentData.triggerKeywords = [];
         }
+
+        // Process ignored phone numbers - convert text to array
+        if (agentData.ignoredNumbersText) {
+            // Split by both newlines and commas, then clean up
+            agentData.ignoredNumbers = agentData.ignoredNumbersText
+                .split(/[\n,]+/)
+                .map(function(number) { return number.trim().replace(/\D/g, ''); })
+                .filter(function(number) { return number.length > 0; });
+        } else {
+            agentData.ignoredNumbers = [];
+        }
+        
+        // Remove the temporary text field before sending to server
+        delete agentData.ignoredNumbersText;
 
         const request = $scope.isEditMode ? 
             $http.put('/api/ai-agents/' + $scope.agentId, agentData) :

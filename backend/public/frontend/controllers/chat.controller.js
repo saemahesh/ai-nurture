@@ -660,6 +660,122 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
             });
     };
 
+    // AI Toggle functionality
+    $scope.contactAIStatus = {}; // Store AI status for each contact
+    $scope.togglingAI = false;
+    
+    // Check AI status for selected contact
+    $scope.checkContactAIStatus = function(phone) {
+        if (!phone) return;
+        
+        // Initialize with loading state to prevent disabled button
+        if (!$scope.contactAIStatus[phone]) {
+            $scope.contactAIStatus[phone] = {
+                enabled: true, // Default to enabled while loading
+                agentsCount: 0,
+                loading: true
+            };
+        }
+        
+        $http.get('/api/ai-agents/check-contact-ai/' + phone)
+            .then(function(response) {
+                $scope.contactAIStatus[phone] = {
+                    enabled: response.data.aiEnabled,
+                    agentsCount: response.data.agentsCount,
+                    loading: false
+                };
+                console.log('AI status for ' + phone + ':', response.data);
+            })
+            .catch(function(error) {
+                console.error('Error checking AI status:', error);
+                // On error, default to enabled
+                $scope.contactAIStatus[phone] = {
+                    enabled: true,
+                    agentsCount: 0,
+                    loading: false,
+                    error: true
+                };
+            });
+    };
+    
+    // Toggle AI for contact
+    $scope.toggleContactAI = function() {
+        console.log('=== Toggle AI called ===');
+        
+        if (!$scope.selectedContact) {
+            console.error('No contact selected');
+            $scope.showToast('❌ Please select a contact first', 'error');
+            return;
+        }
+        
+        if ($scope.togglingAI) {
+            console.log('Already toggling, please wait...');
+            return;
+        }
+        
+        const phone = $scope.selectedContact.phone;
+        const currentStatus = $scope.contactAIStatus[phone];
+        
+        console.log('Current status:', currentStatus);
+        
+        // If status not loaded yet or still loading, wait
+        if (!currentStatus || currentStatus.loading) {
+            console.log('AI status still loading, please wait...');
+            $scope.showToast('⏳ Loading AI status, please wait...', 'info');
+            return;
+        }
+        
+        const newStatus = !currentStatus.enabled;
+        console.log('Toggling from', currentStatus.enabled, 'to', newStatus);
+        
+        $scope.togglingAI = true;
+        
+        $http.post('/api/ai-agents/toggle-contact-ai', {
+            phone: phone,
+            enabled: newStatus
+        })
+            .then(function(response) {
+                console.log('✅ AI toggle response:', response.data);
+                
+                // Update local status
+                $scope.contactAIStatus[phone].enabled = newStatus;
+                
+                // Show success message with clearer wording
+                const message = newStatus ? 
+                    '✅ AI Enabled - Will respond to this contact' : 
+                    '🔴 AI Disabled - Will ignore this contact';
+                $scope.showToast(message, 'success');
+            })
+            .catch(function(error) {
+                console.error('❌ Error toggling AI:', error);
+                console.error('Error details:', error.data);
+                console.error('Error status:', error.status);
+                
+                let errorMsg = '❌ Failed to toggle AI. ';
+                if (error.status === 401) {
+                    errorMsg += 'Please login again.';
+                } else if (error.status === 404) {
+                    errorMsg += 'No AI agents found.';
+                } else if (error.data && error.data.error) {
+                    errorMsg += error.data.error;
+                } else {
+                    errorMsg += 'Please try again.';
+                }
+                
+                $scope.showToast(errorMsg, 'error');
+            })
+            .finally(function() {
+                $scope.togglingAI = false;
+                console.log('=== Toggle AI finished ===');
+            });
+    };
+    
+    // Get AI status for selected contact
+    $scope.getContactAIStatus = function() {
+        if (!$scope.selectedContact) return null;
+        return $scope.contactAIStatus[$scope.selectedContact.phone];
+    };
+
     // Initialize on load
     $scope.init();
 
@@ -677,6 +793,11 @@ angular.module('autopostWaApp').controller('ChatController', ['$scope', '$http',
     $scope.$watch('selectedContact', function(newContact, oldContact) {
         if (newContact && newContact !== oldContact) {
             $scope.scrollToBottom(); // Instant scroll without timeout
+            
+            // Check AI status when contact is selected
+            if (newContact) {
+                $scope.checkContactAIStatus(newContact.phone);
+            }
         }
     });
 

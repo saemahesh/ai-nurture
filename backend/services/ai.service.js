@@ -165,9 +165,10 @@ function formatWhatsAppMessage(response) {
  * Check if a message should trigger an AI response based on agent settings
  * @param {Object} agent - The AI agent configuration
  * @param {string} message - The incoming message
+ * @param {string} [phone] - The phone number (optional, for checking ignored numbers)
  * @returns {boolean} - Whether to respond
  */
-function shouldRespond(agent, message) {
+function shouldRespond(agent, message, phone = null) {
   // Check if auto-respond is enabled
   if (!agent.autoRespond) {
     return false;
@@ -176,6 +177,14 @@ function shouldRespond(agent, message) {
   // Check if agent is active
   if (agent.status !== 'active') {
     return false;
+  }
+  
+  // Check if phone number is in ignored list
+  if (phone && agent.ignoredNumbers && Array.isArray(agent.ignoredNumbers)) {
+    if (agent.ignoredNumbers.includes(phone)) {
+      console.log(`[AI] Phone ${phone} is in ignored list for agent ${agent.name}`);
+      return false;
+    }
   }
   
   const messageLower = message.toLowerCase();

@@ -102,4 +102,28 @@ angular.module('autopostWaApp.groups').controller('GroupsController', function($
         $scope.syncingGroups = false; // Stop loading
       });
   };
+
+  $scope.downloadCSV = function() {
+    try {
+      ApiService.downloadGroupsCSV();
+      NotificationService.showToast($scope, 'CSV download started!', 'success');
+    } catch (error) {
+      console.error('Error downloading CSV:', error);
+      NotificationService.showToast($scope, 'Failed to download CSV', 'error');
+    }
+  };
+
+  $scope.downloadGroupMembers = function(group) {
+    try {
+      if (!group || !group.groupId) {
+        NotificationService.showToast($scope, 'Invalid group selected', 'error');
+        return;
+      }
+      ApiService.downloadGroupMembersCSV(group.groupId);
+      NotificationService.showToast($scope, 'Group members CSV download started!', 'success');
+    } catch (error) {
+      console.error('Error downloading group members CSV:', error);
+      NotificationService.showToast($scope, 'Failed to download group members CSV', 'error');
+    }
+  };
 });

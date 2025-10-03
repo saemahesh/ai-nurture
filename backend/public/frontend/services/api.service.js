@@ -31,6 +31,16 @@ angular.module('autopostWaApp.core').factory('ApiService', function($http) {
     syncGroups: function() {
       return $http.post(API_BASE + '/groups/sync', {}, { withCredentials: true });
     },
+    downloadGroupsCSV: function() {
+      // Use window.open to trigger download directly
+      var url = API_BASE + '/groups/download-csv';
+      window.open(url, '_blank');
+    },
+    downloadGroupMembersCSV: function(groupId) {
+      // Use window.open to trigger download directly for specific group members
+      var url = API_BASE + '/groups/' + groupId + '/download-members-csv';
+      window.open(url, '_blank');
+    },
 
     // Schedules
     getSchedules: function() { 

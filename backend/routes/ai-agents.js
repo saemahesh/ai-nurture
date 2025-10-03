@@ -90,7 +90,7 @@ router.get('/:id', requireAuth, (req, res) => {
 // Create new AI agent
 router.post('/', requireAuth, (req, res) => {
   try {
-    const { name, description, status, model, temperature, systemPrompt, knowledgeBases, autoRespond, responseDelay, triggerKeywords, ignoreKeywords } = req.body;
+    const { name, description, status, model, temperature, systemPrompt, knowledgeBases, autoRespond, responseDelay, triggerKeywords, ignoreKeywords, ignoredNumbers } = req.body;
     
     // Validate required fields
     const validationErrors = validateAgent(req.body);
@@ -112,6 +112,7 @@ router.post('/', requireAuth, (req, res) => {
       responseDelay: responseDelay || 2,
       triggerKeywords: Array.isArray(triggerKeywords) ? triggerKeywords : [],
       ignoreKeywords: Array.isArray(ignoreKeywords) ? ignoreKeywords : [],
+      ignoredNumbers: Array.isArray(ignoredNumbers) ? ignoredNumbers : [],
       username: req.session.user.username,
       created_at: moment().toISOString(),
       updated_at: moment().toISOString()
@@ -137,7 +138,7 @@ router.put('/:id', requireAuth, (req, res) => {
       return res.status(404).json({ error: 'Agent not found or you do not have permission to update it' });
     }
     
-    const { name, description, status, model, temperature, systemPrompt, knowledgeBases, autoRespond, responseDelay, triggerKeywords, ignoreKeywords } = req.body;
+    const { name, description, status, model, temperature, systemPrompt, knowledgeBases, autoRespond, responseDelay, triggerKeywords, ignoreKeywords, ignoredNumbers } = req.body;
     
     // If full update, validate
     if (name !== undefined || knowledgeBases !== undefined) {
@@ -159,6 +160,7 @@ router.put('/:id', requireAuth, (req, res) => {
     if (responseDelay !== undefined) agents[agentIndex].responseDelay = responseDelay;
     if (triggerKeywords !== undefined) agents[agentIndex].triggerKeywords = Array.isArray(triggerKeywords) ? triggerKeywords : [];
     if (ignoreKeywords !== undefined) agents[agentIndex].ignoreKeywords = Array.isArray(ignoreKeywords) ? ignoreKeywords : [];
+    if (ignoredNumbers !== undefined) agents[agentIndex].ignoredNumbers = Array.isArray(ignoredNumbers) ? ignoredNumbers : [];
     
     agents[agentIndex].updated_at = moment().toISOString();
     
@@ -242,6 +244,93 @@ router.post('/:id/test', requireAuth, async (req, res) => {
   } catch (error) {
     console.error('Error testing AI agent:', error.message);
     res.status(500).json({ error: 'Failed to test AI agent: ' + error.message });
+  }
+});
+
+// Toggle AI for a specific contact (adds/removes from ignored numbers list across all agents)
+router.post('/toggle-contact-ai', requireAuth, (req, res) => {
+  try {
+    const { phone, enabled } = req.body;
+    
+    if (!phone) {
+      return res.status(400).json({ error: 'Phone number is required' });
+    }
+    
+    const agents = readAgents();
+    const userAgents = agents.filter(a => a.username === req.session.user.username);
+    
+    let updatedCount = 0;
+    
+    userAgents.forEach((agent, index) => {
+      const agentIndex = agents.findIndex(a => a.id === agent.id);
+      
+      if (!agents[agentIndex].ignoredNumbers) {
+        agents[agentIndex].ignoredNumbers = [];
+      }
+      
+      const phoneIndex = agents[agentIndex].ignoredNumbers.indexOf(phone);
+      
+      if (enabled) {
+        // Enable AI - remove from ignored list if present
+        if (phoneIndex > -1) {
+          agents[agentIndex].ignoredNumbers.splice(phoneIndex, 1);
+          updatedCount++;
+        }
+      } else {
+        // Disable AI - add to ignored list if not present
+        if (phoneIndex === -1) {
+          agents[agentIndex].ignoredNumbers.push(phone);
+          updatedCount++;
+        }
+      }
+      
+      agents[agentIndex].updated_at = moment().toISOString();
+    });
+    
+    if (updatedCount > 0) {
+      writeAgents(agents);
+    }
+    
+    res.json({ 
+      success: true, 
+      message: `AI ${enabled ? 'enabled' : 'disabled'} for contact ${phone}`,
+      agentsUpdated: updatedCount,
+      enabled: enabled
+    });
+  } catch (error) {
+    console.error('Error toggling AI for contact:', error);
+    res.status(500).json({ error: 'Failed to toggle AI for contact' });
+  }
+});
+
+// Check if AI is enabled for a specific contact
+router.get('/check-contact-ai/:phone', requireAuth, (req, res) => {
+  try {
+    const phone = req.params.phone;
+    
+    if (!phone) {
+      return res.status(400).json({ error: 'Phone number is required' });
+    }
+    
+    const agents = readAgents();
+    const userAgents = agents.filter(a => 
+      a.username === req.session.user.username && 
+      a.status === 'active'
+    );
+    
+    // Check if any active agent has this number in ignored list
+    const isIgnored = userAgents.some(agent => 
+      agent.ignoredNumbers && agent.ignoredNumbers.includes(phone)
+    );
+    
+    res.json({ 
+      phone: phone,
+      aiEnabled: !isIgnored,
+      agentsCount: userAgents.length
+    });
+  } catch (error) {
+    console.error('Error checking AI status for contact:', error);
+    res.status(500).json({ error: 'Failed to check AI status for contact' });
   }
 });
 

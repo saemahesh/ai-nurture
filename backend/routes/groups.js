@@ -148,4 +148,123 @@ router.post('/sync', authRequired, async (req, res) => {
   }
 });
 
+// GET /api/groups/download-csv - Download groups as CSV
+router.get('/download-csv', authRequired, async (req, res) => {
+  try {
+    const username = req.session.user.username;
+    const tokens = getUserTokens(username);
+    if (!tokens || !tokens.whapi_token) {
+      return res.status(400).json({ error: 'WHAPI token not found' });
+    }
+
+    // Call WHAPI to get groups for CSV download
+    const apiRes = await axios.get('https://gate.whapi.cloud/groups?count=100', {
+      headers: {
+        'accept': 'application/json',
+        'authorization': `Bearer ${tokens.whapi_token}`
+      }
+    });
+
+    // Accept both array and { groups: [...] } response
+    let groupArr = Array.isArray(apiRes.data) ? apiRes.data : (Array.isArray(apiRes.data.groups) ? apiRes.data.groups : []);
+    if (!Array.isArray(groupArr)) {
+      return res.status(500).json({ error: 'Invalid WHAPI response for CSV download' });
+    }
+
+    // Filter groups (same logic as sync)
+    const filteredGroups = groupArr
+      .filter(g => {
+        if (g.adminAddMemberMode === true) return true;
+        if (g.isCommunityAnnounce === true) {
+          if (!Array.isArray(g.participants)) return false;
+          return !g.participants.some(p => typeof p.id === 'string' && p.id.includes('@lid'));
+        }
+        return false;
+      });
+
+    // Create CSV content
+    const csvHeader = 'Group Name,Group ID,Description,Members Count,Created Date\n';
+    const csvRows = filteredGroups.map(group => {
+      const name = (group.name || '').replace(/"/g, '""'); // Escape quotes
+      const id = group.id || '';
+      const description = (group.description || '').replace(/"/g, '""');
+      const membersCount = Array.isArray(group.participants) ? group.participants.length : 0;
+      const createdDate = group.createdAt ? new Date(group.createdAt * 1000).toISOString().split('T')[0] : '';
+      
+      return `"${name}","${id}","${description}","${membersCount}","${createdDate}"`;
+    }).join('\n');
+
+    const csvContent = csvHeader + csvRows;
+
+    // Set headers for CSV download
+    const timestamp = new Date().toISOString().split('T')[0];
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename="groups_${username}_${timestamp}.csv"`);
+    res.send(csvContent);
+
+  } catch (err) {
+    console.error('[Groups CSV] Error:', err.response ? err.response.data : err.message);
+    res.status(500).json({ error: 'Failed to download groups CSV', details: err.response ? err.response.data : err.message });
+  }
+});
+
+// GET /api/groups/:groupId/download-members-csv - Download members of a specific group as CSV
+router.get('/:groupId/download-members-csv', authRequired, async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const username = req.session.user.username;
+    const tokens = getUserTokens(username);
+    
+    if (!tokens || !tokens.whapi_token) {
+      return res.status(400).json({ error: 'WHAPI token not found' });
+    }
+
+    // Call WHAPI to get specific group details with members
+    const apiRes = await axios.get(`https://gate.whapi.cloud/groups/${groupId}`, {
+      headers: {
+        'accept': 'application/json',
+        'authorization': `Bearer ${tokens.whapi_token}`
+      }
+    });
+
+    console.log('[Group Members CSV] WHAPI response for group:', groupId, apiRes.data);
+
+    if (!apiRes.data) {
+      return res.status(404).json({ error: 'Group not found' });
+    }
+
+    const group = apiRes.data;
+    const participants = Array.isArray(group.participants) ? group.participants : [];
+
+    // Create CSV content for group members
+    const csvHeader = 'Member Name,Phone Number,Role,Is Admin,Join Date,Status\n';
+    const csvRows = participants.map(member => {
+      const name = (member.name || '').replace(/"/g, '""'); // Escape quotes
+      const phone = member.id ? member.id.replace('@c.us', '').replace('@g.us', '') : '';
+      const role = member.isAdmin ? 'Admin' : 'Member';
+      const isAdmin = member.isAdmin ? 'Yes' : 'No';
+      const joinDate = member.joinedAt ? new Date(member.joinedAt * 1000).toISOString().split('T')[0] : '';
+      const status = member.isSuperAdmin ? 'Super Admin' : (member.isAdmin ? 'Admin' : 'Member');
+      
+      return `"${name}","${phone}","${role}","${isAdmin}","${joinDate}","${status}"`;
+    }).join('\n');
+
+    const csvContent = csvHeader + csvRows;
+
+    // Set headers for CSV download
+    const timestamp = new Date().toISOString().split('T')[0];
+    const groupName = (group.name || 'group').replace(/[^a-zA-Z0-9]/g, '_'); // Clean group name for filename
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename="${groupName}_members_${timestamp}.csv"`);
+    res.send(csvContent);
+
+  } catch (err) {
+    console.error('[Group Members CSV] Error:', err.response ? err.response.data : err.message);
+    res.status(500).json({ 
+      error: 'Failed to download group members CSV', 
+      details: err.response ? err.response.data : err.message 
+    });
+  }
+});
+
 module.exports = router;

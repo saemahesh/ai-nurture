@@ -299,9 +299,19 @@ function handleUnenrollment(phone, messageText) {
 
 // Webhook endpoint for handling all WhatsApp messages (enrollment and stop)
 router.post("/enroll", (req, res) => {
+  console.log(`\n=== WEBHOOK RECEIVED ===`);
+  console.log(`[WEBHOOK] Timestamp: ${new Date().toISOString()}`);
+  console.log(`[WEBHOOK] Request headers:`, req.headers);
+  console.log(`[WEBHOOK] Request body:`, JSON.stringify(req.body, null, 2));
+  
   const { instance_id, data } = req.body;
 
   if (!instance_id || !data || !data.message || !data.message.body_message) {
+    console.error(`[WEBHOOK] Invalid webhook payload - missing required fields`);
+    console.error(`[WEBHOOK] instance_id: ${instance_id ? 'PROVIDED' : 'MISSING'}`);
+    console.error(`[WEBHOOK] data: ${data ? 'PROVIDED' : 'MISSING'}`);
+    console.error(`[WEBHOOK] data.message: ${data?.message ? 'PROVIDED' : 'MISSING'}`);
+    console.error(`[WEBHOOK] data.message.body_message: ${data?.message?.body_message ? 'PROVIDED' : 'MISSING'}`);
     return res.status(400).json({ error: "Invalid webhook payload" });
   }
 
@@ -309,13 +319,21 @@ router.post("/enroll", (req, res) => {
   const fromContact = data.message.from_contact;
   const pushName = data.message.push_name;
 
+  console.log(`[WEBHOOK] Extracted message data:`);
+  console.log(`[WEBHOOK] - Content: "${content}"`);
+  console.log(`[WEBHOOK] - From Contact: "${fromContact}"`);
+  console.log(`[WEBHOOK] - Push Name: "${pushName}"`);
+  console.log(`[WEBHOOK] - Instance ID: "${instance_id}"`);
+
   // Skip if from_contact is too long (invalid phone)
   if (!content || !fromContact) {
+    console.error(`[WEBHOOK] Missing required message data - content: ${content ? 'PROVIDED' : 'MISSING'}, fromContact: ${fromContact ? 'PROVIDED' : 'MISSING'}`);
     return res
       .status(400)
       .json({ error: "Missing message content or contact information" });
   }
   if (fromContact.length > 15) {
+    console.error(`[WEBHOOK] from_contact too long (${fromContact.length} characters): ${fromContact}`);
     return res.status(400).json({ error: "from_contact is too long, skipping processing" });
   }
 
@@ -359,6 +377,10 @@ router.post("/enroll", (req, res) => {
       const chatService = require('../services/chat.service');
       const unreadCount = chatService.getUnreadCount(phone, user.username);
       io.to(roomName).emit('unread-count-update', { phone, unreadCount });
+      
+      // Emit total unread count update for real-time sidebar updates
+      const totalUnreadCount = chatService.getTotalUnreadCount(user.username);
+      io.to(roomName).emit('total-unread-update', { totalUnreadCount });
     }
   } catch (error) {
     console.error(`[WEBHOOK] Error storing message in chat history:`, error);
@@ -377,9 +399,11 @@ router.post("/enroll", (req, res) => {
     "remove"
   ];
   
-  const containsStopKeyword = stopKeywords.some((keyword) =>
-    messageText.includes(keyword)
-  );
+  const containsStopKeyword = stopKeywords.some((keyword) => {
+    // Use word boundary regex to match whole words only
+    const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+    return regex.test(messageText);
+  });
 
   if (containsStopKeyword) {
     console.log(`[WEBHOOK] Stop keyword detected in message: "${content}"`);
@@ -403,14 +427,25 @@ router.post("/enroll", (req, res) => {
     // 4. If no sequence match found, check for AI agent responses
     if (result.action === "no_match") {
       console.log(`[WEBHOOK] No sequence match found, checking AI agents for ${phone}`);
+      console.log(`[WEBHOOK] Calling handleAIResponse with:`);
+      console.log(`[WEBHOOK] - Phone: ${phone}`);
+      console.log(`[WEBHOOK] - Content: "${content}"`);
+      console.log(`[WEBHOOK] - User: ${user.username}`);
+      console.log(`[WEBHOOK] - Instance ID: ${instance_id}`);
       
       // Try to get AI response (asynchronous, don't wait for response)
-      handleAIResponse(phone, content, user, instance_id);
+      handleAIResponse(phone, content, user, instance_id, req);
+    } else {
+      console.log(`[WEBHOOK] Sequence match found: ${result.action} for ${phone}`);
     }
     
+    console.log(`[WEBHOOK] Returning response:`, result);
+    console.log(`=== WEBHOOK PROCESSING COMPLETE ===\n`);
     return res.json(result);
   } catch (error) {
     console.error(`[WEBHOOK] Error processing enrollment for ${phone}:`, error);
+    console.error(`[WEBHOOK] Error stack:`, error.stack);
+    console.log(`=== WEBHOOK PROCESSING FAILED ===\n`);
     return res.status(500).json({ 
       error: "Failed to process enrollment",
       phone: phone 
@@ -463,9 +498,11 @@ router.post("/whatsapp", (req, res) => {
       "quit",
       "end",
     ];
-    const containsStopKeyword = stopKeywords.some((keyword) =>
-      messageText.includes(keyword)
-    );
+    const containsStopKeyword = stopKeywords.some((keyword) => {
+      // Use word boundary regex to match whole words only
+      const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+      return regex.test(messageText);
+    });
 
     if (containsStopKeyword) {
       // Find all active enrollments for this phone number
@@ -682,8 +719,15 @@ router.post("/test-message", (req, res) => {
 });
 
 // Function to handle AI agent responses
-async function handleAIResponse(phone, message, user, instanceId) {
+async function handleAIResponse(phone, message, user, instanceId, req) {
   try {
+    console.log(`\n=== AI RESPONSE HANDLER START ===`);
+    console.log(`[AI] Timestamp: ${new Date().toISOString()}`);
+    console.log(`[AI] Phone: ${phone}`);
+    console.log(`[AI] Message: "${message}"`);
+    console.log(`[AI] User: ${user.username}`);
+    console.log(`[AI] Instance ID: ${instanceId}`);
+    console.log(`[AI] Request object available: ${req ? 'YES' : 'NO'}`);
     console.log(`[AI] Checking for AI agents for user: ${user.username}`);
     
     // Get active AI agents for this user
@@ -709,7 +753,15 @@ async function handleAIResponse(phone, message, user, instanceId) {
             console.log(`[AI] Generated response from agent "${agent.name}": "${aiResponse}"`);
             
             // Send response via WhatsApp API
-            await sendAIResponse(phone, aiResponse, instanceId, user, agent);
+            console.log(`[AI] Calling sendAIResponse with params:`);
+            console.log(`[AI] - Phone: ${phone}`);
+            console.log(`[AI] - Response: "${aiResponse.substring(0, 100)}..."`);
+            console.log(`[AI] - Instance ID: ${instanceId}`);
+            console.log(`[AI] - User: ${user.username}`);
+            console.log(`[AI] - Agent: ${agent.name}`);
+            console.log(`[AI] - Request available: ${req ? 'YES' : 'NO'}`);
+            
+            await sendAIResponse(phone, aiResponse, instanceId, user, agent, req);
             
             // Log the interaction
             logAIInteraction(agent.id, phone, message, aiResponse, user.username);
@@ -726,53 +778,102 @@ async function handleAIResponse(phone, message, user, instanceId) {
         console.log(`[AI] Agent "${agent.name}" should not respond to this message`);
       }
     }
+    console.log(`=== AI RESPONSE HANDLER END ===\n`);
   } catch (error) {
     console.error(`[AI] Error in handleAIResponse:`, error);
+    console.error(`[AI] Error stack:`, error.stack);
+    console.log(`=== AI RESPONSE HANDLER FAILED ===\n`);
   }
 }
 
 // Function to send AI response via WhatsApp API
-async function sendAIResponse(phone, message, instanceId, user, agent = null) {
+async function sendAIResponse(phone, message, instanceId, user, agent = null, req = null) {
   try {
+    console.log(`\n=== SEND AI RESPONSE START ===`);
+    console.log(`[AI-SEND] Timestamp: ${new Date().toISOString()}`);
+    console.log(`[AI-SEND] Phone: ${phone}`);
+    console.log(`[AI-SEND] Message length: ${message ? message.length : 'undefined'}`);
+    console.log(`[AI-SEND] User: ${user.username}`);
+    console.log(`[AI-SEND] Agent: ${agent ? agent.name : 'none'}`);
+    console.log(`[AI-SEND] Request object: ${req ? 'AVAILABLE' : 'NOT AVAILABLE'}`);
+    
     const delay = 2000; // 2 second delay to make it feel more natural
     
-    setTimeout(async () => {
-      try {
+    // Get Socket.IO instance to avoid scope issues
+    const io = req ? req.app.get('io') : null;
+    console.log(`[AI-SEND] Socket.IO instance: ${io ? 'AVAILABLE' : 'NOT AVAILABLE'}`);
+    
+    // Use setTimeout with promise to avoid scope issues
+    console.log(`[AI-SEND] Waiting ${delay}ms before sending...`);
+    await new Promise((resolve) => {
+      setTimeout(resolve, delay);
+    });
+    
+    console.log(`[AI-SEND] Delay complete, proceeding with WhatsApp API call`);
+    
+    try {
         // Get user's WhatsApp API settings
         const accessToken = user.settings?.access_token;
+        const instanceId = user.settings?.instance_id;
         
-        if (!accessToken) {
-          console.error(`[AI] No access token found for user: ${user.username}`);
+        if (!accessToken || !instanceId) {
+          console.error(`[AI] Missing API credentials for user: ${user.username}`);
+          console.error(`[AI] Access token: ${accessToken ? 'PROVIDED' : 'MISSING'}`);
+          console.error(`[AI] Instance ID: ${instanceId ? 'PROVIDED' : 'MISSING'}`);
           return;
         }
         
-        // Prepare WhatsApp API request
+        // Prepare wa.robomate.in API request
+        const qs = require('querystring');
         const whatsappPayload = {
-          messaging_product: "whatsapp",
-          to: phone,
-          type: "text",
-          text: {
-            body: message
-          }
+          number: phone,
+          type: 'text',
+          message: message,
+          instance_id: instanceId,
+          access_token: accessToken
         };
         
-        // Send via WhatsApp Business API
+        console.log(`[AI] Sending AI response via wa.robomate.in API to ${phone}`);
+        console.log(`[AI] Instance ID: ${instanceId}`);
+        console.log(`[AI] Message: ${message.substring(0, 50)}...`);
+        
+        // Send via wa.robomate.in API
         const axios = require('axios');
         const response = await axios.post(
-          `https://graph.facebook.com/v17.0/${instanceId}/messages`,
-          whatsappPayload,
+          'https://wa.robomate.in/api/send',
+          qs.stringify(whatsappPayload),
           {
             headers: {
-              'Authorization': `Bearer ${accessToken}`,
-              'Content-Type': 'application/json'
-            }
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            timeout: 30000 // 30 second timeout
           }
         );
         
-        console.log(`[AI] Successfully sent AI response to ${phone}`);
+        console.log(`[AI] wa.robomate.in API response:`, response.data);
+        
+        // Check for error status in response
+        if (response.data && response.data.status === 'error') {
+          console.error(`[AI] Error response from wa.robomate.in API:`, response.data);
+          throw new Error(`API error: ${response.data.message || 'Unknown error'}`);
+        }
+        
+        if (response.data && (response.data.status === 'success' || response.data.success === true)) {
+          console.log(`[AI] Successfully sent AI response to ${phone}`);
+        } else {
+          console.warn(`[AI] Unexpected response format from wa.robomate.in API:`, response.data);
+        }
         
         // Store AI response in chat history
         try {
+          console.log(`[AI] Attempting to store AI response in chat history for ${phone}`);
+          console.log(`[AI] Message data:`, {
+            phone: phone,
+            message: message.substring(0, 100),
+            username: user.username,
+            agentId: agent ? agent.id : null
+          });
+          
           const savedMessage = chatService.addMessage({
             phone: phone,
             text: message,
@@ -781,10 +882,9 @@ async function sendAIResponse(phone, message, instanceId, user, agent = null) {
             timestamp: new Date().toISOString(),
             agentId: agent ? agent.id : null
           });
-          console.log(`[AI] Stored AI response in chat history for ${phone}`);
+          console.log(`[AI] Successfully stored AI response in chat history for ${phone}`);
           
           // Emit real-time AI message to user-specific chat room
-          const io = req.app.get('io');
           if (io) {
             const roomName = `chat-${user.username}-${phone}`;
             io.to(roomName).emit('new-message', savedMessage);
@@ -794,18 +894,30 @@ async function sendAIResponse(phone, message, instanceId, user, agent = null) {
             const chatService = require('../services/chat.service');
             const unreadCount = chatService.getUnreadCount(phone, user.username);
             io.to(roomName).emit('unread-count-update', { phone, unreadCount });
+            
+            // Emit total unread count update for real-time sidebar updates
+            const totalUnreadCount = chatService.getTotalUnreadCount(user.username);
+            io.to(roomName).emit('total-unread-update', { totalUnreadCount });
+          } else {
+            console.log(`[AI] Socket.IO not available, skipping real-time message emit for ${phone}`);
           }
         } catch (error) {
-          console.error(`[AI] Error storing AI response in chat history:`, error);
+          console.error(`[AI] Error storing AI response in chat history for ${phone}:`, error);
+          console.error(`[AI] Error stack:`, error.stack);
+          console.error(`[AI] Error details - phone: ${phone}, username: ${user.username}, message length: ${message ? message.length : 'undefined'}`);
         }
         
-      } catch (error) {
-        console.error(`[AI] Error sending WhatsApp message:`, error.response?.data || error.message);
-      }
-    }, delay);
+    } catch (error) {
+      console.error(`[AI-SEND] Error sending WhatsApp message:`, error.response?.data || error.message);
+      console.error(`[AI-SEND] Error stack:`, error.stack);
+    }
+    
+    console.log(`=== SEND AI RESPONSE END ===\n`);
     
   } catch (error) {
-    console.error(`[AI] Error in sendAIResponse:`, error);
+    console.error(`[AI-SEND] Error in sendAIResponse:`, error);
+    console.error(`[AI-SEND] Error stack:`, error.stack);
+    console.log(`=== SEND AI RESPONSE FAILED ===\n`);
   }
 }
 

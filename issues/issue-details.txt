@@ -17,6 +17,8 @@ Read Mandatory instructions to follow on every iteration:
     until i clear the issues here, consider they are not fixed
 --------------------------------------------------------
 **** Issue List ****
+sidebar autoscroll should happen from drip campaign option itself 
+becoz now we have added new features, so length increased in both mobile and desktop modes.
 
-issues:
-to test the webhook in local 
+why did you kept workspace section sticky? it should be like previous only 
+there is already code for this, check once, i removed your fix for this 

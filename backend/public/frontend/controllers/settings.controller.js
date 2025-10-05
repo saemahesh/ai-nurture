@@ -176,6 +176,8 @@ angular.module('autopostWaApp.core').controller('SettingsController', function($
       });
   };
 
+
+
   $scope.testConnection = function() {
     $scope.testError = '';
     $scope.testSuccess = false;

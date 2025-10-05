@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ai_1758434632068",
+    "agent_id": "agent_1758434478127",
+    "username": "robomate",
+    "phone": "919573713873",
+    "user_message": "How are you",
+    "ai_response": "I'm doing great, thanks! 😊 How about you?",
+    "timestamp": "2025-09-21T06:03:52.068Z"
+  },
+  {
+    "id": "ai_1758434689886",
+    "agent_id": "agent_1758434478127",
+    "username": "robomate",
+    "phone": "919573713873",
+    "user_message": "How are you",
+    "ai_response": "I'm great, thanks! 😊 How about you?",
+    "timestamp": "2025-09-21T06:04:49.886Z"
+  }
+]

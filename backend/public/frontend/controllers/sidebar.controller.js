@@ -20,8 +20,8 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
   // Initialize notification service
   NotificationService.initToast($scope);
   
-  // Pages that are below direct-schedule in sidebar
-  var pagesRequiringSidebarScroll = ['/status', '/users', '/settings'];
+  // Pages that require sidebar scroll - starting from Drip Campaigns (sequences) onwards
+  var pagesRequiringSidebarScroll = ['/sequences', '/ai-agents', '/event-reminders', '/schedules', '/direct-schedule', '/status', '/users', '/settings'];
   
   // Function to scroll sidebar to show active item with retry mechanism
   $scope.scrollToActiveItem = function(retryCount) {
@@ -158,18 +158,17 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
     $scope.user = response.data.user;
     $scope.loadingUser = false;
     
-    // Load unread count after user is loaded
+    // Load unread count after user is loaded (initial load only)
     $scope.loadTotalUnreadCount();
     
-    // Set up periodic refresh of unread count every 30 seconds
-    $interval($scope.loadTotalUnreadCount, 30000);
+    // Real-time updates are now handled by Socket.IO events - no more polling needed!
   }).catch(function(error) {
     console.error('Error loading user data:', error);
     $scope.loadingUser = false;
     $scope.userError = true;
   });
 
-  // Function to load total unread count
+  // Function to load total unread count (only used for initial load)
   $scope.loadTotalUnreadCount = function() {
     if (!$scope.user) return;
     
@@ -183,10 +182,17 @@ angular.module('autopostWaApp.core').controller('SidebarController', ['$scope', 
       });
   };
 
-  // Listen for unread count changes from chat controller
-  $scope.$on('unread-count-changed', function() {
-    $scope.loadTotalUnreadCount();
-  });
+  // Setup Socket.IO connection for real-time updates
+  if (typeof io !== 'undefined') {
+    $scope.socket = io();
+    
+    // Listen for real-time total unread count updates
+    $scope.socket.on('total-unread-update', function(data) {
+      console.log('📊 Received real-time total unread count update:', data);
+      $scope.totalUnreadCount = data.totalUnreadCount;
+      $scope.$apply();
+    });
+  }
   
   $scope.logout = function() {
     $scope.loggingOut = true;

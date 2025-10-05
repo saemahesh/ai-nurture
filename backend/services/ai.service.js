@@ -182,9 +182,11 @@ function shouldRespond(agent, message) {
   
   // Check ignore keywords first - if found, don't respond
   if (agent.ignoreKeywords && agent.ignoreKeywords.length > 0) {
-    const hasIgnoreKeyword = agent.ignoreKeywords.some(keyword => 
-      messageLower.includes(keyword.toLowerCase())
-    );
+    const hasIgnoreKeyword = agent.ignoreKeywords.some(keyword => {
+      // Use word boundary regex to match whole words only
+      const regex = new RegExp(`\\b${keyword.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+      return regex.test(messageLower);
+    });
     
     if (hasIgnoreKeyword) {
       return false;

@@ -72,7 +72,7 @@ IMPORTANT FORMATTING INSTRUCTIONS:
       }
     ];
     
-    // Use OpenRouter API with Grok-4 model
+    // Use OpenRouter API with deepseek/deepseek-chat-v3.1:free model
     return await callOpenRouterAPI(messages);
     
   } catch (error) {
@@ -81,7 +81,7 @@ IMPORTANT FORMATTING INSTRUCTIONS:
 }
 
 /**
- * Call OpenRouter API with Grok-4 free model
+ * Call OpenRouter API withdeepseek/deepseek-chat-v3.1:free free model
  * @param {Array} messages - The conversation messages
  * @returns {Promise<string>} - The AI's response
  */
@@ -97,7 +97,7 @@ async function callOpenRouterAPI(messages) {
     console.log('Calling OpenRouter API with messages:', JSON.stringify(messages, null, 2));
     
     const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
-      model: 'x-ai/grok-4-fast:free',
+      model: 'deepseek/deepseek-chat-v3.1:free',
       messages: messages,
     }, {
       headers: {

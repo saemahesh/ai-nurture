@@ -62,5 +62,37 @@
     "sentAt": "2025-07-13T14:35:04.613Z",
     "status": "sent",
     "createdAt": "2025-07-13T14:35:04.669Z"
+  },
+  {
+    "id": "msg-1758435185587-tpht3wv6f",
+    "campaignId": "seq_1752221360754",
+    "username": "robomate",
+    "phone": "919573713873",
+    "message": {
+      "id": "msg-0",
+      "type": "media",
+      "message": "Hey {name} , drip media first, congratzzzz\n\nIts time to {rock|party|explode}",
+      "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
+      "day": 1
+    },
+    "sentAt": "2025-09-21T06:13:05.583Z",
+    "status": "sent",
+    "createdAt": "2025-09-21T06:13:05.587Z"
+  },
+  {
+    "id": "msg-1758545074450-vteg2ge3p",
+    "campaignId": "seq_1752221360754",
+    "username": "robomate",
+    "phone": "919573713873",
+    "message": {
+      "id": "msg-1",
+      "type": "media",
+      "message": "Hey , day 2 drip msg",
+      "mediaUrl": "/uploads/1754032316663-adp_logo.jpg",
+      "day": 2
+    },
+    "sentAt": "2025-09-22T12:44:34.448Z",
+    "status": "sent",
+    "createdAt": "2025-09-22T12:44:34.450Z"
   }
 ]
